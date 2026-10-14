@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Upload Penjualan UFO</title>
+<title>Admin — Upload Penjualan UFO Kebonsari</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -12,15 +12,15 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getDatabase, ref, set, get, update, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
- const firebaseConfig = {
-        apiKey: "AIzaSyDrrS4E_6e3G1DBfqkFbWoYLhdq6ZIzapg",
-        authDomain: "tes-webapps.firebaseapp.com",
-        databaseURL: "https://tes-webapps-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "tes-webapps",
-        storageBucket: "tes-webapps.firebasestorage.app",
-        messagingSenderId: "87638829660",
-        appId: "1:87638829660:web:5a04a73f02206803fa9499"
-      };
+const firebaseConfig = {
+  apiKey: "AIzaSyDrrS4E_6e3G1DBfqkFbWoYLhdq6ZIzapg",
+  authDomain: "tes-webapps.firebaseapp.com",
+  databaseURL: "https://tes-webapps-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tes-webapps",
+  storageBucket: "tes-webapps.firebasestorage.app",
+  messagingSenderId: "87638829660",
+  appId: "1:87638829660:web:5a04a73f02206803fa9499"
+};
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
@@ -131,27 +131,6 @@ button {
 .file-input-wrap p { margin: 4px 0 0; font-size: 13px; color: var(--muted); font-weight: 600; }
 .file-input-wrap strong { color: var(--primary); }
 .file-input-wrap input { display: none; }
-.preview-box {
-  max-height: 320px; overflow-y: auto;
-  border-radius: 10px; border: 1px solid var(--border);
-  background: #fff;
-}
-.preview-box table {
-  width: 100%; border-collapse: collapse; font-size: 11px;
-}
-.preview-box th {
-  background: var(--soft); padding: 8px 6px;
-  text-align: left; font-weight: 800;
-  text-transform: uppercase; font-size: 9.5px;
-  color: var(--muted); position: sticky; top: 0;
-  border-bottom: 2px solid var(--border);
-}
-.preview-box td {
-  padding: 6px; border-bottom: 1px solid var(--border);
-  font-weight: 600;
-}
-.preview-box::-webkit-scrollbar { width: 6px; }
-.preview-box::-webkit-scrollbar-thumb { background: var(--primary); border-radius: 3px; }
 .stats-grid {
   display: grid; grid-template-columns: repeat(3, 1fr);
   gap: 10px; margin-bottom: 12px;
@@ -188,21 +167,18 @@ button {
   vertical-align: middle; margin-right: 6px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.pin-list { max-height: 300px; overflow-y: auto; }
-.pin-row {
-  display: flex; justify-content: space-between;
-  align-items: center; padding: 10px 12px;
-  border-bottom: 1px solid var(--border);
-  background: white; gap: 10px;
+.info-list {
+  max-height: 240px; overflow-y: auto;
+  background: white; border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px;
 }
-.pin-row:last-child { border-bottom: none; }
-.pin-row .nama { font-weight: 700; font-size: 13px; flex: 1; }
-.pin-row .pin-input {
-  width: 100px; padding: 6px 8px; font-size: 12px;
-  text-align: center; font-weight: 800;
-  letter-spacing: 2px; border-radius: 6px;
-  border: 1px solid var(--border);
+.info-item {
+  padding: 8px 10px; border-bottom: 1px solid var(--border);
+  font-size: 12px; display: flex; gap: 8px;
 }
+.info-item:last-child { border-bottom: none; }
+.info-item .nama { font-weight: 700; flex: 1; }
+.info-item .detail { color: var(--muted); font-size: 11px; }
 @media (max-width: 480px) {
   body { padding: 12px; }
   .container { padding: 16px; border-radius: 16px; }
@@ -223,9 +199,14 @@ button {
     <div class="card">
       <h3>🔐 Login Admin</h3>
       <label>PIN Admin</label>
-      <input type="password" id="pinAdmin" placeholder="••••••" style="text-align:center; font-size:18px; letter-spacing:6px; font-weight:800;">
+      <input type="password" id="pinAdmin" placeholder="••••" maxlength="6"
+        inputmode="numeric" pattern="[0-9]*"
+        style="text-align:center; font-size:18px; letter-spacing:6px; font-weight:800;"
+        oninput="this.value = this.value.replace(/\D/g, '')"
+        onkeypress="if(event.key === 'Enter') loginAdmin()">
       <div style="height:10px;"></div>
       <button class="btn-primary" onclick="loginAdmin()">Masuk</button>
+      <div id="loginError" class="alert err hidden" style="margin-top:10px;"></div>
     </div>
   </div>
 
@@ -239,7 +220,7 @@ button {
 
     <!-- UPLOAD -->
     <div class="card">
-      <h3>📁 Upload File Excel</h3>
+      <h3>📁 Upload File Excel Penjualan</h3>
       <div class="file-input-wrap" onclick="document.getElementById('fileExcel').click()">
         <svg viewBox="0 0 24 24">
           <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
@@ -247,7 +228,7 @@ button {
           <line x1="12" y1="3" x2="12" y2="15"/>
         </svg>
         <p><strong>Klik untuk pilih file Excel</strong></p>
-        <p style="font-size:11px;">Format: .xlsx dari sistem kasir UFO</p>
+        <p style="font-size:11px;">File dari sistem kasir UFO (.xlsx)</p>
         <input type="file" id="fileExcel" accept=".xlsx,.xls" onchange="handleFileSelect(event)">
       </div>
       <div id="fileInfo" class="hidden" style="margin-top:12px;">
@@ -267,39 +248,20 @@ button {
           <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
           <span id="alertFilterText">Filter: skip kategori GARANSI & ONGKOS untuk perhitungan omzet</span>
         </div>
-        <div class="preview-box">
-          <table>
-            <thead>
-              <tr>
-                <th>Tanggal</th>
-                <th>Sales</th>
-                <th>Produk</th>
-                <th>Qty</th>
-                <th>Omzet</th>
-                <th>Kategori</th>
-              </tr>
-            </thead>
-            <tbody id="previewBody"></tbody>
-          </table>
-        </div>
-        <div style="height:12px;"></div>
+        <div style="height:8px;"></div>
         <div style="display:flex; gap:8px;">
           <button class="btn-soft" onclick="resetUpload()">❌ Batal</button>
-          <button class="btn-success" id="btnConfirmUpload" onclick="confirmUpload()">✅ Konfirmasi Upload ke Server</button>
+          <button class="btn-success" id="btnConfirmUpload" onclick="confirmUpload()">✅ Konfirmasi Upload</button>
         </div>
       </div>
     </div>
 
-    <!-- KELOLA PIN PROMOTOR -->
+    <!-- DATA TERSIMPAN -->
     <div class="card">
-      <h3>🔑 Kelola PIN Promotor</h3>
-      <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">
-        PIN default = <b>123456</b>. Ganti sesuai kebutuhan promotor.
-      </p>
-      <div class="pin-list" id="pinList">
+      <h3>👥 Promotor Terdaftar</h3>
+      <div class="info-list" id="promotorList">
         <div style="text-align:center; padding:20px; color:var(--muted); font-size:13px;">
-          <span class="spinner" style="border-color: rgba(37,99,235,0.3); border-top-color: var(--primary);"></span>
-          Memuat promotor...
+          Belum ada data. Upload Excel dulu.
         </div>
       </div>
     </div>
@@ -308,9 +270,9 @@ button {
     <div class="card">
       <h3 style="color: var(--danger);">⚠️ Danger Zone</h3>
       <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">
-        Hapus SEMUA data penjualan di server. Gunakan hanya kalau salah upload total.
+        Hapus SEMUA data di server. Gunakan hanya kalau salah upload total.
       </p>
-      <button class="btn-danger" onclick="hapusSemuaData()">🗑️ Hapus Semua Data Penjualan</button>
+      <button class="btn-danger" onclick="hapusSemuaData()">🗑️ Hapus Semua Data</button>
     </div>
 
     <button class="btn-soft" onclick="logoutAdmin()" style="margin-bottom:8px;">🚪 Logout</button>
@@ -319,8 +281,8 @@ button {
 </div>
 
 <script>
-let savedPinAdmin = localStorage.getItem('ufo_admin_penjualan_pin') || '';
-let dataExcelParsed = []; // hasil parse Excel
+let savedPinAdmin = localStorage.getItem('ufo_admin_pin') || '';
+let dataParsed = { master: [], penjualan: [], promo: [], rules: [], punishment: [], reward: [] };
 
 window.addEventListener('firebase-ready', () => {
   if (savedPinAdmin) {
@@ -332,31 +294,32 @@ window.addEventListener('firebase-ready', () => {
 
 async function loginAdmin() {
   const pin = document.getElementById('pinAdmin').value.trim();
-  if (!pin) { alert("Masukkan PIN!"); return; }
+  const errEl = document.getElementById('loginError');
+  errEl.classList.add('hidden');
+  if (!pin) { errEl.innerText = 'Masukkan PIN!'; errEl.classList.remove('hidden'); return; }
   try {
-    const snap = await window.dbGet(window.dbRef(window.db, 'users/admin'));
-    let pinBenar = '123456';
-    if (snap.exists()) {
-      pinBenar = String(snap.val().pin || '123456');
-    } else {
-      await window.dbSet(window.dbRef(window.db, 'users/admin'), { pin: '123456', nama: 'Admin UFO' });
-    }
+    const snap = await window.dbGet(window.dbRef(window.db, 'config/adminPin'));
+    let pinBenar = '8888';
+    if (snap.exists()) pinBenar = String(snap.val());
+    else await window.dbSet(window.dbRef(window.db, 'config/adminPin'), '8888');
     if (pin === pinBenar) {
       savedPinAdmin = pin;
-      localStorage.setItem('ufo_admin_penjualan_pin', pin);
+      localStorage.setItem('ufo_admin_pin', pin);
       document.getElementById('loginBox').classList.add('hidden');
       document.getElementById('panelAdmin').classList.remove('hidden');
       mulaiAdmin();
     } else {
-      alert("❌ PIN Admin salah!");
+      errEl.innerText = '❌ PIN Admin salah!';
+      errEl.classList.remove('hidden');
     }
   } catch (err) {
-    alert("Gagal verifikasi: " + err.message);
+    errEl.innerText = 'Gagal verifikasi: ' + err.message;
+    errEl.classList.remove('hidden');
   }
 }
 
 function logoutAdmin() {
-  localStorage.removeItem('ufo_admin_penjualan_pin');
+  localStorage.removeItem('ufo_admin_pin');
   savedPinAdmin = '';
   document.getElementById('panelAdmin').classList.add('hidden');
   document.getElementById('loginBox').classList.remove('hidden');
@@ -365,14 +328,14 @@ function logoutAdmin() {
 
 function mulaiAdmin() {
   loadStatusUpload();
-  loadPinList();
+  loadPromotorList();
 }
 
 /* ============================================================ */
-/* LOAD STATUS UPLOAD TERAKHIR */
+/* LOAD STATUS */
 /* ============================================================ */
 function loadStatusUpload() {
-  window.dbOnValue(window.dbRef(window.db, 'lastUpload'), snap => {
+  window.dbOnValue(window.dbRef(window.db, 'config/lastUpload'), snap => {
     const el = document.getElementById('statusUploadText');
     if (!snap.exists()) {
       el.innerText = 'Belum ada data ter-upload.';
@@ -380,19 +343,36 @@ function loadStatusUpload() {
     }
     const d = snap.val();
     const tgl = new Date(d.tanggal || 0);
-    el.innerText = `Upload terakhir: ${tgl.toLocaleString('id-ID')} — ${d.total || 0} baris oleh ${d.admin || 'Admin'}`;
+    el.innerText = `Upload terakhir: ${tgl.toLocaleString('id-ID')} — ${d.totalTransaksi || 0} transaksi, ${d.totalPromotor || 0} promotor`;
+  });
+}
+
+function loadPromotorList() {
+  window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
+    const el = document.getElementById('promotorList');
+    if (!snap.exists()) {
+      el.innerHTML = '<div style="text-align:center; padding:20px; color:var(--muted); font-size:13px;">Belum ada promotor. Upload Excel dulu.</div>';
+      return;
+    }
+    const data = snap.val();
+    const list = Object.keys(data).map(k => ({ key: k, ...data[k] })).sort((a,b) => a.namaAbsen.localeCompare(b.namaAbsen));
+    el.innerHTML = list.map(p => `
+      <div class="info-item">
+        <div class="nama">${p.namaAbsen}</div>
+        <div class="detail">PIN: ${p.pin} • ${p.namaSales}</div>
+      </div>
+    `).join('');
   });
 }
 
 /* ============================================================ */
-/* UPLOAD & PARSE EXCEL */
+/* PARSE EXCEL */
 /* ============================================================ */
 function handleFileSelect(e) {
   const file = e.target.files[0];
   if (!file) return;
-  const fileInfo = document.getElementById('fileInfo');
   const fileInfoText = document.getElementById('fileInfoText');
-  fileInfo.classList.remove('hidden');
+  document.getElementById('fileInfo').classList.remove('hidden');
   fileInfoText.innerText = `📄 ${file.name} (${(file.size/1024).toFixed(1)} KB) — sedang dibaca...`;
 
   const reader = new FileReader();
@@ -400,119 +380,129 @@ function handleFileSelect(e) {
     try {
       const data = new Uint8Array(evt.target.result);
       const wb = XLSX.read(data, { type: 'array' });
-      const sheet = wb.Sheets[wb.SheetNames[0]];
-      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
 
-      // Cari baris header (yang ada "Store" dan "Nomor Faktur")
-      let headerRowIdx = -1;
-      for (let i = 0; i < rows.length; i++) {
-        const r = rows[i];
-        if (r && r[0] === 'Store' && r[1] === 'Nomor Faktur') {
-          headerRowIdx = i;
-          break;
-        }
-      }
-      if (headerRowIdx === -1) {
-        fileInfoText.innerText = '❌ Format Excel tidak dikenali. Header "Store" tidak ditemukan.';
+      // 1. Parse MASTER_SALES
+      const masterSheet = wb.Sheets['MASTER_SALES'];
+      if (!masterSheet) {
+        fileInfoText.innerText = '❌ Sheet MASTER_SALES tidak ditemukan!';
         document.getElementById('fileInfoBox').className = 'alert err';
         return;
       }
+      const masterRows = XLSX.utils.sheet_to_json(masterSheet, { header: 1, defval: '' });
+      dataParsed.master = [];
+      for (let i = 1; i < masterRows.length; i++) {
+        const r = masterRows[i];
+        if (!r[0]) continue;
+        const namaAbsen = String(r[0]).trim();
+        const namaSales = String(r[1]).trim();
+        const aktif = String(r[2]).trim().toUpperCase();
+        const pin = String(r[3]).trim().replace(/\.0$/, '');
+        const role = String(r[4] || 'USER').trim().toUpperCase();
+        const tampil = String(r[5] || '').trim().toUpperCase();
+        const ikutUC = String(r[6] || 'YA').trim().toUpperCase();
+        const targetUC = Number(r[7]) || 16;
+        const merk = String(r[8] || '').trim();
+        if (aktif !== 'YA') continue;
+        if (tampil !== 'YA') continue;
+        if (role !== 'USER') continue;
+        dataParsed.master.push({ namaAbsen, namaSales, pin, role, ikutUC, targetUC, merk });
+      }
 
-      // Parse data mulai setelah header
-      const parsed = [];
-      for (let i = headerRowIdx + 1; i < rows.length; i++) {
-        const r = rows[i];
-        if (!r || !r[0] || r[0] === 'TOTAL' || r[5] === 'TOTAL') continue;
-        // Skip baris kosong
-        if (!r[1] || !r[2]) continue;
+      // 2. Parse PENJUALAN
+      const jualSheet = wb.Sheets['PENJUALAN'];
+      if (!jualSheet) {
+        fileInfoText.innerText = '❌ Sheet PENJUALAN tidak ditemukan!';
+        document.getElementById('fileInfoBox').className = 'alert err';
+        return;
+      }
+      const jualRows = XLSX.utils.sheet_to_json(jualSheet, { header: 1, defval: '' });
+      dataParsed.penjualan = [];
+      for (let i = 1; i < jualRows.length; i++) {
+        const r = jualRows[i];
+        if (!r[0] || !r[1]) continue;
+        if (String(r[5]).trim().toUpperCase() === 'TOTAL') continue;
 
-        const row = {
-          store: String(r[0] || '').trim(),
-          noFaktur: String(r[1] || '').trim(),
-          tanggal: String(r[2] || '').trim(),
-          barcode: String(r[3] || '').trim(),
-          modelNo: String(r[4] || '').trim(),
-          namaBarang: String(r[5] || '').trim(),
+        // Tanggal bisa "12/10/2026" atau "2026-01-10 00:00:00"
+        let tglStr = String(r[2] || '').trim();
+        let tgl = tglStr;
+        if (tglStr.includes(' ')) tglStr = tglStr.split(' ')[0];
+        if (/^\d{4}-\d{2}-\d{2}$/.test(tglStr)) {
+          const p = tglStr.split('-');
+          tgl = `${p[2]}/${p[1]}/${p[0]}`;
+        }
+
+        dataParsed.penjualan.push({
+          noFaktur: String(r[1]).trim(),
+          tanggal: tgl,
+          barcode: String(r[3]).trim(),
+          modelNo: String(r[4]).trim(),
+          namaBarang: String(r[5]).trim(),
           qty: Number(r[6]) || 0,
           harga: Number(r[7]) || 0,
           diskon: Number(r[8]) || 0,
           cashback: Number(r[9]) || 0,
           subtotal: Number(r[10]) || 0,
-          kodeGudang: String(r[11] || '').trim(),
-          namaKasir: String(r[13] || '').trim(),
-          namaSales: String(r[15] || '').trim(),
-          jenisBayar: String(r[16] || '').trim(),
-          kategori: String(r[17] || '').trim().toUpperCase(),
-          merk: String(r[18] || '').trim().toUpperCase()
-        };
-        parsed.push(row);
+          namaSales: String(r[15]).trim(),
+          jenisBayar: String(r[16]).trim(),
+          kategori: String(r[17]).trim().toUpperCase(),
+          merk: String(r[18]).trim().toUpperCase()
+        });
       }
 
-      if (parsed.length === 0) {
-        fileInfoText.innerText = '❌ Tidak ada data yang bisa diproses dari file ini.';
-        document.getElementById('fileInfoBox').className = 'alert err';
-        return;
-      }
+      // 3. Parse info tambahan (opsional)
+      dataParsed.promo = parseSimpleSheet(wb.Sheets['PROMO'], ['judul', 'periode', 'detail']);
+      dataParsed.rules = parseSimpleSheet(wb.Sheets['RULES'], ['poin', 'deskripsi']);
+      dataParsed.punishment = parseSimpleSheet(wb.Sheets['PUNISHMENT'], ['judul', 'level', 'detail']);
+      dataParsed.reward = parseSimpleSheet(wb.Sheets['REWARD'], ['judul', 'periode', 'detail']);
 
-      dataExcelParsed = parsed;
-      fileInfoText.innerText = `✅ File berhasil dibaca: ${parsed.length} baris data siap di-upload.`;
+      fileInfoText.innerText = `✅ File siap: ${dataParsed.master.length} promotor, ${dataParsed.penjualan.length} transaksi`;
       document.getElementById('fileInfoBox').className = 'alert ok';
 
       renderPreview();
-
     } catch (err) {
-      fileInfoText.innerText = '❌ Error baca file: ' + err.message;
-      document.getElementById('fileInfoBox').className = 'alert err';
       console.error(err);
+      fileInfoText.innerText = '❌ Error: ' + err.message;
+      document.getElementById('fileInfoBox').className = 'alert err';
     }
   };
   reader.readAsArrayBuffer(file);
 }
 
+function parseSimpleSheet(sheet, columns) {
+  if (!sheet) return [];
+  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+  const out = [];
+  for (let i = 1; i < rows.length; i++) {
+    const r = rows[i];
+    if (!r[0]) continue;
+    const obj = {};
+    columns.forEach((col, idx) => { obj[col] = String(r[idx] || '').trim(); });
+    out.push(obj);
+  }
+  return out;
+}
+
 function renderPreview() {
-  const list = dataExcelParsed;
-  const listOmzetOnly = list.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS');
-  const totalOmzet = listOmzetOnly.reduce((sum, x) => sum + x.subtotal, 0);
-  const totalUnit = listOmzetOnly.reduce((sum, x) => sum + x.qty, 0);
-  const uniqueFaktur = new Set(list.map(x => x.noFaktur)).size;
+  const m = dataParsed.master;
+  const j = dataParsed.penjualan;
+  const jOmzet = j.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS');
+  const totalOmzet = jOmzet.reduce((s, x) => s + x.subtotal, 0);
+  const uniqueFaktur = new Set(j.map(x => x.noFaktur)).size;
 
   document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-card">
-      <div class="label">Total Baris</div>
-      <div class="value">${list.length}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Total Faktur</div>
-      <div class="value">${uniqueFaktur}</div>
-    </div>
-    <div class="stat-card">
-      <div class="label">Total Unit</div>
-      <div class="value">${totalUnit}</div>
-    </div>
-    <div class="stat-card" style="grid-column: 1 / -1;">
+    <div class="stat-card"><div class="label">Promotor</div><div class="value">${m.length}</div></div>
+    <div class="stat-card"><div class="label">Transaksi</div><div class="value">${j.length}</div></div>
+    <div class="stat-card"><div class="label">Faktur</div><div class="value">${uniqueFaktur}</div></div>
+    <div class="stat-card" style="grid-column:1/-1;">
       <div class="label">Total Omzet (exclude GARANSI & ONGKOS)</div>
-      <div class="value" style="color: var(--success);">Rp ${totalOmzet.toLocaleString('id-ID')}</div>
+      <div class="value" style="color:var(--success);">Rp ${totalOmzet.toLocaleString('id-ID')}</div>
     </div>
   `;
-
-  // Preview 20 baris pertama
-  const preview = list.slice(0, 20);
-  document.getElementById('previewBody').innerHTML = preview.map(x => `
-    <tr>
-      <td>${x.tanggal}</td>
-      <td>${x.namaSales}</td>
-      <td>${x.namaBarang}</td>
-      <td>${x.qty}</td>
-      <td>Rp ${x.subtotal.toLocaleString('id-ID')}</td>
-      <td>${x.kategori}</td>
-    </tr>
-  `).join('') + (list.length > 20 ? `<tr><td colspan="6" style="text-align:center; color: var(--muted); font-style:italic;">... dan ${list.length - 20} baris lainnya</td></tr>` : '');
-
   document.getElementById('previewSection').classList.remove('hidden');
 }
 
 function resetUpload() {
-  dataExcelParsed = [];
+  dataParsed = { master: [], penjualan: [], promo: [], rules: [], punishment: [], reward: [] };
   document.getElementById('fileExcel').value = '';
   document.getElementById('fileInfo').classList.add('hidden');
   document.getElementById('previewSection').classList.add('hidden');
@@ -522,108 +512,71 @@ function resetUpload() {
 /* KONFIRMASI UPLOAD */
 /* ============================================================ */
 async function confirmUpload() {
-  if (dataExcelParsed.length === 0) { alert("Tidak ada data untuk di-upload."); return; }
+  if (dataParsed.penjualan.length === 0) { alert("Tidak ada data."); return; }
   const btn = document.getElementById('btnConfirmUpload');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Uploading...';
 
   try {
-    // Ambil data lama dulu (untuk cek duplikat)
+    // 1. Cek duplikat penjualan
     const snap = await window.dbGet(window.dbRef(window.db, 'penjualan'));
     const dataLama = snap.exists() ? snap.val() : {};
-
-    // Bikin set key duplikat (noFaktur + barcode)
-    const setExisting = new Set();
-    Object.keys(dataLama).forEach(k => {
-      const item = dataLama[k];
-      if (item && item.noFaktur && item.barcode) {
-        setExisting.add(item.noFaktur + '|' + item.barcode);
-      }
+    const setExist = new Set();
+    Object.values(dataLama).forEach(item => {
+      if (item && item.noFaktur && item.barcode) setExist.add(item.noFaktur + '|' + item.barcode);
     });
 
-    // Siapkan updates batch
+    // 2. Siapkan updates
     const updates = {};
-    let countBaru = 0;
-    let countSkip = 0;
-
-    dataExcelParsed.forEach((item, idx) => {
-      const keyUnik = item.noFaktur + '|' + item.barcode;
-      if (setExisting.has(keyUnik)) {
-        countSkip++;
-        return;
-      }
-      // Generate key unik
+    let countBaru = 0, countSkip = 0;
+    dataParsed.penjualan.forEach((item, idx) => {
+      const key = item.noFaktur + '|' + item.barcode;
+      if (setExist.has(key)) { countSkip++; return; }
       const dbKey = 't_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).substr(2, 6);
       updates['penjualan/' + dbKey] = item;
       countBaru++;
     });
 
-    if (countBaru === 0) {
-      alert("Semua data sudah ada di server (duplikat). Tidak ada yang ditambahkan.");
-      btn.disabled = false;
-      btn.innerHTML = '✅ Konfirmasi Upload ke Server';
-      return;
-    }
-
-    // Upload
-    await window.dbUpdate(window.dbRef(window.db), updates);
-
-    // Update metadata lastUpload
-    await window.dbSet(window.dbRef(window.db, 'lastUpload'), {
-      tanggal: Date.now(),
-      total: countBaru,
-      admin: 'Admin UFO',
-      skipDuplikat: countSkip
+    // 3. Promotor
+    dataParsed.master.forEach(p => {
+      const cleanKey = sanitizeKey(p.namaAbsen);
+      updates['users/promotor/' + cleanKey] = {
+        namaAbsen: p.namaAbsen,
+        namaSales: p.namaSales,
+        pin: p.pin,
+        ikutUC: p.ikutUC,
+        targetUC: p.targetUC,
+        merk: p.merk,
+        aktif: true,
+        updatedAt: Date.now()
+      };
     });
 
-    // Auto-bikin PIN default untuk promotor baru
-    await autoCreatePINFromData(dataExcelParsed);
+    // 4. Info tambahan
+    if (dataParsed.promo.length > 0) updates['info/promo'] = dataParsed.promo;
+    if (dataParsed.rules.length > 0) updates['info/rules'] = dataParsed.rules;
+    if (dataParsed.punishment.length > 0) updates['info/punishment'] = dataParsed.punishment;
+    if (dataParsed.reward.length > 0) updates['info/reward'] = dataParsed.reward;
 
-    alert(`✅ Upload berhasil!\n\n• ${countBaru} baris baru ditambahkan\n• ${countSkip} baris duplikat dilewati`);
+    // 5. Metadata
+    updates['config/lastUpload'] = {
+      tanggal: Date.now(),
+      totalTransaksi: countBaru,
+      totalPromotor: dataParsed.master.length,
+      skipDuplikat: countSkip
+    };
 
+    await window.dbUpdate(window.dbRef(window.db), updates);
+
+    alert(`✅ Upload berhasil!\n\n• ${countBaru} transaksi baru\n• ${countSkip} duplikat dilewati\n• ${dataParsed.master.length} promotor diupdate`);
     resetUpload();
-    loadPinList();
+    loadPromotorList();
   } catch (err) {
     console.error(err);
     alert("❌ Gagal upload: " + err.message);
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '✅ Konfirmasi Upload ke Server';
-  }
-}
-
-/* ============================================================ */
-/* AUTO-CREATE PIN PROMOTOR BARU */
-/* ============================================================ */
-async function autoCreatePINFromData(dataList) {
-  const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor'));
-  const usersExist = snap.exists() ? snap.val() : {};
-  const updates = {};
-  let countBaru = 0;
-
-  const namaSalesSet = new Set();
-  dataList.forEach(x => {
-    if (x.namaSales && x.namaSales.trim()) {
-      namaSalesSet.add(x.namaSales.trim());
-    }
-  });
-
-  namaSalesSet.forEach(nama => {
-    const keyClean = sanitizeKey(nama);
-    if (!usersExist[keyClean]) {
-      updates['users/promotor/' + keyClean] = {
-        nama: nama,
-        pin: '123456',
-        aktif: true,
-        createdAt: Date.now()
-      };
-      countBaru++;
-    }
-  });
-
-  if (countBaru > 0) {
-    await window.dbUpdate(window.dbRef(window.db), updates);
-    console.log(`✅ Auto-create ${countBaru} PIN promotor baru`);
+    btn.innerHTML = '✅ Konfirmasi Upload';
   }
 }
 
@@ -632,58 +585,16 @@ function sanitizeKey(nama) {
 }
 
 /* ============================================================ */
-/* PIN LIST */
-/* ============================================================ */
-async function loadPinList() {
-  const el = document.getElementById('pinList');
-  try {
-    const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor'));
-    if (!snap.exists()) {
-      el.innerHTML = '<div style="text-align:center; padding:20px; color: var(--muted); font-size:13px;">Belum ada promotor. Upload Excel dulu untuk deteksi otomatis.</div>';
-      return;
-    }
-    const data = snap.val();
-    const list = Object.keys(data).map(k => ({ key: k, ...data[k] })).sort((a,b) => a.nama.localeCompare(b.nama));
-
-    el.innerHTML = list.map(p => `
-      <div class="pin-row">
-        <div class="nama">${p.nama}</div>
-        <input type="text" class="pin-input" maxlength="6" value="${p.pin || '123456'}"
-               inputmode="numeric" pattern="[0-9]*"
-               oninput="this.value = this.value.replace(/\\D/g, '').slice(0, 6)"
-               onchange="updatePIN('${p.key}', this.value)">
-      </div>
-    `).join('');
-  } catch (err) {
-    el.innerHTML = '<div style="text-align:center; padding:20px; color: var(--danger);">Gagal load PIN: ' + err.message + '</div>';
-  }
-}
-
-async function updatePIN(key, newPin) {
-  if (!/^\d{6}$/.test(newPin)) {
-    alert("PIN harus 6 digit angka!");
-    loadPinList();
-    return;
-  }
-  try {
-    await window.dbUpdate(window.dbRef(window.db, 'users/promotor/' + key), { pin: newPin });
-  } catch (err) {
-    alert("Gagal update PIN: " + err.message);
-  }
-}
-
-/* ============================================================ */
-/* HAPUS SEMUA DATA */
+/* HAPUS DATA */
 /* ============================================================ */
 async function hapusSemuaData() {
-  const konfirmasi = prompt('⚠️ HATI-HATI!\n\nIni akan menghapus SEMUA data penjualan di server.\n\nKetik "HAPUS" untuk konfirmasi:');
+  const konfirmasi = prompt('⚠️ HATI-HATI!\n\nIni akan menghapus SEMUA data (penjualan + promotor).\n\nKetik "HAPUS" untuk konfirmasi:');
   if (konfirmasi !== 'HAPUS') return;
-
   try {
     await window.dbRemove(window.dbRef(window.db, 'penjualan'));
-    await window.dbRemove(window.dbRef(window.db, 'lastUpload'));
-    alert("✅ Semua data penjualan berhasil dihapus.");
-    loadStatusUpload();
+    await window.dbRemove(window.dbRef(window.db, 'users/promotor'));
+    await window.dbRemove(window.dbRef(window.db, 'config/lastUpload'));
+    alert("✅ Semua data berhasil dihapus.");
   } catch (err) {
     alert("Gagal hapus: " + err.message);
   }
