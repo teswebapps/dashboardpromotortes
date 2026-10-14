@@ -783,31 +783,53 @@ function hitungUnit(list) {
 
 /* ===== RENDER SUBMENU ===== */
 
-// PENJUALAN — format kartu hijau per tanggal
+// PENJUALAN — format PERSIS file lama (tanpa stat-box)
 function renderPenjualan() {
   const list = getDataSaya();
   const listBulanIni = list.filter(x => isBulanIni(x.tanggal));
-  const listHariIni = list.filter(x => isHariIni(x.tanggal));
-  const omzetHari = hitungOmzet(listHariIni);
-  const omzetBulan = hitungOmzet(listBulanIni);
-  const unitBulan = hitungUnit(listBulanIni);
+  const totalOmzet = list.reduce((s, x) => {
+    if (x.kategori === 'GARANSI' || x.kategori === 'ONGKOS') return s;
+    return s + (Number(x.subtotal) || 0);
+  }, 0);
+  const totalUnit = list.reduce((s, x) => {
+    if (x.kategori === 'GARANSI' || x.kategori === 'ONGKOS') return s;
+    return s + (Number(x.qty) || 0);
+  }, 0);
+
+  // Ambil periode dari data
+  let tglPertama = '-', tglTerakhir = '-';
+  if (list.length > 0) {
+    const tglSort = list.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
+      const da = parseTanggal(a), db = parseTanggal(b);
+      return (da || 0) - (db || 0);
+    });
+    tglPertama = tglSort[0] || '-';
+    tglTerakhir = tglSort[tglSort.length - 1] || '-';
+  }
 
   let html = `
-    <div class="stat-grid">
-      <div class="stat-box full">
-        <div class="label">Omzet Hari Ini</div>
-        <div class="value green">Rp ${omzetHari.toLocaleString('id-ID')}</div>
+    <div style="background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05)); border: 1px solid rgba(212,175,55,0.4); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(212,175,55,0.2);">
+        <svg viewBox="0 0 24 24" style="width:22px;height:22px;stroke:#d4af37;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span style="font-size: 16px; font-weight: 800; color: #d4af37; letter-spacing: 1px; text-transform: uppercase;">${currentUser.namaAbsen || '-'}</span>
       </div>
-      <div class="stat-box">
-        <div class="label">Omzet Bulan Ini</div>
-        <div class="value green">Rp ${omzetBulan.toLocaleString('id-ID')}</div>
-      </div>
-      <div class="stat-box">
-        <div class="label">Unit Bulan Ini</div>
-        <div class="value">${unitBulan}</div>
+      <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: #94a3b8;">Periode</span>
+          <b style="color: #ffffff;">${tglPertama} - ${tglTerakhir}</b>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: #94a3b8;">Total Unit</span>
+          <b style="color: #38bdf8;">${totalUnit}</b>
+        </div>
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="color: #94a3b8;">Total Omzet Toko</span>
+          <b style="color: #34d399;">Rp ${totalOmzet.toLocaleString('id-ID')}</b>
+        </div>
       </div>
     </div>
   `;
+
   if (list.length === 0) {
     return html + `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada transaksi</div></div>`;
   }
@@ -817,6 +839,7 @@ function renderPenjualan() {
     if (!grupTanggal[x.tanggal]) grupTanggal[x.tanggal] = [];
     grupTanggal[x.tanggal].push(x);
   });
+
   const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
     const da = parseTanggal(a), db = parseTanggal(b);
     return (db || 0) - (da || 0);
@@ -826,7 +849,10 @@ function renderPenjualan() {
 
   keysSorted.forEach(tgl => {
     const items = grupTanggal[tgl];
-    const totalHari = hitungOmzet(items);
+    const totalHari = items.reduce((s, x) => {
+      if (x.kategori === 'GARANSI' || x.kategori === 'ONGKOS') return s;
+      return s + (Number(x.subtotal) || 0);
+    }, 0);
 
     let isiProduk = '';
     items.forEach((it, idx) => {
@@ -859,7 +885,6 @@ function renderPenjualan() {
   html += `</div>`;
   return html;
 }
-
 // UC
 function renderUC() {
   const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori === 'GARANSI');
