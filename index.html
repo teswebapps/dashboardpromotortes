@@ -126,7 +126,7 @@ body.login-active { margin: 0; padding: 0; background: var(--cyber-bg); overflow
 /* ===== DASHBOARD ============================================ */
 /* ============================================================ */
 body.dashboard-active {
-  margin: 0; padding: 12px;
+  margin: 0; padding: 8px;
   background: #050814;
   color: #ffffff;
   min-height: 100vh;
@@ -177,12 +177,12 @@ body.dashboard-active {
 .back-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
 /* Menu grid */
-.menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; margin-bottom: 20px; }
+.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
 .menu-card {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(56, 189, 248, 0.15);
-  border-radius: 16px;
-  padding: 20px 16px;
+  border-radius: 14px;
+  padding: 16px 10px;
   text-align: center;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -301,8 +301,8 @@ body.dashboard-active {
   .menu-card { padding: 16px 12px; }
   .menu-icon { width: 46px; height: 46px; margin-bottom: 8px; }
   .menu-icon svg { width: 22px; height: 22px; }
-  .menu-title { font-size: 13px; }
-  .menu-desc { font-size: 10px; }
+  .menu-title { font-size: 16px; font-weight: 800; color: #ffffff; margin-bottom: 4px; line-height: 1.2; }
+  .menu-desc { font-size: 12px; color: #94a3b8; font-weight: 500; line-height: 1.3; }
 }
 </style>
 </head>
