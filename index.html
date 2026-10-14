@@ -177,7 +177,14 @@ body.dashboard-active {
 .back-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
 /* Menu grid */
-.menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px; }
+.menu-grid { 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 12px; 
+  margin-bottom: 16px;
+  min-height: calc(100vh - 140px);
+  grid-auto-rows: 1fr;
+}
 .menu-card {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(56, 189, 248, 0.15);
