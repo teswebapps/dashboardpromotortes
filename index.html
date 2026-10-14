@@ -3,12 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Promotor — UFO Kebonsari</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<title>UFO Kebonsari - Dashboard Promotor</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, get, update, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getDatabase, ref, get, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -26,9 +31,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 
 signInAnonymously(auth).then(() => {
-  window.db = db; window.dbRef = ref; window.dbSet = set; window.dbGet = get;
-  window.dbUpdate = update; window.dbRemove = remove; window.dbOnValue = onValue;
-  window.dbPush = push;
+  window.db = db; window.dbRef = ref; window.dbGet = get; window.dbOnValue = onValue;
   window.dispatchEvent(new Event('firebase-ready'));
 }).catch(err => alert("Gagal koneksi Firebase: " + err.message));
 
@@ -38,777 +41,339 @@ onAuthStateChanged(auth, user => {
 </script>
 
 <style>
-:root {
-  --cyber-bg: #050814;
-  --cyber-card: #0a192f;
-  --cyber-cyan: #38bdf8;
-  --text: #ffffff;
-  --muted: #94a3b8;
-  --border: #1e3a5f;
-  --gold: #d4af37;
-  --success: #10b981;
-  --danger: #ef4444;
-  --warning: #f59e0b;
-}
-* { box-sizing: border-box; font-family: 'Inter', sans-serif !important; }
-
-/* ============================================================ */
-/* ===== LOGIN SCREEN ========================================= */
-/* ============================================================ */
-body.login-active {
-  margin: 0; padding: 0;
-  background: var(--cyber-bg);
-  overflow: hidden;
-  min-height: 100vh;
-}
-#login-screen {
-  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-  background: #050814;
-  overflow-y: auto; overflow-x: hidden;
-  z-index: 99999;
-  display: flex; align-items: center; justify-content: center;
-  padding: 16px;
-}
-.fut-grid {
-  position: fixed; inset: 0;
-  background-image: linear-gradient(rgba(14,165,233,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(14,165,233,0.08) 1px, transparent 1px);
-  background-size: 40px 40px;
-  animation: futGridMove 20s linear infinite;
-  pointer-events: none; z-index: 1;
-}
-@keyframes futGridMove { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
-.fut-orb {
-  position: fixed; border-radius: 50%;
-  filter: blur(80px); opacity: 0.6;
-  animation: futOrbFloat 12s ease-in-out infinite;
-  pointer-events: none; z-index: 1;
-}
-.fut-orb-1 { width: 400px; height: 400px; background: #0ea5e9; top: -100px; left: -100px; }
-.fut-orb-2 { width: 300px; height: 300px; background: #a855f7; bottom: -80px; right: -80px; animation-delay: -4s; }
-.fut-orb-3 { width: 350px; height: 350px; background: #06b6d4; top: 40%; left: 45%; animation-delay: -8s; opacity: 0.4; }
-@keyframes futOrbFloat {
-  0%, 100% { transform: translate(0,0) scale(1); }
-  33% { transform: translate(40px,-30px) scale(1.1); }
-  66% { transform: translate(-30px,40px) scale(0.9); }
-}
-.fut-particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
-.fut-particle { position: absolute; width: 2px; height: 2px; border-radius: 50%; animation: futParticleFloat linear infinite; }
-@keyframes futParticleFloat {
-  0% { transform: translateY(100vh) scale(0); opacity: 0; }
-  10% { opacity: 1; }
-  90% { opacity: 1; }
-  100% { transform: translateY(-100vh) scale(1); opacity: 0; }
-}
-.fut-container {
-  position: relative; z-index: 10;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 40px;
-  align-items: center; max-width: 1100px; width: 100%;
-  animation: futFadeIn 0.8s ease-out; margin: auto;
-}
-@keyframes futFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.fut-left { color: #ffffff; text-align: center; padding: 20px; }
-.fut-tagline {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 6px 16px;
-  background: rgba(14,165,233,0.1);
-  border: 1px solid rgba(14,165,233,0.3);
-  border-radius: 100px;
-  font-size: 11px; font-weight: 700; letter-spacing: 2px;
-  color: #22d3ee; margin-bottom: 20px; text-transform: uppercase;
-}
-.fut-dot { width: 6px; height: 6px; background: #22d3ee; border-radius: 50%; box-shadow: 0 0 10px #22d3ee; animation: futDotPulse 1.5s infinite; }
-@keyframes futDotPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
-.fut-headline { font-size: 42px; font-weight: 900; margin: 0 0 8px 0; color: #ffffff; text-shadow: 0 0 30px rgba(34,211,238,0.5); line-height: 1.1; }
-.fut-subheadline { font-size: 14px; color: #94a3b8; font-weight: 500; margin: 0 0 30px 0; letter-spacing: 1px; }
-.fut-characters { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
-.fut-characters .team-3d-img { max-width: 100%; max-height: 220px; height: auto; filter: drop-shadow(0 20px 30px rgba(0, 200, 255, 0.35)); animation: floatTeam 3.5s ease-in-out infinite; }
-@keyframes floatTeam { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-12px) scale(1.02); } }
-.fut-live-status { display: inline-flex; align-items: center; gap: 10px; padding: 10px 20px; background: rgba(5,8,20,0.6); border: 1px solid rgba(34,211,238,0.3); border-radius: 100px; font-size: 12px; color: #e2e8f0; font-weight: 600; }
-.fut-pulse-dot { width: 8px; height: 8px; background: #22d3ee; border-radius: 50%; animation: futDotPulse 1.5s infinite; }
-.fut-right { display: flex; justify-content: center; }
-.fut-card { width: 100%; max-width: 400px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(24px); border: 1px solid rgba(34,211,238,0.2); border-radius: 24px; padding: 40px 32px; box-shadow: 0 0 60px rgba(14,165,233,0.15); position: relative; overflow: hidden; }
-.fut-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #22d3ee, transparent); }
-.fut-logo {
-  width: 110px;
-  height: 110px;
-  margin: 0 auto 20px;
-  background: rgba(14,165,233,0.15);
-  border: 1px solid rgba(34,211,238,0.3);
-  border-radius: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 14px;
-  box-shadow: 0 0 40px rgba(34,211,238,0.4);
-}
-
-.fut-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-.fut-logo svg { width: 60px; height: 60px; stroke: #22d3ee; stroke-width: 1.8; fill: none; }
-.fut-field { margin-bottom: 18px; position: relative; }
-.fut-field label { display: block; font-size: 11px; font-weight: 700; color: #22d3ee; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
-.fut-select { width: 100%; padding: 14px 16px; background: rgba(2,6,23,0.6); border: 1px solid rgba(34,211,238,0.2); border-radius: 12px; color: #e2e8f0; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.fut-select span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fut-select svg { width: 16px; height: 16px; color: #22d3ee; flex-shrink: 0; transition: transform 0.3s ease; }
-#custom-select-trigger.open svg { transform: rotate(180deg); }
-.fut-menu { position: absolute; left: 0; right: 0; top: 100%; margin-top: 6px; background: rgba(15,23,42,0.98); backdrop-filter: blur(20px); border: 1px solid rgba(34,211,238,0.3); border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); max-height: 240px; overflow-y: auto; z-index: 999; padding: 6px; opacity: 0; visibility: hidden; transform: translateY(-8px); transition: all 0.2s ease; }
-.fut-menu.open { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; }
-.fut-menu .option { padding: 10px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #e2e8f0; cursor: pointer; }
-.fut-menu .option:hover { background: rgba(34,211,238,0.15); color: #22d3ee; }
-.fut-menu .option.selected { background: rgba(34,211,238,0.25); color: #22d3ee; }
-.fut-menu .option.empty { color: #64748b; font-style: italic; text-align: center; }
-.fut-input { width: 100%; padding: 14px 16px; background: rgba(2,6,23,0.6); border: 1px solid rgba(34,211,238,0.2); border-radius: 12px; color: #ffffff; font-size: 22px; font-weight: 800; text-align: center; letter-spacing: 10px; outline: none; }
-.fut-input::placeholder { color: rgba(148,163,184,0.4); }
-.fut-input:focus { border-color: #22d3ee; box-shadow: 0 0 25px rgba(34,211,238,0.4); }
-.fut-error { color: #f87171; font-size: 12px; font-weight: 700; text-align: center; min-height: 18px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.fut-error svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
-.fut-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%); color: #ffffff; border: none; border-radius: 12px; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 0 30px rgba(34,211,238,0.4); }
-.fut-btn:active { transform: scale(0.98); }
-.fut-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.fut-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
-.fut-footer { text-align: center; font-size: 12px; color: #64748b; margin: 20px 0 0 0; font-weight: 500; }
-.fut-footer span { color: #22d3ee; font-weight: 700; }
-.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+html { scroll-behavior: smooth; }
+* { box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important; -webkit-font-smoothing: antialiased; }
+body { margin: 0; padding: 24px 16px; min-height: 100vh; background: #030712; color: #f3f4f6; }
+.menu-card-item, .card, .btn-back-menu, .btn-export, button { transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important; }
+.menu-card-item:active, .card:active, button:active { transform: scale(0.97) !important; }
+#loginBox { max-width: 420px; margin: 60px auto; padding: 40px 30px; background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(16px); border-radius: 24px; box-shadow: 0 30px 60px -12px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05); color: #f3f4f6; border: 1px solid rgba(212, 175, 55, 0.25); animation: fadeInSmooth 0.4s ease; }
+.login-logo-container { text-align: center; margin-bottom: 20px; }
+.login-logo-container img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(212, 175, 55, 0.5); box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
+.login-title-area { text-align: center; margin-bottom: 30px; }
+.login-title-area h2 { margin: 0; font-size: 22px; font-weight: 800; color: #ffffff; letter-spacing: -0.5px; }
+.login-title-area p { margin: 6px 0 0; font-size: 13.5px; color: #9ca3af; font-weight: 500; }
+.input-group { margin-bottom: 20px; }
+.input-group label { display: block; font-size: 12px; font-weight: 700; color: #d1d5db; margin-bottom: 8px; letter-spacing: 0.5px; }
+.input-group input { width: 100%; padding: 15px 18px; border-radius: 12px; border: 1px solid #374151; background: #1f2937; color: #ffffff; font-size: 14.5px; outline: none; transition: all 0.25s ease; }
+.input-group input:focus { border-color: #d4af37; background: #111827; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2); }
+#btnLogin { width: 100%; padding: 16px; border: none; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 15px; color: #111827; background: linear-gradient(135deg, #f3e8ff 0%, #d4af37 100%); box-shadow: 0 10px 20px -5px rgba(212, 175, 55, 0.3); transition: all 0.25s ease; }
+#btnLogin:hover { transform: translateY(-2px); background: linear-gradient(135deg, #ffffff 0%, #e6c547 100%); }
+.header { text-align: center; margin-bottom: 25px; }
+.header h1 { font-size: 32px; font-weight: 800; margin: 0; letter-spacing: -1px; background: linear-gradient(90deg, #ffffff, #d4af37); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.header p { color: #9ca3af; font-size: 13px; margin-top: 4px; }
+.search-box { max-width: 1100px; margin: 0 auto 15px; }
+#nama { width: 100%; height: 48px; padding: 0 16px; border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.3); background: #111827; color: #ffffff; font-size: 14px; font-weight: 600; outline: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23d4af37' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 16px center; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+#nama option { background: #111827; color: #ffffff; }
+#menuGridContainer { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; animation: fadeInSmooth 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.menu-card-item { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 20px; padding: 28px 22px; text-align: center; cursor: pointer; box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5); position: relative; overflow: hidden; }
+.menu-card-item:hover { transform: translateY(-5px); border-color: rgba(212, 175, 55, 0.6); box-shadow: 0 20px 40px -10px rgba(212, 175, 55, 0.2); background: rgba(21, 29, 46, 0.85); }
+.menu-card-item .icon { font-size: 42px; margin-bottom: 12px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); }
+.menu-card-item h3 { margin: 0 0 6px; font-size: 18.5px; color: #ffffff; font-weight: 700; letter-spacing: -0.3px; }
+.menu-card-item p { margin: 0; font-size: 13.5px; color: #9ca3af; line-height: 1.4; }
+.admin-badge { position: absolute; top: 12px; right: 12px; background: rgba(212, 175, 55, 0.15); color: #d4af37; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; border: 1px solid rgba(212, 175, 55, 0.3); display: none; }
+#detailViewSection { display: none; max-width: 1100px; margin: 0 auto; animation: fadeInSmooth 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+.nav-back-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 10px; }
+.btn-back-menu { padding: 9px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; font-size: 12.5px; color: #111827; background: #d4af37; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); }
+.btn-back-menu:hover { opacity: 0.9; }
+#summary { margin-bottom: 15px; }
+.summary-card { background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 16px; color: #ffffff; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); }
+.summary-card h2 { margin: 0 0 8px 0; font-size: 15.5px; font-weight: 700; color: #d4af37; line-height: 1.4; display: flex; align-items: center; gap: 6px; }
+.summary-card p { margin: 4px 0; color: #d1d5db; font-size: 13px; line-height: 1.4; }
+.grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+.card { background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
+.card.success { border-left: 4px solid #10b981; }
+.card.warning { border-left: 4px solid #ef4444; }
+.card.late { border: 2px solid #d4af37; background: rgba(21, 25, 34, 0.9); }
+.mobile-list-container { display: flex; flex-direction: column; gap: 12px; width: 100%; }
+.mobile-list-card { background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 14px; padding: 16px; width: 100%; box-shadow: 0 6px 15px rgba(0,0,0,0.3); }
+.mobile-list-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 8px; padding-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+.mobile-list-title { font-size: 14.5px; font-weight: 700; color: #ffffff; display: flex; align-items: center; gap: 6px; word-break: break-word; }
+.mobile-list-badge { background: rgba(212, 175, 55, 0.15); color: #d4af37; border: 1px solid rgba(212, 175, 55, 0.3); padding: 3px 8px; border-radius: 6px; font-size: 10.5px; font-weight: 700; white-space: nowrap; flex-shrink: 0; }
+.mobile-list-content { font-size: 13.5px; line-height: 1.5; color: #d1d5db; word-wrap: break-word; }
+.tanggal { text-align: center; font-weight: 700; margin-bottom: 12px; color: #ffffff; font-size: 13.5px; }
+.row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); color: #9ca3af; font-size: 13px; }
+.row:last-child { border-bottom: none; }
+.ok { font-weight: 600; color: #ffffff; }
+.kosong { color: #f87171; font-weight: 700; }
+.status-ok { color: #34d399; font-weight: 700; }
+.status-warning { color: #f87171; font-weight: 700; }
+.export-container { margin-bottom: 15px; display: none; justify-content: flex-end; gap: 10px; }
+.btn-export { padding: 9px 14px; border: none; border-radius: 9px; font-weight: 700; font-size: 12px; cursor: pointer; color: white; display: flex; align-items: center; gap: 6px; }
+.btn-excel { background: #065f46; border: 1px solid #10b981; }
+.btn-pdf { background: #991b1b; border: 1px solid #ef4444; }
+.btn-logout-main { padding: 8px 16px; border: none; border-radius: 9px; cursor: pointer; color: #f87171; background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); font-weight: 600; font-size: 12.5px; }
+#popup, #logoutPopup, #sopModal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 99999; justify-content: center; align-items: center; padding: 15px; }
+.modern-popup-box { background: #111827; padding: 25px 20px; border-radius: 16px; min-width: 290px; text-align: center; border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6); }
+.sop-modal-content { position: relative; max-width: 95%; max-height: 85vh; background: #111827; padding: 20px 15px 15px; border-radius: 16px; border: 1px solid rgba(212, 175, 55, 0.4); box-shadow: 0 25px 50px rgba(0,0,0,0.7); text-align: center; }
+.sop-modal-content img { width: 100%; max-height: 70vh; object-fit: contain; border-radius: 10px; }
+.sop-close-btn { position: absolute; top: -10px; right: -10px; background: #ef4444; color: #fff; width: 32px; height: 32px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.3); border: 2px solid #fff; }
+.btn-popup-ok { border: none; padding: 10px 24px; border-radius: 9px; cursor: pointer; color: #111827; font-weight: 700; background: #d4af37; }
+#btnBatal, #btnLogoutConfirm { border: none; padding: 10px 18px; border-radius: 9px; cursor: pointer; color: white; font-weight: 600; margin: 4px; }
+#btnBatal { background: #374151; }
+#btnLogoutConfirm { background: #991b1b; }
+.spinner { width: 16px; height: 16px; display: inline-block; border: 2.5px solid rgba(255,255,255,.3); border-top: 2.5px solid #fff; border-radius: 50%; animation: spin .8s linear infinite; vertical-align: middle; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-/* Login Toast */
-.login-toast-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); display: flex; justify-content: center; align-items: center; z-index: 999999; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 16px; }
-.login-toast-overlay.active { opacity: 1; visibility: visible; }
-.login-toast-card { background: var(--cyber-card); padding: 32px 40px; border-radius: 24px; text-align: center; border: 2px solid var(--cyber-cyan); box-shadow: 0 0 40px rgba(56, 189, 248, 0.5), 0 25px 60px rgba(0, 0, 0, 0.6); transform: scale(0.8); transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); min-width: 240px; }
-.login-toast-overlay.active .login-toast-card { transform: scale(1); }
-.login-toast-icon { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(135deg, #10b981, #059669); display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
-.login-toast-icon svg { width: 40px; height: 40px; stroke: #ffffff; stroke-width: 3; fill: none; }
-.login-toast-title { font-size: 18px; font-weight: 800; color: #ffffff; margin-bottom: 4px; }
-.login-toast-subtitle { font-size: 13px; font-weight: 600; color: #94a3b8; }
-.login-toast-name { color: var(--cyber-cyan); font-weight: 800; text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
-
-/* ============================================================ */
-/* ===== DASHBOARD ============================================ */
-/* ============================================================ */
-body.dashboard-active {
-  margin: 0; padding: 16px;
-  background: #050814;
-  color: #ffffff;
-  min-height: 100vh;
-  display: flex; justify-content: center;
-  overflow-x: hidden;
-}
-.dashboard-container {
-  width: 100%; max-width: 900px;
-  height: fit-content;
-}
-.top-bar {
-  display: flex; justify-content: space-between; align-items: center;
-  background: rgba(10, 25, 47, 0.7);
-  border: 1px solid var(--border);
-  border-radius: 100px;
-  padding: 10px 14px 10px 20px;
-  margin-bottom: 20px;
-  backdrop-filter: blur(10px);
-}
-.user-info {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 13px; font-weight: 700; color: #ffffff;
-}
-.user-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--danger);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
-  animation: pulseRed 2s infinite;
-}
-.user-dot.online { background: var(--success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.8); }
-@keyframes pulseRed {
-  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-  70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-}
-.logout-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 16px;
-  background: rgba(239, 68, 68, 0.1);
-  color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
-  border-radius: 100px;
-  font-size: 12px; font-weight: 700; cursor: pointer;
-  transition: all 0.2s;
-}
-.logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
-.logout-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
-
-/* Menu Grid 3 kolom */
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-}
-@media (max-width: 768px) {
-  .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-}
-@media (max-width: 480px) {
-  body.dashboard-active { padding: 12px; }
-  .menu-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-}
-.menu-card {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  border-radius: 16px;
-  padding: 24px 16px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.25s ease;
-  position: relative;
-  overflow: hidden;
-}
-.menu-card:hover {
-  border-color: rgba(56, 189, 248, 0.5);
-  background: rgba(15, 23, 42, 0.9);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(56, 189, 248, 0.15);
-}
-.menu-icon {
-  width: 56px; height: 56px;
-  margin: 0 auto 12px;
-  display: flex; align-items: center; justify-content: center;
-  background: rgba(56, 189, 248, 0.08);
-  border-radius: 14px;
-}
-.menu-icon svg { width: 28px; height: 28px; stroke: #38bdf8; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.menu-title {
-  font-size: 15px; font-weight: 800;
-  color: #ffffff; margin-bottom: 6px;
-}
-.menu-desc {
-  font-size: 11.5px; color: #94a3b8;
-  font-weight: 500; line-height: 1.4;
-}
-/* Warna icon per kategori */
-.menu-icon.t-absensi svg { stroke: #f472b6; }
-.menu-icon.t-absensi { background: rgba(244, 114, 182, 0.08); }
-.menu-icon.t-penjualan svg { stroke: #fbbf24; }
-.menu-icon.t-penjualan { background: rgba(251, 191, 36, 0.08); }
-.menu-icon.t-uc svg { stroke: #fbbf24; }
-.menu-icon.t-uc { background: rgba(251, 191, 36, 0.08); }
-.menu-icon.t-brand svg { stroke: #d4af37; }
-.menu-icon.t-brand { background: rgba(212, 175, 55, 0.08); }
-.menu-icon.t-promo svg { stroke: #d4af37; }
-.menu-icon.t-promo { background: rgba(212, 175, 55, 0.08); }
-.menu-icon.t-sop svg { stroke: #34d399; }
-.menu-icon.t-sop { background: rgba(52, 211, 153, 0.08); }
-.menu-icon.t-punish svg { stroke: #f87171; }
-.menu-icon.t-punish { background: rgba(248, 113, 113, 0.08); }
-.menu-icon.t-pelanggaran svg { stroke: #f87171; }
-.menu-icon.t-pelanggaran { background: rgba(248, 113, 113, 0.08); }
-.menu-icon.t-reward svg { stroke: #fbbf24; }
-.menu-icon.t-reward { background: rgba(251, 191, 36, 0.08); }
-.menu-icon.t-rewardsaya svg { stroke: #a78bfa; }
-.menu-icon.t-rewardsaya { background: rgba(167, 139, 250, 0.08); }
-
-/* ============================================================ */
-/* ===== DETAIL VIEW ========================================== */
-/* ============================================================ */
-.detail-view {
-  background: rgba(15, 23, 42, 0.6);
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  border-radius: 20px;
-  padding: 20px;
-  animation: fadeIn 0.3s ease;
-}
-@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-.back-btn {
-  display: inline-flex; align-items: center; gap: 8px;
-  padding: 8px 16px;
-  background: rgba(56, 189, 248, 0.1);
-  color: #38bdf8;
-  border: 1px solid rgba(56, 189, 248, 0.3);
-  border-radius: 100px;
-  font-size: 12px; font-weight: 700;
-  cursor: pointer; margin-bottom: 16px;
-}
-.back-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
-.detail-title {
-  font-size: 20px; font-weight: 800;
-  color: #ffffff; margin: 0 0 4px 0;
-}
-.detail-subtitle {
-  font-size: 12px; color: #94a3b8;
-  margin: 0 0 20px 0;
-}
-
-/* Stat Grid */
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-}
-.stat-box {
-  background: rgba(10, 25, 47, 0.7);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-  text-align: center;
-}
-.stat-box .label {
-  font-size: 10.5px; font-weight: 800;
-  color: #94a3b8; text-transform: uppercase;
-  letter-spacing: 0.5px; margin-bottom: 8px;
-}
-.stat-box .value {
-  font-size: 22px; font-weight: 900;
-  color: #38bdf8;
-}
-.stat-box .value.green { color: #34d399; }
-.stat-box .value.gold { color: #d4af37; }
-.stat-box .value.red { color: #f87171; }
-.stat-box.full { grid-column: 1 / -1; }
-
-/* List Item */
-.list-item-dark {
-  background: rgba(10, 25, 47, 0.6);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 14px 16px;
-  margin-bottom: 10px;
-  display: flex; justify-content: space-between;
-  align-items: flex-start; gap: 12px;
-}
-.list-item-dark .kiri { flex: 1; min-width: 0; }
-.list-item-dark .produk {
-  font-size: 13.5px; font-weight: 700;
-  color: #ffffff; margin-bottom: 4px; word-break: break-word;
-}
-.list-item-dark .info {
-  font-size: 11px; color: #94a3b8; font-weight: 500;
-}
-.list-item-dark .kanan { text-align: right; flex-shrink: 0; }
-.list-item-dark .harga { font-size: 14px; font-weight: 800; color: #34d399; }
-.list-item-dark .qty { font-size: 11px; color: #94a3b8; font-weight: 600; margin-top: 2px; }
-
-.empty-state {
-  text-align: center; padding: 40px 20px;
-  color: #94a3b8; font-size: 13px;
-  background: rgba(10, 25, 47, 0.4);
-  border: 1px dashed var(--border);
-  border-radius: 14px;
-}
-.empty-state svg { width: 48px; height: 48px; stroke: #475569; stroke-width: 1.5; fill: none; margin-bottom: 12px; }
-.empty-state .pesan { font-weight: 600; }
-
-/* Rank Item */
-.rank-item {
-  display: flex; align-items: center; gap: 14px;
-  background: rgba(10, 25, 47, 0.6);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 12px 16px;
-  margin-bottom: 8px;
-}
-.rank-item.me {
-  background: rgba(56, 189, 248, 0.08);
-  border-color: rgba(56, 189, 248, 0.4);
-}
-.rank-item .pos {
-  width: 36px; height: 36px; border-radius: 50%;
-  background: rgba(15, 23, 42, 0.8);
-  border: 2px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 900; font-size: 13px; flex-shrink: 0;
-  color: #94a3b8;
-}
-.rank-item .pos.gold { background: rgba(251, 191, 36, 0.15); color: #fbbf24; border-color: rgba(251, 191, 36, 0.5); }
-.rank-item .pos.silver { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; border-color: rgba(148, 163, 184, 0.5); }
-.rank-item .pos.bronze { background: rgba(217, 119, 6, 0.15); color: #fb923c; border-color: rgba(217, 119, 6, 0.5); }
-.rank-item .nama { flex: 1; font-size: 13.5px; font-weight: 700; color: #ffffff; }
-.rank-item .omzet { font-size: 13px; font-weight: 800; color: #34d399; }
-
-/* Info Block */
-.info-block {
-  background: rgba(10, 25, 47, 0.6);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 10px;
-}
-.info-block .judul {
-  font-size: 14px; font-weight: 800;
-  color: #38bdf8; margin-bottom: 6px;
-  display: flex; align-items: center; gap: 8px;
-}
-.info-block .judul svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.2; fill: none; }
-.info-block .deskripsi { font-size: 12.5px; color: #cbd5e1; line-height: 1.6; }
-.info-block .meta { font-size: 11px; color: #94a3b8; margin-top: 6px; font-weight: 600; }
-  /* ============================================================ */
-/* ===== RESPONSIVE — HP (Login + Dashboard) ================= */
-/* ============================================================ */
-
-/* Tablet & HP besar */
-@media (max-width: 900px) {
-  #login-screen {
-    padding: 12px;
-    align-items: flex-start;
-    padding-top: 20px;
-    overflow-y: auto;
-  }
-  .fut-container {
-    grid-template-columns: 1fr;
-    gap: 16px;
-    max-width: 480px;
-    margin: 0 auto;
-  }
-  .fut-left { padding: 8px; }
-  .fut-headline { font-size: 26px; margin-bottom: 4px; }
-  .fut-subheadline { font-size: 12px; margin-bottom: 14px; }
-  .fut-tagline { font-size: 10px; padding: 5px 12px; margin-bottom: 12px; }
-  .fut-characters .team-3d-img { max-height: 180px; }
-  .fut-live-status { font-size: 11px; padding: 7px 14px; }
-  .fut-card { padding: 24px 20px; border-radius: 20px; }
-  .fut-logo { width: 90px; height: 90px; margin-bottom: 14px; padding: 10px; }
-  .fut-field { margin-bottom: 14px; }
-  .fut-select { padding: 12px 14px; font-size: 13px; }
-  .fut-input { padding: 12px 14px; font-size: 20px; letter-spacing: 8px; }
-  .fut-btn { padding: 14px; font-size: 13px; letter-spacing: 1.5px; }
-  .fut-footer { font-size: 11px; margin-top: 14px; }
-  .fut-orb-1 { width: 250px; height: 250px; }
-  .fut-orb-2 { width: 200px; height: 200px; }
-  .fut-orb-3 { width: 220px; height: 220px; }
-}
-
-/* HP kecil */
-@media (max-width: 480px) {
-  body { padding: 12px; }
-  body.dashboard-active { padding: 12px; }
-  body.login-active { padding: 0; }
-  .menu-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-  .dashboard-container { padding: 0; }
-}
-
-/* HP sangat kecil */
-@media (max-width: 400px) {
-  #login-screen { padding: 8px; }
-  .fut-container { gap: 12px; }
-  .fut-headline { font-size: 22px; }
-  .fut-subheadline { font-size: 11px; margin-bottom: 10px; }
-  .fut-characters .team-3d-img { max-height: 140px; }
-  .fut-card { padding: 20px 16px; border-radius: 16px; }
-  .fut-logo { width: 80px; height: 80px; margin-bottom: 10px; padding: 8px; }
-  .fut-select { padding: 11px 12px; font-size: 12px; }
-  .fut-input { padding: 11px 12px; font-size: 18px; letter-spacing: 6px; }
-  .fut-btn { padding: 13px; font-size: 12px; }
-  .fut-field label { font-size: 10px; }
-  .menu-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .menu-card { padding: 16px 10px; }
-  .menu-icon { width: 40px; height: 40px; margin-bottom: 8px; }
-  .menu-icon svg { width: 20px; height: 20px; }
-  .menu-title { font-size: 12px; }
-  .menu-desc { font-size: 10px; }
-  .stat-grid { grid-template-columns: 1fr; }
-}
+@keyframes fadeInSmooth { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@media(max-width: 1024px) { .grid, #menuGridContainer { grid-template-columns: repeat(2, 1fr) !important; } }
+@media(max-width: 768px) { .grid, #menuGridContainer { grid-template-columns: 1fr !important; gap: 15px !important; } .menu-card-item { padding: 30px 22px !important; } .menu-card-item .icon { font-size: 50px !important; margin-bottom: 12px !important; } .menu-card-item h3 { font-size: 20px !important; margin-bottom: 8px !important; } .menu-card-item p { font-size: 14.5px !important; } }
 </style>
 </head>
-<body class="login-active">
+<body>
 
-<!-- ========== LOGIN SCREEN ========== -->
-<div id="login-screen">
-  <div class="fut-grid"></div>
-  <div class="fut-orb fut-orb-1"></div>
-  <div class="fut-orb fut-orb-2"></div>
-  <div class="fut-orb fut-orb-3"></div>
-  <div class="fut-particles" id="fut-particles"></div>
-
-  <div class="fut-container">
-    <div class="fut-left">
-      <div class="fut-tagline">
-        <span class="fut-dot"></span>
-        <span>REKAP PENJUALAN DIGITAL</span>
-      </div>
-      <h1 class="fut-headline">REKAP<br>PENJUALAN</h1>
-      <p class="fut-subheadline">UFO Malang Kebonsari</p>
-
-      <div class="fut-characters">
-        <img src="team-3d.png" alt="Tim Promotor" class="team-3d-img" onerror="this.style.display='none'">
-      </div>
-
-      <div class="fut-live-status">
-        <span class="fut-pulse-dot"></span>
-        <span id="live-status-text">Memuat data...</span>
-      </div>
-    </div>
-
-    <div class="fut-right">
-      <div class="fut-card">
-       <div class="fut-logo">
-  <img src="logo.png" alt="Logo" style="width:100%;height:100%;object-fit:contain;padding:8px;">
+<div id="loginBox">
+  <div class="login-logo-container">
+    <img src="logo.png" alt="UFO Logo" onerror="this.style.display='none'">
+  </div>
+  <div class="login-title-area">
+    <h2>UFO KEBONSARI MALANG</h2>
+    <p>Sistem Dashboard Promotor</p>
+  </div>
+  <div class="input-group">
+    <label>USERNAME</label>
+    <input id="loginNama" type="text" placeholder="Masukkan Username" oninput="this.value = this.value.toUpperCase()">
+  </div>
+  <div class="input-group">
+    <label>PASSWORD</label>
+    <input id="loginPin" type="password" placeholder="Masukkan Password" onkeypress="if(event.key === 'Enter') login()">
+  </div>
+  <button id="btnLogin" onclick="login()">MASUK</button>
 </div>
-        <div class="fut-field">
-          <label>Pilih Nama</label>
-          <input type="hidden" id="login-pilih-sales" value="">
-          <div id="custom-select-trigger" onclick="toggleCustomSelect()" class="fut-select">
-            <span id="custom-select-label">-- Memuat daftar promotor --</span>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-              <polyline points="6 9 12 15 18 9"></polyline>
-            </svg>
-          </div>
-          <div id="custom-select-menu" class="fut-menu"></div>
-        </div>
 
-        <div class="fut-field">
-          <label>Masukkan PIN</label>
-          <input type="password" id="login-pin-input" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="••••" autocomplete="off" class="fut-input">
-        </div>
+<div id="dashboard" style="display:none;">
+  <div class="header">
+    <h1>UFO KEBONSARI</h1>
+    <p id="roleSubtitle">Dashboard Promotor</p>
+  </div>
 
-        <div id="login-error" class="fut-error"></div>
+  <div id="globalLoading" style="display:none; text-align:center; margin:15px 0; color:#d4af37; font-weight:600; font-size:13.5px;">
+    <span class="spinner" style="margin-right:6px;"></span>
+    Sedang menyiapkan data, mohon tunggu...
+  </div>
 
-        <button type="button" id="btn-login-promotor" class="fut-btn">
-          <span>MASUK</span>
-          <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        </button>
+  <div style="max-width:1100px; margin:0 auto 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+    <div id="loginInfo" style="padding:6px 14px; border-radius:99px; background:#111827; border:1px solid rgba(212, 175, 55, 0.3); color:#e2e8f0; font-size:12.5px; font-weight:600;"></div>
+    <button class="btn-logout-main" onclick="logout()">🚪 Keluar</button>
+  </div>
 
-        <p class="fut-footer">Belum punya PIN? <span>Hubungi admin</span></p>
-      </div>
+  <div id="menuGridContainer">
+    <div class="menu-card-item" onclick="pindahMenu('Absensi')">
+      <span class="admin-badge" data-badge="menu">Pribadi</span>
+      <div class="icon">📅</div><h3>Absensi</h3><p>Rekap kehadiran dan status finger harian</p>
     </div>
+    <div class="menu-card-item" onclick="pindahMenu('Penjualan')">
+      <span class="admin-badge" data-badge="menu">Pribadi</span>
+      <div class="icon">💼</div><h3>Penjualan</h3><p>Omzet produk harian dan perolehan unit</p>
+    </div>
+    <div class="menu-card-item" onclick="pindahMenu('UC')">
+      <span class="admin-badge" data-badge="menu">Pribadi</span>
+      <div class="icon">⭐</div><h3>UC</h3><p>Pencapaian poin UC promotor</p>
+    </div>
+    <div class="menu-card-item" id="menuPerolehanCard" onclick="pindahMenu('Perolehan')">
+      <span class="admin-badge" data-badge="admin">Admin Only</span>
+      <div class="icon">📈</div><h3>Perolehan</h3><p>Peringkat & akumulasi omzet seluruh promotor</p>
+    </div>
+    <div class="menu-card-item" onclick="pindahMenu('PerolehanBrand')">
+      <span class="admin-badge" data-badge="menu">Brand Saya</span>
+      <div class="icon">🏷️</div><h3>Perolehan Brand</h3><p>Rekap penjualan khusus brand/ID Anda sendiri</p>
+    </div>
+    <div class="menu-card-item" id="menuDendaCard" onclick="pindahMenu('DendaUC')">
+      <span class="admin-badge" data-badge="admin">Admin / Info</span>
+      <div class="icon">⚡</div><h3>Denda & Late</h3><p>Rekapitulasi keterlambatan & denda target</p>
+    </div>
+    <div class="menu-card-item" onclick="pindahMenu('Promo')"><div class="icon">🏷️</div><h3>Promo Toko</h3><p>Daftar promo produk & program toko aktif</p></div>
+    <div class="menu-card-item" onclick="pindahMenu('Rules')"><div class="icon">✨</div><h3>SOP Promotor</h3><p>Aturan kerja & standar operasional</p></div>
+    <div class="menu-card-item" onclick="pindahMenu('Punishment')"><div class="icon">⚠️</div><h3>Punishment</h3><p>Daftar sanksi & ketentuan pelanggaran</p></div>
+    <div class="menu-card-item" onclick="pindahMenu('PelanggaranSaya')">
+      <span class="admin-badge" data-badge="admin">Monitor Admin</span>
+      <div class="icon">🚨</div><h3>Pelanggaran Saya</h3><p>Catatan pelanggaran & sanksi promotor</p>
+    </div>
+    <div class="menu-card-item" onclick="pindahMenu('Reward')"><div class="icon">🏆</div><h3>Daftar Rewards</h3><p>Daftar Rewards pencapaian toko</p></div>
+    <div class="menu-card-item" onclick="pindahMenu('RewardSaya')">
+      <span class="admin-badge" data-badge="admin">Monitor Admin</span>
+      <div class="icon">🎁</div><h3>Rewards Saya</h3><p>Riwayat Rewards yang Anda dapatkan</p>
+    </div>
+  </div>
+
+  <div id="detailViewSection" style="display:none;">
+    <div class="nav-back-bar">
+      <button class="btn-back-menu" onclick="kembaliKeMenuUtama()">⬅ Kembali ke Menu</button>
+      <div id="currentMenuTitle" style="color:#d4af37; font-weight:700; font-size:15px;"></div>
+    </div>
+    <div class="search-box" id="searchBoxWrapper" style="display:none;">
+      <select id="nama" onchange="gantiNamaAdmin()"></select>
+    </div>
+    <div id="summary"></div>
+    <div class="export-container" id="exportArea">
+      <button class="btn-export btn-excel" onclick="prosesEkspor('excel')">📥 Unduh Excel</button>
+      <button class="btn-export btn-pdf" onclick="prosesEkspor('pdf')">📄 Unduh PDF</button>
+    </div>
+    <div id="hasil" class="grid"></div>
   </div>
 </div>
 
-<!-- ========== DASHBOARD ========== -->
-<div id="dashboard" class="hidden">
-  <div class="dashboard-container">
-    <div class="top-bar">
-      <div class="user-info">
-        <span class="user-dot online"></span>
-        <span id="userNama">-</span>
-      </div>
-      <button class="logout-btn" onclick="logoutPromotor()">
-        <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-        Keluar
-      </button>
-    </div>
-
-    <div id="menuGrid" class="menu-grid"></div>
-    <div id="detailView" class="hidden"></div>
+<div id="popup">
+  <div class="modern-popup-box">
+    <h3>Informasi</h3>
+    <div id="popupText"></div>
+    <button class="btn-popup-ok" onclick="tutupPopup()">OK</button>
   </div>
 </div>
 
-<!-- Toast Login -->
-<div class="login-toast-overlay" id="login-toast">
-  <div class="login-toast-card">
-    <div class="login-toast-icon">
-      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>
+<div id="logoutPopup">
+  <div class="modern-popup-box">
+    <h3>🚪 Keluar Aplikasi</h3>
+    <p>Yakin ingin keluar dari akun ini?</p>
+    <div>
+      <button id="btnBatal" onclick="tutupLogout()">Batal</button>
+      <button id="btnLogoutConfirm" onclick="logoutConfirm()">Keluar</button>
     </div>
-    <div class="login-toast-title">Login Berhasil!</div>
-    <div class="login-toast-subtitle">Selamat datang, <span class="login-toast-name" id="login-toast-name">-</span></div>
   </div>
 </div>
 
 <script>
-let allPenjualan = [];
-let allPromotor = {};
-let allAbsensi = {};
-let allPelanggaran = {};
-let allRewardsSaya = {};
-let infoData = { promo: [], rules: [], punishment: [], reward: [] };
-let currentUser = null;
-let currentMenu = null;
+/* ============================================================ */
+/*  GLOBAL STATE                                                */
+/* ============================================================ */
+let currentUser = "";
+let currentUserData = null; // { namaAbsen, namaSales, pin, merk, targetUC, ikutUC, role }
+let currentRole = "";
+let activeTab = "Absensi";
 
-/* SVG ICONS */
-const ICONS = {
-  absensi: `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>`,
-  penjualan: `<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
-  uc: `<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
-  brand: `<svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
-  promo: `<svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
-  sop: `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
-  punish: `<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
-  pelanggaran: `<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>`,
-  reward: `<svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`,
-  rewardsaya: `<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>`,
-  back: `<svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
-  empty: `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`
+let cacheData = {
+  absensi: null, penjualan: null, uc: null, perolehan: null, perolehanBrand: null,
+  denda: null, promo: null, reward: null, rewardSaya: null, rules: null,
+  punishment: null, pelanggaranSaya: null
 };
 
+let allPenjualan = [];
+let allPromotor = {};
+let allInfo = {};
+let allPelanggaran = {};
+let allRewardsSaya = {};
+let allStatusAbsen = {};
+
+/* ============================================================ */
+/*  INIT                                                        */
+/* ============================================================ */
 window.addEventListener('firebase-ready', () => {
-  initParticles();
-  loadPromotorList();
-  loadInfoRealtime();
-  const saved = localStorage.getItem('ufo_promotor_session_v3');
-  if (saved) {
-    try {
-      const data = JSON.parse(saved);
-      currentUser = data;
-      tampilkanDashboard();
-    } catch(e) {}
+  const savedName = localStorage.getItem("loginNama");
+  const savedRole = localStorage.getItem("loginRole");
+  if (savedName && savedRole) {
+    currentUser = savedName;
+    currentRole = savedRole;
+    aturTampilanBerdasarkanRole();
+    document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : " (PROMOTOR)");
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    mulaiSetelahLogin();
   }
 });
 
-function initParticles() {
-  const container = document.getElementById('fut-particles');
-  if (!container) return;
-  for (let i = 0; i < 25; i++) {
-    const p = document.createElement('div');
-    p.className = 'fut-particle';
-    p.style.left = Math.random() * 100 + '%';
-    p.style.animationDuration = (8 + Math.random() * 12) + 's';
-    p.style.animationDelay = (Math.random() * 10) + 's';
-    const colors = ['#22d3ee', '#a855f7', '#3b82f6'];
-    const color = colors[Math.floor(Math.random() * colors.length)];
-    p.style.background = color;
-    p.style.boxShadow = `0 0 6px ${color}, 0 0 12px ${color}`;
-    container.appendChild(p);
-  }
-}
+/* ============================================================ */
+/*  LOGIN / LOGOUT                                              */
+/* ============================================================ */
+async function login() {
+  const btn = document.getElementById("btnLogin");
+  btn.disabled = true;
+  btn.innerHTML = `<span class="spinner" style="margin-right:8px;"></span>MEMPROSES...`;
 
-function loadPromotorList() {
-  window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
-    const labelEl = document.getElementById('custom-select-label');
-    const liveEl = document.getElementById('live-status-text');
+  const nama = document.getElementById("loginNama").value.trim().toUpperCase();
+  const pin = document.getElementById("loginPin").value.trim();
+
+  if (!nama || !pin) {
+    showPopup("Username dan Password harus diisi.");
+    btn.disabled = false; btn.innerHTML = "MASUK";
+    return;
+  }
+
+  try {
+    // Cari promotor berdasarkan namaAbsen atau namaSales
+    const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor'));
     if (!snap.exists()) {
-      renderCustomSelectOptions([]);
-      if (liveEl) liveEl.innerText = 'Belum ada promotor';
+      showPopup("Data promotor belum ada. Hubungi admin.");
+      btn.disabled = false; btn.innerHTML = "MASUK";
       return;
     }
     allPromotor = snap.val();
-    const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
-      .filter(p => p.aktif !== false)
-      .sort((a,b) => a.namaAbsen.localeCompare(b.namaAbsen));
-    renderCustomSelectOptions(list);
-    if (liveEl) liveEl.innerText = `${list.length} promotor terdaftar`;
-  });
+
+    let found = null;
+    Object.keys(allPromotor).forEach(k => {
+      const p = allPromotor[k];
+      const nA = (p.namaAbsen || "").toUpperCase();
+      const nS = (p.namaSales || "").toUpperCase();
+      if ((nA === nama || nS === nama) && String(p.pin) === pin) {
+        found = { key: k, ...p };
+      }
+    });
+
+    if (!found) {
+      showPopup("Username atau Password salah.");
+      btn.disabled = false; btn.innerHTML = "MASUK";
+      return;
+    }
+
+    currentUser = nama;
+    currentUserData = found;
+    currentRole = (found.role || "USER").toUpperCase();
+    localStorage.setItem("loginNama", nama);
+    localStorage.setItem("loginRole", currentRole);
+    localStorage.setItem("loginPin", pin);
+    localStorage.setItem("loginKey", found.key);
+
+    aturTampilanBerdasarkanRole();
+    document.getElementById("loginInfo").innerHTML = "⭕ <b>" + currentUser + "</b>" + (currentRole === "ADMIN" ? " (ADMIN)" : " (PROMOTOR)");
+    document.getElementById("loginBox").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    showPopup("Selamat Datang " + currentUser);
+
+    mulaiSetelahLogin();
+  } catch(err) {
+    showPopup("Gagal terhubung: " + err.message);
+    btn.disabled = false; btn.innerHTML = "MASUK";
+  }
 }
 
-function loadInfoRealtime() {
-  window.dbOnValue(window.dbRef(window.db, 'info'), snap => {
-    if (snap.exists()) {
-      const data = snap.val();
-      infoData.promo = data.promo || [];
-      infoData.rules = data.rules || [];
-      infoData.punishment = data.punishment || [];
-      infoData.reward = data.reward || [];
-    }
-    if (currentMenu === 'promo' || currentMenu === 'sop' || currentMenu === 'punishment' || currentMenu === 'reward') {
-      tampilkanDetail(currentMenu);
-    }
-  });
+function logout() { document.getElementById("logoutPopup").style.display = "flex"; }
+function tutupLogout() { document.getElementById("logoutPopup").style.display = "none"; }
+function logoutConfirm() {
+  document.getElementById("logoutPopup").style.display = "none";
+  currentUser = ""; currentRole = ""; currentUserData = null;
+  document.getElementById("dashboard").style.display = "none";
+  document.getElementById("loginBox").style.display = "block";
+  document.getElementById("loginNama").value = "";
+  document.getElementById("loginPin").value = "";
+  localStorage.removeItem("loginNama");
+  localStorage.removeItem("loginRole");
+  localStorage.removeItem("loginPin");
+  localStorage.removeItem("loginKey");
+  const btn = document.getElementById("btnLogin");
+  btn.disabled = false; btn.innerHTML = "MASUK";
 }
 
-function toggleCustomSelect() {
-  const menu = document.getElementById('custom-select-menu');
-  const trigger = document.getElementById('custom-select-trigger');
-  if (!menu || !trigger) return;
-  const isOpen = menu.classList.contains('open');
-  if (isOpen) {
-    menu.classList.remove('open');
-    trigger.classList.remove('open');
+function aturTampilanBerdasarkanRole() {
+  const subtitle = document.getElementById("roleSubtitle");
+  if (currentRole === "ADMIN") {
+    if(subtitle) subtitle.innerText = "Dashboard Monitoring All Promotor";
   } else {
-    menu.classList.add('open');
-    trigger.classList.add('open');
+    if(subtitle) subtitle.innerText = "Dashboard Promotor";
   }
 }
 
-function pilihOpsiCustom(key, label) {
-  document.getElementById('login-pilih-sales').value = key;
-  document.getElementById('custom-select-label').innerText = label;
-  const menu = document.getElementById('custom-select-menu');
-  menu.querySelectorAll('.option').forEach(opt => opt.classList.toggle('selected', opt.dataset.value === key));
-  menu.classList.remove('open');
-  document.getElementById('custom-select-trigger').classList.remove('open');
-}
-
-function renderCustomSelectOptions(list) {
-  const menu = document.getElementById('custom-select-menu');
-  const labelEl = document.getElementById('custom-select-label');
-  if (!menu || !labelEl) return;
-  if (!list || list.length === 0) {
-    menu.innerHTML = '<div class="option empty">-- Belum ada promotor --</div>';
-    labelEl.innerText = '-- Belum ada promotor --';
-    return;
+/* ============================================================ */
+/*  SETELAH LOGIN — Mulai Dengar Firebase                       */
+/* ============================================================ */
+function mulaiSetelahLogin() {
+  // Sembunyikan menu admin-only untuk USER
+  if (currentRole === "USER") {
+    document.getElementById("menuPerolehanCard").style.display = "none";
+    document.getElementById("menuDendaCard").style.display = "none";
+  } else {
+    document.getElementById("menuPerolehanCard").style.display = "block";
+    document.getElementById("menuDendaCard").style.display = "block";
+    loadNamaDropdown();
   }
-  labelEl.innerText = '-- Pilih Nama Anda --';
-  menu.innerHTML = list.map(p => {
-    const safeKey = String(p.key).replace(/"/g, '&quot;');
-    const safeLabel = String(p.namaAbsen).replace(/"/g, '&quot;').replace(/'/g, "&#39;");
-    return `<div class="option" data-value="${safeKey}" onclick="pilihOpsiCustom('${safeKey}', '${safeLabel}')">${p.namaAbsen}</div>`;
-  }).join('');
-}
 
-document.addEventListener('click', (e) => {
-  const wrap = document.getElementById('custom-select-trigger');
-  const menu = document.getElementById('custom-select-menu');
-  if (!wrap || !menu) return;
-  if (!wrap.contains(e.target) && !menu.contains(e.target)) {
-    menu.classList.remove('open');
-    wrap.classList.remove('open');
-  }
-});
-
-async function loginPromotor() {
-  const key = document.getElementById('login-pilih-sales').value;
-  const pin = document.getElementById('login-pin-input').value.trim();
-  const errEl = document.getElementById('login-error');
-  const btn = document.getElementById('btn-login-promotor');
-  errEl.innerHTML = '';
-  if (!key) { errEl.innerHTML = ICONS.punish + ' Pilih nama dulu!'; return; }
-  if (!pin) { errEl.innerHTML = ICONS.punish + ' Masukkan PIN!'; return; }
-  const asli = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Memeriksa...';
-  try {
-    const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
-    if (!snap.exists()) {
-      errEl.innerHTML = ICONS.punish + ' Promotor tidak ditemukan.';
-      btn.disabled = false;
-      btn.innerHTML = asli;
-      return;
-    }
-    const data = snap.val();
-    if (String(data.pin) !== pin) {
-      errEl.innerHTML = ICONS.punish + ' PIN salah!';
-      document.getElementById('login-pin-input').value = '';
-      document.getElementById('login-pin-input').focus();
-      btn.disabled = false;
-      btn.innerHTML = asli;
-      return;
-    }
-    currentUser = { key, ...data };
-    localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
-    document.getElementById('login-toast-name').innerText = data.namaAbsen;
-    const toast = document.getElementById('login-toast');
-    toast.classList.add('active');
-    setTimeout(() => {
-      tampilkanDashboard();
-      document.getElementById('login-pin-input').value = '';
-      errEl.innerHTML = '';
-      btn.disabled = false;
-      btn.innerHTML = asli;
-      setTimeout(() => { toast.classList.remove('active'); }, 600);
-    }, 1000);
-  } catch (err) {
-    errEl.innerHTML = ICONS.punish + ' ' + err.message;
-    btn.disabled = false;
-    btn.innerHTML = asli;
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('btn-login-promotor');
-  if (btn) btn.onclick = loginPromotor;
-  const pin = document.getElementById('login-pin-input');
-  if (pin) {
-    pin.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
-    pin.addEventListener('keypress', e => { if (e.key === 'Enter') loginPromotor(); });
-  }
-});
-
-function tampilkanDashboard() {
-  document.body.classList.remove('login-active');
-  document.body.classList.add('dashboard-active');
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('dashboard').classList.remove('hidden');
-  document.getElementById('userNama').innerText = currentUser.namaAbsen + ' (PROMOTOR)';
-
+  // Listener data global
   window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
     allPenjualan = [];
     if (snap.exists()) {
@@ -816,408 +381,782 @@ function tampilkanDashboard() {
         if (item && item.namaSales) allPenjualan.push(item);
       });
     }
-    if (!currentMenu) renderMenuGrid();
-    else tampilkanDetail(currentMenu);
+    if (activeTab && document.getElementById("detailViewSection").style.display === "block") {
+      jalankanRenderMenu(activeTab);
+    }
   });
 
-  window.dbOnValue(window.dbRef(window.db, 'absensi/' + currentUser.key), snap => {
-    allAbsensi = snap.exists() ? snap.val() : {};
-    if (currentMenu === 'absensi') tampilkanDetail('absensi');
+  window.dbOnValue(window.dbRef(window.db, 'info'), snap => {
+    allInfo = snap.exists() ? snap.val() : {};
+    if (activeTab && document.getElementById("detailViewSection").style.display === "block") {
+      jalankanRenderMenu(activeTab);
+    }
   });
 
-  window.dbOnValue(window.dbRef(window.db, 'pelanggaran/' + currentUser.key), snap => {
+  // Data pribadi (promotor)
+  const key = currentUserData ? currentUserData.key : null;
+  if (key) {
+    window.dbOnValue(window.dbRef(window.db, 'absensi/' + key), snap => {
+      cacheData.absensi = snap.exists() ? snap.val() : {};
+      if (activeTab === "Absensi") jalankanRenderMenu("Absensi");
+    });
+    window.dbOnValue(window.dbRef(window.db, 'pelanggaran/' + key), snap => {
+      allPelanggaran = snap.exists() ? snap.val() : {};
+      if (activeTab === "PelanggaranSaya") jalankanRenderMenu("PelanggaranSaya");
+    });
+    window.dbOnValue(window.dbRef(window.db, 'rewardsSaya/' + key), snap => {
+      allRewardsSaya = snap.exists() ? snap.val() : {};
+      if (activeTab === "RewardSaya") jalankanRenderMenu("RewardSaya");
+    });
+  }
+}
+
+/* ============================================================ */
+/*  DROPDOWN NAMA (Admin)                                       */
+/* ============================================================ */
+function loadNamaDropdown() {
+  let html = `<option value="" disabled selected hidden>Pilih Nama Promotor</option>`;
+  const keys = Object.keys(allPromotor).sort();
+  keys.forEach(k => {
+    const p = allPromotor[k];
+    html += `<option value="${k}">${p.namaAbsen}</option>`;
+  });
+  const el = document.getElementById("nama");
+  if (el) el.innerHTML = html;
+}
+
+function gantiNamaAdmin() {
+  if (currentRole !== "ADMIN") return;
+  const key = document.getElementById("nama").value;
+  if (!key) return;
+  currentUserData = { key, ...allPromotor[key] };
+  currentUser = allPromotor[key].namaAbsen;
+  // Reload data pribadi
+  window.dbOnValue(window.dbRef(window.db, 'absensi/' + key), snap => {
+    cacheData.absensi = snap.exists() ? snap.val() : {};
+    if (activeTab === "Absensi") jalankanRenderMenu("Absensi");
+  });
+  window.dbOnValue(window.dbRef(window.db, 'pelanggaran/' + key), snap => {
     allPelanggaran = snap.exists() ? snap.val() : {};
-    if (currentMenu === 'pelanggaran') tampilkanDetail('pelanggaran');
+    if (activeTab === "PelanggaranSaya") jalankanRenderMenu("PelanggaranSaya");
   });
-
-  window.dbOnValue(window.dbRef(window.db, 'rewardsSaya/' + currentUser.key), snap => {
+  window.dbOnValue(window.dbRef(window.db, 'rewardsSaya/' + key), snap => {
     allRewardsSaya = snap.exists() ? snap.val() : {};
-    if (currentMenu === 'rewardsaya') tampilkanDetail('rewardsaya');
+    if (activeTab === "RewardSaya") jalankanRenderMenu("RewardSaya");
   });
-
-  renderMenuGrid();
+  jalankanRenderMenu(activeTab);
 }
 
-function renderMenuGrid() {
-  currentMenu = null;
-  document.getElementById('detailView').classList.add('hidden');
-  document.getElementById('detailView').innerHTML = '';
-  const grid = document.getElementById('menuGrid');
-  grid.classList.remove('hidden');
-  const menus = [
-    { key: 'absensi', icon: 'absensi', title: 'Absensi', desc: 'Rekap kehadiran dan status finger harian', color: 't-absensi' },
-    { key: 'penjualan', icon: 'penjualan', title: 'Penjualan', desc: 'Omzet produk harian dan perolehan unit', color: 't-penjualan' },
-    { key: 'uc', icon: 'uc', title: 'UC', desc: 'Pencapaian poin UC promotor', color: 't-uc' },
-    { key: 'brand', icon: 'brand', title: 'Perolehan Brand', desc: 'Rekap penjualan khusus brand/ID Anda sendiri', color: 't-brand' },
-    { key: 'promo', icon: 'promo', title: 'Promo Toko', desc: 'Daftar promo produk & program toko aktif', color: 't-promo' },
-    { key: 'sop', icon: 'sop', title: 'SOP Promotor', desc: 'Aturan kerja & standar operasional', color: 't-sop' },
-    { key: 'punishment', icon: 'punish', title: 'Punishment', desc: 'Daftar sanksi & ketentuan pelanggaran', color: 't-punish' },
-    { key: 'pelanggaran', icon: 'pelanggaran', title: 'Pelanggaran Saya', desc: 'Catatan pelanggaran & sanksi promotor', color: 't-pelanggaran' },
-    { key: 'reward', icon: 'reward', title: 'Daftar Rewards', desc: 'Daftar Rewards pencapaian toko', color: 't-reward' },
-    { key: 'rewardsaya', icon: 'rewardsaya', title: 'Rewards Saya', desc: 'Riwayat Rewards yang Anda dapatkan', color: 't-rewardsaya' }
-  ];
-  grid.innerHTML = menus.map(m => `
-    <div class="menu-card" onclick="tampilkanDetail('${m.key}')">
-      <div class="menu-icon ${m.color}">${ICONS[m.icon]}</div>
-      <div class="menu-title">${m.title}</div>
-      <div class="menu-desc">${m.desc}</div>
-    </div>
-  `).join('');
+/* ============================================================ */
+/*  NAVIGASI MENU                                               */
+/* ============================================================ */
+function pindahMenu(namaMenu) {
+  if (currentRole !== "ADMIN" && (namaMenu === "Perolehan" || namaMenu === "DendaUC")) {
+    showPopup("Menu ini hanya untuk admin.");
+    return;
+  }
+  activeTab = namaMenu;
+  document.getElementById("menuGridContainer").style.display = "none";
+  document.getElementById("detailViewSection").style.display = "block";
+
+  let judulMenuText = namaMenu;
+  if (namaMenu === "Punishment") judulMenuText = "Punishment (Sanksi)";
+  else if (namaMenu === "Reward") judulMenuText = "Daftar Reward Promotor";
+  else if (namaMenu === "RewardSaya") judulMenuText = "Reward Saya";
+  else if (namaMenu === "PelanggaranSaya") judulMenuText = "Catatan Pelanggaran";
+  else if (namaMenu === "PerolehanBrand") judulMenuText = "Perolehan Brand Saya";
+  document.getElementById("currentMenuTitle").innerText = "Menu: " + judulMenuText;
+  document.getElementById("summary").innerHTML = "";
+
+  const menuGlobal = ["Perolehan", "DendaUC", "Promo", "Reward", "Rules", "Punishment"];
+  const isGlobal = menuGlobal.includes(namaMenu);
+  const searchBoxEl = document.getElementById("searchBoxWrapper");
+  if (searchBoxEl) {
+    if (currentRole === "USER") {
+      searchBoxEl.style.display = "none";
+    } else {
+      searchBoxEl.style.display = (isGlobal && namaMenu !== "PelanggaranSaya" && namaMenu !== "RewardSaya" && namaMenu !== "PerolehanBrand") ? "none" : "block";
+    }
+  }
+  jalankanRenderMenu(namaMenu);
 }
 
-function kembaliKeMenu() {
-  currentMenu = null;
-  document.getElementById('detailView').classList.add('hidden');
-  document.getElementById('detailView').innerHTML = '';
-  document.getElementById('menuGrid').classList.remove('hidden');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+function kembaliKeMenuUtama() {
+  document.getElementById("detailViewSection").style.display = "none";
+  document.getElementById("menuGridContainer").style.display = "grid";
+  document.getElementById("exportArea").style.display = "none";
+  document.getElementById("summary").innerHTML = "";
+  document.getElementById("hasil").innerHTML = "";
 }
 
-function tampilkanDetail(menuKey) {
-  currentMenu = menuKey;
-  document.getElementById('menuGrid').classList.add('hidden');
-  const detailEl = document.getElementById('detailView');
-  detailEl.classList.remove('hidden');
-  const titles = {
-    absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
-    penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
-    uc: { title: 'UC', subtitle: 'Pencapaian poin UC promotor' },
-    brand: { title: 'Perolehan Brand', subtitle: 'Rekap penjualan khusus brand Anda' },
-    promo: { title: 'Promo Toko', subtitle: 'Daftar promo produk & program toko aktif' },
-    sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' },
-    punishment: { title: 'Punishment', subtitle: 'Daftar sanksi & ketentuan pelanggaran' },
-    pelanggaran: { title: 'Pelanggaran Saya', subtitle: 'Catatan pelanggaran & sanksi promotor' },
-    reward: { title: 'Daftar Rewards', subtitle: 'Daftar Rewards pencapaian toko' },
-    rewardsaya: { title: 'Rewards Saya', subtitle: 'Riwayat Rewards yang Anda dapatkan' }
-  };
-  const t = titles[menuKey] || { title: 'Detail', subtitle: '' };
-  let content = '';
-  if (menuKey === 'absensi') content = renderAbsensi();
-  else if (menuKey === 'penjualan') content = renderPenjualan();
-  else if (menuKey === 'uc') content = renderUC();
-  else if (menuKey === 'brand') content = renderBrand();
-  else if (menuKey === 'promo') content = renderInfoList(infoData.promo, 'promo');
-  else if (menuKey === 'sop') content = renderInfoList(infoData.rules, 'rules');
-  else if (menuKey === 'punishment') content = renderInfoList(infoData.punishment, 'punishment');
-  else if (menuKey === 'pelanggaran') content = renderPelanggaranSaya();
-  else if (menuKey === 'reward') content = renderInfoList(infoData.reward, 'reward');
-  else if (menuKey === 'rewardsaya') content = renderRewardsSaya();
+function jalankanRenderMenu(namaMenu) {
+  document.getElementById("exportArea").style.display = "none";
 
-  detailEl.innerHTML = `
-    <button class="back-btn" onclick="kembaliKeMenu()">
-      ${ICONS.back} Kembali ke Menu
-    </button>
-    <h2 class="detail-title">${t.title}</h2>
-    <p class="detail-subtitle">${t.subtitle}</p>
-    ${content}
-  `;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (namaMenu === "Absensi") renderAbsensi();
+  else if (namaMenu === "Penjualan") renderPenjualan();
+  else if (namaMenu === "UC") renderUC();
+  else if (namaMenu === "PerolehanBrand") renderPerolehanBrand();
+  else if (namaMenu === "PelanggaranSaya") renderPelanggaranSaya();
+  else if (namaMenu === "RewardSaya") renderRewardSaya();
+  else if (namaMenu === "Perolehan") renderPerolehan();
+  else if (namaMenu === "DendaUC") renderDendaUC();
+  else if (namaMenu === "Promo") renderPromo();
+  else if (namaMenu === "Reward") renderReward();
+  else if (namaMenu === "Rules") renderRules();
+  else if (namaMenu === "Punishment") renderPunishment();
 }
 
-/* ===== HELPERS ===== */
-function parseTanggal(str) {
-  if (!str) return null;
-  const p = String(str).split('/');
-  if (p.length !== 3) return null;
-  return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
+/* ============================================================ */
+/*  HELPERS                                                     */
+/* ============================================================ */
+function tampil(v) {
+  return (v && String(v).trim() !== "") ? `<span class="ok">${v}</span>` : `<span class="kosong">-</span>`;
 }
-function isHariIni(tgl) {
-  const d = parseTanggal(tgl); if (!d) return false;
-  const n = new Date();
-  return d.getDate() === n.getDate() && d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
+function getDataSaya() {
+  if (!currentUserData) return [];
+  const namaSales = currentUserData.namaSales;
+  return allPenjualan.filter(x => x.namaSales === namaSales);
 }
 function isBulanIni(tgl) {
-  const d = parseTanggal(tgl); if (!d) return false;
+  if (!tgl) return false;
+  const p = String(tgl).split('/');
+  if (p.length !== 3) return false;
+  const d = new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
   const n = new Date();
   return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
 }
-function getDataSaya() {
-  return allPenjualan.filter(x => x.namaSales === currentUser.namaSales);
-}
-function hitungOmzet(list) {
-  return list.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS').reduce((s, x) => s + (Number(x.subtotal) || 0), 0);
-}
-function hitungUnit(list) {
-  return list.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS').reduce((s, x) => s + (Number(x.qty) || 0), 0);
-}
-function hitungUC(list) {
-  return list.filter(x => x.kategori === 'GARANSI').reduce((s, x) => s + (Number(x.qty) || 0), 0);
+
+/* ============================================================ */
+/*  RENDER: ABSENSI (FORMAT FILE LAMA)                          */
+/* ============================================================ */
+function renderAbsensi() {
+  const data = cacheData.absensi || {};
+  const entries = Object.values(data).filter(x => x && x.hari);
+  entries.sort((a, b) => Number(a.hari) - Number(b.hari));
+
+  let tidakAbsenMasuk = 0;
+  let tidakAbsenPulang = 0;
+  let totalTerlambat = 0;
+
+  entries.forEach(x => {
+    const isNoMasuk = !x.masuk || String(x.masuk).trim() === "" || x.masuk === "-";
+    const isNoPulang = !x.pulang || String(x.pulang).trim() === "" || x.pulang === "-";
+    if (isNoMasuk) tidakAbsenMasuk++;
+    if (isNoPulang) tidakAbsenPulang++;
+    if (String(x.terlambat).toUpperCase() === "YA") totalTerlambat++;
+  });
+
+  const namaTampil = currentUserData ? (currentUserData.namaAbsen || currentUser) : currentUser;
+
+  if (entries.length > 0) {
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+      <h2>🏆 ${namaTampil}</h2>
+      <p>Total Hari Absen : <b>${entries.length}</b></p>
+      <p>Datang Terlambat : <b>${totalTerlambat}</b></p>
+      <p style="color:#f87171; margin-top:4px;">⚠️ Tidak Absen Masuk : <b>${tidakAbsenMasuk}x</b></p>
+      <p style="color:#f87171;">⚠️ Tidak Absen Pulang : <b>${tidakAbsenPulang}x</b></p>
+    </div>`;
+    if (currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+  } else {
+    document.getElementById("summary").innerHTML = `
+    <div class="summary-card">
+      <h2>🏆 ${namaTampil}</h2>
+      <p>Belum ada data absensi.</p>
+    </div>`;
+  }
+
+  let html = "";
+  entries.forEach(x => {
+    const isTerlambat = String(x.terlambat || "").toUpperCase() === "YA";
+    const isNoMasuk = !x.masuk || String(x.masuk).trim() === "" || x.masuk === "-";
+    const isNoPulang = !x.pulang || String(x.pulang).trim() === "" || x.pulang === "-";
+
+    let statusText = "Lengkap";
+    let kelasCard = "success";
+    if (isNoMasuk || isNoPulang) {
+      statusText = "Belum Lengkap / Bolong";
+      kelasCard = "warning";
+    }
+
+    const status = `<span class="${(isNoMasuk || isNoPulang) ? 'status-warning' : 'status-ok'}">${statusText}</span>`;
+    const kelasTambahan = isTerlambat ? "late" : "";
+
+    html += `
+    <div class="card ${kelasCard} ${kelasTambahan}">
+      <div class="tanggal">📅 ${x.hari}<br>${status}
+        ${isTerlambat ? '<div style="color:#d4af37;font-weight:700;margin-top:4px;">TERLAMBAT</div>' : ''}
+      </div>
+      <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : tampil(x.masuk)}</div>
+      <div class="row"><span>Istirahat 1</span>${tampil(x.istirahat1)}</div>
+      <div class="row"><span>Kembali 1</span>${tampil(x.kembali1)}</div>
+      <div class="row"><span>Istirahat 2</span>${tampil(x.istirahat2)}</div>
+      <div class="row"><span>Kembali 2</span>${tampil(x.kembali2)}</div>
+      <div class="row"><span>Pulang</span>${isNoPulang ? '<span class="kosong">TIDAK FINGER</span>' : tampil(x.pulang)}</div>
+    </div>`;
+  });
+
+  if (entries.length === 0) html = `<div class="card">Data tidak ditemukan</div>`;
+  document.getElementById("hasil").className = "grid";
+  document.getElementById("hasil").innerHTML = html;
 }
 
-/* ===== RENDER SUBMENU ===== */
-
-// PENJUALAN
+/* ============================================================ */
+/*  RENDER: PENJUALAN                                           */
+/* ============================================================ */
 function renderPenjualan() {
   const list = getDataSaya();
-  const listBulanIni = list.filter(x => isBulanIni(x.tanggal));
-  const listHariIni = list.filter(x => isHariIni(x.tanggal));
-  const omzetHari = hitungOmzet(listHariIni);
-  const omzetBulan = hitungOmzet(listBulanIni);
-  const unitBulan = hitungUnit(listBulanIni);
+  const namaTampil = currentUserData ? (currentUserData.namaAbsen || currentUser) : currentUser;
 
-  let html = `
-    <div class="stat-grid">
-      <div class="stat-box full">
-        <div class="label">Omzet Hari Ini</div>
-        <div class="value green">Rp ${omzetHari.toLocaleString('id-ID')}</div>
-      </div>
-      <div class="stat-box">
-        <div class="label">Omzet Bulan Ini</div>
-        <div class="value green">Rp ${omzetBulan.toLocaleString('id-ID')}</div>
-      </div>
-      <div class="stat-box">
-        <div class="label">Unit Bulan Ini</div>
-        <div class="value">${unitBulan}</div>
-      </div>
-    </div>
-  `;
+  let totalUnit = 0, totalOmzet = 0;
+  const grupTanggal = {};
+  list.forEach(x => {
+    if (!x.tanggal) return;
+    if (!grupTanggal[x.tanggal]) grupTanggal[x.tanggal] = [];
+    grupTanggal[x.tanggal].push(x);
+    if (x.kategori !== "GARANSI" && x.kategori !== "ONGKOS") {
+      totalUnit += Number(x.qty) || 0;
+      totalOmzet += Number(x.subtotal) || 0;
+    }
+  });
+
+  const tglKeys = Object.keys(grupTanggal).sort((a, b) => {
+    const pa = a.split("/"), pb = b.split("/");
+    return new Date(pa[2], pa[1]-1, pa[0]) - new Date(pb[2], pb[1]-1, pb[0]);
+  });
+  const tglAwal = tglKeys[0] || "-";
+  const tglAkhir = tglKeys[tglKeys.length-1] || "-";
+
+  document.getElementById("summary").innerHTML = `
+  <div class="summary-card">
+    <h2>💰 ${namaTampil}</h2>
+    <p>Periode : <b>${tglAwal} - ${tglAkhir}</b></p>
+    <p>Total Unit : <b>${totalUnit}</b></p>
+    <p>Total Omzet : <span style="font-weight:bold; color:${totalOmzet >= 100000000 ? '#34d399' : totalOmzet >= 80000000 ? '#f59e0b' : '#ef4444'};">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
+  </div>`;
+
+  let html = "";
+  tglKeys.forEach(tgl => {
+    const items = grupTanggal[tgl];
+    let isi = "", totalHari = 0;
+    items.forEach(it => {
+      totalHari += (it.kategori !== "GARANSI" && it.kategori !== "ONGKOS") ? (Number(it.subtotal) || 0) : 0;
+      isi += `
+        <div style="margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.05);">
+          <div style="font-size:12px; font-weight:600; line-height:1.3; margin-bottom:3px; color:#e5e7eb;">${it.namaBarang || "-"}</div>
+          <div class="row"><span>Qty</span><span>${it.qty || 0}</span></div>
+          <div class="row"><span>Omzet</span><span>Rp ${Number(it.subtotal || 0).toLocaleString("id-ID")}</span></div>
+        </div>`;
+    });
+    html += `
+    <div class="card success">
+      <div class="tanggal">📅 ${tgl}</div>
+      ${isi}
+      <div class="row" style="font-weight:700; font-size:12.5px;"><span>Total Hari Ini</span><span>Rp ${totalHari.toLocaleString("id-ID")}</span></div>
+    </div>`;
+  });
+
+  if (html === "") html = `<div class="card">Data tidak ditemukan</div>`;
+  if (list.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+  document.getElementById("hasil").className = "grid";
+  document.getElementById("hasil").innerHTML = html;
+}
+
+/* ============================================================ */
+/*  RENDER: UC                                                  */
+/* ============================================================ */
+function renderUC() {
+  const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori === "GARANSI");
+  const totalUC = list.reduce((s, x) => s + (Number(x.qty) || 0), 0);
+  const namaTampil = currentUserData ? (currentUserData.namaAbsen || currentUser) : currentUser;
+
+  const tglKeys = list.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
+    const pa = a.split("/"), pb = b.split("/");
+    return new Date(pa[2], pa[1]-1, pa[0]) - new Date(pb[2], pb[1]-1, pb[0]);
+  });
+  const tglAwal = tglKeys[0] || "-";
+  const tglAkhir = tglKeys[tglKeys.length-1] || "-";
+
+  document.getElementById("summary").innerHTML = `
+  <div class="summary-card">
+    <h2>💎 ${namaTampil}</h2>
+    <p>Periode : <b>${tglAwal} - ${tglAkhir}</b></p>
+    <p>Total UC : <b>${totalUC}</b></p>
+  </div>`;
+
+  let html = "";
+  list.forEach(x => {
+    html += `
+    <div class="card success">
+      <div class="tanggal">📅 ${x.tanggal}</div>
+      <div style="font-size:12px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${x.namaBarang || "-"}</div>
+      <div class="row"><span>Qty</span><span>${x.qty || 0}</span></div>
+    </div>`;
+  });
+  if (html === "") html = `<div class="card">Data tidak ditemukan</div>`;
+  if (list.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+  document.getElementById("hasil").className = "grid";
+  document.getElementById("hasil").innerHTML = html;
+}
+
+/* ============================================================ */
+/*  RENDER: PEROLEHAN BRAND (BRAND SAYA)                        */
+/* ============================================================ */
+function renderPerolehanBrand() {
+  const merkSaya = currentUserData ? (currentUserData.merk || "").toUpperCase() : "";
+  const list = getDataSaya().filter(x => {
+    if (!x.merk) return false;
+    return x.merk.toUpperCase().includes(merkSaya) && x.kategori !== "GARANSI" && x.kategori !== "ONGKOS";
+  });
+
+  const totalUnit = list.reduce((s, x) => s + (Number(x.qty) || 0), 0);
+  const totalOmzet = list.reduce((s, x) => s + (Number(x.subtotal) || 0), 0);
+
+  document.getElementById("summary").innerHTML = `
+  <div class="summary-card">
+    <h2>🏷️ Perolehan Brand Saya</h2>
+    <p>Promotor : <b>${currentUserData ? currentUserData.namaAbsen : currentUser}</b></p>
+    <p>Brand : <b>${merkSaya || "-"}</b></p>
+    <p>Total Unit Brand : <b>${totalUnit} Unit</b></p>
+    <p>Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
+  </div>`;
+
+  let html = "";
+  const grupTanggal = {};
+  list.forEach(x => {
+    if (!grupTanggal[x.tanggal]) grupTanggal[x.tanggal] = [];
+    grupTanggal[x.tanggal].push(x);
+  });
+
+  Object.keys(grupTanggal).sort((a, b) => {
+    const pa = a.split("/"), pb = b.split("/");
+    return new Date(pa[2], pa[1]-1, pa[0]) - new Date(pb[2], pb[1]-1, pb[0]);
+  }).forEach(tgl => {
+    const items = grupTanggal[tgl];
+    let isi = "", totalHari = 0;
+    items.forEach(it => {
+      totalHari += Number(it.subtotal) || 0;
+      isi += `
+        <div style="margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid rgba(255,255,255,0.05);">
+          <div style="font-size:12px; font-weight:600; line-height:1.3; margin-bottom:3px; color:#e5e7eb;">${it.namaBarang || "-"}</div>
+          <div style="font-size:11px; color:#d4af37; margin-bottom:3px;">Brand: ${it.merk || "-"}</div>
+          <div class="row"><span>Qty</span><span>${it.qty || 0}</span></div>
+          <div class="row"><span>Omzet</span><span>Rp ${Number(it.subtotal || 0).toLocaleString("id-ID")}</span></div>
+        </div>`;
+    });
+    html += `
+    <div class="card success">
+      <div class="tanggal">📅 ${tgl}</div>
+      ${isi}
+      <div class="row" style="font-weight:700; font-size:12.5px;"><span>Total Hari Ini</span><span>Rp ${totalHari.toLocaleString("id-ID")}</span></div>
+    </div>`;
+  });
+
+  if (html === "") html = `<div class="card">Data brand ${merkSaya || "-"} tidak ditemukan</div>`;
+  if (list.length > 0 && currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+  document.getElementById("hasil").className = "grid";
+  document.getElementById("hasil").innerHTML = html;
+}
+
+/* ============================================================ */
+/*  RENDER: PELANGGARAN SAYA                                    */
+/* ============================================================ */
+function renderPelanggaranSaya() {
+  const list = Object.values(allPelanggaran || {});
+  const namaTampil = currentUserData ? (currentUserData.namaAbsen || currentUser) : currentUser;
+
+  document.getElementById("summary").innerHTML = `
+  <div class="summary-card">
+    <h2>🚨 Catatan Pelanggaran</h2>
+    <p>Promotor : <b>${namaTampil}</b></p>
+    <p>Total Tercatat : <b>${list.length} Kasus Pelanggaran</b></p>
+  </div>`;
+
+  let html = `<div class="mobile-list-container">`;
   if (list.length === 0) {
-    html += `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada transaksi</div></div>`;
+    html += `<div class="card success" style="text-align:center; padding:25px;">
+      <div style="font-size:24px; margin-bottom:6px;">🎉</div>
+      <div style="font-weight:700; color:#34d399; font-size:15px;">Bersih dari Pelanggaran!</div>
+      <div style="font-size:12.5px; color:#9ca3af; margin-top:4px;">Selamat, tidak ada catatan pelanggaran.</div>
+    </div>`;
   } else {
-    const grupTanggal = {};
-    list.forEach(x => {
-      if (!grupTanggal[x.tanggal]) grupTanggal[x.tanggal] = [];
-      grupTanggal[x.tanggal].push(x);
-    });
-    const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
-      const da = parseTanggal(a), db = parseTanggal(b);
-      return (db || 0) - (da || 0);
-    });
-    keysSorted.forEach(tgl => {
-      const items = grupTanggal[tgl];
-      const totalHari = hitungOmzet(items);
-      html += `<div style="margin-bottom:16px;">
-        <div style="font-size:12px; font-weight:800; color:#38bdf8; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border);">${tgl} — Rp ${totalHari.toLocaleString('id-ID')}</div>
-        ${items.map(x => `
-          <div class="list-item-dark">
-            <div class="kiri">
-              <div class="produk">${x.namaBarang || '-'}</div>
-              <div class="info">${x.merk || '-'} • ${x.kategori || '-'}</div>
-            </div>
-            <div class="kanan">
-              <div class="harga">Rp ${Number(x.subtotal || 0).toLocaleString('id-ID')}</div>
-              <div class="qty">Qty: ${x.qty || 0}</div>
-            </div>
-          </div>
-        `).join('')}
+    list.forEach(item => {
+      html += `
+      <div class="mobile-list-card" style="border-left: 4px solid #ef4444;">
+        <div class="mobile-list-header">
+          <div class="mobile-list-title"><span>📅</span> ${item.tanggal || "-"}</div>
+          <span class="mobile-list-badge" style="background:rgba(239, 68, 68, 0.15); color:#f87171; border-color:rgba(239, 68, 68, 0.4);">Pelanggaran</span>
+        </div>
+        <div class="mobile-list-content">
+          <div style="margin-bottom: 4px;"><b>Keterangan:</b> ${item.keterangan || "-"}</div>
+          <div style="color: #f87171; font-weight: 600;"><b>Sanksi / Denda:</b> ${item.denda || "-"}</div>
+        </div>
       </div>`;
     });
   }
-  return html;
+  html += `</div>`;
+  document.getElementById("hasil").className = "";
+  document.getElementById("hasil").innerHTML = html;
 }
 
-// UC
-function renderUC() {
-  const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori === 'GARANSI');
-  const totalUC = list.reduce((s, x) => s + (Number(x.qty) || 0), 0);
-  const targetUC = Number(currentUser.targetUC) || 0;
-  const ikutUC = currentUser.ikutUC === 'YA';
-  const kurangUC = ikutUC && totalUC < targetUC ? (targetUC - totalUC) : 0;
-  let html = `
-    <div class="stat-grid">
-      <div class="stat-box">
-        <div class="label">UC Bulan Ini</div>
-        <div class="value gold">${totalUC}</div>
-      </div>
-      <div class="stat-box">
-        <div class="label">Target UC</div>
-        <div class="value ${ikutUC ? '' : 'red'}">${ikutUC ? targetUC : 'Non-Target'}</div>
-      </div>
-      ${ikutUC ? `
-      <div class="stat-box full">
-        <div class="label">Status</div>
-        <div class="value ${kurangUC > 0 ? 'red' : 'green'}">${kurangUC > 0 ? 'Kurang ' + kurangUC + ' unit' : 'Tercapai'}</div>
-      </div>` : ''}
-    </div>
-  `;
+/* ============================================================ */
+/*  RENDER: REWARD SAYA                                         */
+/* ============================================================ */
+function renderRewardSaya() {
+  const list = Object.values(allRewardsSaya || {});
+  const namaTampil = currentUserData ? (currentUserData.namaAbsen || currentUser) : currentUser;
+
+  document.getElementById("summary").innerHTML = `
+  <div class="summary-card">
+    <h2>🎁 Reward Saya</h2>
+    <p>Promotor : <b>${namaTampil}</b></p>
+    <p>Total Reward Didapat : <b>${list.length} Rewards</b></p>
+  </div>`;
+
+  let html = `<div class="mobile-list-container">`;
   if (list.length === 0) {
-    html += `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada UC bulan ini</div></div>`;
+    html += `<div class="card" style="text-align:center; padding:25px; border-left: 4px solid #d4af37;">
+      <div style="font-size:24px; margin-bottom:6px;">🎯</div>
+      <div style="font-weight:700; color:#d4af37; font-size:15px;">Belum Ada Reward</div>
+      <div style="font-size:12.5px; color:#9ca3af; margin-top:4px;">Terus semangat mengejar target!</div>
+    </div>`;
   } else {
-    html += `<div style="font-size:12px; font-weight:800; color:#38bdf8; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border);">Detail UC</div>`;
-    list.forEach(x => {
+    list.forEach(item => {
       html += `
-        <div class="list-item-dark">
-          <div class="kiri">
-            <div class="produk">${x.namaBarang || '-'}</div>
-            <div class="info">${x.tanggal} • ${x.merk || '-'}</div>
-          </div>
-          <div class="kanan">
-            <div class="harga">${x.qty} unit</div>
-          </div>
+      <div class="mobile-list-card" style="border-left: 4px solid #10b981;">
+        <div class="mobile-list-header">
+          <div class="mobile-list-title"><span>🎁</span> ${item.judul || "Bonus Reward"}</div>
+          <span class="mobile-list-badge" style="background:rgba(16, 185, 129, 0.15); color:#34d399; border-color:rgba(16, 185, 129, 0.4);">${item.tanggal || "Berhasil"}</span>
         </div>
-      `;
+        <div class="mobile-list-content">
+          <div style="color: #ffffff; font-weight: 500;">${item.detail || "-"}</div>
+        </div>
+      </div>`;
     });
   }
-  return html;
+  html += `</div>`;
+  document.getElementById("hasil").className = "";
+  document.getElementById("hasil").innerHTML = html;
 }
 
-// BRAND
-function renderBrand() {
-  const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS');
-  const perBrand = {};
-  list.forEach(x => {
-    const b = x.merk || 'TANPA MERK';
-    if (!perBrand[b]) perBrand[b] = { omzet: 0, unit: 0 };
-    perBrand[b].omzet += Number(x.subtotal) || 0;
-    perBrand[b].unit += Number(x.qty) || 0;
+/* ============================================================ */
+/*  RENDER: PEROLEHAN (ADMIN)                                   */
+/* ============================================================ */
+function renderPerolehan() {
+  // Hitung perolehan semua promotor dari allPenjualan
+  const perSales = {};
+  allPenjualan.forEach(x => {
+    if (!x.namaSales) return;
+    if (!perSales[x.namaSales]) perSales[x.namaSales] = { omzet: 0, unit: 0, uc: 0 };
+    if (x.kategori !== "GARANSI" && x.kategori !== "ONGKOS") {
+      perSales[x.namaSales].omzet += Number(x.subtotal) || 0;
+      perSales[x.namaSales].unit += Number(x.qty) || 0;
+    } else if (x.kategori === "GARANSI") {
+      perSales[x.namaSales].uc += Number(x.qty) || 0;
+    }
   });
-  const arr = Object.keys(perBrand).map(k => ({ brand: k, ...perBrand[k] })).sort((a, b) => b.omzet - a.omzet);
-  if (arr.length === 0) return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada penjualan bulan ini</div></div>`;
-  return arr.map(x => `
-    <div class="list-item-dark">
-      <div class="kiri">
-        <div class="produk">${x.brand}</div>
-        <div class="info">${x.unit} unit terjual</div>
-      </div>
-      <div class="kanan">
-        <div class="harga">Rp ${x.omzet.toLocaleString('id-ID')}</div>
-      </div>
-    </div>
-  `).join('');
-}
 
-// ABSENSI
-function renderAbsensi() {
-  const dataAbsen = allAbsensi || {};
-  const entries = Object.values(dataAbsen);
-  if (entries.length === 0) {
-    return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data absensi</div></div>`;
+  const list = Object.keys(allPromotor).map(k => {
+    const p = allPromotor[k];
+    return {
+      nama: p.namaAbsen,
+      namaSales: p.namaSales,
+      omzet: perSales[p.namaSales]?.omzet || 0,
+      unit: perSales[p.namaSales]?.unit || 0,
+      uc: perSales[p.namaSales]?.uc || 0,
+      targetUC: p.targetUC || 16,
+      ikutUC: p.ikutUC === "YA"
+    };
+  }).sort((a, b) => b.omzet - a.omzet);
+
+  if (list.length === 0) {
+    document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>⚠️ Belum ada data promotor</h2></div>`;
+    document.getElementById("hasil").innerHTML = "";
+    return;
   }
-  entries.sort((a, b) => (Number(a.hari) || 0) - (Number(b.hari) || 0));
-  let totalMasuk = 0, totalTerlambat = 0;
-  entries.forEach(x => {
-    if (x.masuk) totalMasuk++;
-    if (String(x.terlambat).toUpperCase() === 'YA') totalTerlambat++;
-  });
-  let html = `
-    <div class="stat-grid">
-      <div class="stat-box">
-        <div class="label">Total Hari</div>
-        <div class="value">${entries.length}</div>
-      </div>
-      <div class="stat-box">
-        <div class="label">Terlambat</div>
-        <div class="value red">${totalTerlambat}</div>
-      </div>
-    </div>
-  `;
-  entries.forEach(x => {
-    const isTerlambat = String(x.terlambat).toUpperCase() === 'YA';
+
+  let totalOmzet = 0, totalUC = 0;
+  list.forEach(x => { totalOmzet += x.omzet; totalUC += x.uc; });
+
+  document.getElementById("summary").innerHTML = `
+  <div class="summary-card">
+    <h2>📊 Perolehan All Promotor</h2>
+    <p>👥 Jumlah Promotor : <b>${list.length}</b></p>
+    <p>💰 Total Omzet Toko : <span style="font-weight:bold;color:#34d399">Rp ${totalOmzet.toLocaleString("id-ID")}</span></p>
+    <p>💎 Total UC : <b>${totalUC}</b></p>
+  </div>`;
+
+  let html = `<div class="summary-card">`;
+  list.forEach((x, i) => {
+    const warnaOmzet = x.omzet >= 100000000 ? '#34d399' : x.omzet >= 80000000 ? '#f59e0b' : '#ef4444';
     html += `
-      <div class="list-item-dark" style="flex-direction:column; align-items:flex-start; gap:8px;">
-        <div style="display:flex; justify-content:space-between; width:100%; align-items:center;">
-          <div class="produk">Hari ${x.hari}${x.bulan ? ' — ' + x.bulan : ''}</div>
-          ${isTerlambat ? '<span style="font-size:10px; background:rgba(239,68,68,0.2); color:#f87171; padding:2px 8px; border-radius:100px; font-weight:800;">TERLAMBAT</span>' : ''}
+      <div style="display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid rgba(255,255,255,0.05); gap:10px;">
+        <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
+          <div style="width:26px; height:26px; border-radius:50%; background:#1f2937; border:1px solid rgba(212,175,55,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; color:#d4af37;">${i + 1}</div>
+          <div style="font-weight:600; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${x.nama}</div>
         </div>
-        <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px 14px; width:100%;">
-          <div class="info">Masuk: <b style="color:#fff;">${x.masuk || '-'}</b></div>
-          <div class="info">Pulang: <b style="color:#fff;">${x.pulang || '-'}</b></div>
-          <div class="info">Ist.1: ${x.istirahat1 || '-'}</div>
-          <div class="info">Kembali1: ${x.kembali1 || '-'}</div>
-          <div class="info">Ist.2: ${x.istirahat2 || '-'}</div>
-          <div class="info">Kembali2: ${x.kembali2 || '-'}</div>
+        <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
+          <div style="font-weight:700; font-size:13px; color:${warnaOmzet};">Rp ${x.omzet.toLocaleString("id-ID")}</div>
+          <div style="font-size:11.5px; font-weight:600; color:#d4af37; margin-top:1px;">⭐ UC : ${x.uc}</div>
         </div>
-      </div>
-    `;
+      </div>`;
   });
-  return html;
+  html += `</div>`;
+
+  if (currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+  document.getElementById("hasil").className = "";
+  document.getElementById("hasil").innerHTML = html;
 }
 
-// PELANGGARAN SAYA
-function renderPelanggaranSaya() {
-  const entries = Object.values(allPelanggaran || {});
-  if (entries.length === 0) {
-    return `<div class="empty-state" style="border-color:rgba(16,185,129,0.4); background:rgba(16,185,129,0.05);">
-      ${ICONS.sop}
-      <div class="pesan" style="color:#34d399;">Bersih dari Pelanggaran</div>
-      <div style="font-size:11.5px; color:#94a3b8; margin-top:4px;">Selamat, tidak ada catatan pelanggaran</div>
-    </div>`;
-  }
-  return entries.map(x => `
-    <div class="list-item-dark" style="border-left:3px solid #ef4444;">
-      <div class="kiri">
-        <div class="produk">${x.tanggal}</div>
-        <div class="info" style="color:#cbd5e1;">${x.keterangan}</div>
-        <div class="info" style="color:#f87171; margin-top:4px; font-weight:700;">Sanksi: ${x.denda}</div>
+/* ============================================================ */
+/*  RENDER: DENDA & LATE (ADMIN)                                */
+/* ============================================================ */
+function renderDendaUC() {
+  const DENDA_UC_PER_UNIT = 5000;
+  const DENDA_LATE_PER_KALI = 10000;
+
+  // Hitung UC + terlambat per promotor
+  const perSales = {};
+  allPenjualan.forEach(x => {
+    if (!x.namaSales || x.kategori !== "GARANSI") return;
+    perSales[x.namaSales] = (perSales[x.namaSales] || 0) + (Number(x.qty) || 0);
+  });
+
+  const list = Object.keys(allPromotor).map(k => {
+    const p = allPromotor[k];
+    const totalUC = perSales[p.namaSales] || 0;
+    const isIkutUC = p.ikutUC === "YA";
+    const targetUC = isIkutUC ? (p.targetUC || 16) : 0;
+    const kurangUC = (isIkutUC && totalUC < targetUC) ? (targetUC - totalUC) : 0;
+    const dendaUC = kurangUC * DENDA_UC_PER_UNIT;
+    // terlambat dihitung dari cacheData.absensi (kalau ada)
+    const dendaLate = 0;
+    const totalDenda = dendaUC + dendaLate;
+    return {
+      nama: p.namaAbsen, omzet: 0, uc: totalUC, targetUC, ikutUC: isIkutUC,
+      kurangUC, dendaUC, dendaLate, totalDenda
+    };
+  }).sort((a, b) => b.totalDenda - a.totalDenda);
+
+  document.getElementById("summary").innerHTML = `
+  <div class="summary-card">
+    <h2>⚖️ Rekap Denda & Keterlambatan Seluruh Promotor (Bulan Ini)</h2>
+    <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
+      <div style="flex:1; min-width:180px; background:#1a2234; padding:10px 12px; border-radius:10px; border:1px solid #374151;">
+        <div style="font-size:10px; color:#9ca3af; font-weight:700; text-transform:uppercase;">Denda Target UC</div>
+        <div style="font-size:12.5px; color:#f87171; font-weight:700; margin-top:2px;">Rp 5.000 / Unit Kurang</div>
+      </div>
+      <div style="flex:1; min-width:180px; background:#1a2234; padding:10px 12px; border-radius:10px; border:1px solid #374151;">
+        <div style="font-size:10px; color:#9ca3af; font-weight:700; text-transform:uppercase;">Denda Keterlambatan</div>
+        <div style="font-size:12.5px; color:#facc15; font-weight:700; margin-top:2px;">Rp 10.000 / Kali Terlambat</div>
       </div>
     </div>
-  `).join('');
-}
+  </div>`;
 
-// REWARDS SAYA
-function renderRewardsSaya() {
-  const entries = Object.values(allRewardsSaya || {});
-  if (entries.length === 0) {
-    return `<div class="empty-state" style="border-color:rgba(251,191,36,0.4); background:rgba(251,191,36,0.05);">
-      ${ICONS.rewardsaya}
-      <div class="pesan" style="color:#fbbf24;">Belum Ada Reward</div>
-      <div style="font-size:11.5px; color:#94a3b8; margin-top:4px;">Terus semangat mengejar target</div>
+  let html = `<div class="summary-card" style="display: flex; flex-direction: column; gap: 10px; background: transparent; border: none; padding: 0; box-shadow: none;">`;
+  list.forEach((x, i) => {
+    html += `
+    <div style="background: #111827; border: 1px solid #374151; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 6px;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="background: #1f2937; color: #d4af37; border-radius: 5px; padding: 2px 6px; font-size: 10.5px; font-weight: 700;">#${i+1}</span>
+          <span style="font-size: 13px; font-weight: 700; color: #ffffff;">${x.nama}</span>
+        </div>
+        <div>
+          <span style="font-size: 10.5px; color: #9ca3af; font-weight: 600;">Total: </span>
+          <span style="font-size: 13px; font-weight: 800; color: ${x.totalDenda > 0 ? '#f87171' : '#34d399'};">Rp ${x.totalDenda.toLocaleString("id-ID")}</span>
+        </div>
+      </div>
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+        <div style="background: #1a2234; padding: 8px 10px; border-radius: 8px;">
+          <div style="font-size: 10px; color: #9ca3af; font-weight: 700; text-transform: uppercase;">Denda UC</div>
+          <div style="font-size: 12px; font-weight: 700; color: ${x.dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${x.dendaUC.toLocaleString("id-ID")} <span style="font-size:10px;color:#9ca3af;">(${x.ikutUC ? `kurang ${x.kurangUC}` : 'non'})</span></div>
+        </div>
+        <div style="background: #1a2234; padding: 8px 10px; border-radius: 8px;">
+          <div style="font-size: 10px; color: #9ca3af; font-weight: 700; text-transform: uppercase;">Denda Late</div>
+          <div style="font-size: 12px; font-weight: 700; color: ${x.dendaLate > 0 ? '#facc15' : '#34d399'};">Rp ${x.dendaLate.toLocaleString("id-ID")}</div>
+        </div>
+      </div>
     </div>`;
-  }
-  return entries.map(x => `
-    <div class="info-block">
-      <div class="judul">${ICONS.reward} ${x.judul || 'Bonus Reward'}</div>
-      <div class="meta">${x.tanggal || '-'}</div>
-      <div class="deskripsi" style="margin-top:8px;">${x.detail || '-'}</div>
-    </div>
-  `).join('');
+  });
+  html += `</div>`;
+
+  if (currentRole === "ADMIN") document.getElementById("exportArea").style.display = "flex";
+  document.getElementById("hasil").className = "";
+  document.getElementById("hasil").innerHTML = html;
 }
 
-// INFO LIST (Promo/SOP/Punishment/Reward)
-function renderInfoList(arr, jenis) {
-  if (!arr || arr.length === 0) {
-    return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data</div></div>`;
-  }
-  if (jenis === 'promo') {
-    return arr.map(x => `
-      <div class="info-block">
-        <div class="judul">${ICONS.promo} ${x.judul || '-'}</div>
-        ${x.periode ? `<div class="meta">${x.periode}</div>` : ''}
-        <div class="deskripsi" style="margin-top:8px;">${x.detail || '-'}</div>
-      </div>
-    `).join('');
-  } else if (jenis === 'rules') {
-    return arr.map(x => `
-      <div class="info-block">
-        <div class="judul">${ICONS.sop} ${x.poin || '-'}</div>
-        <div class="deskripsi" style="margin-top:8px;">${x.deskripsi || '-'}</div>
-      </div>
-    `).join('');
-  } else if (jenis === 'punishment') {
-    return arr.map(x => `
-      <div class="info-block">
-        <div class="judul">${ICONS.punish} ${x.judul || '-'}</div>
-        ${x.level ? `<div class="meta">Sanksi: ${x.level}</div>` : ''}
-        <div class="deskripsi" style="margin-top:8px;">${x.detail || '-'}</div>
-      </div>
-    `).join('');
-  } else if (jenis === 'reward') {
-    return arr.map(x => `
-      <div class="info-block">
-        <div class="judul">${ICONS.reward} ${x.judul || '-'}</div>
-        ${x.periode ? `<div class="meta">${x.periode}</div>` : ''}
-        <div class="deskripsi" style="margin-top:8px;">${x.detail || '-'}</div>
-      </div>
-    `).join('');
-  }
-  return '';
+/* ============================================================ */
+/*  RENDER: PROMO / RULES / REWARD / PUNISHMENT                 */
+/* ============================================================ */
+function renderPromo() {
+  const list = allInfo.promo || [];
+  document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🏷️ Promo Toko</h2></div>`;
+  let html = "";
+  if (list.length === 0) html = `<div class="card">Data tidak ditemukan</div>`;
+  else list.forEach(p => {
+    html += `<div class="card success">
+      <div class="tanggal" style="text-align:left; font-size:13.5px; color:#d4af37;">🔥 ${p.judul || ""}</div>
+      <div style="font-size:11px; color:#9ca3af; margin:4px 0;"><b>Periode:</b> ${p.periode || ""}</div>
+      <div style="font-size:12.5px; line-height:1.4; color:#d1d5db; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">${p.detail || ""}</div>
+    </div>`;
+  });
+  document.getElementById("hasil").className = "grid";
+  document.getElementById("hasil").innerHTML = html;
 }
 
-function logoutPromotor() {
-  if (!confirm("Yakin ingin keluar?")) return;
-  localStorage.removeItem('ufo_promotor_session_v3');
-  currentUser = null;
-  allPenjualan = [];
-  currentMenu = null;
-  document.getElementById('dashboard').classList.add('hidden');
-  document.body.classList.remove('dashboard-active');
-  document.body.classList.add('login-active');
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('login-pilih-sales').value = '';
-  document.getElementById('login-pin-input').value = '';
-  document.getElementById('custom-select-label').innerText = '-- Pilih Nama Anda --';
-  document.getElementById('custom-select-menu').querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+function renderRules() {
+  const list = allInfo.rules || [];
+  document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>✨ Panduan SOP & Peraturan Toko</h2></div>`;
+  let html = `<div class="mobile-list-container">`;
+  if (list.length === 0) html += `<div class="card">Data SOP tidak ditemukan</div>`;
+  else list.forEach(a => {
+    const judul = a.poin || "SOP Promotor";
+    const sumberGambar = a.gambar || a.desc || "";
+    let pathGambar = sumberGambar;
+    if (sumberGambar && !sumberGambar.startsWith("http")) pathGambar = "images/" + sumberGambar;
+    html += `
+    <div class="mobile-list-card" style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 12px; border-left: 4px solid #d4af37; cursor: pointer;" onclick="bukaModalSOP('${pathGambar}', '${judul.replace(/'/g, "\\'")}')">
+      <div style="flex: 1; min-width: 0;">
+        <div style="font-size: 14px; color: #d4af37; font-weight: 700; margin-bottom: 3px;">📌 ${judul}</div>
+        <div style="font-size: 11.5px; color: #9ca3af;">Ketuk untuk memperbesar gambar SOP</div>
+      </div>
+      ${pathGambar ? `<div style="width: 55px; height: 55px; flex-shrink: 0; background: #0b0f19; border-radius: 8px; overflow: hidden; border: 1px solid rgba(212, 175, 55, 0.3);">
+        <img src="${pathGambar}" style="width: 100%; height: 100%; object-fit: cover; display: block;" onerror="this.parentElement.style.display='none';">
+      </div>` : ''}
+    </div>`;
+  });
+  html += `</div>`;
+  document.getElementById("hasil").className = "";
+  document.getElementById("hasil").innerHTML = html;
 }
+
+function renderReward() {
+  const list = allInfo.reward || [];
+  document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>🏆 Daftar Reward & Bonus Toko</h2></div>`;
+  let html = `<div class="mobile-list-container">`;
+  if (list.length === 0) html += `<div class="card">Data daftar reward belum tersedia</div>`;
+  else list.forEach(r => {
+    html += `<div class="mobile-list-card" style="border-left: 4px solid #10b981;">
+      <div class="mobile-list-header">
+        <div class="mobile-list-title"><span style="color: #10b981;">🏆</span> ${r.judul || "Bonus Reward"}</div>
+        <span class="mobile-list-badge" style="background: rgba(16, 185, 129, 0.15); color: #34d399; border-color: rgba(16, 185, 129, 0.35);">${r.periode || "Aktif"}</span>
+      </div>
+      <div class="mobile-list-content">${r.detail || "-"}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  document.getElementById("hasil").className = "";
+  document.getElementById("hasil").innerHTML = html;
+}
+
+function renderPunishment() {
+  const list = allInfo.punishment || [];
+  document.getElementById("summary").innerHTML = `<div class="summary-card"><h2>⚠️ Daftar Punishment & Sanksi Toko</h2></div>`;
+  let html = `<div class="mobile-list-container">`;
+  if (list.length === 0) html += `<div class="card">Data punishment tidak ditemukan</div>`;
+  else list.forEach(p => {
+    html += `<div class="mobile-list-card" style="border-left: 4px solid #ef4444;">
+      <div class="mobile-list-header">
+        <div class="mobile-list-title"><span style="color: #ef4444;">⚠️</span> ${p.judul || "Sanksi Pelanggaran"}</div>
+        <span class="mobile-list-badge" style="background: rgba(52, 211, 153, 0.15); color: #34d399;">${p.level || "Peringatan"}</span>
+      </div>
+      <div class="mobile-list-content">${p.detail || ""}</div>
+    </div>`;
+  });
+  html += `</div>`;
+  document.getElementById("hasil").className = "";
+  document.getElementById("hasil").innerHTML = html;
+}
+
+/* ============================================================ */
+/*  MODAL SOP (Klik gambar untuk zoom)                          */
+/* ============================================================ */
+function bukaModalSOP(urlGambar, judulSop) {
+  let modal = document.getElementById("sopModal");
+  if (!modal) {
+    modal = document.createElement("div");
+    modal.id = "sopModal";
+    modal.innerHTML = `
+      <div class="sop-modal-content">
+        <div class="sop-close-btn" onclick="tutupModalSOP()">✕</div>
+        <div id="sopModalTitle" style="color: #d4af37; font-weight: 700; font-size: 15px; margin-bottom: 10px;"></div>
+        <img id="sopModalImg" src="" alt="SOP Preview">
+      </div>`;
+    document.body.appendChild(modal);
+  }
+  document.getElementById("sopModalTitle").innerText = "📌 " + judulSop;
+  document.getElementById("sopModalImg").src = urlGambar;
+  modal.style.display = "flex";
+}
+function tutupModalSOP() {
+  const modal = document.getElementById("sopModal");
+  if (modal) modal.style.display = "none";
+}
+
+/* ============================================================ */
+/*  EXPORT EXCEL & PDF                                          */
+/* ============================================================ */
+function prosesEkspor(format) {
+  let namaKaryawan = (currentRole === "USER") ? currentUser : (document.getElementById("nama").value ? allPromotor[document.getElementById("nama").value]?.namaAbsen : currentUser);
+  const namaFile = `Laporan_${activeTab}_${(namaKaryawan || "Promotor").replace(/\s+/g, '_')}`;
+  const targetElement = document.getElementById("hasil");
+
+  if (format === "excel") {
+    let rowsArr = [];
+    if (activeTab === "Absensi") {
+      rowsArr.push(["LAPORAN ABSENSI PROMOTOR: " + namaKaryawan.toUpperCase()], []);
+      rowsArr.push(["Tanggal", "Status", "Masuk", "Istirahat 1", "Kembali 1", "Istirahat 2", "Kembali 2", "Pulang"]);
+      targetElement.querySelectorAll(".card").forEach(card => {
+        let tglText = card.querySelector(".tanggal").innerText.replace(/📅/g, '').split("\n")[0].trim();
+        let status = card.querySelector(".tanggal").innerText.includes("Lengkap") ? "Lengkap" : "Belum Lengkap";
+        if(card.querySelector(".tanggal").innerText.includes("TERLAMBAT")) status += " (Terlambat)";
+        let rowsData = card.querySelectorAll(".row");
+        rowsArr.push([
+          tglText, status,
+          rowsData[0]?.querySelector(".ok, .kosong")?.innerText || "-",
+          rowsData[1]?.querySelector(".ok, .kosong")?.innerText || "-",
+          rowsData[2]?.querySelector(".ok, .kosong")?.innerText || "-",
+          rowsData[3]?.querySelector(".ok, .kosong")?.innerText || "-",
+          rowsData[4]?.querySelector(".ok, .kosong")?.innerText || "-",
+          rowsData[5]?.querySelector(".ok, .kosong")?.innerText || "-"
+        ]);
+      });
+    } else if (activeTab === "Perolehan") {
+      rowsArr.push(["REKAP PEROLEHAN & OMZET PROMOTOR TOKO"], []);
+      rowsArr.push(["Peringkat", "Nama Promotor", "Omzet (Rp)", "UC"]);
+      targetElement.querySelectorAll("div[style*='border-bottom']").forEach((row, i) => {
+        const nama = row.querySelector("div[style*='text-overflow']")?.innerText || "-";
+        const omzetText = row.querySelectorAll("div")[3]?.innerText || "0";
+        const ucText = row.querySelectorAll("div")[4]?.innerText || "0";
+        rowsArr.push([i+1, nama, omzetText, ucText]);
+      });
+    }
+    if (rowsArr.length > 0) {
+      const ws = XLSX.utils.aoa_to_sheet(rowsArr);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, activeTab);
+      XLSX.writeFile(wb, `${namaFile}.xlsx`);
+    } else {
+      showPopup("Tidak ada data untuk diekspor.");
+    }
+  } else if (format === "pdf") {
+    const elemenPrint = targetElement.cloneNode(true);
+    elemenPrint.style.color = "#000";
+    elemenPrint.style.background = "#fff";
+    elemenPrint.style.padding = "20px";
+    html2pdf().set({ margin: 10, filename: `${namaFile}.pdf`, html2canvas: { scale: 2 }, jsPDF: { format: 'a4' } }).from(elemenPrint).save();
+  }
+}
+
+/* ============================================================ */
+/*  POPUP                                                       */
+/* ============================================================ */
+function showPopup(pesan) {
+  document.getElementById("popupText").innerText = pesan;
+  document.getElementById("popup").style.display = "flex";
+}
+function tutupPopup() { document.getElementById("popup").style.display = "none"; }
 </script>
 
 </body>
