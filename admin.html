@@ -153,7 +153,7 @@ let allRewardsSaya = {};
 function convertTanggalExcel(val) {
   if (val === undefined || val === null || val === '') return '';
   
-  // Angka serial Excel (misal 48032)
+  // Angka serial Excel
   if (typeof val === 'number' && val > 1 && val < 100000) {
     const epoch = new Date(Date.UTC(1899, 11, 30));
     const d = new Date(epoch.getTime() + val * 24 * 60 * 60 * 1000);
@@ -163,7 +163,6 @@ function convertTanggalExcel(val) {
   const str = String(val).trim();
   if (!str) return '';
   
-  // String serial "48032"
   if (/^\d{5}$/.test(str)) {
     const num = parseInt(str);
     const epoch = new Date(Date.UTC(1899, 11, 30));
@@ -177,13 +176,21 @@ function convertTanggalExcel(val) {
     return `${p[2]}/${p[1]}/${p[0]}`;
   }
   
-  // "12/10/2026" (MM/DD/YYYY dari XLSX library) → TUKAR ke DD/MM/YYYY
+  // "12/10/2026" — DETEKSI OTOMATIS
   if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
     const parts = str.split(' ')[0].split('/');
-    const mm = parts[0].padStart(2, '0');
-    const dd = parts[1].padStart(2, '0');
+    const a = Number(parts[0]);
+    const b = Number(parts[1]);
     const yyyy = parts[2];
-    return `${dd}/${mm}/${yyyy}`;  // TUKAR!
+    
+    // a > 12 → a pasti tanggal (DD), sudah DD/MM
+    if (a > 12) return `${String(a).padStart(2,'0')}/${String(b).padStart(2,'0')}/${yyyy}`;
+    
+    // b > 12 → b pasti tanggal (DD), format MM/DD → TUKAR
+    if (b > 12) return `${String(b).padStart(2,'0')}/${String(a).padStart(2,'0')}/${yyyy}`;
+    
+    // Ambigu (kedua <= 12) → JANGAN TUKAR (asumsi sudah DD/MM dari Excel)
+    return `${String(a).padStart(2,'0')}/${String(b).padStart(2,'0')}/${yyyy}`;
   }
   
   return str;
