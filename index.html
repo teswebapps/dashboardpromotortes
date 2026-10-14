@@ -12,22 +12,15 @@ import { getDatabase, ref, set, get, update, remove, onValue, push } from "https
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
-
   apiKey: "AIzaSyCNj8nRMP0ijH1GUXKeJlsE-EG5AYCkHBU",
-
   authDomain: "dashboardpromotor.firebaseapp.com",
-
   databaseURL: "https://dashboardpromotor-default-rtdb.asia-southeast1.firebasedatabase.app",
-
   projectId: "dashboardpromotor",
-
   storageBucket: "dashboardpromotor.firebasestorage.app",
-
   messagingSenderId: "474469951678",
-
   appId: "1:474469951678:web:f769fed156a36505cbd6ef"
-
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
@@ -42,9 +35,7 @@ signInAnonymously(auth).then(() => {
   window.dbOnValue = onValue;
   window.dbPush = push;
   window.dispatchEvent(new Event('firebase-ready'));
-}).catch(err => {
-  alert("Gagal koneksi Firebase: " + err.message);
-});
+}).catch(err => alert("Gagal koneksi Firebase: " + err.message));
 
 onAuthStateChanged(auth, user => {
   if (!user) setTimeout(() => location.reload(), 1000);
@@ -53,25 +44,454 @@ onAuthStateChanged(auth, user => {
 
 <style>
 :root {
-  --bg: #f8fafc;
-  --card: #ffffff;
-  --soft: #f1f5f9;
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: #e2e8f0;
-  --primary: #2563eb;
-  --success: #059669;
-  --danger: #dc2626;
-  --warning: #d97706;
-  --gold: #d4af37;
+  --card: #ffffff; --soft: #f1f5f9; --text: #0f172a;
+  --muted: #64748b; --border: #e2e8f0; --primary: #2563eb;
+  --success: #059669; --danger: #dc2626; --warning: #d97706; --gold: #d4af37;
+  --cyber-bg: #050814;
+  --cyber-card: #0a192f;
+  --cyber-cyan: #38bdf8;
 }
 * { box-sizing: border-box; font-family: 'Inter', sans-serif !important; }
-body {
+
+/* ============================================================ */
+/* ===== LOGIN SCREEN — CYBER STYLE =========================== */
+/* ============================================================ */
+body.login-active {
+  margin: 0;
+  padding: 0;
+  background: var(--cyber-bg);
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+#login-screen {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: #050814;
+  overflow-y: auto;
+  overflow-x: hidden;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.fut-grid {
+  position: fixed;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(14,165,233,0.08) 1px, transparent 1px), 
+    linear-gradient(90deg, rgba(14,165,233,0.08) 1px, transparent 1px);
+  background-size: 40px 40px;
+  animation: futGridMove 20s linear infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+@keyframes futGridMove {
+  0% { background-position: 0 0; }
+  100% { background-position: 40px 40px; }
+}
+
+.fut-orb {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.6;
+  animation: futOrbFloat 12s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+.fut-orb-1 { width: 400px; height: 400px; background: #0ea5e9; top: -100px; left: -100px; }
+.fut-orb-2 { width: 300px; height: 300px; background: #a855f7; bottom: -80px; right: -80px; animation-delay: -4s; }
+.fut-orb-3 { width: 350px; height: 350px; background: #06b6d4; top: 40%; left: 45%; animation-delay: -8s; opacity: 0.4; }
+
+@keyframes futOrbFloat {
+  0%, 100% { transform: translate(0,0) scale(1); }
+  33% { transform: translate(40px,-30px) scale(1.1); }
+  66% { transform: translate(-30px,40px) scale(0.9); }
+}
+
+.fut-particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
+.fut-particle {
+  position: absolute;
+  width: 2px; height: 2px;
+  border-radius: 50%;
+  animation: futParticleFloat linear infinite;
+}
+
+@keyframes futParticleFloat {
+  0% { transform: translateY(100vh) scale(0); opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  100% { transform: translateY(-100vh) scale(1); opacity: 0; }
+}
+
+.fut-container {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+  max-width: 1100px;
+  width: 100%;
+  animation: futFadeIn 0.8s ease-out;
+  margin: auto;
+}
+
+@keyframes futFadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fut-left { color: #ffffff; text-align: center; padding: 20px; }
+
+.fut-tagline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: rgba(14,165,233,0.1);
+  border: 1px solid rgba(14,165,233,0.3);
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  color: #22d3ee;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+}
+
+.fut-dot {
+  width: 6px; height: 6px;
+  background: #22d3ee;
+  border-radius: 50%;
+  box-shadow: 0 0 10px #22d3ee;
+  animation: futDotPulse 1.5s infinite;
+}
+
+@keyframes futDotPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+.fut-headline {
+  font-size: 42px;
+  font-weight: 900;
+  margin: 0 0 8px 0;
+  color: #ffffff;
+  text-shadow: 0 0 30px rgba(34,211,238,0.5);
+  line-height: 1.1;
+}
+
+.fut-subheadline {
+  font-size: 14px;
+  color: #94a3b8;
+  font-weight: 500;
+  margin: 0 0 30px 0;
+  letter-spacing: 1px;
+}
+
+.fut-characters {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.fut-characters .team-3d-img {
+  max-width: 100%;
+  max-height: 220px;
+  height: auto;
+  filter: drop-shadow(0 20px 30px rgba(0, 200, 255, 0.35));
+  animation: floatTeam 3.5s ease-in-out infinite;
+}
+
+@keyframes floatTeam {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-12px) scale(1.02); }
+}
+
+.fut-live-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background: rgba(5,8,20,0.6);
+  border: 1px solid rgba(34,211,238,0.3);
+  border-radius: 100px;
+  font-size: 12px;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.fut-pulse-dot {
+  width: 8px; height: 8px;
+  background: #22d3ee;
+  border-radius: 50%;
+  animation: futDotPulse 1.5s infinite;
+}
+
+.fut-right { display: flex; justify-content: center; }
+
+.fut-card {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(24px);
+  border: 1px solid rgba(34,211,238,0.2);
+  border-radius: 24px;
+  padding: 40px 32px;
+  box-shadow: 0 0 60px rgba(14,165,233,0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.fut-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #22d3ee, transparent);
+}
+
+.fut-logo {
+  width: 110px;
+  height: 110px;
+  margin: 0 auto 20px;
+  background: rgba(14,165,233,0.15);
+  border: 1px solid rgba(34,211,238,0.3);
+  border-radius: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  box-shadow: 0 0 40px rgba(34,211,238,0.4);
+  font-size: 40px;
+}
+
+.fut-logo img { width: 100%; height: 100%; object-fit: contain; }
+
+.fut-field { margin-bottom: 18px; position: relative; }
+
+.fut-field label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  color: #22d3ee;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 8px;
+}
+
+.fut-select {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(2,6,23,0.6);
+  border: 1px solid rgba(34,211,238,0.2);
+  border-radius: 12px;
+  color: #e2e8f0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.fut-select span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.fut-select svg {
+  width: 16px;
+  height: 16px;
+  color: #22d3ee;
+  flex-shrink: 0;
+  transition: transform 0.3s ease;
+}
+
+#custom-select-trigger.open svg { transform: rotate(180deg); }
+
+.fut-menu {
+  position: absolute;
+  left: 0; right: 0;
+  top: 100%;
+  margin-top: 6px;
+  background: rgba(15,23,42,0.98);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(34,211,238,0.3);
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+  max-height: 240px;
+  overflow-y: auto;
+  z-index: 999;
+  padding: 6px;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-8px);
+  transition: all 0.2s ease;
+}
+
+.fut-menu.open {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transform: translateY(0) !important;
+}
+
+.fut-menu .option {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #e2e8f0;
+  cursor: pointer;
+}
+
+.fut-menu .option:hover { background: rgba(34,211,238,0.15); color: #22d3ee; }
+.fut-menu .option.selected { background: rgba(34,211,238,0.25); color: #22d3ee; }
+.fut-menu .option.empty { color: #64748b; font-style: italic; text-align: center; }
+
+.fut-input {
+  width: 100%;
+  padding: 14px 16px;
+  background: rgba(2,6,23,0.6);
+  border: 1px solid rgba(34,211,238,0.2);
+  border-radius: 12px;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  letter-spacing: 10px;
+  outline: none;
+}
+
+.fut-input::placeholder { color: rgba(148,163,184,0.4); }
+.fut-input:focus { border-color: #22d3ee; box-shadow: 0 0 25px rgba(34,211,238,0.4); }
+
+.fut-error {
+  color: #f87171;
+  font-size: 12px;
+  font-weight: 700;
+  text-align: center;
+  min-height: 18px;
+  margin-bottom: 8px;
+}
+
+.fut-btn {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 0 30px rgba(34,211,238,0.4);
+}
+
+.fut-btn:active { transform: scale(0.98); }
+.fut-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+.fut-footer {
+  text-align: center;
+  font-size: 12px;
+  color: #64748b;
+  margin: 20px 0 0 0;
+  font-weight: 500;
+}
+
+.fut-footer span { color: #22d3ee; font-weight: 700; }
+
+/* ===== LOGIN TOAST ===== */
+.login-toast-overlay {
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  padding: 16px;
+}
+
+.login-toast-overlay.active { opacity: 1; visibility: visible; }
+
+.login-toast-card {
+  background: var(--cyber-card);
+  padding: 32px 40px;
+  border-radius: 24px;
+  text-align: center;
+  border: 2px solid var(--cyber-cyan);
+  box-shadow: 0 0 40px rgba(56, 189, 248, 0.5), 0 25px 60px rgba(0, 0, 0, 0.6);
+  transform: scale(0.8);
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  min-width: 240px;
+}
+
+.login-toast-overlay.active .login-toast-card { transform: scale(1); }
+
+.login-toast-icon {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #27fabe, #10b981);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  box-shadow: 0 0 20px rgba(39, 250, 190, 0.5);
+}
+
+.login-toast-icon svg {
+  width: 40px;
+  height: 40px;
+  stroke: #ffffff;
+  stroke-width: 3;
+  fill: none;
+}
+
+.login-toast-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #ffffff;
+  margin-bottom: 4px;
+}
+
+.login-toast-subtitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.login-toast-name {
+  color: var(--cyber-cyan);
+  font-weight: 800;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+/* ============================================================ */
+/* ===== DASHBOARD (NORMAL) =================================== */
+/* ============================================================ */
+body.dashboard-active {
   margin: 0; padding: 16px;
   background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
   color: var(--text); min-height: 100vh;
   display: flex; justify-content: center;
 }
+
 .container {
   width: 100%; max-width: 720px;
   background: var(--card); border-radius: 20px;
@@ -95,29 +515,6 @@ body {
   text-transform: uppercase; color: var(--primary);
   letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;
 }
-label {
-  display: block; font-size: 11px; font-weight: 700;
-  color: var(--muted); text-transform: uppercase;
-  margin-bottom: 6px; letter-spacing: 0.3px;
-}
-input, select {
-  width: 100%; padding: 12px 14px; border-radius: 12px;
-  border: 1px solid var(--border); background: #f8fafc;
-  font-size: 14px; font-weight: 600; color: var(--text);
-  outline: none; box-sizing: border-box;
-}
-input:focus { border-color: var(--primary); background: #fff; }
-button {
-  width: 100%; padding: 12px 16px; border-radius: 12px;
-  font-size: 12px; font-weight: 700; cursor: pointer;
-  border: none; text-transform: uppercase;
-  letter-spacing: 0.3px; transition: all 0.2s;
-}
-.btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: #1d4ed8; }
-.btn-soft { background: var(--soft); color: var(--text); border: 1px solid var(--border); }
-.btn-soft:hover { background: #e2e8f0; }
-.hidden { display: none !important; }
 .user-badge {
   display: flex; justify-content: space-between; align-items: center;
   background: linear-gradient(135deg, #0f172a, #1e293b);
@@ -129,7 +526,7 @@ button {
 .user-badge button {
   width: auto; padding: 8px 14px; font-size: 11px;
   background: rgba(255,255,255,0.1); color: white;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; cursor: pointer;
 }
 .tabs {
   display: flex; gap: 6px; margin-bottom: 14px;
@@ -154,12 +551,10 @@ button {
 }
 .stat-card .label {
   font-size: 10px; font-weight: 800; color: var(--muted);
-  text-transform: uppercase; letter-spacing: 0.3px;
-  margin-bottom: 6px;
+  text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px;
 }
 .stat-card .value {
-  font-size: 18px; font-weight: 900; color: var(--primary);
-  line-height: 1.2;
+  font-size: 18px; font-weight: 900; color: var(--primary); line-height: 1.2;
 }
 .stat-card .value.green { color: var(--success); }
 .stat-card .value.gold { color: var(--gold); }
@@ -173,20 +568,13 @@ button {
 }
 .list-item .kiri { flex: 1; min-width: 0; }
 .list-item .produk {
-  font-size: 12.5px; font-weight: 700;
-  color: var(--text); margin-bottom: 3px;
-  word-break: break-word;
+  font-size: 12.5px; font-weight: 700; color: var(--text);
+  margin-bottom: 3px; word-break: break-word;
 }
-.list-item .info {
-  font-size: 10.5px; color: var(--muted); font-weight: 600;
-}
+.list-item .info { font-size: 10.5px; color: var(--muted); font-weight: 600; }
 .list-item .kanan { text-align: right; flex-shrink: 0; }
-.list-item .harga {
-  font-size: 13px; font-weight: 800; color: var(--success);
-}
-.list-item .qty {
-  font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 2px;
-}
+.list-item .harga { font-size: 13px; font-weight: 800; color: var(--success); }
+.list-item .qty { font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 2px; }
 .empty {
   text-align: center; padding: 30px 15px;
   color: var(--muted); font-size: 13px;
@@ -197,8 +585,7 @@ button {
 .rank-item {
   display: flex; align-items: center; gap: 12px;
   background: white; border: 1px solid var(--border);
-  border-radius: 10px; padding: 10px 14px;
-  margin-bottom: 6px;
+  border-radius: 10px; padding: 10px 14px; margin-bottom: 6px;
 }
 .rank-item.me {
   background: linear-gradient(135deg, #dbeafe, #bfdbfe);
@@ -223,50 +610,113 @@ button {
   font-size: 13px; font-weight: 800; color: var(--primary);
   margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
 }
-.info-block .deskripsi {
-  font-size: 12px; color: var(--text); line-height: 1.5;
+.info-block .deskripsi { font-size: 12px; color: var(--text); line-height: 1.5; }
+.info-block .meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.hidden { display: none !important; }
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle; margin-right: 6px;
 }
-.info-block .meta {
-  font-size: 11px; color: var(--muted); margin-top: 4px;
+@keyframes spin { to { transform: rotate(360deg); } }
+
+@media (max-width: 900px) {
+  .fut-container { grid-template-columns: 1fr; gap: 16px; max-width: 480px; margin: 0 auto; }
+  .fut-left { padding: 8px; }
+  .fut-headline { font-size: 26px; margin-bottom: 4px; }
+  .fut-subheadline { font-size: 12px; margin-bottom: 14px; }
+  .fut-tagline { font-size: 10px; padding: 5px 12px; margin-bottom: 12px; }
+  .fut-characters .team-3d-img { max-height: 140px; }
+  .fut-live-status { font-size: 11px; padding: 7px 14px; }
+  .fut-card { padding: 24px 20px; border-radius: 20px; }
+  .fut-logo { width: 80px; height: 80px; margin-bottom: 14px; padding: 10px; font-size: 32px; }
+  .fut-input { padding: 12px 14px; font-size: 20px; letter-spacing: 8px; }
 }
 @media (max-width: 480px) {
-  body { padding: 12px; }
+  body.dashboard-active { padding: 12px; }
   .container { padding: 16px; border-radius: 16px; }
   .stat-card .value { font-size: 16px; }
 }
 </style>
 </head>
-<body>
+<body class="login-active">
 
-<div class="container">
-  <div class="header">
-    <h1>💰 Rekap Penjualan UFO</h1>
-    <p>Malang Kebonsari</p>
-  </div>
+<!-- ========== LOGIN SCREEN ========== -->
+<div id="login-screen">
+  <div class="fut-grid"></div>
+  <div class="fut-orb fut-orb-1"></div>
+  <div class="fut-orb fut-orb-2"></div>
+  <div class="fut-orb fut-orb-3"></div>
+  <div class="fut-particles" id="fut-particles"></div>
 
-  <!-- LOGIN -->
-  <div id="loginBox">
-    <div class="card">
-      <h3>🔐 Login Promotor</h3>
-      <label>Nama Absen</label>
-      <select id="selectNama">
-        <option value="">-- Memuat daftar promotor --</option>
-      </select>
-      <div style="height:10px;"></div>
-      <label>PIN</label>
-      <input type="password" id="inputPin" placeholder="••••" maxlength="6"
-        inputmode="numeric" pattern="[0-9]*"
-        style="text-align:center; font-size:18px; letter-spacing:6px; font-weight:800;"
-        oninput="this.value = this.value.replace(/\D/g, '')"
-        onkeypress="if(event.key === 'Enter') loginPromotor()">
-      <div style="height:10px;"></div>
-      <button class="btn-primary" onclick="loginPromotor()">Masuk</button>
-      <div id="loginError" class="alert err hidden" style="margin-top:10px;"></div>
+  <div class="fut-container">
+    <div class="fut-left">
+      <div class="fut-tagline">
+        <span class="fut-dot"></span>
+        <span>REKAP PENJUALAN DIGITAL</span>
+      </div>
+      <h1 class="fut-headline">💰 REKAP<br>PENJUALAN</h1>
+      <p class="fut-subheadline">UFO Malang Kebonsari</p>
+
+      <div class="fut-characters">
+        <img src="team-3d.png" alt="Tim Promotor UFO" class="team-3d-img" onerror="this.style.display='none'">
+      </div>
+
+      <div class="fut-live-status">
+        <span class="fut-pulse-dot"></span>
+        <span id="live-status-text">Memuat data...</span>
+      </div>
+    </div>
+
+    <div class="fut-right">
+      <div class="fut-card">
+        <div class="fut-logo">
+          <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='🛸';">
+        </div>
+
+        <div class="fut-field">
+          <label>Pilih Nama</label>
+          <input type="hidden" id="login-pilih-sales" value="">
+          <div id="custom-select-trigger" onclick="toggleCustomSelect()" class="fut-select">
+            <span id="custom-select-label">-- Memuat daftar promotor --</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </div>
+          <div id="custom-select-menu" class="fut-menu"></div>
+        </div>
+
+        <div class="fut-field">
+          <label>Masukkan PIN</label>
+          <input type="password" id="login-pin-input" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="••••" autocomplete="off" class="fut-input">
+        </div>
+
+        <div id="login-error" class="fut-error"></div>
+
+        <button type="button" id="btn-login-promotor" class="fut-btn">
+          <span>MASUK</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </button>
+
+        <p class="fut-footer">Belum punya PIN? <span>Hubungi admin</span></p>
+      </div>
     </div>
   </div>
+</div>
 
-  <!-- DASHBOARD -->
-  <div id="dashboard" class="hidden">
+<!-- ========== DASHBOARD ========== -->
+<div id="dashboard" class="hidden">
+  <div class="container">
+    <div class="header">
+      <h1>💰 Rekap Penjualan UFO</h1>
+      <p>Malang Kebonsari</p>
+    </div>
+
     <div class="user-badge">
       <div>
         <div class="nama" id="userNama">-</div>
@@ -286,9 +736,19 @@ button {
     </div>
 
     <div id="tabContent"></div>
-
     <div style="height:8px;"></div>
-    <button class="btn-soft" onclick="logoutPromotor()">🚪 Keluar</button>
+    <button style="width:100%; padding:12px; background:var(--soft); border:1px solid var(--border); border-radius:12px; font-weight:700; cursor:pointer;" onclick="logoutPromotor()">🚪 Keluar</button>
+  </div>
+</div>
+
+<!-- Toast Login Berhasil -->
+<div class="login-toast-overlay" id="login-toast">
+  <div class="login-toast-card">
+    <div class="login-toast-icon">
+      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>
+    </div>
+    <div class="login-toast-title">Login Berhasil!</div>
+    <div class="login-toast-subtitle">Selamat datang, <span class="login-toast-name" id="login-toast-name">-</span></div>
   </div>
 </div>
 
@@ -298,10 +758,12 @@ let allPromotor = {};
 let infoData = { promo: [], rules: [], punishment: [], reward: [] };
 let currentUser = null;
 let currentTab = 'dash';
+let customSelectOptions = [];
 
 window.addEventListener('firebase-ready', () => {
+  initParticles();
   loadPromotorList();
-  const saved = localStorage.getItem('ufo_promotor_session');
+  const saved = localStorage.getItem('ufo_promotor_session_v2');
   if (saved) {
     try {
       const data = JSON.parse(saved);
@@ -311,71 +773,173 @@ window.addEventListener('firebase-ready', () => {
   }
 });
 
+/* ===== LOGIN PARTICLES ===== */
+function initParticles() {
+  const container = document.getElementById('fut-particles');
+  if (!container) return;
+  for (let i = 0; i < 25; i++) {
+    const p = document.createElement('div');
+    p.className = 'fut-particle';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.animationDuration = (8 + Math.random() * 12) + 's';
+    p.style.animationDelay = (Math.random() * 10) + 's';
+    const colors = ['#22d3ee', '#a855f7', '#3b82f6'];
+    const color = colors[Math.floor(Math.random() * colors.length)];
+    p.style.background = color;
+    p.style.boxShadow = `0 0 6px ${color}, 0 0 12px ${color}`;
+    container.appendChild(p);
+  }
+}
+
+/* ===== LOAD PROMOTOR LIST ===== */
 function loadPromotorList() {
   window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
-    const sel = document.getElementById('selectNama');
+    const labelEl = document.getElementById('custom-select-label');
+    const liveEl = document.getElementById('live-status-text');
     if (!snap.exists()) {
-      sel.innerHTML = '<option value="">-- Belum ada promotor (hubungi admin) --</option>';
+      renderCustomSelectOptions([]);
+      if (liveEl) liveEl.innerText = 'Belum ada promotor';
       return;
     }
     allPromotor = snap.val();
     const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
       .filter(p => p.aktif !== false)
       .sort((a,b) => a.namaAbsen.localeCompare(b.namaAbsen));
-    const curVal = sel.value;
-    sel.innerHTML = '<option value="">-- Pilih Nama --</option>' +
-      list.map(p => `<option value="${p.key}">${p.namaAbsen}</option>`).join('');
-    if (curVal) sel.value = curVal;
+    renderCustomSelectOptions(list);
+    if (liveEl) liveEl.innerText = `${list.length} promotor terdaftar`;
   });
 }
 
-async function loginPromotor() {
-  const key = document.getElementById('selectNama').value;
-  const pin = document.getElementById('inputPin').value.trim();
-  const errEl = document.getElementById('loginError');
-  errEl.classList.add('hidden');
-  if (!key) { errEl.innerText = 'Pilih nama dulu!'; errEl.classList.remove('hidden'); return; }
-  if (!pin) { errEl.innerText = 'Masukkan PIN!'; errEl.classList.remove('hidden'); return; }
-  try {
-    const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
-    if (!snap.exists()) {
-      errEl.innerText = 'Promotor tidak ditemukan.'; errEl.classList.remove('hidden'); return;
-    }
-    const data = snap.val();
-    if (String(data.pin) !== pin) {
-      errEl.innerText = '❌ PIN salah!'; errEl.classList.remove('hidden');
-      document.getElementById('inputPin').value = '';
-      return;
-    }
-    currentUser = { key, ...data };
-    localStorage.setItem('ufo_promotor_session', JSON.stringify(currentUser));
-    tampilkanDashboard();
-  } catch (err) {
-    errEl.innerText = 'Gagal: ' + err.message; errEl.classList.remove('hidden');
+/* ===== CUSTOM SELECT ===== */
+function toggleCustomSelect() {
+  const menu = document.getElementById('custom-select-menu');
+  const trigger = document.getElementById('custom-select-trigger');
+  if (!menu || !trigger) return;
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    menu.classList.remove('open');
+    trigger.classList.remove('open');
+  } else {
+    menu.classList.add('open');
+    trigger.classList.add('open');
+    const selected = menu.querySelector('.option.selected');
+    if (selected) selected.scrollIntoView({ block: 'nearest' });
   }
 }
 
-function logoutPromotor() {
-  if (!confirm("Yakin ingin keluar?")) return;
-  localStorage.removeItem('ufo_promotor_session');
-  currentUser = null;
-  allPenjualan = [];
-  document.getElementById('dashboard').classList.add('hidden');
-  document.getElementById('loginBox').classList.remove('hidden');
-  document.getElementById('selectNama').value = '';
-  document.getElementById('inputPin').value = '';
+function pilihOpsiCustom(key, label) {
+  const hidden = document.getElementById('login-pilih-sales');
+  const labelEl = document.getElementById('custom-select-label');
+  const menu = document.getElementById('custom-select-menu');
+  const trigger = document.getElementById('custom-select-trigger');
+  if (!hidden || !labelEl) return;
+  hidden.value = key;
+  labelEl.innerText = label;
+  menu.querySelectorAll('.option').forEach(opt => {
+    opt.classList.toggle('selected', opt.dataset.value === key);
+  });
+  menu.classList.remove('open');
+  trigger.classList.remove('open');
 }
 
+function renderCustomSelectOptions(list) {
+  const menu = document.getElementById('custom-select-menu');
+  const labelEl = document.getElementById('custom-select-label');
+  if (!menu || !labelEl) return;
+  if (!list || list.length === 0) {
+    menu.innerHTML = '<div class="option empty">-- Belum ada promotor --</div>';
+    labelEl.innerText = '-- Belum ada promotor --';
+    return;
+  }
+  labelEl.innerText = '-- Pilih Nama Anda --';
+  menu.innerHTML = list.map(p => {
+    const safeKey = String(p.key).replace(/"/g, '&quot;');
+    const safeLabel = String(p.namaAbsen).replace(/"/g, '&quot;').replace(/'/g, "&#39;");
+    return `<div class="option" data-value="${safeKey}" onclick="pilihOpsiCustom('${safeKey}', '${safeLabel}')">${p.namaAbsen}</div>`;
+  }).join('');
+}
+
+document.addEventListener('click', (e) => {
+  const wrap = document.getElementById('custom-select-trigger');
+  const menu = document.getElementById('custom-select-menu');
+  if (!wrap || !menu) return;
+  if (!wrap.contains(e.target) && !menu.contains(e.target)) {
+    menu.classList.remove('open');
+    wrap.classList.remove('open');
+  }
+});
+
+/* ===== LOGIN ===== */
+async function loginPromotor() {
+  const key = document.getElementById('login-pilih-sales').value;
+  const pin = document.getElementById('login-pin-input').value.trim();
+  const errEl = document.getElementById('login-error');
+  const btn = document.getElementById('btn-login-promotor');
+  errEl.innerText = '';
+  if (!key) { errEl.innerText = 'Silakan pilih nama Anda!'; return; }
+  if (!pin) { errEl.innerText = 'Masukkan PIN!'; return; }
+  const asli = btn.innerHTML;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Memeriksa...';
+  try {
+    const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
+    if (!snap.exists()) {
+      errEl.innerText = 'Promotor tidak ditemukan.';
+      btn.disabled = false;
+      btn.innerHTML = asli;
+      return;
+    }
+    const data = snap.val();
+    if (String(data.pin) !== pin) {
+      errEl.innerText = '❌ PIN salah. Coba lagi.';
+      document.getElementById('login-pin-input').value = '';
+      document.getElementById('login-pin-input').focus();
+      btn.disabled = false;
+      btn.innerHTML = asli;
+      return;
+    }
+    currentUser = { key, ...data };
+    localStorage.setItem('ufo_promotor_session_v2', JSON.stringify(currentUser));
+    document.getElementById('login-toast-name').innerText = data.namaAbsen;
+    const toast = document.getElementById('login-toast');
+    toast.classList.add('active');
+    setTimeout(() => {
+      tampilkanDashboard();
+      document.getElementById('login-pin-input').value = '';
+      errEl.innerText = '';
+      btn.disabled = false;
+      btn.innerHTML = asli;
+      setTimeout(() => { toast.classList.remove('active'); }, 800);
+    }, 1200);
+  } catch (err) {
+    errEl.innerText = 'Gagal: ' + err.message;
+    btn.disabled = false;
+    btn.innerHTML = asli;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('btn-login-promotor');
+  if (btn) btn.onclick = loginPromotor;
+  const pin = document.getElementById('login-pin-input');
+  if (pin) {
+    pin.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 6); });
+    pin.addEventListener('keypress', e => { if (e.key === 'Enter') loginPromotor(); });
+  }
+});
+
+/* ===== DASHBOARD ===== */
 function tampilkanDashboard() {
-  document.getElementById('loginBox').classList.add('hidden');
+  document.body.classList.remove('login-active');
+  document.body.classList.add('dashboard-active');
+  document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard').classList.remove('hidden');
   document.getElementById('userNama').innerText = currentUser.namaAbsen;
 
   window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
     allPenjualan = [];
     if (snap.exists()) {
-      const data = snap.val();
-      Object.values(data).forEach(item => {
+      Object.values(snap.val()).forEach(item => {
         if (item && item.namaSales) allPenjualan.push(item);
       });
     }
@@ -394,6 +958,23 @@ function tampilkanDashboard() {
   });
 }
 
+function logoutPromotor() {
+  if (!confirm("Yakin ingin keluar?")) return;
+  localStorage.removeItem('ufo_promotor_session_v2');
+  currentUser = null;
+  allPenjualan = [];
+  document.getElementById('dashboard').classList.add('hidden');
+  document.body.classList.remove('dashboard-active');
+  document.body.classList.add('login-active');
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-pilih-sales').value = '';
+  document.getElementById('login-pin-input').value = '';
+  const labelEl = document.getElementById('custom-select-label');
+  if (labelEl) labelEl.innerText = '-- Pilih Nama Anda --';
+  const menuEl = document.getElementById('custom-select-menu');
+  if (menuEl) menuEl.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+}
+
 function switchTab(tab, evt) {
   currentTab = tab;
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -401,9 +982,7 @@ function switchTab(tab, evt) {
   renderTab();
 }
 
-/* ============================================================ */
-/* HELPER */
-/* ============================================================ */
+/* ===== HELPERS ===== */
 function parseTanggal(str) {
   if (!str) return null;
   const p = String(str).split('/');
@@ -443,9 +1022,7 @@ function hitungUC(list) {
              .reduce((s, x) => s + (Number(x.qty) || 0), 0);
 }
 
-/* ============================================================ */
-/* RENDER */
-/* ============================================================ */
+/* ===== RENDER TAB ===== */
 function renderTab() {
   const el = document.getElementById('tabContent');
   if (currentTab === 'dash') el.innerHTML = renderDashboard();
@@ -461,15 +1038,12 @@ function renderDashboard() {
   const dataSaya = getDataSaya();
   const dataHari = dataSaya.filter(x => isHariIni(x.tanggal));
   const dataBulan = dataSaya.filter(x => isBulanIni(x.tanggal));
-
   const omzetHari = hitungOmzet(dataHari);
   const omzetBulan = hitungOmzet(dataBulan);
   const unitBulan = hitungUnit(dataBulan);
   const ucBulan = hitungUC(dataBulan);
-
   const rank = hitungRankingList();
   const posSaya = rank.findIndex(x => x.namaSales === currentUser.namaSales) + 1;
-
   const targetUC = Number(currentUser.targetUC) || 0;
   const ikutUC = currentUser.ikutUC === 'YA';
   const kurangUC = ikutUC && ucBulan < targetUC ? (targetUC - ucBulan) : 0;
@@ -519,7 +1093,7 @@ function renderListFilter(filterFn, judul) {
       <div class="stat-card"><div class="label">UC</div><div class="value gold">${uc}</div></div>
     </div>
     <div style="margin-top:12px;">
-      ${list.length === 0 ? '<div class="empty"><div class="icon">📭</div>Belum ada transaksi</div>' 
+      ${list.length === 0 ? '<div class="empty"><div class="icon">📭</div>Belum ada transaksi</div>'
         : list.slice().reverse().map(x => renderItem(x)).join('')}
     </div>
   `;
@@ -583,7 +1157,6 @@ function hitungRankingList() {
 
 function renderRanking() {
   const rank = hitungRankingList();
-  // Map namaSales ke namaAbsen
   const mapNama = {};
   Object.values(allPromotor).forEach(p => { mapNama[p.namaSales] = p.namaAbsen; });
   return `
