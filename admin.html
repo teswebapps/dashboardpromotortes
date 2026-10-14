@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Admin — Upload Penjualan UFO Kebonsari</title>
+<title>Admin — Dashboard UFO Kebonsari</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
@@ -13,22 +13,15 @@ import { getDatabase, ref, set, get, update, remove, onValue, push } from "https
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
-
   apiKey: "AIzaSyCNj8nRMP0ijH1GUXKeJlsE-EG5AYCkHBU",
-
   authDomain: "dashboardpromotor.firebaseapp.com",
-
   databaseURL: "https://dashboardpromotor-default-rtdb.asia-southeast1.firebasedatabase.app",
-
   projectId: "dashboardpromotor",
-
   storageBucket: "dashboardpromotor.firebasestorage.app",
-
   messagingSenderId: "474469951678",
-
   appId: "1:474469951678:web:f769fed156a36505cbd6ef"
-
 };
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
@@ -43,9 +36,7 @@ signInAnonymously(auth).then(() => {
   window.dbOnValue = onValue;
   window.dbPush = push;
   window.dispatchEvent(new Event('firebase-ready'));
-}).catch(err => {
-  alert("Gagal koneksi Firebase: " + err.message);
-});
+}).catch(err => alert("Gagal koneksi Firebase: " + err.message));
 
 onAuthStateChanged(auth, user => {
   if (!user) setTimeout(() => location.reload(), 1000);
@@ -54,16 +45,9 @@ onAuthStateChanged(auth, user => {
 
 <style>
 :root {
-  --bg: #f8fafc;
-  --card: #ffffff;
-  --soft: #f1f5f9;
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: #e2e8f0;
-  --primary: #2563eb;
-  --success: #059669;
-  --danger: #dc2626;
-  --warning: #d97706;
+  --card: #ffffff; --soft: #f1f5f9; --text: #0f172a;
+  --muted: #64748b; --border: #e2e8f0; --primary: #2563eb;
+  --success: #059669; --danger: #dc2626; --warning: #d97706; --gold: #d4af37;
 }
 * { box-sizing: border-box; font-family: 'Inter', sans-serif !important; }
 body {
@@ -73,7 +57,7 @@ body {
   display: flex; justify-content: center;
 }
 .container {
-  width: 100%; max-width: 720px;
+  width: 100%; max-width: 800px;
   background: var(--card); border-radius: 20px;
   padding: 24px; border: 1px solid var(--border);
   box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.05);
@@ -100,13 +84,13 @@ label {
   color: var(--muted); text-transform: uppercase;
   margin-bottom: 6px; letter-spacing: 0.3px;
 }
-input, select {
+input, select, textarea {
   width: 100%; padding: 12px 14px; border-radius: 12px;
   border: 1px solid var(--border); background: #f8fafc;
   font-size: 14px; font-weight: 600; color: var(--text);
   outline: none; box-sizing: border-box;
 }
-input:focus { border-color: var(--primary); background: #fff; }
+input:focus, select:focus, textarea:focus { border-color: var(--primary); background: #fff; }
 button {
   width: 100%; padding: 12px 16px; border-radius: 12px;
   font-size: 12px; font-weight: 700; cursor: pointer;
@@ -114,58 +98,50 @@ button {
   letter-spacing: 0.3px; transition: all 0.2s;
 }
 .btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+.btn-primary:hover { background: #1d4ed8; }
 .btn-success { background: var(--success); color: white; }
 .btn-success:hover { background: #047857; }
 .btn-danger { background: var(--danger); color: white; }
 .btn-danger:hover { background: #b91c1c; }
 .btn-soft { background: var(--soft); color: var(--text); border: 1px solid var(--border); }
 .btn-soft:hover { background: #e2e8f0; }
-.btn-disabled { background: #cbd5e1; color: #64748b; cursor: not-allowed; }
+.btn-sm { padding: 8px 12px; font-size: 11px; width: auto; }
 .hidden { display: none !important; }
-.file-input-wrap {
+.tabs {
+  display: flex; gap: 6px; margin-bottom: 16px;
+  overflow-x: auto; padding-bottom: 4px;
+}
+.tab-btn {
+  flex-shrink: 0; padding: 9px 16px; border-radius: 10px;
+  background: var(--soft); border: 1px solid var(--border);
+  color: var(--muted); font-size: 11.5px; font-weight: 700;
+  cursor: pointer; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.tab-btn.active {
+  background: var(--primary); color: white; border-color: var(--primary);
+}
+.file-wrap {
   border: 2px dashed var(--primary);
   border-radius: 12px; padding: 24px;
   text-align: center; cursor: pointer;
   background: rgba(37, 99, 235, 0.05);
-  transition: all 0.2s;
 }
-.file-input-wrap:hover { background: rgba(37, 99, 235, 0.1); }
-.file-input-wrap svg {
+.file-wrap:hover { background: rgba(37, 99, 235, 0.1); }
+.file-wrap svg {
   width: 42px; height: 42px; stroke: var(--primary);
   stroke-width: 2; fill: none; margin-bottom: 8px;
 }
-.file-input-wrap p { margin: 4px 0 0; font-size: 13px; color: var(--muted); font-weight: 600; }
-.file-input-wrap strong { color: var(--primary); }
-.file-input-wrap input { display: none; }
-.stats-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr);
-  gap: 10px; margin-bottom: 12px;
-}
-.stat-card {
-  background: white; border: 1px solid var(--border);
-  border-radius: 12px; padding: 12px;
-  text-align: center;
-}
-.stat-card .label {
-  font-size: 9.5px; font-weight: 800;
-  color: var(--muted); text-transform: uppercase;
-  letter-spacing: 0.3px; margin-bottom: 4px;
-}
-.stat-card .value {
-  font-size: 16px; font-weight: 900;
-  color: var(--primary);
-}
+.file-wrap p { margin: 4px 0 0; font-size: 13px; color: var(--muted); font-weight: 600; }
+.file-wrap strong { color: var(--primary); }
+.file-wrap input { display: none; }
 .alert {
   padding: 12px 14px; border-radius: 10px;
   font-size: 12.5px; font-weight: 700;
-  margin-bottom: 12px; display: flex;
-  align-items: center; gap: 10px;
+  margin-bottom: 12px;
 }
 .alert.ok { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
 .alert.err { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
 .alert.warn { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
-.alert svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.5; fill: none; flex-shrink: 0; }
 .spinner {
   display: inline-block; width: 14px; height: 14px;
   border: 2px solid rgba(255,255,255,0.3);
@@ -174,18 +150,29 @@ button {
   vertical-align: middle; margin-right: 6px;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
-.info-list {
-  max-height: 240px; overflow-y: auto;
+.list-item {
   background: white; border: 1px solid var(--border);
-  border-radius: 10px; padding: 8px;
+  border-radius: 10px; padding: 12px; margin-bottom: 8px;
+  display: flex; justify-content: space-between;
+  align-items: center; gap: 10px;
 }
-.info-item {
-  padding: 8px 10px; border-bottom: 1px solid var(--border);
-  font-size: 12px; display: flex; gap: 8px;
+.list-item .kiri { flex: 1; min-width: 0; }
+.list-item .nama { font-size: 13px; font-weight: 700; }
+.list-item .detail { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.list-item .kanan { display: flex; gap: 6px; flex-shrink: 0; }
+.stats-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
 }
-.info-item:last-child { border-bottom: none; }
-.info-item .nama { font-weight: 700; flex: 1; }
-.info-item .detail { color: var(--muted); font-size: 11px; }
+.stat-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px; text-align: center;
+}
+.stat-card .label {
+  font-size: 9.5px; font-weight: 800; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 4px;
+}
+.stat-card .value { font-size: 16px; font-weight: 900; color: var(--primary); }
+.stat-card.full { grid-column: 1 / -1; }
 @media (max-width: 480px) {
   body { padding: 12px; }
   .container { padding: 16px; border-radius: 16px; }
@@ -197,7 +184,7 @@ button {
 
 <div class="container">
   <div class="header">
-    <h1>📤 Admin — Upload Penjualan</h1>
+    <h1>⚙️ Admin Dashboard</h1>
     <p>UFO Malang Kebonsari</p>
   </div>
 
@@ -217,82 +204,31 @@ button {
     </div>
   </div>
 
-  <!-- PANEL ADMIN -->
+  <!-- PANEL -->
   <div id="panelAdmin" class="hidden">
-
-    <div class="alert ok" id="statusUploadBox">
-      <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-      <span id="statusUploadText">Memuat info terakhir upload...</span>
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('dash', event)">📊 Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('upload', event)">📤 Upload</button>
+      <button class="tab-btn" onclick="switchTab('promotor', event)">👥 Promotor</button>
+      <button class="tab-btn" onclick="switchTab('pin', event)">🔑 PIN</button>
+      <button class="tab-btn" onclick="switchTab('info', event)">ℹ️ Info</button>
+      <button class="tab-btn" onclick="switchTab('danger', event)">⚠️ Reset</button>
     </div>
-
-    <!-- UPLOAD -->
-    <div class="card">
-      <h3>📁 Upload File Excel Penjualan</h3>
-      <div class="file-input-wrap" onclick="document.getElementById('fileExcel').click()">
-        <svg viewBox="0 0 24 24">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-          <polyline points="17 8 12 3 7 8"/>
-          <line x1="12" y1="3" x2="12" y2="15"/>
-        </svg>
-        <p><strong>Klik untuk pilih file Excel</strong></p>
-        <p style="font-size:11px;">File dari sistem kasir UFO (.xlsx)</p>
-        <input type="file" id="fileExcel" accept=".xlsx,.xls" onchange="handleFileSelect(event)">
-      </div>
-      <div id="fileInfo" class="hidden" style="margin-top:12px;">
-        <div class="alert ok" id="fileInfoBox">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          <span id="fileInfoText">File terpilih</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- PREVIEW -->
-    <div id="previewSection" class="hidden">
-      <div class="card">
-        <h3>👁️ Preview Data</h3>
-        <div class="stats-grid" id="statsGrid"></div>
-        <div class="alert warn" id="alertFilter">
-          <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span id="alertFilterText">Filter: skip kategori GARANSI & ONGKOS untuk perhitungan omzet</span>
-        </div>
-        <div style="height:8px;"></div>
-        <div style="display:flex; gap:8px;">
-          <button class="btn-soft" onclick="resetUpload()">❌ Batal</button>
-          <button class="btn-success" id="btnConfirmUpload" onclick="confirmUpload()">✅ Konfirmasi Upload</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- DATA TERSIMPAN -->
-    <div class="card">
-      <h3>👥 Promotor Terdaftar</h3>
-      <div class="info-list" id="promotorList">
-        <div style="text-align:center; padding:20px; color:var(--muted); font-size:13px;">
-          Belum ada data. Upload Excel dulu.
-        </div>
-      </div>
-    </div>
-
-    <!-- DANGER ZONE -->
-    <div class="card">
-      <h3 style="color: var(--danger);">⚠️ Danger Zone</h3>
-      <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">
-        Hapus SEMUA data di server. Gunakan hanya kalau salah upload total.
-      </p>
-      <button class="btn-danger" onclick="hapusSemuaData()">🗑️ Hapus Semua Data</button>
-    </div>
-
-    <button class="btn-soft" onclick="logoutAdmin()" style="margin-bottom:8px;">🚪 Logout</button>
-
+    <div id="tabContent"></div>
+    <div style="height:8px;"></div>
+    <button class="btn-soft" onclick="logoutAdmin()">🚪 Logout</button>
   </div>
 </div>
 
 <script>
-let savedPinAdmin = localStorage.getItem('ufo_admin_pin') || '';
-let dataParsed = { master: [], penjualan: [], promo: [], rules: [], punishment: [], reward: [] };
+let savedPin = localStorage.getItem('ufo_admin_pin2') || '';
+let currentTab = 'dash';
+let allPromotor = {};
+let allPenjualan = [];
+let parsedData = null;
 
 window.addEventListener('firebase-ready', () => {
-  if (savedPinAdmin) {
+  if (savedPin) {
     document.getElementById('loginBox').classList.add('hidden');
     document.getElementById('panelAdmin').classList.remove('hidden');
     mulaiAdmin();
@@ -310,301 +246,554 @@ async function loginAdmin() {
     if (snap.exists()) pinBenar = String(snap.val());
     else await window.dbSet(window.dbRef(window.db, 'config/adminPin'), '8888');
     if (pin === pinBenar) {
-      savedPinAdmin = pin;
-      localStorage.setItem('ufo_admin_pin', pin);
+      savedPin = pin;
+      localStorage.setItem('ufo_admin_pin2', pin);
       document.getElementById('loginBox').classList.add('hidden');
       document.getElementById('panelAdmin').classList.remove('hidden');
       mulaiAdmin();
     } else {
-      errEl.innerText = '❌ PIN Admin salah!';
-      errEl.classList.remove('hidden');
+      errEl.innerText = '❌ PIN salah!'; errEl.classList.remove('hidden');
     }
   } catch (err) {
-    errEl.innerText = 'Gagal verifikasi: ' + err.message;
-    errEl.classList.remove('hidden');
+    errEl.innerText = 'Gagal: ' + err.message; errEl.classList.remove('hidden');
   }
 }
 
 function logoutAdmin() {
-  localStorage.removeItem('ufo_admin_pin');
-  savedPinAdmin = '';
+  localStorage.removeItem('ufo_admin_pin2');
+  savedPin = '';
   document.getElementById('panelAdmin').classList.add('hidden');
   document.getElementById('loginBox').classList.remove('hidden');
-  document.getElementById('pinAdmin').value = '';
 }
 
 function mulaiAdmin() {
-  loadStatusUpload();
-  loadPromotorList();
-}
-
-/* ============================================================ */
-/* LOAD STATUS */
-/* ============================================================ */
-function loadStatusUpload() {
-  window.dbOnValue(window.dbRef(window.db, 'config/lastUpload'), snap => {
-    const el = document.getElementById('statusUploadText');
-    if (!snap.exists()) {
-      el.innerText = 'Belum ada data ter-upload.';
-      return;
-    }
-    const d = snap.val();
-    const tgl = new Date(d.tanggal || 0);
-    el.innerText = `Upload terakhir: ${tgl.toLocaleString('id-ID')} — ${d.totalTransaksi || 0} transaksi, ${d.totalPromotor || 0} promotor`;
-  });
-}
-
-function loadPromotorList() {
   window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
-    const el = document.getElementById('promotorList');
-    if (!snap.exists()) {
-      el.innerHTML = '<div style="text-align:center; padding:20px; color:var(--muted); font-size:13px;">Belum ada promotor. Upload Excel dulu.</div>';
-      return;
-    }
-    const data = snap.val();
-    const list = Object.keys(data).map(k => ({ key: k, ...data[k] })).sort((a,b) => a.namaAbsen.localeCompare(b.namaAbsen));
-    el.innerHTML = list.map(p => `
-      <div class="info-item">
-        <div class="nama">${p.namaAbsen}</div>
-        <div class="detail">PIN: ${p.pin} • ${p.namaSales}</div>
-      </div>
-    `).join('');
+    allPromotor = snap.exists() ? snap.val() : {};
+    if (currentTab === 'promotor' || currentTab === 'pin') renderTab();
+    if (currentTab === 'dash') renderTab();
   });
+  window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
+    allPenjualan = [];
+    if (snap.exists()) Object.values(snap.val()).forEach(x => { if (x && x.namaSales) allPenjualan.push(x); });
+    if (currentTab === 'dash') renderTab();
+  });
+  renderTab();
+}
+
+function switchTab(tab, evt) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (evt && evt.target) evt.target.classList.add('active');
+  renderTab();
+}
+
+function renderTab() {
+  const el = document.getElementById('tabContent');
+  if (currentTab === 'dash') el.innerHTML = renderDash();
+  else if (currentTab === 'upload') el.innerHTML = renderUpload();
+  else if (currentTab === 'promotor') el.innerHTML = renderPromotor();
+  else if (currentTab === 'pin') el.innerHTML = renderPin();
+  else if (currentTab === 'info') el.innerHTML = renderInfo();
+  else if (currentTab === 'danger') el.innerHTML = renderDanger();
 }
 
 /* ============================================================ */
-/* PARSE EXCEL */
+/* TAB: DASHBOARD */
 /* ============================================================ */
-function handleFileSelect(e) {
+function renderDash() {
+  const jmlPromotor = Object.keys(allPromotor).length;
+  const jmlTrans = allPenjualan.length;
+  const totalOmzet = allPenjualan
+    .filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS')
+    .reduce((s, x) => s + (Number(x.subtotal) || 0), 0);
+  return `
+    <div class="card">
+      <h3>📊 Statistik Sistem</h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="label">Promotor</div>
+          <div class="value">${jmlPromotor}</div>
+        </div>
+        <div class="stat-card">
+          <div class="label">Transaksi</div>
+          <div class="value">${jmlTrans}</div>
+        </div>
+        <div class="stat-card full">
+          <div class="label">Total Omzet Keseluruhan</div>
+          <div class="value" style="color:var(--success);">Rp ${totalOmzet.toLocaleString('id-ID')}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>ℹ️ Info Sistem</h3>
+      <div style="font-size:12.5px; line-height:1.6; color:var(--muted);">
+        <p style="margin:0 0 6px;"><b>Login Admin:</b> PIN <code style="background:#e2e8f0; padding:2px 6px; border-radius:4px;">8888</code> (bisa diganti di Firebase)</p>
+        <p style="margin:0 0 6px;"><b>Login Promotor:</b> Nama Absen + PIN</p>
+        <p style="margin:0;"><b>Upload:</b> Excel penjualan & absen, auto-parse</p>
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================ */
+/* TAB: UPLOAD */
+/* ============================================================ */
+function renderUpload() {
+  return `
+    <div class="card">
+      <h3>📤 Upload Data Master (Sekali)</h3>
+      <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">
+        Upload file <b>ABSEN FINGER.xlsx</b> (dengan sheet MASTER_SALES, PENJUALAN, ABSENFINGER, PROMO, RULES, PUNISHMENT, REWARD).
+        Cukup <b>sekali saja</b> untuk setup awal.
+      </p>
+      <div class="file-wrap" onclick="document.getElementById('fileMaster').click()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p><strong>Klik pilih file Master</strong></p>
+        <p style="font-size:11px;">File .xlsx lengkap semua sheet</p>
+        <input type="file" id="fileMaster" accept=".xlsx,.xls" onchange="handleFileMaster(event)">
+      </div>
+      <div id="masterInfo" style="margin-top:12px;"></div>
+    </div>
+
+    <div class="card">
+      <h3>📊 Upload Penjualan Harian</h3>
+      <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">
+        Upload file <b>Penjualan Detail DD_MM_YYYY.xlsx</b> dari sistem kasir.
+        Bisa dilakukan <b>setiap hari</b>, duplikat otomatis dilewati.
+      </p>
+      <div class="file-wrap" onclick="document.getElementById('filePenjualan').click()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        <p><strong>Klik pilih file Penjualan</strong></p>
+        <p style="font-size:11px;">File .xlsx dari kasir</p>
+        <input type="file" id="filePenjualan" accept=".xlsx,.xls" onchange="handleFilePenjualan(event)">
+      </div>
+      <div id="penjualanInfo" style="margin-top:12px;"></div>
+    </div>
+  `;
+}
+
+function handleFileMaster(e) {
   const file = e.target.files[0];
   if (!file) return;
-  const fileInfoText = document.getElementById('fileInfoText');
-  document.getElementById('fileInfo').classList.remove('hidden');
-  fileInfoText.innerText = `📄 ${file.name} (${(file.size/1024).toFixed(1)} KB) — sedang dibaca...`;
+  const el = document.getElementById('masterInfo');
+  el.innerHTML = '<div class="alert warn">⏳ Membaca file...</div>';
 
   const reader = new FileReader();
-  reader.onload = (evt) => {
+  reader.onload = async (evt) => {
     try {
       const data = new Uint8Array(evt.target.result);
       const wb = XLSX.read(data, { type: 'array' });
+      const result = { promotor: [], penjualan: [], absensi: [], info: {} };
 
-      // 1. Parse MASTER_SALES
-      const masterSheet = wb.Sheets['MASTER_SALES'];
-      if (!masterSheet) {
-        fileInfoText.innerText = '❌ Sheet MASTER_SALES tidak ditemukan!';
-        document.getElementById('fileInfoBox').className = 'alert err';
-        return;
-      }
-      const masterRows = XLSX.utils.sheet_to_json(masterSheet, { header: 1, defval: '' });
-      dataParsed.master = [];
-      for (let i = 1; i < masterRows.length; i++) {
-        const r = masterRows[i];
-        if (!r[0]) continue;
-        const namaAbsen = String(r[0]).trim();
-        const namaSales = String(r[1]).trim();
-        const aktif = String(r[2]).trim().toUpperCase();
-        const pin = String(r[3]).trim().replace(/\.0$/, '');
-        const role = String(r[4] || 'USER').trim().toUpperCase();
-        const tampil = String(r[5] || '').trim().toUpperCase();
-        const ikutUC = String(r[6] || 'YA').trim().toUpperCase();
-        const targetUC = Number(r[7]) || 16;
-        const merk = String(r[8] || '').trim();
-        if (aktif !== 'YA') continue;
-        if (tampil !== 'YA') continue;
-        if (role !== 'USER') continue;
-        dataParsed.master.push({ namaAbsen, namaSales, pin, role, ikutUC, targetUC, merk });
-      }
-
-      // 2. Parse PENJUALAN
-      const jualSheet = wb.Sheets['PENJUALAN'];
-      if (!jualSheet) {
-        fileInfoText.innerText = '❌ Sheet PENJUALAN tidak ditemukan!';
-        document.getElementById('fileInfoBox').className = 'alert err';
-        return;
-      }
-      const jualRows = XLSX.utils.sheet_to_json(jualSheet, { header: 1, defval: '' });
-      dataParsed.penjualan = [];
-      for (let i = 1; i < jualRows.length; i++) {
-        const r = jualRows[i];
-        if (!r[0] || !r[1]) continue;
-        if (String(r[5]).trim().toUpperCase() === 'TOTAL') continue;
-
-        // Tanggal bisa "12/10/2026" atau "2026-01-10 00:00:00"
-        let tglStr = String(r[2] || '').trim();
-        let tgl = tglStr;
-        if (tglStr.includes(' ')) tglStr = tglStr.split(' ')[0];
-        if (/^\d{4}-\d{2}-\d{2}$/.test(tglStr)) {
-          const p = tglStr.split('-');
-          tgl = `${p[2]}/${p[1]}/${p[0]}`;
+      // MASTER_SALES
+      const ms = wb.Sheets['MASTER_SALES'];
+      if (ms) {
+        const rows = XLSX.utils.sheet_to_json(ms, { header: 1, defval: '' });
+        for (let i = 1; i < rows.length; i++) {
+          const r = rows[i];
+          if (!r[0]) continue;
+          const aktif = String(r[2]).trim().toUpperCase();
+          const tampil = String(r[5] || '').trim().toUpperCase();
+          const role = String(r[4] || 'USER').trim().toUpperCase();
+          if (aktif !== 'YA') continue;
+          if (tampil !== 'YA') continue;
+          if (role !== 'USER') continue;
+          result.promotor.push({
+            namaAbsen: String(r[0]).trim(),
+            namaSales: String(r[1]).trim(),
+            pin: String(r[3]).trim().replace(/\.0$/, ''),
+            ikutUC: String(r[6] || 'YA').trim().toUpperCase(),
+            targetUC: Number(r[7]) || 16,
+            merk: String(r[8] || '').trim(),
+            aktif: true
+          });
         }
-
-        dataParsed.penjualan.push({
-          noFaktur: String(r[1]).trim(),
-          tanggal: tgl,
-          barcode: String(r[3]).trim(),
-          modelNo: String(r[4]).trim(),
-          namaBarang: String(r[5]).trim(),
-          qty: Number(r[6]) || 0,
-          harga: Number(r[7]) || 0,
-          diskon: Number(r[8]) || 0,
-          cashback: Number(r[9]) || 0,
-          subtotal: Number(r[10]) || 0,
-          namaSales: String(r[15]).trim(),
-          jenisBayar: String(r[16]).trim(),
-          kategori: String(r[17]).trim().toUpperCase(),
-          merk: String(r[18]).trim().toUpperCase()
-        });
       }
 
-      // 3. Parse info tambahan (opsional)
-      dataParsed.promo = parseSimpleSheet(wb.Sheets['PROMO'], ['judul', 'periode', 'detail']);
-      dataParsed.rules = parseSimpleSheet(wb.Sheets['RULES'], ['poin', 'deskripsi']);
-      dataParsed.punishment = parseSimpleSheet(wb.Sheets['PUNISHMENT'], ['judul', 'level', 'detail']);
-      dataParsed.reward = parseSimpleSheet(wb.Sheets['REWARD'], ['judul', 'periode', 'detail']);
+      // PENJUALAN
+      const pj = wb.Sheets['PENJUALAN'];
+      if (pj) {
+        const rows = XLSX.utils.sheet_to_json(pj, { header: 1, defval: '' });
+        for (let i = 1; i < rows.length; i++) {
+          const r = rows[i];
+          if (!r[0] || !r[1]) continue;
+          if (String(r[5]).trim().toUpperCase() === 'TOTAL') continue;
+          let tglStr = String(r[2] || '').trim();
+          if (tglStr.includes(' ')) tglStr = tglStr.split(' ')[0];
+          let tgl = tglStr;
+          if (/^\d{4}-\d{2}-\d{2}$/.test(tglStr)) {
+            const p = tglStr.split('-');
+            tgl = `${p[2]}/${p[1]}/${p[0]}`;
+          }
+          result.penjualan.push({
+            noFaktur: String(r[1]).trim(),
+            tanggal: tgl,
+            barcode: String(r[3]).trim(),
+            namaBarang: String(r[5]).trim(),
+            qty: Number(r[6]) || 0,
+            subtotal: Number(r[10]) || 0,
+            namaSales: String(r[15]).trim(),
+            kategori: String(r[17]).trim().toUpperCase(),
+            merk: String(r[18]).trim().toUpperCase()
+          });
+        }
+      }
 
-      fileInfoText.innerText = `✅ File siap: ${dataParsed.master.length} promotor, ${dataParsed.penjualan.length} transaksi`;
-      document.getElementById('fileInfoBox').className = 'alert ok';
+      // Info tambahan
+      const parseSheet = (sheet, cols) => {
+        if (!sheet) return [];
+        const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+        const out = [];
+        for (let i = 1; i < rows.length; i++) {
+          const r = rows[i];
+          if (!r[0]) continue;
+          const obj = {};
+          cols.forEach((c, idx) => { obj[c] = String(r[idx] || '').trim(); });
+          out.push(obj);
+        }
+        return out;
+      };
+      result.info.promo = parseSheet(wb.Sheets['PROMO'], ['judul', 'periode', 'detail']);
+      result.info.rules = parseSheet(wb.Sheets['RULES'], ['poin', 'deskripsi']);
+      result.info.punishment = parseSheet(wb.Sheets['PUNISHMENT'], ['judul', 'level', 'detail']);
+      result.info.reward = parseSheet(wb.Sheets['REWARD'], ['judul', 'periode', 'detail']);
 
-      renderPreview();
+      el.innerHTML = `
+        <div class="alert ok">
+          ✅ Siap upload: <b>${result.promotor.length}</b> promotor,
+          <b>${result.penjualan.length}</b> transaksi,
+          ${result.info.promo.length} promo, ${result.info.rules.length} SOP
+        </div>
+        <button class="btn-success" onclick='konfirmasiUploadMaster()'>✅ Konfirmasi Upload</button>
+      `;
+      window._masterData = result;
     } catch (err) {
-      console.error(err);
-      fileInfoText.innerText = '❌ Error: ' + err.message;
-      document.getElementById('fileInfoBox').className = 'alert err';
+      el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
     }
   };
   reader.readAsArrayBuffer(file);
 }
 
-function parseSimpleSheet(sheet, columns) {
-  if (!sheet) return [];
-  const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
-  const out = [];
-  for (let i = 1; i < rows.length; i++) {
-    const r = rows[i];
-    if (!r[0]) continue;
-    const obj = {};
-    columns.forEach((col, idx) => { obj[col] = String(r[idx] || '').trim(); });
-    out.push(obj);
-  }
-  return out;
-}
-
-function renderPreview() {
-  const m = dataParsed.master;
-  const j = dataParsed.penjualan;
-  const jOmzet = j.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS');
-  const totalOmzet = jOmzet.reduce((s, x) => s + x.subtotal, 0);
-  const uniqueFaktur = new Set(j.map(x => x.noFaktur)).size;
-
-  document.getElementById('statsGrid').innerHTML = `
-    <div class="stat-card"><div class="label">Promotor</div><div class="value">${m.length}</div></div>
-    <div class="stat-card"><div class="label">Transaksi</div><div class="value">${j.length}</div></div>
-    <div class="stat-card"><div class="label">Faktur</div><div class="value">${uniqueFaktur}</div></div>
-    <div class="stat-card" style="grid-column:1/-1;">
-      <div class="label">Total Omzet (exclude GARANSI & ONGKOS)</div>
-      <div class="value" style="color:var(--success);">Rp ${totalOmzet.toLocaleString('id-ID')}</div>
-    </div>
-  `;
-  document.getElementById('previewSection').classList.remove('hidden');
-}
-
-function resetUpload() {
-  dataParsed = { master: [], penjualan: [], promo: [], rules: [], punishment: [], reward: [] };
-  document.getElementById('fileExcel').value = '';
-  document.getElementById('fileInfo').classList.add('hidden');
-  document.getElementById('previewSection').classList.add('hidden');
-}
-
-/* ============================================================ */
-/* KONFIRMASI UPLOAD */
-/* ============================================================ */
-async function confirmUpload() {
-  if (dataParsed.penjualan.length === 0) { alert("Tidak ada data."); return; }
-  const btn = document.getElementById('btnConfirmUpload');
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span>Uploading...';
+async function konfirmasiUploadMaster() {
+  const data = window._masterData;
+  if (!data) return;
+  const el = document.getElementById('masterInfo');
+  el.innerHTML = '<div class="alert warn">⏳ Uploading... (jangan tutup halaman)</div>';
 
   try {
-    // 1. Cek duplikat penjualan
-    const snap = await window.dbGet(window.dbRef(window.db, 'penjualan'));
-    const dataLama = snap.exists() ? snap.val() : {};
-    const setExist = new Set();
-    Object.values(dataLama).forEach(item => {
-      if (item && item.noFaktur && item.barcode) setExist.add(item.noFaktur + '|' + item.barcode);
-    });
-
-    // 2. Siapkan updates
     const updates = {};
-    let countBaru = 0, countSkip = 0;
-    dataParsed.penjualan.forEach((item, idx) => {
-      const key = item.noFaktur + '|' + item.barcode;
-      if (setExist.has(key)) { countSkip++; return; }
-      const dbKey = 't_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).substr(2, 6);
-      updates['penjualan/' + dbKey] = item;
-      countBaru++;
+
+    // Promotor
+    data.promotor.forEach(p => {
+      const key = sanitizeKey(p.namaAbsen);
+      updates['users/promotor/' + key] = p;
     });
 
-    // 3. Promotor
-    dataParsed.master.forEach(p => {
-      const cleanKey = sanitizeKey(p.namaAbsen);
-      updates['users/promotor/' + cleanKey] = {
-        namaAbsen: p.namaAbsen,
-        namaSales: p.namaSales,
-        pin: p.pin,
-        ikutUC: p.ikutUC,
-        targetUC: p.targetUC,
-        merk: p.merk,
-        aktif: true,
-        updatedAt: Date.now()
-      };
+    // Penjualan - cek duplikat
+    const snap = await window.dbGet(window.dbRef(window.db, 'penjualan'));
+    const setExist = new Set();
+    if (snap.exists()) {
+      Object.values(snap.val()).forEach(x => {
+        if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode);
+      });
+    }
+    let cBaru = 0, cSkip = 0;
+    data.penjualan.forEach((item, idx) => {
+      const k = item.noFaktur + '|' + item.barcode;
+      if (setExist.has(k)) { cSkip++; return; }
+      updates['penjualan/t_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).substr(2, 6)] = item;
+      cBaru++;
     });
 
-    // 4. Info tambahan
-    if (dataParsed.promo.length > 0) updates['info/promo'] = dataParsed.promo;
-    if (dataParsed.rules.length > 0) updates['info/rules'] = dataParsed.rules;
-    if (dataParsed.punishment.length > 0) updates['info/punishment'] = dataParsed.punishment;
-    if (dataParsed.reward.length > 0) updates['info/reward'] = dataParsed.reward;
+    // Info
+    if (data.info.promo.length) updates['info/promo'] = data.info.promo;
+    if (data.info.rules.length) updates['info/rules'] = data.info.rules;
+    if (data.info.punishment.length) updates['info/punishment'] = data.info.punishment;
+    if (data.info.reward.length) updates['info/reward'] = data.info.reward;
 
-    // 5. Metadata
-    updates['config/lastUpload'] = {
-      tanggal: Date.now(),
-      totalTransaksi: countBaru,
-      totalPromotor: dataParsed.master.length,
-      skipDuplikat: countSkip
-    };
+    updates['config/lastUpload'] = { tanggal: Date.now(), totalPromotor: data.promotor.length, totalTransaksi: cBaru };
 
     await window.dbUpdate(window.dbRef(window.db), updates);
 
-    alert(`✅ Upload berhasil!\n\n• ${countBaru} transaksi baru\n• ${countSkip} duplikat dilewati\n• ${dataParsed.master.length} promotor diupdate`);
-    resetUpload();
-    loadPromotorList();
+    el.innerHTML = `
+      <div class="alert ok">
+        ✅ Berhasil upload!<br>
+        • ${data.promotor.length} promotor<br>
+        • ${cBaru} transaksi baru (${cSkip} duplikat dilewati)
+      </div>
+    `;
   } catch (err) {
-    console.error(err);
-    alert("❌ Gagal upload: " + err.message);
-  } finally {
-    btn.disabled = false;
-    btn.innerHTML = '✅ Konfirmasi Upload';
+    el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
   }
 }
 
+function handleFilePenjualan(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const el = document.getElementById('penjualanInfo');
+  el.innerHTML = '<div class="alert warn">⏳ Membaca file...</div>';
+
+  const reader = new FileReader();
+  reader.onload = async (evt) => {
+    try {
+      const data = new Uint8Array(evt.target.result);
+      const wb = XLSX.read(data, { type: 'array' });
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
+
+      // Cari header row (yang ada "Store" + "Nomor Faktur")
+      let hIdx = -1;
+      for (let i = 0; i < rows.length; i++) {
+        if (rows[i][0] === 'Store' && rows[i][1] === 'Nomor Faktur') { hIdx = i; break; }
+      }
+      if (hIdx === -1) { el.innerHTML = '<div class="alert err">❌ Format tidak dikenali</div>'; return; }
+
+      const parsed = [];
+      for (let i = hIdx + 1; i < rows.length; i++) {
+        const r = rows[i];
+        if (!r || !r[1] || !r[2]) continue;
+        if (String(r[5]).trim().toUpperCase() === 'TOTAL') continue;
+        let tglStr = String(r[2] || '').trim();
+        if (tglStr.includes(' ')) tglStr = tglStr.split(' ')[0];
+        let tgl = tglStr;
+        if (/^\d{4}-\d{2}-\d{2}$/.test(tglStr)) {
+          const p = tglStr.split('-');
+          tgl = `${p[2]}/${p[1]}/${p[0]}`;
+        }
+        parsed.push({
+          noFaktur: String(r[1]).trim(),
+          tanggal: tgl,
+          barcode: String(r[3]).trim(),
+          namaBarang: String(r[5]).trim(),
+          qty: Number(r[6]) || 0,
+          subtotal: Number(r[10]) || 0,
+          namaSales: String(r[15]).trim(),
+          kategori: String(r[17]).trim().toUpperCase(),
+          merk: String(r[18]).trim().toUpperCase()
+        });
+      }
+
+      const omzet = parsed.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS')
+        .reduce((s, x) => s + x.subtotal, 0);
+
+      el.innerHTML = `
+        <div class="alert ok">
+          ✅ ${parsed.length} baris terbaca — Total omzet: Rp ${omzet.toLocaleString('id-ID')}
+        </div>
+        <button class="btn-success" onclick='konfirmasiUploadPenjualan()'>✅ Konfirmasi Upload</button>
+      `;
+      window._jualData = parsed;
+    } catch (err) {
+      el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+async function konfirmasiUploadPenjualan() {
+  const data = window._jualData;
+  if (!data) return;
+  const el = document.getElementById('penjualanInfo');
+  el.innerHTML = '<div class="alert warn">⏳ Uploading...</div>';
+
+  try {
+    const snap = await window.dbGet(window.dbRef(window.db, 'penjualan'));
+    const setExist = new Set();
+    if (snap.exists()) {
+      Object.values(snap.val()).forEach(x => {
+        if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode);
+      });
+    }
+    const updates = {};
+    let cBaru = 0, cSkip = 0;
+    data.forEach((item, idx) => {
+      const k = item.noFaktur + '|' + item.barcode;
+      if (setExist.has(k)) { cSkip++; return; }
+      updates['penjualan/t_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).substr(2, 6)] = item;
+      cBaru++;
+    });
+    await window.dbUpdate(window.dbRef(window.db), updates);
+    el.innerHTML = `<div class="alert ok">✅ ${cBaru} transaksi baru (${cSkip} duplikat)</div>`;
+    window._jualData = null;
+  } catch (err) {
+    el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
+  }
+}
+
+/* ============================================================ */
+/* TAB: PROMOTOR (CRUD) */
+/* ============================================================ */
+function renderPromotor() {
+  const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
+    .sort((a,b) => a.namaAbsen.localeCompare(b.namaAbsen));
+  return `
+    <div class="card">
+      <h3>➕ Tambah Promotor Baru</h3>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+        <input type="text" id="p_namaAbsen" placeholder="Nama Absen (ex: BUDI MIDEA)">
+        <input type="text" id="p_namaSales" placeholder="Nama Sales (ex: Budi Mlg)">
+        <input type="text" id="p_pin" placeholder="PIN (4 digit)" maxlength="6">
+        <input type="text" id="p_merk" placeholder="Merk (ex: MIDEA)">
+        <input type="number" id="p_targetUC" placeholder="Target UC" value="16">
+        <select id="p_ikutUC">
+          <option value="YA">Ikut UC</option>
+          <option value="TIDAK">Tidak Ikut UC</option>
+        </select>
+      </div>
+      <div style="height:10px;"></div>
+      <button class="btn-primary" onclick="tambahPromotor()">+ Tambah Promotor</button>
+      <div id="promotorMsg" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+      <h3>👥 Daftar Promotor (${list.length})</h3>
+      ${list.length === 0 ? '<div class="alert warn">Belum ada promotor. Upload file master dulu.</div>' : ''}
+      ${list.map(p => `
+        <div class="list-item">
+          <div class="kiri">
+            <div class="nama">${p.namaAbsen}</div>
+            <div class="detail">PIN: <b>${p.pin}</b> • ${p.namaSales} • ${p.merk || '-'} • Target UC: ${p.targetUC}</div>
+          </div>
+          <div class="kanan">
+            <button class="btn-soft btn-sm" onclick="hapusPromotor('${p.key}', '${p.namaAbsen}')">🗑️</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function tambahPromotor() {
+  const namaAbsen = document.getElementById('p_namaAbsen').value.trim();
+  const namaSales = document.getElementById('p_namaSales').value.trim();
+  const pin = document.getElementById('p_pin').value.trim();
+  const merk = document.getElementById('p_merk').value.trim();
+  const targetUC = Number(document.getElementById('p_targetUC').value) || 16;
+  const ikutUC = document.getElementById('p_ikutUC').value;
+  const msg = document.getElementById('promotorMsg');
+  if (!namaAbsen || !namaSales || !pin) { msg.innerHTML = '<div class="alert err">Isi semua field!</div>'; return; }
+  try {
+    const key = sanitizeKey(namaAbsen);
+    await window.dbSet(window.dbRef(window.db, 'users/promotor/' + key), {
+      namaAbsen, namaSales, pin, merk, targetUC, ikutUC, aktif: true
+    });
+    msg.innerHTML = '<div class="alert ok">✅ Promotor ditambahkan!</div>';
+    ['p_namaAbsen','p_namaSales','p_pin','p_merk'].forEach(id => document.getElementById(id).value = '');
+    setTimeout(() => msg.innerHTML = '', 3000);
+  } catch (err) {
+    msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
+  }
+}
+
+async function hapusPromotor(key, nama) {
+  if (!confirm(`Hapus promotor "${nama}"?`)) return;
+  try {
+    await window.dbRemove(window.dbRef(window.db, 'users/promotor/' + key));
+  } catch (err) { alert("Gagal: " + err.message); }
+}
+
+/* ============================================================ */
+/* TAB: PIN */
+/* ============================================================ */
+function renderPin() {
+  const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
+    .sort((a,b) => a.namaAbsen.localeCompare(b.namaAbsen));
+  return `
+    <div class="card">
+      <h3>🔑 Kelola PIN Promotor</h3>
+      <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">Ubah PIN langsung dari sini, tanpa buka Sheet.</p>
+      ${list.length === 0 ? '<div class="alert warn">Belum ada promotor.</div>' : ''}
+      ${list.map(p => `
+        <div class="list-item">
+          <div class="kiri">
+            <div class="nama">${p.namaAbsen}</div>
+            <div class="detail">${p.namaSales}</div>
+          </div>
+          <div class="kanan" style="display:flex; gap:6px; align-items:center;">
+            <input type="text" value="${p.pin}" maxlength="6" style="width:80px; padding:8px; text-align:center; font-weight:800; letter-spacing:2px;"
+              onchange="updatePin('${p.key}', this.value)" id="pin_${p.key}">
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function updatePin(key, newPin) {
+  newPin = String(newPin).trim();
+  if (!newPin) { alert("PIN tidak boleh kosong!"); renderTab(); return; }
+  try {
+    await window.dbUpdate(window.dbRef(window.db, 'users/promotor/' + key), { pin: newPin });
+    alert("✅ PIN tersimpan!");
+  } catch (err) {
+    alert("Gagal: " + err.message);
+  }
+}
+
+/* ============================================================ */
+/* TAB: INFO */
+/* ============================================================ */
+function renderInfo() {
+  return `
+    <div class="card">
+      <h3>ℹ️ Info Sistem</h3>
+      <p style="font-size:12.5px; line-height:1.7;">
+        <b>Promotor Login:</b> Buka halaman <code>promotor.html</code>, pilih Nama Absen, masukkan PIN.<br>
+        <b>Upload Master:</b> Sekali saja untuk setup awal.<br>
+        <b>Upload Penjualan:</b> Setiap hari, file dari kasir.<br>
+        <b>Update PIN:</b> Tab "PIN" → ubah langsung.<br>
+      </p>
+      <div style="height:8px;"></div>
+      <button class="btn-soft" onclick="resetAdminPin()">🔑 Reset PIN Admin ke 8888</button>
+    </div>
+  `;
+}
+
+async function resetAdminPin() {
+  if (!confirm("Reset PIN Admin ke 8888?")) return;
+  await window.dbSet(window.dbRef(window.db, 'config/adminPin'), '8888');
+  alert("✅ PIN Admin direset ke 8888");
+}
+
+/* ============================================================ */
+/* TAB: DANGER */
+/* ============================================================ */
+function renderDanger() {
+  return `
+    <div class="card">
+      <h3 style="color:var(--danger);">⚠️ Danger Zone</h3>
+      <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">
+        Tombol di bawah untuk <b>hapus semua data</b>. Hati-hati!
+      </p>
+      <button class="btn-danger" style="margin-bottom:8px;" onclick="hapusPenjualan()">🗑️ Hapus Semua Penjualan</button>
+      <button class="btn-danger" style="margin-bottom:8px;" onclick="hapusPromotorAll()">🗑️ Hapus Semua Promotor</button>
+      <button class="btn-danger" onclick="hapusSemua()">💣 Hapus SEMUA Data (Total Reset)</button>
+    </div>
+  `;
+}
+
+async function hapusPenjualan() {
+  if (!confirm("Hapus SEMUA data penjualan? Ketik OK untuk lanjut.")) return;
+  await window.dbRemove(window.dbRef(window.db, 'penjualan'));
+  alert("✅ Data penjualan dihapus.");
+}
+async function hapusPromotorAll() {
+  if (!confirm("Hapus SEMUA promotor?")) return;
+  await window.dbRemove(window.dbRef(window.db, 'users/promotor'));
+  alert("✅ Data promotor dihapus.");
+}
+async function hapusSemua() {
+  if (prompt('Ketik "HAPUS" untuk konfirmasi total:') !== 'HAPUS') return;
+  await window.dbRemove(window.dbRef(window.db, 'penjualan'));
+  await window.dbRemove(window.dbRef(window.db, 'users'));
+  await window.dbRemove(window.dbRef(window.db, 'info'));
+  await window.dbRemove(window.dbRef(window.db, 'config/lastUpload'));
+  alert("✅ Semua data dihapus.");
+}
+
+/* ============================================================ */
 function sanitizeKey(nama) {
   return String(nama || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_');
-}
-
-/* ============================================================ */
-/* HAPUS DATA */
-/* ============================================================ */
-async function hapusSemuaData() {
-  const konfirmasi = prompt('⚠️ HATI-HATI!\n\nIni akan menghapus SEMUA data (penjualan + promotor).\n\nKetik "HAPUS" untuk konfirmasi:');
-  if (konfirmasi !== 'HAPUS') return;
-  try {
-    await window.dbRemove(window.dbRef(window.db, 'penjualan'));
-    await window.dbRemove(window.dbRef(window.db, 'users/promotor'));
-    await window.dbRemove(window.dbRef(window.db, 'config/lastUpload'));
-    alert("✅ Semua data berhasil dihapus.");
-  } catch (err) {
-    alert("Gagal hapus: " + err.message);
-  }
 }
 </script>
 
