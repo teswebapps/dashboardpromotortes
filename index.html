@@ -751,12 +751,14 @@ function tampilkanDetail(menuKey) {
 }
 
 /* Convert tanggal DD/MM/YYYY ke nama bulan Indonesia */
+/* Convert tanggal MM/DD/YYYY (dari Firebase) ke nama bulan Indonesia */
 function tanggalKeNama(tglStr) {
   if (!tglStr) return '-';
   const parts = String(tglStr).split('/');
   if (parts.length !== 3) return tglStr;
-  const dd = parseInt(parts[0]);
-  const mm = parseInt(parts[1]);
+  // Firebase simpan format MM/DD/YYYY
+  const mm = parseInt(parts[0]);
+  const dd = parseInt(parts[1]);
   const yyyy = parts[2];
   if (isNaN(dd) || isNaN(mm)) return tglStr;
   const namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
