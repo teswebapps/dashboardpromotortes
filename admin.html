@@ -173,25 +173,23 @@ function convertTanggalExcel(val) {
     return String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0') + '/' + d.getUTCFullYear();
   }
   
-  // KASUS 3: ISO "2026-10-01" → convert
+  // KASUS 3: ISO "2026-10-01"
   if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
     const p = str.split(' ')[0].split('-');
     return `${p[2]}/${p[1]}/${p[0]}`;
   }
   
-  // KASUS 4: STRING "10/01/2026" (US) → TUKAR ke DD/MM
-  // XLSX library selalu kasih format MM/DD (US)
+  // KASUS 4: STRING "MM/DD/YYYY" dari XLSX library → TUKAR ke DD/MM
   if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
     const parts = str.split(' ')[0].split('/');
     const mm = String(parts[0]).padStart(2, '0');
     const dd = String(parts[1]).padStart(2, '0');
     const yyyy = parts[2];
-    return `${dd}/${mm}/${yyyy}`;  // TUKAR
+    return `${dd}/${mm}/${yyyy}`;
   }
   
   return str;
 }
-
 function sanitizeKey(nama) {
   return String(nama || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_');
 }
