@@ -135,7 +135,6 @@ body.dashboard-active {
 }
 .dashboard-container { width: 100%; max-width: 900px; height: fit-content; }
 
-/* Top bar — SELALU TAMPIL DI SEMUA MENU */
 .top-bar {
   display: flex; justify-content: space-between; align-items: center;
   background: rgba(10, 25, 47, 0.85);
@@ -164,11 +163,7 @@ body.dashboard-active {
 .logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
 .logout-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
-/* Back to menu bar */
-.back-bar {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 14px;
-}
+.back-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
 .back-btn {
   display: inline-flex; align-items: center; gap: 8px;
   padding: 8px 16px;
@@ -182,13 +177,12 @@ body.dashboard-active {
 .back-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
 /* Menu grid */
-.menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 16px; }
-@media (max-width: 480px) { .menu-grid { grid-template-columns: 1fr 1fr; gap: 10px; } }
+.menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 20px; }
 .menu-card {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(56, 189, 248, 0.15);
-  border-radius: 14px;
-  padding: 16px 10px;
+  border-radius: 16px;
+  padding: 20px 16px;
   text-align: center;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -201,15 +195,15 @@ body.dashboard-active {
   transform: translateY(-2px);
 }
 .menu-icon {
-  width: 44px; height: 44px;
-  margin: 0 auto 8px;
+  width: 52px; height: 52px;
+  margin: 0 auto 10px;
   display: flex; align-items: center; justify-content: center;
   background: rgba(56, 189, 248, 0.08);
-  border-radius: 12px;
+  border-radius: 14px;
 }
-.menu-icon svg { width: 22px; height: 22px; stroke: #38bdf8; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.menu-title { font-size: 13px; font-weight: 800; color: #ffffff; margin-bottom: 4px; line-height: 1.2; }
-.menu-desc { font-size: 10px; color: #94a3b8; font-weight: 500; line-height: 1.3; }
+.menu-icon svg { width: 26px; height: 26px; stroke: #38bdf8; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.menu-title { font-size: 15px; font-weight: 800; color: #ffffff; margin-bottom: 5px; line-height: 1.2; }
+.menu-desc { font-size: 11px; color: #94a3b8; font-weight: 500; line-height: 1.3; }
 .menu-icon.t-absensi svg { stroke: #f472b6; }
 .menu-icon.t-absensi { background: rgba(244, 114, 182, 0.08); }
 .menu-icon.t-penjualan svg { stroke: #fbbf24; }
@@ -222,14 +216,6 @@ body.dashboard-active {
 .menu-icon.t-promo { background: rgba(212, 175, 55, 0.08); }
 .menu-icon.t-sop svg { stroke: #34d399; }
 .menu-icon.t-sop { background: rgba(52, 211, 153, 0.08); }
-.menu-icon.t-punish svg { stroke: #f87171; }
-.menu-icon.t-punish { background: rgba(248, 113, 113, 0.08); }
-.menu-icon.t-pelanggaran svg { stroke: #f87171; }
-.menu-icon.t-pelanggaran { background: rgba(248, 113, 113, 0.08); }
-.menu-icon.t-reward svg { stroke: #fbbf24; }
-.menu-icon.t-reward { background: rgba(251, 191, 36, 0.08); }
-.menu-icon.t-rewardsaya svg { stroke: #a78bfa; }
-.menu-icon.t-rewardsaya { background: rgba(167, 139, 250, 0.08); }
 
 /* Detail view */
 .detail-view {
@@ -243,6 +229,7 @@ body.dashboard-active {
 .detail-title { font-size: 18px; font-weight: 800; color: #ffffff; margin: 0 0 4px 0; }
 .detail-subtitle { font-size: 11.5px; color: #94a3b8; margin: 0 0 14px 0; }
 
+/* Stat grid */
 .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
 .stat-box { background: rgba(10, 25, 47, 0.7); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center; }
 .stat-box .label { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 6px; }
@@ -278,7 +265,7 @@ body.dashboard-active {
 .info-block .deskripsi { font-size: 12px; color: #cbd5e1; line-height: 1.5; }
 .info-block .meta { font-size: 10.5px; color: #94a3b8; margin-top: 5px; font-weight: 600; }
 
-/* Grid kartu Penjualan / UC / Absensi — auto-fit mobile */
+/* Card grid — SAMA dengan Penjualan */
 .card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; }
 
 @media (max-width: 900px) {
@@ -310,6 +297,12 @@ body.dashboard-active {
   .stat-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
   .stat-box { padding: 10px 8px; }
   .stat-box .value { font-size: 16px; }
+  .menu-grid { gap: 10px; }
+  .menu-card { padding: 16px 12px; }
+  .menu-icon { width: 46px; height: 46px; margin-bottom: 8px; }
+  .menu-icon svg { width: 22px; height: 22px; }
+  .menu-title { font-size: 13px; }
+  .menu-desc { font-size: 10px; }
 }
 </style>
 </head>
@@ -406,9 +399,7 @@ body.dashboard-active {
 let allPenjualan = [];
 let allPromotor = {};
 let allAbsensi = {};
-let allPelanggaran = {};
-let allRewardsSaya = {};
-let infoData = { promo: [], rules: [], punishment: [], reward: [] };
+let infoData = { promo: [], rules: [] };
 let currentUser = null;
 let currentMenu = null;
 
@@ -419,10 +410,6 @@ const ICONS = {
   brand: `<svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
   promo: `<svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
   sop: `<svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>`,
-  punish: `<svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
-  pelanggaran: `<svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><line x1="9" y1="9" x2="15" y2="15"/><line x1="15" y1="9" x2="9" y2="15"/></svg>`,
-  reward: `<svg viewBox="0 0 24 24"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`,
-  rewardsaya: `<svg viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13"/><path d="M19 12v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-7"/><path d="M7.5 8a2.5 2.5 0 0 1 0-5A4.8 8 0 0 1 12 8a4.8 8 0 0 1 4.5-5 2.5 2.5 0 0 1 0 5"/></svg>`,
   back: `<svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
   empty: `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`
 };
@@ -481,10 +468,8 @@ function loadInfoRealtime() {
       const data = snap.val();
       infoData.promo = data.promo || [];
       infoData.rules = data.rules || [];
-      infoData.punishment = data.punishment || [];
-      infoData.reward = data.reward || [];
     }
-    if (currentMenu === 'promo' || currentMenu === 'sop' || currentMenu === 'punishment' || currentMenu === 'reward') {
+    if (currentMenu === 'promo' || currentMenu === 'sop') {
       tampilkanDetail(currentMenu);
     }
   });
@@ -610,16 +595,6 @@ function tampilkanDashboard() {
     if (currentMenu === 'absensi') tampilkanDetail('absensi');
   });
 
-  window.dbOnValue(window.dbRef(window.db, 'pelanggaran/' + currentUser.key), snap => {
-    allPelanggaran = snap.exists() ? snap.val() : {};
-    if (currentMenu === 'pelanggaran') tampilkanDetail('pelanggaran');
-  });
-
-  window.dbOnValue(window.dbRef(window.db, 'rewardsSaya/' + currentUser.key), snap => {
-    allRewardsSaya = snap.exists() ? snap.val() : {};
-    if (currentMenu === 'rewardsaya') tampilkanDetail('rewardsaya');
-  });
-
   renderMenuGrid();
 }
 
@@ -635,11 +610,7 @@ function renderMenuGrid() {
     { key: 'uc', icon: 'uc', title: 'UC', desc: 'Poin UC promotor', color: 't-uc' },
     { key: 'brand', icon: 'brand', title: 'Perolehan Brand', desc: 'Rekap brand Anda', color: 't-brand' },
     { key: 'promo', icon: 'promo', title: 'Promo Toko', desc: 'Promo aktif', color: 't-promo' },
-    { key: 'sop', icon: 'sop', title: 'SOP Promotor', desc: 'Aturan kerja', color: 't-sop' },
-    { key: 'punishment', icon: 'punish', title: 'Punishment', desc: 'Sanksi & denda', color: 't-punish' },
-    { key: 'pelanggaran', icon: 'pelanggaran', title: 'Pelanggaran Saya', desc: 'Catatan pelanggaran', color: 't-pelanggaran' },
-    { key: 'reward', icon: 'reward', title: 'Daftar Rewards', desc: 'Reward toko', color: 't-reward' },
-    { key: 'rewardsaya', icon: 'rewardsaya', title: 'Rewards Saya', desc: 'Riwayat reward', color: 't-rewardsaya' }
+    { key: 'sop', icon: 'sop', title: 'SOP Promotor', desc: 'Aturan kerja', color: 't-sop' }
   ];
   grid.innerHTML = menus.map(m => `
     <div class="menu-card" onclick="tampilkanDetail('${m.key}')">
@@ -669,11 +640,7 @@ function tampilkanDetail(menuKey) {
     uc: { title: 'UC', subtitle: 'Pencapaian poin UC promotor' },
     brand: { title: 'Perolehan Brand', subtitle: 'Rekap penjualan khusus brand Anda' },
     promo: { title: 'Promo Toko', subtitle: 'Daftar promo produk & program toko aktif' },
-    sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' },
-    punishment: { title: 'Punishment', subtitle: 'Daftar sanksi & ketentuan pelanggaran' },
-    pelanggaran: { title: 'Pelanggaran Saya', subtitle: 'Catatan pelanggaran & sanksi promotor' },
-    reward: { title: 'Daftar Rewards', subtitle: 'Daftar Rewards pencapaian toko' },
-    rewardsaya: { title: 'Rewards Saya', subtitle: 'Riwayat Rewards yang Anda dapatkan' }
+    sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' }
   };
   const t = titles[menuKey] || { title: 'Detail', subtitle: '' };
   let content = '';
@@ -683,10 +650,6 @@ function tampilkanDetail(menuKey) {
   else if (menuKey === 'brand') content = renderBrand();
   else if (menuKey === 'promo') content = renderInfoList(infoData.promo, 'promo');
   else if (menuKey === 'sop') content = renderInfoList(infoData.rules, 'rules');
-  else if (menuKey === 'punishment') content = renderInfoList(infoData.punishment, 'punishment');
-  else if (menuKey === 'pelanggaran') content = renderPelanggaranSaya();
-  else if (menuKey === 'reward') content = renderInfoList(infoData.reward, 'reward');
-  else if (menuKey === 'rewardsaya') content = renderRewardsSaya();
 
   detailEl.innerHTML = `
     <div class="back-bar">
@@ -1026,47 +989,7 @@ function renderAbsensi() {
   return html;
 }
 
-// PELANGGARAN SAYA
-function renderPelanggaranSaya() {
-  const entries = Object.values(allPelanggaran || {});
-  if (entries.length === 0) {
-    return `<div class="empty-state" style="border-color:rgba(16,185,129,0.4); background:rgba(16,185,129,0.05);">
-      ${ICONS.sop}
-      <div class="pesan" style="color:#34d399;">Bersih dari Pelanggaran</div>
-      <div style="font-size:11px; color:#94a3b8; margin-top:4px;">Selamat, tidak ada catatan pelanggaran</div>
-    </div>`;
-  }
-  return entries.map(x => `
-    <div class="list-item-dark" style="border-left:3px solid #ef4444;">
-      <div class="kiri">
-        <div class="produk">${x.tanggal}</div>
-        <div class="info" style="color:#cbd5e1;">${x.keterangan}</div>
-        <div class="info" style="color:#f87171; margin-top:4px; font-weight:700;">Sanksi: ${x.denda}</div>
-      </div>
-    </div>
-  `).join('');
-}
-
-// REWARDS SAYA
-function renderRewardsSaya() {
-  const entries = Object.values(allRewardsSaya || {});
-  if (entries.length === 0) {
-    return `<div class="empty-state" style="border-color:rgba(251,191,36,0.4); background:rgba(251,191,36,0.05);">
-      ${ICONS.rewardsaya}
-      <div class="pesan" style="color:#fbbf24;">Belum Ada Reward</div>
-      <div style="font-size:11px; color:#94a3b8; margin-top:4px;">Terus semangat mengejar target</div>
-    </div>`;
-  }
-  return entries.map(x => `
-    <div class="info-block">
-      <div class="judul">${ICONS.reward} ${x.judul || 'Bonus Reward'}</div>
-      <div class="meta">${x.tanggal || '-'}</div>
-      <div class="deskripsi" style="margin-top:8px;">${x.detail || '-'}</div>
-    </div>
-  `).join('');
-}
-
-// INFO LIST
+// INFO LIST (Promo / Rules)
 function renderInfoList(arr, jenis) {
   if (!arr || arr.length === 0) {
     return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data</div></div>`;
@@ -1084,22 +1007,6 @@ function renderInfoList(arr, jenis) {
       <div class="info-block">
         <div class="judul">${ICONS.sop} ${x.poin || '-'}</div>
         <div class="deskripsi" style="margin-top:8px;">${x.deskripsi || '-'}</div>
-      </div>
-    `).join('');
-  } else if (jenis === 'punishment') {
-    return arr.map(x => `
-      <div class="info-block">
-        <div class="judul">${ICONS.punish} ${x.judul || '-'}</div>
-        ${x.level ? `<div class="meta">Sanksi: ${x.level}</div>` : ''}
-        <div class="deskripsi" style="margin-top:8px;">${x.detail || '-'}</div>
-      </div>
-    `).join('');
-  } else if (jenis === 'reward') {
-    return arr.map(x => `
-      <div class="info-block">
-        <div class="judul">${ICONS.reward} ${x.judul || '-'}</div>
-        ${x.periode ? `<div class="meta">${x.periode}</div>` : ''}
-        <div class="deskripsi" style="margin-top:8px;">${x.detail || '-'}</div>
       </div>
     `).join('');
   }
