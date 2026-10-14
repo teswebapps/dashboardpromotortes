@@ -153,53 +153,46 @@ let allRewardsSaya = {};
 function convertTanggalExcel(val) {
   if (val === undefined || val === null || val === '') return '';
   
-  // ========== KASUS 1: ANGKA SERIAL EXCEL (46032 → 12/10/2026) ==========
+  // ===== KASUS 1: ANGKA SERIAL EXCEL (46032) =====
   if (typeof val === 'number' && val > 1 && val < 100000) {
     const epochMs = Date.UTC(1899, 11, 30);
     const ms = epochMs + val * 24 * 60 * 60 * 1000;
     const d = new Date(ms);
-    const dd = String(d.getUTCDate()).padStart(2, '0');
-    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const yyyy = d.getUTCFullYear();
-    return `${dd}/${mm}/${yyyy}`;
+    return String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0') + '/' + d.getUTCFullYear();
   }
   
   const str = String(val).trim();
   if (!str) return '';
   
-  // ========== KASUS 2: STRING ANGKA SERIAL "46032" ==========
+  // ===== KASUS 2: STRING SERIAL "46032" =====
   if (/^\d{5}$/.test(str)) {
     const num = parseInt(str);
     const epochMs = Date.UTC(1899, 11, 30);
     const ms = epochMs + num * 24 * 60 * 60 * 1000;
     const d = new Date(ms);
-    const dd = String(d.getUTCDate()).padStart(2, '0');
-    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
-    const yyyy = d.getUTCFullYear();
-    return `${dd}/${mm}/${yyyy}`;
+    return String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0') + '/' + d.getUTCFullYear();
   }
   
-  // ========== KASUS 3: ISO "2026-10-12" ==========
+  // ===== KASUS 3: ISO "2026-10-12" =====
   if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
     const p = str.split(' ')[0].split('-');
     return `${p[2]}/${p[1]}/${p[0]}`;
   }
   
-  // ========== KASUS 4: STRING "DD/MM/YYYY" atau "MM/DD/YYYY" ==========
+  // ===== KASUS 4: STRING "10/12/2026" (MM/DD/YYYY dari XLSX) =====
   if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
     const parts = str.split(' ')[0].split('/');
-    const a = Number(parts[0]);  // angka pertama
-    const b = Number(parts[1]);  // angka kedua
+    const a = Number(parts[0]);
+    const b = Number(parts[1]);
     const yyyy = parts[2];
     
-    // Kalau a > 12 → a PASTI tanggal (bulan max 12) → sudah DD/MM ✅
+    // Kalau a > 12, a sudah tanggal → sudah DD/MM ✅
     if (a > 12) return `${String(a).padStart(2,'0')}/${String(b).padStart(2,'0')}/${yyyy}`;
     
-    // Kalau b > 12 → b PASTI tanggal → format MM/DD → TUKAR ke DD/MM
+    // Kalau b > 12, b sudah tanggal → format MM/DD → TUKAR
     if (b > 12) return `${String(b).padStart(2,'0')}/${String(a).padStart(2,'0')}/${yyyy}`;
     
-    // Ambigu (kedua ≤ 12) → TUKAR (asumsi XLSX library baca MM/DD)
-    // KARENA dari test: Master '01/10/2026' jadi '10/01/2026' → perlu ditukar
+    // Ambigu (kedua ≤ 12) → TUKAR (karena XLSX library default MM/DD)
     return `${String(b).padStart(2,'0')}/${String(a).padStart(2,'0')}/${yyyy}`;
   }
   
