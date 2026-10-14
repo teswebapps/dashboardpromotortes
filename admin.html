@@ -190,6 +190,41 @@ function convertTanggalExcel(val) {
   
   return str;
 }
+  /* ===== CONVERT JAM dari angka desimal Excel ===== */
+function convertJam(val) {
+  if (val === undefined || val === null || val === '') return '';
+  if (typeof val === 'number') {
+    if (val === 0 || isNaN(val)) return '';
+    const totalMenit = Math.round(val * 24 * 60);
+    const jam = Math.floor(totalMenit / 60) % 24;
+    const menit = totalMenit % 60;
+    return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
+  }
+  const str = String(val).trim();
+  if (!str) return '';
+  if (/^\d*\.?\d+$/.test(str)) {
+    const num = parseFloat(str);
+    if (isNaN(num) || num === 0) return '';
+    if (num < 1) {
+      const totalMenit = Math.round(num * 24 * 60);
+      const jam = Math.floor(totalMenit / 60) % 24;
+      const menit = totalMenit % 60;
+      return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
+    } else {
+      const jam = Math.floor(num);
+      const menit = Math.round((num - jam) * 60);
+      return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
+    }
+  }
+  if (str.includes(':')) return str;
+  if (str.includes('.')) {
+    const parts = str.split('.');
+    if (parts.length === 2) {
+      return parts[0].padStart(2, '0') + ':' + parts[1].padStart(2, '0').slice(0, 2);
+    }
+  }
+  return str;
+}
 function sanitizeKey(nama) {
   return String(nama || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_');
 }
