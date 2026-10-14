@@ -3,25 +3,24 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Promotor — Rekap Penjualan UFO</title>
+<title>Promotor — Rekap Penjualan UFO Kebonsari</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, set, get, update, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
- const firebaseConfig = {
-        apiKey: "AIzaSyDrrS4E_6e3G1DBfqkFbWoYLhdq6ZIzapg",
-        authDomain: "tes-webapps.firebaseapp.com",
-        databaseURL: "https://tes-webapps-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "tes-webapps",
-        storageBucket: "tes-webapps.firebasestorage.app",
-        messagingSenderId: "87638829660",
-        appId: "1:87638829660:web:5a04a73f02206803fa9499"
-      };
+const firebaseConfig = {
+  apiKey: "AIzaSyDrrS4E_6e3G1DBfqkFbWoYLhdq6ZIzapg",
+  authDomain: "tes-webapps.firebaseapp.com",
+  databaseURL: "https://tes-webapps-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "tes-webapps",
+  storageBucket: "tes-webapps.firebasestorage.app",
+  messagingSenderId: "87638829660",
+  appId: "1:87638829660:web:5a04a73f02206803fa9499"
+};
+
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
@@ -108,11 +107,9 @@ button {
   letter-spacing: 0.3px; transition: all 0.2s;
 }
 .btn-primary { background: var(--primary); color: white; }
-.btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+.btn-primary:hover { background: #1d4ed8; }
 .btn-soft { background: var(--soft); color: var(--text); border: 1px solid var(--border); }
 .btn-soft:hover { background: #e2e8f0; }
-.btn-export { background: var(--success); color: white; padding: 10px 14px; font-size: 11px; }
-.btn-export.pdf { background: var(--danger); }
 .hidden { display: none !important; }
 .user-badge {
   display: flex; justify-content: space-between; align-items: center;
@@ -146,8 +143,7 @@ button {
 }
 .stat-card {
   background: white; border: 1px solid var(--border);
-  border-radius: 12px; padding: 14px;
-  text-align: center;
+  border-radius: 12px; padding: 14px; text-align: center;
 }
 .stat-card .label {
   font-size: 10px; font-weight: 800; color: var(--muted);
@@ -175,19 +171,14 @@ button {
   word-break: break-word;
 }
 .list-item .info {
-  font-size: 10.5px; color: var(--muted);
-  font-weight: 600;
+  font-size: 10.5px; color: var(--muted); font-weight: 600;
 }
-.list-item .kanan {
-  text-align: right; flex-shrink: 0;
-}
+.list-item .kanan { text-align: right; flex-shrink: 0; }
 .list-item .harga {
-  font-size: 13px; font-weight: 800;
-  color: var(--success);
+  font-size: 13px; font-weight: 800; color: var(--success);
 }
 .list-item .qty {
-  font-size: 10px; color: var(--muted);
-  font-weight: 700; margin-top: 2px;
+  font-size: 10px; color: var(--muted); font-weight: 700; margin-top: 2px;
 }
 .empty {
   text-align: center; padding: 30px 15px;
@@ -217,20 +208,20 @@ button {
 .rank-item .pos.bronze { background: #fed7aa; color: #9a3412; border-color: #fb923c; }
 .rank-item .nama { flex: 1; font-size: 13px; font-weight: 700; }
 .rank-item .omzet { font-size: 12.5px; font-weight: 800; color: var(--success); }
-.spinner {
-  display: inline-block; width: 14px; height: 14px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: white; border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-  vertical-align: middle; margin-right: 6px;
+.info-block {
+  background: white; border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px; margin-bottom: 8px;
 }
-@keyframes spin { to { transform: rotate(360deg); } }
-.alert {
-  padding: 12px 14px; border-radius: 10px;
-  font-size: 12.5px; font-weight: 700;
-  margin-bottom: 12px;
+.info-block .judul {
+  font-size: 13px; font-weight: 800; color: var(--primary);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 8px;
 }
-.alert.err { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+.info-block .deskripsi {
+  font-size: 12px; color: var(--text); line-height: 1.5;
+}
+.info-block .meta {
+  font-size: 11px; color: var(--muted); margin-top: 4px;
+}
 @media (max-width: 480px) {
   body { padding: 12px; }
   .container { padding: 16px; border-radius: 16px; }
@@ -242,24 +233,25 @@ button {
 
 <div class="container">
   <div class="header">
-    <h1>💰 Rekap Penjualan</h1>
-    <p>UFO Malang Kebonsari</p>
+    <h1>💰 Rekap Penjualan UFO</h1>
+    <p>Malang Kebonsari</p>
   </div>
 
   <!-- LOGIN -->
   <div id="loginBox">
     <div class="card">
       <h3>🔐 Login Promotor</h3>
-      <label>Nama Sales</label>
+      <label>Nama Absen</label>
       <select id="selectNama">
         <option value="">-- Memuat daftar promotor --</option>
       </select>
       <div style="height:10px;"></div>
       <label>PIN</label>
-      <input type="password" id="inputPin" placeholder="••••••" maxlength="6"
-             inputmode="numeric" pattern="[0-9]*" style="text-align:center; font-size:18px; letter-spacing:6px; font-weight:800;"
-             oninput="this.value = this.value.replace(/\\D/g, '').slice(0, 6)"
-             onkeypress="if(event.key === 'Enter') loginPromotor()">
+      <input type="password" id="inputPin" placeholder="••••" maxlength="6"
+        inputmode="numeric" pattern="[0-9]*"
+        style="text-align:center; font-size:18px; letter-spacing:6px; font-weight:800;"
+        oninput="this.value = this.value.replace(/\D/g, '')"
+        onkeypress="if(event.key === 'Enter') loginPromotor()">
       <div style="height:10px;"></div>
       <button class="btn-primary" onclick="loginPromotor()">Masuk</button>
       <div id="loginError" class="alert err hidden" style="margin-top:10px;"></div>
@@ -268,7 +260,6 @@ button {
 
   <!-- DASHBOARD -->
   <div id="dashboard" class="hidden">
-
     <div class="user-badge">
       <div>
         <div class="nama" id="userNama">-</div>
@@ -278,220 +269,187 @@ button {
     </div>
 
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
-      <button class="tab-btn" onclick="switchTab('hari')">📅 Hari Ini</button>
-      <button class="tab-btn" onclick="switchTab('minggu')">📆 Minggu Ini</button>
-      <button class="tab-btn" onclick="switchTab('bulan')">🗓️ Bulan Ini</button>
-      <button class="tab-btn" onclick="switchTab('brand')">🏷️ Brand</button>
-      <button class="tab-btn" onclick="switchTab('rank')">🏆 Ranking</button>
+      <button class="tab-btn active" onclick="switchTab('dash', event)">📊 Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('hari', event)">📅 Hari Ini</button>
+      <button class="tab-btn" onclick="switchTab('minggu', event)">📆 Minggu</button>
+      <button class="tab-btn" onclick="switchTab('bulan', event)">🗓️ Bulan</button>
+      <button class="tab-btn" onclick="switchTab('brand', event)">🏷️ Brand</button>
+      <button class="tab-btn" onclick="switchTab('rank', event)">🏆 Ranking</button>
+      <button class="tab-btn" onclick="switchTab('info', event)">ℹ️ Info</button>
     </div>
 
     <div id="tabContent"></div>
 
-    <div style="display:flex; gap:8px; margin-top:14px;">
-      <button class="btn-export" onclick="exportExcel()">📥 Excel</button>
-      <button class="btn-export pdf" onclick="exportPDF()">📄 PDF</button>
-    </div>
     <div style="height:8px;"></div>
     <button class="btn-soft" onclick="logoutPromotor()">🚪 Keluar</button>
   </div>
 </div>
 
 <script>
-let allPenjualan = [];      // semua data penjualan dari Firebase
-let currentNama = '';
-let currentPromotorKey = '';
-let currentTab = 'dashboard';
-let listPromotor = {};      // dari users/promotor
+let allPenjualan = [];
+let allPromotor = {};
+let infoData = { promo: [], rules: [], punishment: [], reward: [] };
+let currentUser = null;
+let currentTab = 'dash';
 
 window.addEventListener('firebase-ready', () => {
-  const saved = localStorage.getItem('ufo_promotor_penjualan');
+  loadPromotorList();
+  const saved = localStorage.getItem('ufo_promotor_session');
   if (saved) {
     try {
       const data = JSON.parse(saved);
-      currentNama = data.nama;
-      currentPromotorKey = data.key;
+      currentUser = data;
       tampilkanDashboard();
     } catch(e) {}
-  } else {
-    loadDropdownPromotor();
   }
 });
 
-/* ============================================================ */
-/* LOAD DROPDOWN NAMA */
-/* ============================================================ */
-function loadDropdownPromotor() {
+function loadPromotorList() {
   window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
     const sel = document.getElementById('selectNama');
     if (!snap.exists()) {
       sel.innerHTML = '<option value="">-- Belum ada promotor (hubungi admin) --</option>';
       return;
     }
-    listPromotor = snap.val();
-    const list = Object.keys(listPromotor)
-      .map(k => ({ key: k, ...listPromotor[k] }))
+    allPromotor = snap.val();
+    const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
       .filter(p => p.aktif !== false)
-      .sort((a,b) => a.nama.localeCompare(b.nama));
+      .sort((a,b) => a.namaAbsen.localeCompare(b.namaAbsen));
+    const curVal = sel.value;
     sel.innerHTML = '<option value="">-- Pilih Nama --</option>' +
-      list.map(p => `<option value="${p.key}">${p.nama}</option>`).join('');
+      list.map(p => `<option value="${p.key}">${p.namaAbsen}</option>`).join('');
+    if (curVal) sel.value = curVal;
   });
 }
 
-/* ============================================================ */
-/* LOGIN */
-/* ============================================================ */
 async function loginPromotor() {
   const key = document.getElementById('selectNama').value;
   const pin = document.getElementById('inputPin').value.trim();
   const errEl = document.getElementById('loginError');
   errEl.classList.add('hidden');
-
   if (!key) { errEl.innerText = 'Pilih nama dulu!'; errEl.classList.remove('hidden'); return; }
-  if (!/^\d{6}$/.test(pin)) { errEl.innerText = 'PIN harus 6 digit'; errEl.classList.remove('hidden'); return; }
-
+  if (!pin) { errEl.innerText = 'Masukkan PIN!'; errEl.classList.remove('hidden'); return; }
   try {
     const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
     if (!snap.exists()) {
-      errEl.innerText = 'Promotor tidak ditemukan. Hubungi admin.';
-      errEl.classList.remove('hidden');
-      return;
+      errEl.innerText = 'Promotor tidak ditemukan.'; errEl.classList.remove('hidden'); return;
     }
     const data = snap.val();
     if (String(data.pin) !== pin) {
-      errEl.innerText = '❌ PIN salah!';
-      errEl.classList.remove('hidden');
+      errEl.innerText = '❌ PIN salah!'; errEl.classList.remove('hidden');
       document.getElementById('inputPin').value = '';
       return;
     }
-    currentNama = data.nama;
-    currentPromotorKey = key;
-    localStorage.setItem('ufo_promotor_penjualan', JSON.stringify({ nama: currentNama, key: currentPromotorKey }));
+    currentUser = { key, ...data };
+    localStorage.setItem('ufo_promotor_session', JSON.stringify(currentUser));
     tampilkanDashboard();
   } catch (err) {
-    errEl.innerText = 'Gagal verifikasi: ' + err.message;
-    errEl.classList.remove('hidden');
+    errEl.innerText = 'Gagal: ' + err.message; errEl.classList.remove('hidden');
   }
 }
 
 function logoutPromotor() {
   if (!confirm("Yakin ingin keluar?")) return;
-  localStorage.removeItem('ufo_promotor_penjualan');
-  currentNama = '';
-  currentPromotorKey = '';
+  localStorage.removeItem('ufo_promotor_session');
+  currentUser = null;
   allPenjualan = [];
   document.getElementById('dashboard').classList.add('hidden');
   document.getElementById('loginBox').classList.remove('hidden');
   document.getElementById('selectNama').value = '';
   document.getElementById('inputPin').value = '';
-  loadDropdownPromotor();
 }
 
-/* ============================================================ */
-/* TAMPILKAN DASHBOARD & LOAD DATA */
-/* ============================================================ */
 function tampilkanDashboard() {
   document.getElementById('loginBox').classList.add('hidden');
   document.getElementById('dashboard').classList.remove('hidden');
-  document.getElementById('userNama').innerText = currentNama;
+  document.getElementById('userNama').innerText = currentUser.namaAbsen;
 
-  // Load realtime data
   window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
     allPenjualan = [];
     if (snap.exists()) {
       const data = snap.val();
-      Object.keys(data).forEach(k => {
-        const item = data[k];
-        if (item && item.namaSales) {
-          item._key = k;
-          allPenjualan.push(item);
-        }
+      Object.values(data).forEach(item => {
+        if (item && item.namaSales) allPenjualan.push(item);
       });
     }
     renderTab();
   });
+
+  window.dbOnValue(window.dbRef(window.db, 'info'), snap => {
+    if (snap.exists()) {
+      const data = snap.val();
+      infoData.promo = data.promo || [];
+      infoData.rules = data.rules || [];
+      infoData.punishment = data.punishment || [];
+      infoData.reward = data.reward || [];
+    }
+    if (currentTab === 'info') renderTab();
+  });
 }
 
-/* ============================================================ */
-/* TAB */
-/* ============================================================ */
-function switchTab(tab) {
+function switchTab(tab, evt) {
   currentTab = tab;
-  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-  event.target.classList.add('active');
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (evt && evt.target) evt.target.classList.add('active');
   renderTab();
-}
-
-function renderTab() {
-  const el = document.getElementById('tabContent');
-  if (currentTab === 'dashboard') el.innerHTML = renderDashboard();
-  else if (currentTab === 'hari') el.innerHTML = renderListHari();
-  else if (currentTab === 'minggu') el.innerHTML = renderListMinggu();
-  else if (currentTab === 'bulan') el.innerHTML = renderListBulan();
-  else if (currentTab === 'brand') el.innerHTML = renderBrand();
-  else if (currentTab === 'rank') el.innerHTML = renderRanking();
 }
 
 /* ============================================================ */
 /* HELPER */
 /* ============================================================ */
 function parseTanggal(str) {
-  // Format: DD/MM/YYYY
   if (!str) return null;
-  const parts = String(str).split('/');
-  if (parts.length !== 3) return null;
-  return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+  const p = String(str).split('/');
+  if (p.length !== 3) return null;
+  return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
 }
-
 function isHariIni(tgl) {
-  const d = parseTanggal(tgl);
-  if (!d) return false;
-  const now = new Date();
-  return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  const d = parseTanggal(tgl); if (!d) return false;
+  const n = new Date();
+  return d.getDate() === n.getDate() && d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
 }
-
 function isMingguIni(tgl) {
-  const d = parseTanggal(tgl);
-  if (!d) return false;
-  const now = new Date();
-  const startMinggu = new Date(now);
-  startMinggu.setDate(now.getDate() - now.getDay()); // Minggu
-  startMinggu.setHours(0,0,0,0);
-  const endMinggu = new Date(startMinggu);
-  endMinggu.setDate(startMinggu.getDate() + 7);
-  return d >= startMinggu && d < endMinggu;
+  const d = parseTanggal(tgl); if (!d) return false;
+  const n = new Date();
+  const start = new Date(n); start.setDate(n.getDate() - n.getDay()); start.setHours(0,0,0,0);
+  const end = new Date(start); end.setDate(start.getDate() + 7);
+  return d >= start && d < end;
 }
-
 function isBulanIni(tgl) {
-  const d = parseTanggal(tgl);
-  if (!d) return false;
-  const now = new Date();
-  return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+  const d = parseTanggal(tgl); if (!d) return false;
+  const n = new Date();
+  return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
 }
-
 function getDataSaya() {
-  return allPenjualan.filter(x => x.namaSales === currentNama);
+  return allPenjualan.filter(x => x.namaSales === currentUser.namaSales);
 }
-
 function hitungOmzet(list) {
-  // Skip GARANSI & ONGKOS
   return list.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS')
-             .reduce((sum, x) => sum + (Number(x.subtotal) || 0), 0);
+             .reduce((s, x) => s + (Number(x.subtotal) || 0), 0);
 }
-
 function hitungUnit(list) {
   return list.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS')
-             .reduce((sum, x) => sum + (Number(x.qty) || 0), 0);
+             .reduce((s, x) => s + (Number(x.qty) || 0), 0);
 }
-
 function hitungUC(list) {
   return list.filter(x => x.kategori === 'GARANSI')
-             .reduce((sum, x) => sum + (Number(x.qty) || 0), 0);
+             .reduce((s, x) => s + (Number(x.qty) || 0), 0);
 }
 
 /* ============================================================ */
-/* RENDER DASHBOARD */
+/* RENDER */
 /* ============================================================ */
+function renderTab() {
+  const el = document.getElementById('tabContent');
+  if (currentTab === 'dash') el.innerHTML = renderDashboard();
+  else if (currentTab === 'hari') el.innerHTML = renderListFilter(isHariIni, 'Hari Ini');
+  else if (currentTab === 'minggu') el.innerHTML = renderListFilter(isMingguIni, 'Minggu Ini');
+  else if (currentTab === 'bulan') el.innerHTML = renderListFilter(isBulanIni, 'Bulan Ini');
+  else if (currentTab === 'brand') el.innerHTML = renderBrand();
+  else if (currentTab === 'rank') el.innerHTML = renderRanking();
+  else if (currentTab === 'info') el.innerHTML = renderInfo();
+}
+
 function renderDashboard() {
   const dataSaya = getDataSaya();
   const dataHari = dataSaya.filter(x => isHariIni(x.tanggal));
@@ -502,9 +460,12 @@ function renderDashboard() {
   const unitBulan = hitungUnit(dataBulan);
   const ucBulan = hitungUC(dataBulan);
 
-  // Ranking
-  const rank = hitungRanking();
-  const posSaya = rank.findIndex(x => x.nama === currentNama) + 1;
+  const rank = hitungRankingList();
+  const posSaya = rank.findIndex(x => x.namaSales === currentUser.namaSales) + 1;
+
+  const targetUC = Number(currentUser.targetUC) || 0;
+  const ikutUC = currentUser.ikutUC === 'YA';
+  const kurangUC = ikutUC && ucBulan < targetUC ? (targetUC - ucBulan) : 0;
 
   return `
     <div class="stat-grid">
@@ -521,70 +482,48 @@ function renderDashboard() {
         <div class="value">${unitBulan}</div>
       </div>
       <div class="stat-card">
-        <div class="label">UC Bulan Ini</div>
-        <div class="value gold">${ucBulan}</div>
+        <div class="label">UC ${ikutUC ? `(Target ${targetUC})` : '(Non-Target)'}</div>
+        <div class="value ${kurangUC > 0 ? 'red' : 'gold'}">${ucBulan}${kurangUC > 0 ? ' ⚠️' : ''}</div>
       </div>
       <div class="stat-card full">
         <div class="label">Peringkat Toko</div>
-        <div class="value" style="color: var(--primary);">#${posSaya || '-'} dari ${rank.length} promotor</div>
+        <div class="value">#${posSaya || '-'} dari ${rank.length} promotor</div>
       </div>
     </div>
     <div class="card" style="margin-top:12px;">
       <h3>📊 5 Transaksi Terakhir</h3>
-      ${dataSaya.slice(-5).reverse().map(x => renderListItem(x)).join('') || '<div class="empty"><div class="icon">📭</div>Belum ada transaksi</div>'}
+      ${dataSaya.slice(-5).reverse().map(x => renderItem(x)).join('') || '<div class="empty"><div class="icon">📭</div>Belum ada transaksi</div>'}
     </div>
   `;
 }
 
-/* ============================================================ */
-/* RENDER LIST */
-/* ============================================================ */
-function renderListHari() {
-  const list = getDataSaya().filter(x => isHariIni(x.tanggal));
-  return renderListWithSummary(list, 'Hari Ini');
-}
-function renderListMinggu() {
-  const list = getDataSaya().filter(x => isMingguIni(x.tanggal));
-  return renderListWithSummary(list, 'Minggu Ini');
-}
-function renderListBulan() {
-  const list = getDataSaya().filter(x => isBulanIni(x.tanggal));
-  return renderListWithSummary(list, 'Bulan Ini');
-}
-
-function renderListWithSummary(list, judul) {
+function renderListFilter(filterFn, judul) {
+  const list = getDataSaya().filter(x => filterFn(x.tanggal));
   const omzet = hitungOmzet(list);
   const unit = hitungUnit(list);
   const uc = hitungUC(list);
   return `
     <div class="stat-grid">
       <div class="stat-card full">
-        <div class="label">Total Omzet — ${judul}</div>
+        <div class="label">Omzet ${judul}</div>
         <div class="value green">Rp ${omzet.toLocaleString('id-ID')}</div>
       </div>
-      <div class="stat-card">
-        <div class="label">Unit</div>
-        <div class="value">${unit}</div>
-      </div>
-      <div class="stat-card">
-        <div class="label">UC</div>
-        <div class="value gold">${uc}</div>
-      </div>
+      <div class="stat-card"><div class="label">Unit</div><div class="value">${unit}</div></div>
+      <div class="stat-card"><div class="label">UC</div><div class="value gold">${uc}</div></div>
     </div>
     <div style="margin-top:12px;">
-      ${list.length === 0 ? '<div class="empty"><div class="icon">📭</div>Belum ada transaksi ' + judul.toLowerCase() + '</div>' 
-        : list.slice().reverse().map(x => renderListItem(x)).join('')}
+      ${list.length === 0 ? '<div class="empty"><div class="icon">📭</div>Belum ada transaksi</div>' 
+        : list.slice().reverse().map(x => renderItem(x)).join('')}
     </div>
   `;
 }
 
-function renderListItem(x) {
+function renderItem(x) {
   return `
     <div class="list-item">
       <div class="kiri">
         <div class="produk">${x.namaBarang || '-'}</div>
         <div class="info">${x.tanggal} • ${x.merk || '-'} • ${x.kategori || '-'}</div>
-        <div class="info">Faktur: ${x.noFaktur || '-'}</div>
       </div>
       <div class="kanan">
         <div class="harga">Rp ${Number(x.subtotal || 0).toLocaleString('id-ID')}</div>
@@ -594,9 +533,6 @@ function renderListItem(x) {
   `;
 }
 
-/* ============================================================ */
-/* RENDER BRAND */
-/* ============================================================ */
 function renderBrand() {
   const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS');
   const perBrand = {};
@@ -610,7 +546,7 @@ function renderBrand() {
   return `
     <div class="card">
       <h3>🏷️ Rekap Brand — Bulan Ini</h3>
-      ${arr.length === 0 ? '<div class="empty"><div class="icon">📦</div>Belum ada penjualan bulan ini</div>'
+      ${arr.length === 0 ? '<div class="empty"><div class="icon">📦</div>Belum ada penjualan</div>'
         : arr.map(x => `
           <div class="list-item">
             <div class="kiri">
@@ -626,15 +562,12 @@ function renderBrand() {
   `;
 }
 
-/* ============================================================ */
-/* RENDER RANKING */
-/* ============================================================ */
-function hitungRanking() {
+function hitungRankingList() {
   const perSales = {};
   allPenjualan.filter(x => isBulanIni(x.tanggal) && x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS')
     .forEach(x => {
-      const n = x.namaSales || 'TANPA NAMA';
-      if (!perSales[n]) perSales[n] = { nama: n, omzet: 0, unit: 0 };
+      const n = x.namaSales;
+      if (!perSales[n]) perSales[n] = { namaSales: n, omzet: 0, unit: 0 };
       perSales[n].omzet += Number(x.subtotal) || 0;
       perSales[n].unit += Number(x.qty) || 0;
     });
@@ -642,18 +575,22 @@ function hitungRanking() {
 }
 
 function renderRanking() {
-  const rank = hitungRanking();
+  const rank = hitungRankingList();
+  // Map namaSales ke namaAbsen
+  const mapNama = {};
+  Object.values(allPromotor).forEach(p => { mapNama[p.namaSales] = p.namaAbsen; });
   return `
     <div class="card">
       <h3>🏆 Ranking Omzet — Bulan Ini</h3>
       ${rank.length === 0 ? '<div class="empty"><div class="icon">🏆</div>Belum ada data</div>'
         : rank.map((x, i) => {
-          const isMe = x.nama === currentNama;
-          const posClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+          const isMe = x.namaSales === currentUser.namaSales;
+          const pos = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+          const nama = mapNama[x.namaSales] || x.namaSales;
           return `
             <div class="rank-item ${isMe ? 'me' : ''}">
-              <div class="pos ${posClass}">${i + 1}</div>
-              <div class="nama">${x.nama}${isMe ? ' <span style="color:var(--primary);">(Anda)</span>' : ''}</div>
+              <div class="pos ${pos}">${i + 1}</div>
+              <div class="nama">${nama}${isMe ? ' <span style="color:var(--primary);">(Anda)</span>' : ''}</div>
               <div class="omzet">Rp ${x.omzet.toLocaleString('id-ID')}</div>
             </div>
           `;
@@ -662,39 +599,35 @@ function renderRanking() {
   `;
 }
 
-/* ============================================================ */
-/* EXPORT */
-/* ============================================================ */
-function exportExcel() {
-  let rows = [['REKAP PENJUALAN — ' + currentNama.toUpperCase()], []];
-  rows.push(['Tanggal', 'Faktur', 'Produk', 'Merk', 'Kategori', 'Qty', 'Subtotal']);
-
-  const list = getDataSaya();
-  list.forEach(x => {
-    rows.push([
-      x.tanggal, x.noFaktur, x.namaBarang, x.merk, x.kategori, x.qty, Number(x.subtotal || 0)
-    ]);
-  });
-  rows.push([]);
-  rows.push(['TOTAL OMZET', '', '', '', '', '', hitungOmzet(list)]);
-  rows.push(['TOTAL UNIT', '', '', '', '', hitungUnit(list), '']);
-  rows.push(['TOTAL UC', '', '', '', '', hitungUC(list), '']);
-
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Penjualan');
-  XLSX.writeFile(wb, 'Rekap_' + currentNama.replace(/\s+/g, '_') + '.xlsx');
-}
-
-function exportPDF() {
-  const el = document.getElementById('tabContent');
-  const nama = currentNama.replace(/\s+/g, '_');
-  html2pdf().set({
-    margin: 10,
-    filename: 'Rekap_' + nama + '.pdf',
-    html2canvas: { scale: 2 },
-    jsPDF: { format: 'a4' }
-  }).from(el).save();
+function renderInfo() {
+  const renderInfoList = (arr, icon, judulField, subField, detailField) => {
+    if (!arr || arr.length === 0) return `<div class="empty"><div class="icon">📭</div>Belum ada data</div>`;
+    return arr.map(x => `
+      <div class="info-block">
+        <div class="judul">${icon} ${x[judulField] || '-'}</div>
+        ${subField && x[subField] ? `<div class="meta">${x[subField]}</div>` : ''}
+        ${detailField && x[detailField] ? `<div class="deskripsi" style="margin-top:6px;">${x[detailField]}</div>` : ''}
+      </div>
+    `).join('');
+  };
+  return `
+    <div class="card">
+      <h3>🏷️ Promo Toko</h3>
+      ${renderInfoList(infoData.promo, '🔥', 'judul', 'periode', 'detail')}
+    </div>
+    <div class="card">
+      <h3>✨ SOP Promotor</h3>
+      ${renderInfoList(infoData.rules, '📌', 'poin', null, 'deskripsi')}
+    </div>
+    <div class="card">
+      <h3>⚠️ Punishment</h3>
+      ${renderInfoList(infoData.punishment, '⚠️', 'judul', 'level', 'detail')}
+    </div>
+    <div class="card">
+      <h3>🏆 Reward</h3>
+      ${renderInfoList(infoData.reward, '🏆', 'judul', 'periode', 'detail')}
+    </div>
+  `;
 }
 </script>
 
