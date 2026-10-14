@@ -153,9 +153,8 @@ let allRewardsSaya = {};
 function convertTanggalExcel(val) {
   if (val === undefined || val === null || val === '') return '';
   
-  // ANGKA SERIAL EXCEL (46032 → 12/10/2026)
+  // ========== KASUS 1: ANGKA SERIAL EXCEL (46032 → 12/10/2026) ==========
   if (typeof val === 'number' && val > 1 && val < 100000) {
-    // Excel epoch: 30 Des 1899 (pakai UTC biar konsisten)
     const epochMs = Date.UTC(1899, 11, 30);
     const ms = epochMs + val * 24 * 60 * 60 * 1000;
     const d = new Date(ms);
@@ -168,7 +167,7 @@ function convertTanggalExcel(val) {
   const str = String(val).trim();
   if (!str) return '';
   
-  // String angka serial "46032"
+  // ========== KASUS 2: STRING ANGKA SERIAL "46032" ==========
   if (/^\d{5}$/.test(str)) {
     const num = parseInt(str);
     const epochMs = Date.UTC(1899, 11, 30);
@@ -180,21 +179,28 @@ function convertTanggalExcel(val) {
     return `${dd}/${mm}/${yyyy}`;
   }
   
-  // ISO "2026-10-12"
+  // ========== KASUS 3: ISO "2026-10-12" ==========
   if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
     const p = str.split(' ')[0].split('-');
     return `${p[2]}/${p[1]}/${p[0]}`;
   }
   
-  // String "12/10/2026" atau "10/12/2026"
+  // ========== KASUS 4: STRING "DD/MM/YYYY" atau "MM/DD/YYYY" ==========
   if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
     const parts = str.split(' ')[0].split('/');
-    const a = Number(parts[0]);
-    const b = Number(parts[1]);
+    const a = Number(parts[0]);  // angka pertama
+    const b = Number(parts[1]);  // angka kedua
     const yyyy = parts[2];
+    
+    // Kalau a > 12 → a PASTI tanggal (bulan max 12) → sudah DD/MM ✅
     if (a > 12) return `${String(a).padStart(2,'0')}/${String(b).padStart(2,'0')}/${yyyy}`;
+    
+    // Kalau b > 12 → b PASTI tanggal → format MM/DD → TUKAR ke DD/MM
     if (b > 12) return `${String(b).padStart(2,'0')}/${String(a).padStart(2,'0')}/${yyyy}`;
-    return `${String(a).padStart(2,'0')}/${String(b).padStart(2,'0')}/${yyyy}`;
+    
+    // Ambigu (kedua ≤ 12) → TUKAR (asumsi XLSX library baca MM/DD)
+    // KARENA dari test: Master '01/10/2026' jadi '10/01/2026' → perlu ditukar
+    return `${String(b).padStart(2,'0')}/${String(a).padStart(2,'0')}/${yyyy}`;
   }
   
   return str;
