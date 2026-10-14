@@ -355,13 +355,13 @@ function renderUpload() {
         Upload Data Master
       </h3>
       <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">
-        Upload file <b>ABSEN FINGER.xlsx</b> lengkap (sheet MASTER_SALES, PENJUALAN, ABSENFINGER, PROMO, RULES, PUNISHMENT, REWARD, PELANGGARAN, RewardSaya). Cukup sekali.
+        Upload file <b>ABSEN FINGER.xlsx</b> lengkap. Cukup sekali. Bisa upload ulang kapan saja untuk update.
       </p>
       <div class="file-wrap" onclick="document.getElementById('fileMaster').click()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <p><strong>Klik pilih file Master</strong></p>
         <p style="font-size:11px;">File .xlsx lengkap</p>
-        <input type="file" id="fileMaster" accept=".xlsx,.xls" onchange="handleFileMaster(event)">
+        <input type="file" id="fileMaster" accept=".xlsx,.xls" onchange="handleFileMaster(event); this.value='';">
       </div>
       <div id="masterInfo" style="margin-top:12px;"></div>
     </div>
@@ -378,7 +378,7 @@ function renderUpload() {
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <p><strong>Klik pilih file Penjualan</strong></p>
         <p style="font-size:11px;">File .xlsx dari kasir</p>
-        <input type="file" id="filePenjualan" accept=".xlsx,.xls" onchange="handleFilePenjualan(event)">
+        <input type="file" id="filePenjualan" accept=".xlsx,.xls" onchange="handleFilePenjualan(event); this.value='';">
       </div>
       <div id="penjualanInfo" style="margin-top:12px;"></div>
     </div>
@@ -396,6 +396,8 @@ function handleFileMaster(e) {
       const data = new Uint8Array(evt.target.result);
       const wb = XLSX.read(data, { type: 'array' });
       const result = { promotor: [], penjualan: [], absensi: {}, info: {}, pelanggaran: {}, rewardsSaya: {} };
+
+      console.log('📋 Sheet terdeteksi:', wb.SheetNames);
 
       // MASTER_SALES
       const ms = wb.Sheets['MASTER_SALES'];
@@ -448,37 +450,65 @@ function handleFileMaster(e) {
         }
       }
 
-      // ABSENFINGER → per nama per tanggal
+      // ABSENFINGER — FIX PENTING!
       const ab = wb.Sheets['ABSENFINGER'];
       if (ab) {
         const rows = XLSX.utils.sheet_to_json(ab, { header: 1, defval: '' });
+        console.log('🔍 Sheet ABSENFINGER ditemukan. Total baris:', rows.length);
+        console.log('🔍 Header:', rows[0]);
+        
+        let countAbsensi = 0;
         for (let i = 1; i < rows.length; i++) {
           const r = rows[i];
-          if (!r[0] || !r[1]) continue;
+          
+          // Skip baris kosong
+          if (!r || !r[0] || String(r[0]).trim() === '') continue;
+          
           const namaAbsen = String(r[0]).trim();
+          if (!namaAbsen) continue;
+          
+          // Parse tanggal (bisa angka atau string)
+          let hariNum = 0;
+          const tglRaw = r[1];
+          if (tglRaw !== undefined && tglRaw !== null && tglRaw !== '') {
+            if (typeof tglRaw === 'number') {
+              hariNum = Math.floor(tglRaw);
+            } else {
+              const parsed = parseInt(String(tglRaw).trim(), 10);
+              hariNum = isNaN(parsed) ? 0 : parsed;
+            }
+          }
+          
+          // Skip kalau hari tidak valid
+          if (hariNum < 1 || hariNum > 31) continue;
+          
           const cleanKey = sanitizeKey(namaAbsen);
-          const tanggal = String(r[1]).trim();
-          const tglKey = tanggal.replace(/[^0-9]/g, '-').split('-').filter(Boolean);
-          // Pakai format untuk key: coba parse sebagai hari
-          const hari = String(r[1]).trim();
-          // Format: "2.0" (tanggal 2)
-          const hariNum = parseInt(hari) || 0;
-          // Buat tanggal dari hari — asumsi bulan = bulan saat ini (dari kolom J)
-          // Karena kolom J = bulan, tapi file lama tidak ada data
-          // Kita simpan langsung dengan key unik per baris
           if (!result.absensi[cleanKey]) result.absensi[cleanKey] = {};
-          result.absensi[cleanKey]['hari_' + hariNum + '_' + i] = {
+          
+          // Cek duplikat hari untuk orang yang sama
+          const alreadyExist = Object.keys(result.absensi[cleanKey]).some(k => k.startsWith('hari_' + hariNum + '_'));
+          if (alreadyExist) continue;
+          
+          result.absensi[cleanKey]['hari_' + hariNum] = {
+            nama: namaAbsen,
             hari: hariNum,
-            masuk: String(r[2]).trim(),
-            istirahat1: String(r[3]).trim(),
-            kembali1: String(r[4]).trim(),
-            istirahat2: String(r[5]).trim(),
-            kembali2: String(r[6]).trim(),
-            pulang: String(r[7]).trim(),
-            terlambat: String(r[8]).trim().toUpperCase(),
+            masuk: String(r[2] || '').trim(),
+            istirahat1: String(r[3] || '').trim(),
+            kembali1: String(r[4] || '').trim(),
+            istirahat2: String(r[5] || '').trim(),
+            kembali2: String(r[6] || '').trim(),
+            pulang: String(r[7] || '').trim(),
+            terlambat: String(r[8] || '').trim().toUpperCase(),
             bulan: String(r[9] || '').trim()
           };
+          countAbsensi++;
         }
+        console.log('✅ Absensi tersimpan:', Object.keys(result.absensi).length, 'orang, total', countAbsensi, 'baris');
+        Object.keys(result.absensi).forEach(k => {
+          console.log(`   ${k}: ${Object.keys(result.absensi[k]).length} hari`);
+        });
+      } else {
+        console.warn('⚠️ Sheet ABSENFINGER tidak ditemukan!');
       }
 
       // Info tambahan
@@ -536,10 +566,13 @@ function handleFileMaster(e) {
         }
       }
 
+      // Total absensi semua orang
+      const totalAbsensi = Object.values(result.absensi).reduce((s, o) => s + Object.keys(o).length, 0);
+
       el.innerHTML = `
         <div class="alert ok">
           <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          Siap: ${result.promotor.length} promotor, ${result.penjualan.length} transaksi, ${Object.keys(result.absensi).length} absensi, ${Object.keys(result.pelanggaran).length} pelanggaran, ${Object.keys(result.rewardsSaya).length} rewards
+          Siap: ${result.promotor.length} promotor • ${result.penjualan.length} transaksi • ${Object.keys(result.absensi).length} orang absensi (${totalAbsensi} hari) • ${Object.keys(result.pelanggaran).length} pelanggaran • ${Object.keys(result.rewardsSaya).length} rewards
         </div>
         <button class="btn-success" onclick='konfirmasiUploadMaster()'>
           <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -548,6 +581,7 @@ function handleFileMaster(e) {
       `;
       window._masterData = result;
     } catch (err) {
+      console.error(err);
       el.innerHTML = `<div class="alert err"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ${err.message}</div>`;
     }
   };
@@ -581,7 +615,7 @@ async function konfirmasiUploadMaster() {
       cBaru++;
     });
 
-    // Absensi
+    // Absensi — timpa data lama
     Object.keys(data.absensi).forEach(cleanKey => {
       updates['absensi/' + cleanKey] = data.absensi[cleanKey];
     });
@@ -602,13 +636,25 @@ async function konfirmasiUploadMaster() {
     updates['config/lastUpload'] = { tanggal: Date.now(), totalTransaksi: cBaru, totalPromotor: data.promotor.length };
 
     await window.dbUpdate(window.dbRef(window.db), updates);
+    
+    const totalAbsensi = Object.values(data.absensi).reduce((s, o) => s + Object.keys(o).length, 0);
+    
     el.innerHTML = `
       <div class="alert ok">
         <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        Berhasil! ${data.promotor.length} promotor, ${cBaru} transaksi baru (${cSkip} duplikat dilewati)
+        ✅ Berhasil!<br>
+        ${data.promotor.length} promotor<br>
+        ${cBaru} transaksi baru (${cSkip} duplikat dilewati)<br>
+        ${Object.keys(data.absensi).length} orang absensi (${totalAbsensi} hari)
       </div>
+      <button class="btn-soft" onclick="location.reload()">
+        <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+        Refresh Halaman
+      </button>
     `;
+    window._masterData = null;
   } catch (err) {
+    console.error(err);
     el.innerHTML = `<div class="alert err"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> ${err.message}</div>`;
   }
 }
@@ -776,6 +822,10 @@ function renderDanger() {
         <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
         Hapus Semua Penjualan
       </button>
+      <button class="btn-danger" style="margin-bottom:8px;" onclick="hapusAbsensi()">
+        <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+        Hapus Semua Absensi
+      </button>
       <button class="btn-danger" style="margin-bottom:8px;" onclick="hapusPromotorAll()">
         <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
         Hapus Semua Promotor
@@ -792,6 +842,11 @@ async function hapusPenjualan() {
   if (!confirm("Hapus SEMUA penjualan?")) return;
   await window.dbRemove(window.dbRef(window.db, 'penjualan'));
   alert("Penjualan dihapus.");
+}
+async function hapusAbsensi() {
+  if (!confirm("Hapus SEMUA absensi?")) return;
+  await window.dbRemove(window.dbRef(window.db, 'absensi'));
+  alert("Absensi dihapus.");
 }
 async function hapusPromotorAll() {
   if (!confirm("Hapus SEMUA promotor?")) return;
