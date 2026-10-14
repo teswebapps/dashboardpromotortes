@@ -54,60 +54,93 @@ onAuthStateChanged(auth, user => {
 
 .hidden { display: none !important; }
 
-/* ============================================================ */
+//* ============================================================ */
 /* ===== LOGIN SCREEN ========================================= */
 /* ============================================================ */
-body.login-active { margin: 0; padding: 0; background: var(--cyber-bg); overflow: hidden; min-height: 100vh; }
-#login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #050814; overflow-y: auto; overflow-x: hidden; z-index: 99999; display: flex; align-items: center; justify-content: center; padding: 16px; }
-.fut-grid { position: fixed; inset: 0; background-image: linear-gradient(rgba(14,165,233,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(14,165,233,0.08) 1px, transparent 1px); background-size: 40px 40px; animation: futGridMove 20s linear infinite; pointer-events: none; z-index: 1; }
-@keyframes futGridMove { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
-.fut-orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.6; animation: futOrbFloat 12s ease-in-out infinite; pointer-events: none; z-index: 1; }
-.fut-orb-1 { width: 400px; height: 400px; background: #0ea5e9; top: -100px; left: -100px; }
-.fut-orb-2 { width: 300px; height: 300px; background: #a855f7; bottom: -80px; right: -80px; animation-delay: -4s; }
-.fut-orb-3 { width: 350px; height: 350px; background: #06b6d4; top: 40%; left: 45%; animation-delay: -8s; opacity: 0.4; }
-@keyframes futOrbFloat { 0%, 100% { transform: translate(0,0) scale(1); } 33% { transform: translate(40px,-30px) scale(1.1); } 66% { transform: translate(-30px,40px) scale(0.9); } }
-.fut-particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
-.fut-particle { position: absolute; width: 2px; height: 2px; border-radius: 50%; animation: futParticleFloat linear infinite; }
-@keyframes futParticleFloat { 0% { transform: translateY(100vh) scale(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(-100vh) scale(1); opacity: 0; } }
-.fut-container { position: relative; z-index: 10; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; max-width: 1100px; width: 100%; animation: futFadeIn 0.8s ease-out; margin: auto; }
-@keyframes futFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-.fut-left { color: #ffffff; text-align: center; padding: 20px; }
-.fut-tagline { display: inline-flex; align-items: center; gap: 8px; padding: 6px 16px; background: rgba(14,165,233,0.1); border: 1px solid rgba(14,165,233,0.3); border-radius: 100px; font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #22d3ee; margin-bottom: 20px; text-transform: uppercase; }
-.fut-dot { width: 6px; height: 6px; background: #22d3ee; border-radius: 50%; box-shadow: 0 0 10px #22d3ee; animation: futDotPulse 1.5s infinite; }
-@keyframes futDotPulse { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } }
-.fut-headline { font-size: 42px; font-weight: 900; margin: 0 0 8px 0; color: #ffffff; text-shadow: 0 0 30px rgba(34,211,238,0.5); line-height: 1.1; }
-.fut-subheadline { font-size: 14px; color: #94a3b8; font-weight: 500; margin: 0 0 30px 0; letter-spacing: 1px; }
-.fut-characters { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
-.fut-characters .team-3d-img { max-width: 100%; max-height: 220px; height: auto; filter: drop-shadow(0 20px 30px rgba(0, 200, 255, 0.35)); animation: floatTeam 3.5s ease-in-out infinite; }
-@keyframes floatTeam { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-12px) scale(1.02); } }
-.fut-live-status { display: inline-flex; align-items: center; gap: 10px; padding: 10px 20px; background: rgba(5,8,20,0.6); border: 1px solid rgba(34,211,238,0.3); border-radius: 100px; font-size: 12px; color: #e2e8f0; font-weight: 600; }
-.fut-pulse-dot { width: 8px; height: 8px; background: #22d3ee; border-radius: 50%; animation: futDotPulse 1.5s infinite; }
-.fut-right { display: flex; justify-content: center; }
-.fut-card { width: 100%; max-width: 400px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(24px); border: 1px solid rgba(34,211,238,0.2); border-radius: 24px; padding: 40px 32px; box-shadow: 0 0 60px rgba(14,165,233,0.15); position: relative; overflow: hidden; }
-.fut-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #22d3ee, transparent); }
-.fut-logo { width: 110px; height: 110px; margin: 0 auto 20px; background: rgba(14,165,233,0.15); border: 1px solid rgba(34,211,238,0.3); border-radius: 22px; display: flex; align-items: center; justify-content: center; padding: 14px; box-shadow: 0 0 40px rgba(34,211,238,0.4); }
-.fut-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-.fut-field { margin-bottom: 18px; position: relative; }
-.fut-field label { display: block; font-size: 11px; font-weight: 700; color: #22d3ee; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
-.fut-select { width: 100%; padding: 14px 16px; background: rgba(2,6,23,0.6); border: 1px solid rgba(34,211,238,0.2); border-radius: 12px; color: #e2e8f0; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.fut-select span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fut-select svg { width: 16px; height: 16px; color: #22d3ee; flex-shrink: 0; transition: transform 0.3s ease; }
-#custom-select-trigger.open svg { transform: rotate(180deg); }
-.fut-menu { position: absolute; left: 0; right: 0; top: 100%; margin-top: 6px; background: rgba(15,23,42,0.98); backdrop-filter: blur(20px); border: 1px solid rgba(34,211,238,0.3); border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); max-height: 240px; overflow-y: auto; z-index: 999; padding: 6px; opacity: 0; visibility: hidden; transform: translateY(-8px); transition: all 0.2s ease; }
-.fut-menu.open { opacity: 1 !important; visibility: visible !important; transform: translateY(0) !important; }
-.fut-menu .option { padding: 10px 14px; border-radius: 8px; font-size: 14px; font-weight: 600; color: #e2e8f0; cursor: pointer; }
-.fut-menu .option:hover { background: rgba(34,211,238,0.15); color: #22d3ee; }
-.fut-menu .option.selected { background: rgba(34,211,238,0.25); color: #22d3ee; }
-.fut-menu .option.empty { color: #64748b; font-style: italic; text-align: center; }
-.fut-input { width: 100%; padding: 14px 16px; background: rgba(2,6,23,0.6); border: 1px solid rgba(34,211,238,0.2); border-radius: 12px; color: #ffffff; font-size: 22px; font-weight: 800; text-align: center; letter-spacing: 10px; outline: none; }
-.fut-input::placeholder { color: rgba(148,163,184,0.4); }
-.fut-input:focus { border-color: #22d3ee; box-shadow: 0 0 25px rgba(34,211,238,0.4); }
-.fut-error { color: #f87171; font-size: 12px; font-weight: 700; text-align: center; min-height: 18px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.fut-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%); color: #ffffff; border: none; border-radius: 12px; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 0 30px rgba(34,211,238,0.4); }
-.fut-btn:active { transform: scale(0.98); }
-.fut-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.fut-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
-.fut-footer { text-align: center; font-size: 12px; color: #64748b; margin: 20px 0 0 0; font-weight: 500; }
+body.login-active { 
+  margin: 0; 
+  padding: 0; 
+  background: var(--cyber-bg); 
+  height: 100vh; 
+  height: 100dvh; 
+  overflow: hidden; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#login-screen { 
+  position: fixed; 
+  top: 0; 
+  left: 0; 
+  width: 100%; 
+  height: 100%; 
+  background: #050814; 
+  z-index: 99999; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.fut-container { 
+  position: relative; 
+  z-index: 10; 
+  display: grid; 
+  grid-template-columns: 1fr 1fr; 
+  gap: 30px; 
+  align-items: center; 
+  max-width: 1050px; 
+  width: 100%; 
+  margin: auto;
+}
+
+@media (max-width: 900px) {
+  #login-screen { 
+    padding: 10px; 
+    align-items: center; 
+  }
+  .fut-container { 
+    grid-template-columns: 1fr; 
+    gap: 12px; 
+    max-width: 420px; 
+    margin: auto; 
+  }
+  .fut-left { 
+    display: none; /* Menyembunyikan teks sisi kiri khusus di HP agar card login pas dan tidak panjang ke bawah */
+  }
+  .fut-card { 
+    padding: 24px 20px; 
+    border-radius: 20px; 
+    max-height: 90vh;
+  }
+  .fut-logo { 
+    width: 75px; 
+    height: 75px; 
+    margin-bottom: 12px; 
+    padding: 8px; 
+  }
+  .fut-field { 
+    margin-bottom: 12px; 
+  }
+  .fut-select { 
+    padding: 12px 14px; 
+    font-size: 13px; 
+  }
+  .fut-input { 
+    padding: 10px 14px; 
+    font-size: 20px; 
+    letter-spacing: 8px; 
+  }
+  .fut-btn { 
+    padding: 14px; 
+    font-size: 13px; 
+  }
+  .fut-footer { 
+    margin-top: 12px; 
+  }
+}
 .fut-footer span { color: #22d3ee; font-weight: 700; }
 .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
