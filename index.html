@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Promotor — Rekap Penjualan UFO</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+import { getDatabase, ref, set, get, update, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+
+ const firebaseConfig = {
+        apiKey: "AIzaSyDrrS4E_6e3G1DBfqkFbWoYLhdq6ZIzapg",
+        authDomain: "tes-webapps.firebaseapp.com",
+        databaseURL: "https://tes-webapps-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "tes-webapps",
+        storageBucket: "tes-webapps.firebasestorage.app",
+        messagingSenderId: "87638829660",
+        appId: "1:87638829660:web:5a04a73f02206803fa9499"
+      };
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+const auth = getAuth(app);
+
+signInAnonymously(auth).then(() => {
+  window.db = db;
+  window.dbRef = ref;
+  window.dbSet = set;
+  window.dbGet = get;
+  window.dbUpdate = update;
+  window.dbRemove = remove;
+  window.dbOnValue = onValue;
+  window.dbPush = push;
+  window.dispatchEvent(new Event('firebase-ready'));
+}).catch(err => {
+  alert("Gagal koneksi Firebase: " + err.message);
+});
+
+onAuthStateChanged(auth, user => {
+  if (!user) setTimeout(() => location.reload(), 1000);
+});
+</script>
+
+<style>
+:root {
+  --bg: #f8fafc;
+  --card: #ffffff;
+  --soft: #f1f5f9;
+  --text: #0f172a;
+  --muted: #64748b;
+  --border: #e2e8f0;
+  --primary: #2563eb;
+  --success: #059669;
+  --danger: #dc2626;
+  --warning: #d97706;
+  --gold: #d4af37;
+}
+* { box-sizing: border-box; font-family: 'Inter', sans-serif !important; }
+body {
+  margin: 0; padding: 16px;
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+  color: var(--text); min-height: 100vh;
+  display: flex; justify-content: center;
+}
+.container {
+  width: 100%; max-width: 720px;
+  background: var(--card); border-radius: 20px;
+  padding: 24px; border: 1px solid var(--border);
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.05);
+  height: fit-content;
+}
+.header {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 14px; padding: 20px; color: white;
+  text-align: center; margin-bottom: 20px;
+}
+.header h1 { margin: 0; font-size: 20px; font-weight: 800; }
+.header p { margin: 6px 0 0; font-size: 12.5px; color: #94a3b8; }
+.card {
+  background: var(--soft); border: 1px solid var(--border);
+  border-radius: 14px; padding: 18px; margin-bottom: 16px;
+}
+.card h3 {
+  margin: 0 0 12px; font-size: 13px; font-weight: 800;
+  text-transform: uppercase; color: var(--primary);
+  letter-spacing: 0.5px; display: flex; align-items: center; gap: 8px;
+}
+label {
+  display: block; font-size: 11px; font-weight: 700;
+  color: var(--muted); text-transform: uppercase;
+  margin-bottom: 6px; letter-spacing: 0.3px;
+}
+input, select {
+  width: 100%; padding: 12px 14px; border-radius: 12px;
+  border: 1px solid var(--border); background: #f8fafc;
+  font-size: 14px; font-weight: 600; color: var(--text);
+  outline: none; box-sizing: border-box;
+}
+input:focus { border-color: var(--primary); background: #fff; }
+button {
+  width: 100%; padding: 12px 16px; border-radius: 12px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  border: none; text-transform: uppercase;
+  letter-spacing: 0.3px; transition: all 0.2s;
+}
+.btn-primary { background: var(--primary); color: white; }
+.btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); }
+.btn-soft { background: var(--soft); color: var(--text); border: 1px solid var(--border); }
+.btn-soft:hover { background: #e2e8f0; }
+.btn-export { background: var(--success); color: white; padding: 10px 14px; font-size: 11px; }
+.btn-export.pdf { background: var(--danger); }
+.hidden { display: none !important; }
+.user-badge {
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  color: white; padding: 14px 18px; border-radius: 12px;
+  margin-bottom: 16px; gap: 10px;
+}
+.user-badge .nama { font-weight: 800; font-size: 15px; }
+.user-badge .role { font-size: 11px; color: #94a3b8; font-weight: 600; margin-top: 2px; }
+.user-badge button {
+  width: auto; padding: 8px 14px; font-size: 11px;
+  background: rgba(255,255,255,0.1); color: white;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+.tabs {
+  display: flex; gap: 6px; margin-bottom: 14px;
+  overflow-x: auto; padding-bottom: 4px;
+}
+.tab-btn {
+  flex-shrink: 0; padding: 9px 16px; border-radius: 10px;
+  background: var(--soft); border: 1px solid var(--border);
+  color: var(--muted); font-size: 11.5px; font-weight: 700;
+  cursor: pointer; text-transform: uppercase; letter-spacing: 0.3px;
+}
+.tab-btn.active {
+  background: var(--primary); color: white; border-color: var(--primary);
+}
+.stat-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-bottom: 14px;
+}
+.stat-card {
+  background: white; border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px;
+  text-align: center;
+}
+.stat-card .label {
+  font-size: 10px; font-weight: 800; color: var(--muted);
+  text-transform: uppercase; letter-spacing: 0.3px;
+  margin-bottom: 6px;
+}
+.stat-card .value {
+  font-size: 18px; font-weight: 900; color: var(--primary);
+  line-height: 1.2;
+}
+.stat-card .value.green { color: var(--success); }
+.stat-card .value.gold { color: var(--gold); }
+.stat-card .value.red { color: var(--danger); }
+.stat-card.full { grid-column: 1 / -1; }
+.list-item {
+  background: white; border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px; margin-bottom: 8px;
+  display: flex; justify-content: space-between;
+  align-items: flex-start; gap: 10px;
+}
+.list-item .kiri { flex: 1; min-width: 0; }
+.list-item .produk {
+  font-size: 12.5px; font-weight: 700;
+  color: var(--text); margin-bottom: 3px;
+  word-break: break-word;
+}
+.list-item .info {
+  font-size: 10.5px; color: var(--muted);
+  font-weight: 600;
+}
+.list-item .kanan {
+  text-align: right; flex-shrink: 0;
+}
+.list-item .harga {
+  font-size: 13px; font-weight: 800;
+  color: var(--success);
+}
+.list-item .qty {
+  font-size: 10px; color: var(--muted);
+  font-weight: 700; margin-top: 2px;
+}
+.empty {
+  text-align: center; padding: 30px 15px;
+  color: var(--muted); font-size: 13px;
+  background: white; border-radius: 12px;
+  border: 1px dashed var(--border);
+}
+.empty .icon { font-size: 32px; margin-bottom: 8px; }
+.rank-item {
+  display: flex; align-items: center; gap: 12px;
+  background: white; border: 1px solid var(--border);
+  border-radius: 10px; padding: 10px 14px;
+  margin-bottom: 6px;
+}
+.rank-item.me {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border-color: var(--primary);
+}
+.rank-item .pos {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--soft); border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 900; font-size: 12px; flex-shrink: 0;
+}
+.rank-item .pos.gold { background: #fef3c7; color: #92400e; border-color: #fcd34d; }
+.rank-item .pos.silver { background: #f1f5f9; color: #475569; border-color: #94a3b8; }
+.rank-item .pos.bronze { background: #fed7aa; color: #9a3412; border-color: #fb923c; }
+.rank-item .nama { flex: 1; font-size: 13px; font-weight: 700; }
+.rank-item .omzet { font-size: 12.5px; font-weight: 800; color: var(--success); }
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  vertical-align: middle; margin-right: 6px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.alert {
+  padding: 12px 14px; border-radius: 10px;
+  font-size: 12.5px; font-weight: 700;
+  margin-bottom: 12px;
+}
+.alert.err { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+@media (max-width: 480px) {
+  body { padding: 12px; }
+  .container { padding: 16px; border-radius: 16px; }
+  .stat-card .value { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>💰 Rekap Penjualan</h1>
+    <p>UFO Malang Kebonsari</p>
+  </div>
+
+  <!-- LOGIN -->
+  <div id="loginBox">
+    <div class="card">
+      <h3>🔐 Login Promotor</h3>
+      <label>Nama Sales</label>
+      <select id="selectNama">
+        <option value="">-- Memuat daftar promotor --</option>
+      </select>
+      <div style="height:10px;"></div>
+      <label>PIN</label>
+      <input type="password" id="inputPin" placeholder="••••••" maxlength="6"
+             inputmode="numeric" pattern="[0-9]*" style="text-align:center; font-size:18px; letter-spacing:6px; font-weight:800;"
+             oninput="this.value = this.value.replace(/\\D/g, '').slice(0, 6)"
+             onkeypress="if(event.key === 'Enter') loginPromotor()">
+      <div style="height:10px;"></div>
+      <button class="btn-primary" onclick="loginPromotor()">Masuk</button>
+      <div id="loginError" class="alert err hidden" style="margin-top:10px;"></div>
+    </div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div id="dashboard" class="hidden">
+
+    <div class="user-badge">
+      <div>
+        <div class="nama" id="userNama">-</div>
+        <div class="role">PROMOTOR</div>
+      </div>
+      <button onclick="logoutPromotor()">🚪 Keluar</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('dashboard')">📊 Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('hari')">📅 Hari Ini</button>
+      <button class="tab-btn" onclick="switchTab('minggu')">📆 Minggu Ini</button>
+      <button class="tab-btn" onclick="switchTab('bulan')">🗓️ Bulan Ini</button>
+      <button class="tab-btn" onclick="switchTab('brand')">🏷️ Brand</button>
+      <button class="tab-btn" onclick="switchTab('rank')">🏆 Ranking</button>
+    </div>
+
+    <div id="tabContent"></div>
+
+    <div style="display:flex; gap:8px; margin-top:14px;">
+      <button class="btn-export" onclick="exportExcel()">📥 Excel</button>
+      <button class="btn-export pdf" onclick="exportPDF()">📄 PDF</button>
+    </div>
+    <div style="height:8px;"></div>
+    <button class="btn-soft" onclick="logoutPromotor()">🚪 Keluar</button>
+  </div>
+</div>
+
+<script>
+let allPenjualan = [];      // semua data penjualan dari Firebase
+let currentNama = '';
+let currentPromotorKey = '';
+let currentTab = 'dashboard';
+let listPromotor = {};      // dari users/promotor
+
+window.addEventListener('firebase-ready', () => {
+  const saved = localStorage.getItem('ufo_promotor_penjualan');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      currentNama = data.nama;
+      currentPromotorKey = data.key;
+      tampilkanDashboard();
+    } catch(e) {}
+  } else {
+    loadDropdownPromotor();
+  }
+});
+
+/* ============================================================ */
+/* LOAD DROPDOWN NAMA */
+/* ============================================================ */
+function loadDropdownPromotor() {
+  window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
+    const sel = document.getElementById('selectNama');
+    if (!snap.exists()) {
+      sel.innerHTML = '<option value="">-- Belum ada promotor (hubungi admin) --</option>';
+      return;
+    }
+    listPromotor = snap.val();
+    const list = Object.keys(listPromotor)
+      .map(k => ({ key: k, ...listPromotor[k] }))
+      .filter(p => p.aktif !== false)
+      .sort((a,b) => a.nama.localeCompare(b.nama));
+    sel.innerHTML = '<option value="">-- Pilih Nama --</option>' +
+      list.map(p => `<option value="${p.key}">${p.nama}</option>`).join('');
+  });
+}
+
+/* ============================================================ */
+/* LOGIN */
+/* ============================================================ */
+async function loginPromotor() {
+  const key = document.getElementById('selectNama').value;
+  const pin = document.getElementById('inputPin').value.trim();
+  const errEl = document.getElementById('loginError');
+  errEl.classList.add('hidden');
+
+  if (!key) { errEl.innerText = 'Pilih nama dulu!'; errEl.classList.remove('hidden'); return; }
+  if (!/^\d{6}$/.test(pin)) { errEl.innerText = 'PIN harus 6 digit'; errEl.classList.remove('hidden'); return; }
+
+  try {
+    const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
+    if (!snap.exists()) {
+      errEl.innerText = 'Promotor tidak ditemukan. Hubungi admin.';
+      errEl.classList.remove('hidden');
+      return;
+    }
+    const data = snap.val();
+    if (String(data.pin) !== pin) {
+      errEl.innerText = '❌ PIN salah!';
+      errEl.classList.remove('hidden');
+      document.getElementById('inputPin').value = '';
+      return;
+    }
+    currentNama = data.nama;
+    currentPromotorKey = key;
+    localStorage.setItem('ufo_promotor_penjualan', JSON.stringify({ nama: currentNama, key: currentPromotorKey }));
+    tampilkanDashboard();
+  } catch (err) {
+    errEl.innerText = 'Gagal verifikasi: ' + err.message;
+    errEl.classList.remove('hidden');
+  }
+}
+
+function logoutPromotor() {
+  if (!confirm("Yakin ingin keluar?")) return;
+  localStorage.removeItem('ufo_promotor_penjualan');
+  currentNama = '';
+  currentPromotorKey = '';
+  allPenjualan = [];
+  document.getElementById('dashboard').classList.add('hidden');
+  document.getElementById('loginBox').classList.remove('hidden');
+  document.getElementById('selectNama').value = '';
+  document.getElementById('inputPin').value = '';
+  loadDropdownPromotor();
+}
+
+/* ============================================================ */
+/* TAMPILKAN DASHBOARD & LOAD DATA */
+/* ============================================================ */
+function tampilkanDashboard() {
+  document.getElementById('loginBox').classList.add('hidden');
+  document.getElementById('dashboard').classList.remove('hidden');
+  document.getElementById('userNama').innerText = currentNama;
+
+  // Load realtime data
+  window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
+    allPenjualan = [];
+    if (snap.exists()) {
+      const data = snap.val();
+      Object.keys(data).forEach(k => {
+        const item = data[k];
+        if (item && item.namaSales) {
+          item._key = k;
+          allPenjualan.push(item);
+        }
+      });
+    }
+    renderTab();
+  });
+}
+
+/* ============================================================ */
+/* TAB */
+/* ============================================================ */
+function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+  renderTab();
+}
+
+function renderTab() {
+  const el = document.getElementById('tabContent');
+  if (currentTab === 'dashboard') el.innerHTML = renderDashboard();
+  else if (currentTab === 'hari') el.innerHTML = renderListHari();
+  else if (currentTab === 'minggu') el.innerHTML = renderListMinggu();
+  else if (currentTab === 'bulan') el.innerHTML = renderListBulan();
+  else if (currentTab === 'brand') el.innerHTML = renderBrand();
+  else if (currentTab === 'rank') el.innerHTML = renderRanking();
+}
+
+/* ============================================================ */
+/* HELPER */
+/* ============================================================ */
+function parseTanggal(str) {
+  // Format: DD/MM/YYYY
+  if (!str) return null;
+  const parts = String(str).split('/');
+  if (parts.length !== 3) return null;
+  return new Date(Number(parts[2]), Number(parts[1]) - 1, Number(parts[0]));
+}
+
+function isHariIni(tgl) {
+  const d = parseTanggal(tgl);
+  if (!d) return false;
+  const now = new Date();
+  return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+}
+
+function isMingguIni(tgl) {
+  const d = parseTanggal(tgl);
+  if (!d) return false;
+  const now = new Date();
+  const startMinggu = new Date(now);
+  startMinggu.setDate(now.getDate() - now.getDay()); // Minggu
+  startMinggu.setHours(0,0,0,0);
+  const endMinggu = new Date(startMinggu);
+  endMinggu.setDate(startMinggu.getDate() + 7);
+  return d >= startMinggu && d < endMinggu;
+}
+
+function isBulanIni(tgl) {
+  const d = parseTanggal(tgl);
+  if (!d) return false;
+  const now = new Date();
+  return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+}
+
+function getDataSaya() {
+  return allPenjualan.filter(x => x.namaSales === currentNama);
+}
+
+function hitungOmzet(list) {
+  // Skip GARANSI & ONGKOS
+  return list.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS')
+             .reduce((sum, x) => sum + (Number(x.subtotal) || 0), 0);
+}
+
+function hitungUnit(list) {
+  return list.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS')
+             .reduce((sum, x) => sum + (Number(x.qty) || 0), 0);
+}
+
+function hitungUC(list) {
+  return list.filter(x => x.kategori === 'GARANSI')
+             .reduce((sum, x) => sum + (Number(x.qty) || 0), 0);
+}
+
+/* ============================================================ */
+/* RENDER DASHBOARD */
+/* ============================================================ */
+function renderDashboard() {
+  const dataSaya = getDataSaya();
+  const dataHari = dataSaya.filter(x => isHariIni(x.tanggal));
+  const dataBulan = dataSaya.filter(x => isBulanIni(x.tanggal));
+
+  const omzetHari = hitungOmzet(dataHari);
+  const omzetBulan = hitungOmzet(dataBulan);
+  const unitBulan = hitungUnit(dataBulan);
+  const ucBulan = hitungUC(dataBulan);
+
+  // Ranking
+  const rank = hitungRanking();
+  const posSaya = rank.findIndex(x => x.nama === currentNama) + 1;
+
+  return `
+    <div class="stat-grid">
+      <div class="stat-card full">
+        <div class="label">Omzet Hari Ini</div>
+        <div class="value green">Rp ${omzetHari.toLocaleString('id-ID')}</div>
+      </div>
+      <div class="stat-card full">
+        <div class="label">Omzet Bulan Ini</div>
+        <div class="value green">Rp ${omzetBulan.toLocaleString('id-ID')}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Unit Bulan Ini</div>
+        <div class="value">${unitBulan}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">UC Bulan Ini</div>
+        <div class="value gold">${ucBulan}</div>
+      </div>
+      <div class="stat-card full">
+        <div class="label">Peringkat Toko</div>
+        <div class="value" style="color: var(--primary);">#${posSaya || '-'} dari ${rank.length} promotor</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:12px;">
+      <h3>📊 5 Transaksi Terakhir</h3>
+      ${dataSaya.slice(-5).reverse().map(x => renderListItem(x)).join('') || '<div class="empty"><div class="icon">📭</div>Belum ada transaksi</div>'}
+    </div>
+  `;
+}
+
+/* ============================================================ */
+/* RENDER LIST */
+/* ============================================================ */
+function renderListHari() {
+  const list = getDataSaya().filter(x => isHariIni(x.tanggal));
+  return renderListWithSummary(list, 'Hari Ini');
+}
+function renderListMinggu() {
+  const list = getDataSaya().filter(x => isMingguIni(x.tanggal));
+  return renderListWithSummary(list, 'Minggu Ini');
+}
+function renderListBulan() {
+  const list = getDataSaya().filter(x => isBulanIni(x.tanggal));
+  return renderListWithSummary(list, 'Bulan Ini');
+}
+
+function renderListWithSummary(list, judul) {
+  const omzet = hitungOmzet(list);
+  const unit = hitungUnit(list);
+  const uc = hitungUC(list);
+  return `
+    <div class="stat-grid">
+      <div class="stat-card full">
+        <div class="label">Total Omzet — ${judul}</div>
+        <div class="value green">Rp ${omzet.toLocaleString('id-ID')}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">Unit</div>
+        <div class="value">${unit}</div>
+      </div>
+      <div class="stat-card">
+        <div class="label">UC</div>
+        <div class="value gold">${uc}</div>
+      </div>
+    </div>
+    <div style="margin-top:12px;">
+      ${list.length === 0 ? '<div class="empty"><div class="icon">📭</div>Belum ada transaksi ' + judul.toLowerCase() + '</div>' 
+        : list.slice().reverse().map(x => renderListItem(x)).join('')}
+    </div>
+  `;
+}
+
+function renderListItem(x) {
+  return `
+    <div class="list-item">
+      <div class="kiri">
+        <div class="produk">${x.namaBarang || '-'}</div>
+        <div class="info">${x.tanggal} • ${x.merk || '-'} • ${x.kategori || '-'}</div>
+        <div class="info">Faktur: ${x.noFaktur || '-'}</div>
+      </div>
+      <div class="kanan">
+        <div class="harga">Rp ${Number(x.subtotal || 0).toLocaleString('id-ID')}</div>
+        <div class="qty">Qty: ${x.qty || 0}</div>
+      </div>
+    </div>
+  `;
+}
+
+/* ============================================================ */
+/* RENDER BRAND */
+/* ============================================================ */
+function renderBrand() {
+  const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS');
+  const perBrand = {};
+  list.forEach(x => {
+    const b = x.merk || 'TANPA MERK';
+    if (!perBrand[b]) perBrand[b] = { omzet: 0, unit: 0 };
+    perBrand[b].omzet += Number(x.subtotal) || 0;
+    perBrand[b].unit += Number(x.qty) || 0;
+  });
+  const arr = Object.keys(perBrand).map(k => ({ brand: k, ...perBrand[k] })).sort((a,b) => b.omzet - a.omzet);
+  return `
+    <div class="card">
+      <h3>🏷️ Rekap Brand — Bulan Ini</h3>
+      ${arr.length === 0 ? '<div class="empty"><div class="icon">📦</div>Belum ada penjualan bulan ini</div>'
+        : arr.map(x => `
+          <div class="list-item">
+            <div class="kiri">
+              <div class="produk">${x.brand}</div>
+              <div class="info">${x.unit} unit terjual</div>
+            </div>
+            <div class="kanan">
+              <div class="harga">Rp ${x.omzet.toLocaleString('id-ID')}</div>
+            </div>
+          </div>
+        `).join('')}
+    </div>
+  `;
+}
+
+/* ============================================================ */
+/* RENDER RANKING */
+/* ============================================================ */
+function hitungRanking() {
+  const perSales = {};
+  allPenjualan.filter(x => isBulanIni(x.tanggal) && x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS')
+    .forEach(x => {
+      const n = x.namaSales || 'TANPA NAMA';
+      if (!perSales[n]) perSales[n] = { nama: n, omzet: 0, unit: 0 };
+      perSales[n].omzet += Number(x.subtotal) || 0;
+      perSales[n].unit += Number(x.qty) || 0;
+    });
+  return Object.values(perSales).sort((a,b) => b.omzet - a.omzet);
+}
+
+function renderRanking() {
+  const rank = hitungRanking();
+  return `
+    <div class="card">
+      <h3>🏆 Ranking Omzet — Bulan Ini</h3>
+      ${rank.length === 0 ? '<div class="empty"><div class="icon">🏆</div>Belum ada data</div>'
+        : rank.map((x, i) => {
+          const isMe = x.nama === currentNama;
+          const posClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+          return `
+            <div class="rank-item ${isMe ? 'me' : ''}">
+              <div class="pos ${posClass}">${i + 1}</div>
+              <div class="nama">${x.nama}${isMe ? ' <span style="color:var(--primary);">(Anda)</span>' : ''}</div>
+              <div class="omzet">Rp ${x.omzet.toLocaleString('id-ID')}</div>
+            </div>
+          `;
+        }).join('')}
+    </div>
+  `;
+}
+
+/* ============================================================ */
+/* EXPORT */
+/* ============================================================ */
+function exportExcel() {
+  let rows = [['REKAP PENJUALAN — ' + currentNama.toUpperCase()], []];
+  rows.push(['Tanggal', 'Faktur', 'Produk', 'Merk', 'Kategori', 'Qty', 'Subtotal']);
+
+  const list = getDataSaya();
+  list.forEach(x => {
+    rows.push([
+      x.tanggal, x.noFaktur, x.namaBarang, x.merk, x.kategori, x.qty, Number(x.subtotal || 0)
+    ]);
+  });
+  rows.push([]);
+  rows.push(['TOTAL OMZET', '', '', '', '', '', hitungOmzet(list)]);
+  rows.push(['TOTAL UNIT', '', '', '', '', hitungUnit(list), '']);
+  rows.push(['TOTAL UC', '', '', '', '', hitungUC(list), '']);
+
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Penjualan');
+  XLSX.writeFile(wb, 'Rekap_' + currentNama.replace(/\s+/g, '_') + '.xlsx');
+}
+
+function exportPDF() {
+  const el = document.getElementById('tabContent');
+  const nama = currentNama.replace(/\s+/g, '_');
+  html2pdf().set({
+    margin: 10,
+    filename: 'Rekap_' + nama + '.pdf',
+    html2canvas: { scale: 2 },
+    jsPDF: { format: 'a4' }
+  }).from(el).save();
+}
+</script>
+
+</body>
+</html>
