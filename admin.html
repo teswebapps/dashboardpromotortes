@@ -118,28 +118,25 @@ button svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4;
 
   <div id="loginBox">
     <div class="card">
-      <h3><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Login Admin</h3>
+      <h3>Login Admin</h3>
       <label>PIN Admin</label>
       <input type="password" id="pinAdmin" placeholder="••••" maxlength="6" inputmode="numeric" style="text-align:center; font-size:18px; letter-spacing:6px; font-weight:800;" oninput="this.value = this.value.replace(/\D/g,'')" onkeypress="if(event.key === 'Enter') loginAdmin()">
       <div style="height:10px;"></div>
-      <button class="btn-primary" onclick="loginAdmin()">
-        <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-        Masuk
-      </button>
+      <button class="btn-primary" onclick="loginAdmin()">Masuk</button>
       <div id="loginError" class="alert err hidden" style="margin-top:10px;"></div>
     </div>
   </div>
 
   <div id="panelAdmin" class="hidden">
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('dash', event)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg> Dashboard</button>
-      <button class="tab-btn" onclick="switchTab('upload', event)"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg> Upload</button>
-      <button class="tab-btn" onclick="switchTab('promotor', event)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg> Promotor</button>
-      <button class="tab-btn" onclick="switchTab('danger', event)"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Reset</button>
+      <button class="tab-btn active" onclick="switchTab('dash', event)">Dashboard</button>
+      <button class="tab-btn" onclick="switchTab('upload', event)">Upload</button>
+      <button class="tab-btn" onclick="switchTab('promotor', event)">Promotor</button>
+      <button class="tab-btn" onclick="switchTab('danger', event)">Reset</button>
     </div>
     <div id="tabContent"></div>
     <div style="height:8px;"></div>
-    <button class="btn-soft" onclick="logoutAdmin()"><svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg> Logout</button>
+    <button class="btn-soft" onclick="logoutAdmin()">Logout</button>
   </div>
 </div>
 
@@ -151,6 +148,81 @@ let allPenjualan = {};
 let allAbsensi = {};
 let allPelanggaran = {};
 let allRewardsSaya = {};
+
+/* ===== CONVERT TANGGAL EXCEL KE DD/MM/YYYY ===== */
+function convertTanggalExcel(val) {
+  if (val === undefined || val === null || val === '') return '';
+  // Angka serial Excel (48032 → 01/10/2026)
+  if (typeof val === 'number' && val > 1 && val < 100000) {
+    const epoch = new Date(Date.UTC(1899, 11, 30));
+    const d = new Date(epoch.getTime() + val * 24 * 60 * 60 * 1000);
+    const dd = String(d.getUTCDate()).padStart(2, '0');
+    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const yyyy = d.getUTCFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  }
+  const str = String(val).trim();
+  if (!str) return '';
+  // String angka serial "48032"
+  if (/^\d{5}$/.test(str)) {
+    const num = parseInt(str);
+    const epoch = new Date(Date.UTC(1899, 11, 30));
+    const d = new Date(epoch.getTime() + num * 24 * 60 * 60 * 1000);
+    const dd = String(d.getUTCDate()).padStart(2, '0');
+    const mm = String(d.getUTCMonth() + 1).padStart(2, '0');
+    const yyyy = d.getUTCFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  }
+  // ISO "2026-10-01" atau "2026-10-01 00:00:00"
+  if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+    const p = str.split(' ')[0].split('-');
+    return `${p[2]}/${p[1]}/${p[0]}`;
+  }
+  // "01/10/2026 14:30" → ambil tanggal saja
+  if (str.includes(' ')) return str.split(' ')[0];
+  // Sudah DD/MM/YYYY
+  return str;
+}
+
+/* ===== CONVERT JAM dari angka desimal Excel ====== */
+function convertJam(val) {
+  if (val === undefined || val === null || val === '') return '';
+  if (typeof val === 'number') {
+    if (val === 0 || isNaN(val)) return '';
+    const totalMenit = Math.round(val * 24 * 60);
+    const jam = Math.floor(totalMenit / 60) % 24;
+    const menit = totalMenit % 60;
+    return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
+  }
+  const str = String(val).trim();
+  if (!str) return '';
+  if (/^\d*\.?\d+$/.test(str)) {
+    const num = parseFloat(str);
+    if (isNaN(num) || num === 0) return '';
+    if (num < 1) {
+      const totalMenit = Math.round(num * 24 * 60);
+      const jam = Math.floor(totalMenit / 60) % 24;
+      const menit = totalMenit % 60;
+      return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
+    } else {
+      const jam = Math.floor(num);
+      const menit = Math.round((num - jam) * 60);
+      return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
+    }
+  }
+  if (str.includes(':')) return str;
+  if (str.includes('.')) {
+    const parts = str.split('.');
+    if (parts.length === 2) {
+      return parts[0].padStart(2, '0') + ':' + parts[1].padStart(2, '0').slice(0, 2);
+    }
+  }
+  return str;
+}
+
+function sanitizeKey(nama) {
+  return String(nama || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_');
+}
 
 window.addEventListener('firebase-ready', () => {
   if (savedPin) {
@@ -177,7 +249,7 @@ async function loginAdmin() {
       document.getElementById('panelAdmin').classList.remove('hidden');
       mulaiAdmin();
     } else {
-      errEl.innerHTML = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg> PIN salah!';
+      errEl.innerHTML = 'PIN salah!';
       errEl.classList.remove('hidden');
     }
   } catch (err) { errEl.innerText = 'Gagal: ' + err.message; errEl.classList.remove('hidden'); }
@@ -229,7 +301,7 @@ function renderDash() {
   const totalOmzet = trans.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS').reduce((s, x) => s + (Number(x.subtotal) || 0), 0);
   return `
     <div class="card">
-      <h3><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Statistik Sistem</h3>
+      <h3>Statistik Sistem</h3>
       <div class="stats-grid">
         <div class="stat-card"><div class="label">Promotor</div><div class="value">${jmlPromotor}</div></div>
         <div class="stat-card"><div class="label">Transaksi</div><div class="value">${jmlTrans}</div></div>
@@ -243,83 +315,30 @@ function renderDash() {
         </div>
       </div>
     </div>
-    <div class="card">
-      <h3><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg> Info Sistem</h3>
-      <p style="font-size:12.5px; line-height:1.7; margin:0;">
-        <b>PIN Admin:</b> <code style="background:#e2e8f0;padding:2px 6px;border-radius:4px;">8888</code><br>
-        <b>Upload Master:</b> Sekali saja untuk setup<br>
-        <b>Upload Penjualan:</b> Setiap hari dari kasir<br>
-        <b>Login Promotor:</b> Nama Absen + PIN 4 digit
-      </p>
-    </div>
   `;
 }
 
 function renderUpload() {
   return `
     <div class="card">
-      <h3><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg> Upload Data Master</h3>
-      <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">
-        Upload file <b>ABSEN FINGER.xlsx</b> lengkap. Cukup sekali. Bisa upload ulang kapan saja.
-      </p>
+      <h3>Upload Data Master</h3>
+      <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">Upload file <b>ABSEN FINGER.xlsx</b> lengkap. Cukup sekali.</p>
       <div class="file-wrap" onclick="document.getElementById('fileMaster').click()">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <p><strong>Klik pilih file Master</strong></p>
-        <p style="font-size:11px;">File .xlsx lengkap</p>
         <input type="file" id="fileMaster" accept=".xlsx,.xls" onchange="handleFileMaster(event); this.value='';">
       </div>
       <div id="masterInfo" style="margin-top:12px;"></div>
     </div>
     <div class="card">
-      <h3><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Upload Penjualan Harian</h3>
-      <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">
-        Upload file <b>Penjualan Detail DD_MM_YYYY.xlsx</b> dari kasir.
-      </p>
+      <h3>Upload Penjualan Harian</h3>
+      <p style="font-size:12px; color:var(--muted); margin:0 0 10px;">Upload file <b>Penjualan Detail.xlsx</b> dari kasir.</p>
       <div class="file-wrap" onclick="document.getElementById('filePenjualan').click()">
-        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <p><strong>Klik pilih file Penjualan</strong></p>
-        <p style="font-size:11px;">File .xlsx dari kasir</p>
         <input type="file" id="filePenjualan" accept=".xlsx,.xls" onchange="handleFilePenjualan(event); this.value='';">
       </div>
       <div id="penjualanInfo" style="margin-top:12px;"></div>
     </div>
   `;
-}
-
-/* ====== CONVERT JAM dari angka desimal Excel ====== */
-function convertJam(val) {
-  if (val === undefined || val === null || val === '') return '';
-  if (typeof val === 'number') {
-    if (val === 0 || isNaN(val)) return '';
-    const totalMenit = Math.round(val * 24 * 60);
-    const jam = Math.floor(totalMenit / 60) % 24;
-    const menit = totalMenit % 60;
-    return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
-  }
-  const str = String(val).trim();
-  if (!str) return '';
-  if (/^\d*\.?\d+$/.test(str)) {
-    const num = parseFloat(str);
-    if (isNaN(num) || num === 0) return '';
-    if (num < 1) {
-      const totalMenit = Math.round(num * 24 * 60);
-      const jam = Math.floor(totalMenit / 60) % 24;
-      const menit = totalMenit % 60;
-      return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
-    } else {
-      const jam = Math.floor(num);
-      const menit = Math.round((num - jam) * 60);
-      return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
-    }
-  }
-  if (str.includes(':')) return str;
-  if (str.includes('.')) {
-    const parts = str.split('.');
-    if (parts.length === 2) {
-      return parts[0].padStart(2, '0') + ':' + parts[1].padStart(2, '0').slice(0, 2);
-    }
-  }
-  return str;
 }
 
 function handleFileMaster(e) {
@@ -369,17 +388,13 @@ function handleFileMaster(e) {
           const r = rows[i];
           if (!r[0] || !r[1]) continue;
           if (String(r[5]).trim().toUpperCase() === 'TOTAL') continue;
-          let tglStr = String(r[2] || '').trim();
-          if (tglStr.includes(' ')) tglStr = tglStr.split(' ')[0];
-          let tgl = tglStr;
-          if (/^\d{4}-\d{2}-\d{2}$/.test(tglStr)) {
-            const p = tglStr.split('-');
-            tgl = `${p[2]}/${p[1]}/${p[0]}`;
-          }
           result.penjualan.push({
-            noFaktur: String(r[1]).trim(), tanggal: tgl,
-            barcode: String(r[3]).trim(), namaBarang: String(r[5]).trim(),
-            qty: Number(r[6]) || 0, subtotal: Number(r[10]) || 0,
+            noFaktur: String(r[1]).trim(),
+            tanggal: convertTanggalExcel(r[2]),
+            barcode: String(r[3]).trim(),
+            namaBarang: String(r[5]).trim(),
+            qty: Number(r[6]) || 0,
+            subtotal: Number(r[10]) || 0,
             namaSales: String(r[15]).trim(),
             kategori: String(r[17]).trim().toUpperCase(),
             merk: String(r[18]).trim().toUpperCase()
@@ -387,12 +402,11 @@ function handleFileMaster(e) {
         }
       }
 
-      // ABSENFINGER — pakai convertJam
+      // ABSENFINGER
       const ab = wb.Sheets['ABSENFINGER'];
       if (ab) {
         const rows = XLSX.utils.sheet_to_json(ab, { header: 1, defval: '' });
-        console.log('🔍 Sheet ABSENFINGER ditemukan. Total baris:', rows.length);
-        console.log('🔍 Header:', rows[0]);
+        console.log('🔍 Sheet ABSENFINGER. Baris:', rows.length);
         let countAbsensi = 0;
         for (let i = 1; i < rows.length; i++) {
           const r = rows[i];
@@ -403,31 +417,24 @@ function handleFileMaster(e) {
           const tglRaw = r[1];
           if (tglRaw !== undefined && tglRaw !== null && tglRaw !== '') {
             if (typeof tglRaw === 'number') hariNum = Math.floor(tglRaw);
-            else {
-              const parsed = parseInt(String(tglRaw).trim(), 10);
-              hariNum = isNaN(parsed) ? 0 : parsed;
-            }
+            else hariNum = parseInt(String(tglRaw).trim(), 10) || 0;
           }
           if (hariNum < 1 || hariNum > 31) continue;
           const cleanKey = sanitizeKey(namaAbsen);
           if (!result.absensi[cleanKey]) result.absensi[cleanKey] = {};
-          const alreadyExist = Object.keys(result.absensi[cleanKey]).some(k => k.startsWith('hari_' + hariNum + '_') || k === 'hari_' + hariNum);
-          if (alreadyExist) continue;
+          const sudah = Object.keys(result.absensi[cleanKey]).some(k => k === 'hari_' + hariNum);
+          if (sudah) continue;
           result.absensi[cleanKey]['hari_' + hariNum] = {
-            nama: namaAbsen,
-            hari: hariNum,
-            masuk: convertJam(r[2]),
-            istirahat1: convertJam(r[3]),
-            kembali1: convertJam(r[4]),
-            istirahat2: convertJam(r[5]),
-            kembali2: convertJam(r[6]),
-            pulang: convertJam(r[7]),
+            nama: namaAbsen, hari: hariNum,
+            masuk: convertJam(r[2]), istirahat1: convertJam(r[3]),
+            kembali1: convertJam(r[4]), istirahat2: convertJam(r[5]),
+            kembali2: convertJam(r[6]), pulang: convertJam(r[7]),
             terlambat: String(r[8] || '').trim().toUpperCase(),
             bulan: String(r[9] || '').trim()
           };
           countAbsensi++;
         }
-        console.log('✅ Absensi tersimpan:', Object.keys(result.absensi).length, 'orang, total', countAbsensi, 'baris');
+        console.log('✅ Absensi:', Object.keys(result.absensi).length, 'orang,', countAbsensi, 'baris');
       }
 
       const parseSheet = (sheet, cols) => {
@@ -486,13 +493,9 @@ function handleFileMaster(e) {
 
       el.innerHTML = `
         <div class="alert ok">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
           Siap: ${result.promotor.length} promotor • ${result.penjualan.length} transaksi • ${Object.keys(result.absensi).length} orang absensi (${totalAbsensi} hari) • ${Object.keys(result.pelanggaran).length} pelanggaran
         </div>
-        <button class="btn-success" onclick='konfirmasiUploadMaster()'>
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          Konfirmasi Upload
-        </button>
+        <button class="btn-success" onclick="konfirmasiUploadMaster()">Konfirmasi Upload</button>
       `;
       window._masterData = result;
     } catch (err) {
@@ -507,7 +510,7 @@ async function konfirmasiUploadMaster() {
   const data = window._masterData;
   if (!data) return;
   const el = document.getElementById('masterInfo');
-  el.innerHTML = '<div class="alert warn"><span class="spinner" style="border-color:rgba(217,119,6,0.3);border-top-color:#d97706;"></span> Uploading... (jangan tutup)</div>';
+  el.innerHTML = '<div class="alert warn"><span class="spinner" style="border-color:rgba(217,119,6,0.3);border-top-color:#d97706;"></span> Uploading...</div>';
   try {
     const updates = {};
     data.promotor.forEach(p => { updates['users/promotor/' + sanitizeKey(p.namaAbsen)] = p; });
@@ -527,25 +530,18 @@ async function konfirmasiUploadMaster() {
       cBaru++;
     });
 
-    Object.keys(data.absensi).forEach(cleanKey => { updates['absensi/' + cleanKey] = data.absensi[cleanKey]; });
+    Object.keys(data.absensi).forEach(k => { updates['absensi/' + k] = data.absensi[k]; });
     if (data.info.promo.length) updates['info/promo'] = data.info.promo;
     if (data.info.rules.length) updates['info/rules'] = data.info.rules;
     if (data.info.punishment.length) updates['info/punishment'] = data.info.punishment;
     if (data.info.reward.length) updates['info/reward'] = data.info.reward;
-    Object.keys(data.pelanggaran).forEach(cleanKey => { updates['pelanggaran/' + cleanKey] = data.pelanggaran[cleanKey]; });
-    Object.keys(data.rewardsSaya).forEach(cleanKey => { updates['rewardsSaya/' + cleanKey] = data.rewardsSaya[cleanKey]; });
-    updates['config/lastUpload'] = { tanggal: Date.now(), totalTransaksi: cBaru, totalPromotor: data.promotor.length };
+    Object.keys(data.pelanggaran).forEach(k => { updates['pelanggaran/' + k] = data.pelanggaran[k]; });
+    Object.keys(data.rewardsSaya).forEach(k => { updates['rewardsSaya/' + k] = data.rewardsSaya[k]; });
 
     await window.dbUpdate(window.dbRef(window.db), updates);
     const totalAbsensi = Object.values(data.absensi).reduce((s, o) => s + Object.keys(o).length, 0);
     el.innerHTML = `
-      <div class="alert ok">
-        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-        ✅ Berhasil!<br>
-        ${data.promotor.length} promotor<br>
-        ${cBaru} transaksi baru (${cSkip} duplikat)<br>
-        ${Object.keys(data.absensi).length} orang absensi (${totalAbsensi} hari)
-      </div>
+      <div class="alert ok">✅ Berhasil! ${data.promotor.length} promotor, ${cBaru} transaksi baru (${cSkip} duplikat), ${Object.keys(data.absensi).length} orang absensi (${totalAbsensi} hari)</div>
       <button class="btn-soft" onclick="location.reload()">Refresh Halaman</button>
     `;
     window._masterData = null;
@@ -577,17 +573,13 @@ function handleFilePenjualan(e) {
         const r = rows[i];
         if (!r || !r[1] || !r[2]) continue;
         if (String(r[5]).trim().toUpperCase() === 'TOTAL') continue;
-        let tglStr = String(r[2] || '').trim();
-        if (tglStr.includes(' ')) tglStr = tglStr.split(' ')[0];
-        let tgl = tglStr;
-        if (/^\d{4}-\d{2}-\d{2}$/.test(tglStr)) {
-          const p = tglStr.split('-');
-          tgl = `${p[2]}/${p[1]}/${p[0]}`;
-        }
         parsed.push({
-          noFaktur: String(r[1]).trim(), tanggal: tgl,
-          barcode: String(r[3]).trim(), namaBarang: String(r[5]).trim(),
-          qty: Number(r[6]) || 0, subtotal: Number(r[10]) || 0,
+          noFaktur: String(r[1]).trim(),
+          tanggal: convertTanggalExcel(r[2]),
+          barcode: String(r[3]).trim(),
+          namaBarang: String(r[5]).trim(),
+          qty: Number(r[6]) || 0,
+          subtotal: Number(r[10]) || 0,
           namaSales: String(r[15]).trim(),
           kategori: String(r[17]).trim().toUpperCase(),
           merk: String(r[18]).trim().toUpperCase()
@@ -596,7 +588,7 @@ function handleFilePenjualan(e) {
       const omzet = parsed.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS').reduce((s, x) => s + x.subtotal, 0);
       el.innerHTML = `
         <div class="alert ok">${parsed.length} baris — Omzet: Rp ${omzet.toLocaleString('id-ID')}</div>
-        <button class="btn-success" onclick='konfirmasiUploadPenjualan()'>Konfirmasi Upload</button>
+        <button class="btn-success" onclick="konfirmasiUploadPenjualan()">Konfirmasi Upload</button>
       `;
       window._jualData = parsed;
     } catch (err) { el.innerHTML = `<div class="alert err">${err.message}</div>`; }
@@ -711,10 +703,6 @@ async function hapusSemua() {
   await window.dbRemove(window.dbRef(window.db, 'rewardsSaya'));
   await window.dbRemove(window.dbRef(window.db, 'config/lastUpload'));
   alert("Semua data dihapus.");
-}
-
-function sanitizeKey(nama) {
-  return String(nama || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_');
 }
 </script>
 
