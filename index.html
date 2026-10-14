@@ -131,26 +131,16 @@ body.login-active {
 .fut-card { width: 100%; max-width: 400px; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(24px); border: 1px solid rgba(34,211,238,0.2); border-radius: 24px; padding: 40px 32px; box-shadow: 0 0 60px rgba(14,165,233,0.15); position: relative; overflow: hidden; }
 .fut-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #22d3ee, transparent); }
 .fut-logo {
-  width: 110px;
-  height: 110px;
+  width: 110px; height: 110px;
   margin: 0 auto 20px;
   background: rgba(14,165,233,0.15);
   border: 1px solid rgba(34,211,238,0.3);
   border-radius: 22px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   padding: 14px;
   box-shadow: 0 0 40px rgba(34,211,238,0.4);
 }
-
-.fut-logo img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  display: block;
-}
-.fut-logo svg { width: 60px; height: 60px; stroke: #22d3ee; stroke-width: 1.8; fill: none; }
+.fut-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
 .fut-field { margin-bottom: 18px; position: relative; }
 .fut-field label { display: block; font-size: 11px; font-weight: 700; color: #22d3ee; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
 .fut-select { width: 100%; padding: 14px 16px; background: rgba(2,6,23,0.6); border: 1px solid rgba(34,211,238,0.2); border-radius: 12px; color: #e2e8f0; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
@@ -167,7 +157,6 @@ body.login-active {
 .fut-input::placeholder { color: rgba(148,163,184,0.4); }
 .fut-input:focus { border-color: #22d3ee; box-shadow: 0 0 25px rgba(34,211,238,0.4); }
 .fut-error { color: #f87171; font-size: 12px; font-weight: 700; text-align: center; min-height: 18px; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 6px; }
-.fut-error svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 .fut-btn { width: 100%; padding: 16px; background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%); color: #ffffff; border: none; border-radius: 12px; font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; box-shadow: 0 0 30px rgba(34,211,238,0.4); }
 .fut-btn:active { transform: scale(0.98); }
 .fut-btn:disabled { opacity: 0.6; cursor: not-allowed; }
@@ -199,10 +188,7 @@ body.dashboard-active {
   display: flex; justify-content: center;
   overflow-x: hidden;
 }
-.dashboard-container {
-  width: 100%; max-width: 900px;
-  height: fit-content;
-}
+.dashboard-container { width: 100%; max-width: 900px; height: fit-content; }
 .top-bar {
   display: flex; justify-content: space-between; align-items: center;
   background: rgba(10, 25, 47, 0.7);
@@ -212,22 +198,8 @@ body.dashboard-active {
   margin-bottom: 20px;
   backdrop-filter: blur(10px);
 }
-.user-info {
-  display: flex; align-items: center; gap: 10px;
-  font-size: 13px; font-weight: 700; color: #ffffff;
-}
-.user-dot {
-  width: 10px; height: 10px; border-radius: 50%;
-  background: var(--danger);
-  box-shadow: 0 0 10px rgba(239, 68, 68, 0.8);
-  animation: pulseRed 2s infinite;
-}
-.user-dot.online { background: var(--success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.8); }
-@keyframes pulseRed {
-  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
-  70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
-}
+.user-info { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 700; color: #ffffff; }
+.user-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.8); }
 .logout-btn {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 16px;
@@ -241,20 +213,9 @@ body.dashboard-active {
 .logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
 .logout-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
-/* Menu Grid 3 kolom */
-.menu-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-  margin-bottom: 24px;
-}
-@media (max-width: 768px) {
-  .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
-}
-@media (max-width: 480px) {
-  body.dashboard-active { padding: 12px; }
-  .menu-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-}
+.menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+@media (max-width: 768px) { .menu-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; } }
+@media (max-width: 480px) { body.dashboard-active { padding: 12px; } .menu-grid { grid-template-columns: 1fr 1fr; gap: 10px; } }
 .menu-card {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(56, 189, 248, 0.15);
@@ -280,15 +241,8 @@ body.dashboard-active {
   border-radius: 14px;
 }
 .menu-icon svg { width: 28px; height: 28px; stroke: #38bdf8; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.menu-title {
-  font-size: 15px; font-weight: 800;
-  color: #ffffff; margin-bottom: 6px;
-}
-.menu-desc {
-  font-size: 11.5px; color: #94a3b8;
-  font-weight: 500; line-height: 1.4;
-}
-/* Warna icon per kategori */
+.menu-title { font-size: 15px; font-weight: 800; color: #ffffff; margin-bottom: 6px; }
+.menu-desc { font-size: 11.5px; color: #94a3b8; font-weight: 500; line-height: 1.4; }
 .menu-icon.t-absensi svg { stroke: #f472b6; }
 .menu-icon.t-absensi { background: rgba(244, 114, 182, 0.08); }
 .menu-icon.t-penjualan svg { stroke: #fbbf24; }
@@ -310,9 +264,6 @@ body.dashboard-active {
 .menu-icon.t-rewardsaya svg { stroke: #a78bfa; }
 .menu-icon.t-rewardsaya { background: rgba(167, 139, 250, 0.08); }
 
-/* ============================================================ */
-/* ===== DETAIL VIEW ========================================== */
-/* ============================================================ */
 .detail-view {
   background: rgba(15, 23, 42, 0.6);
   border: 1px solid rgba(56, 189, 248, 0.15);
@@ -332,44 +283,18 @@ body.dashboard-active {
   cursor: pointer; margin-bottom: 16px;
 }
 .back-btn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
-.detail-title {
-  font-size: 20px; font-weight: 800;
-  color: #ffffff; margin: 0 0 4px 0;
-}
-.detail-subtitle {
-  font-size: 12px; color: #94a3b8;
-  margin: 0 0 20px 0;
-}
+.detail-title { font-size: 20px; font-weight: 800; color: #ffffff; margin: 0 0 4px 0; }
+.detail-subtitle { font-size: 12px; color: #94a3b8; margin: 0 0 20px 0; }
 
-/* Stat Grid */
-.stat-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-bottom: 20px;
-}
-.stat-box {
-  background: rgba(10, 25, 47, 0.7);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 16px;
-  text-align: center;
-}
-.stat-box .label {
-  font-size: 10.5px; font-weight: 800;
-  color: #94a3b8; text-transform: uppercase;
-  letter-spacing: 0.5px; margin-bottom: 8px;
-}
-.stat-box .value {
-  font-size: 22px; font-weight: 900;
-  color: #38bdf8;
-}
+.stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-bottom: 20px; }
+.stat-box { background: rgba(10, 25, 47, 0.7); border: 1px solid var(--border); border-radius: 14px; padding: 16px; text-align: center; }
+.stat-box .label { font-size: 10.5px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.stat-box .value { font-size: 22px; font-weight: 900; color: #38bdf8; }
 .stat-box .value.green { color: #34d399; }
 .stat-box .value.gold { color: #d4af37; }
 .stat-box .value.red { color: #f87171; }
 .stat-box.full { grid-column: 1 / -1; }
 
-/* List Item */
 .list-item-dark {
   background: rgba(10, 25, 47, 0.6);
   border: 1px solid var(--border);
@@ -380,47 +305,22 @@ body.dashboard-active {
   align-items: flex-start; gap: 12px;
 }
 .list-item-dark .kiri { flex: 1; min-width: 0; }
-.list-item-dark .produk {
-  font-size: 13.5px; font-weight: 700;
-  color: #ffffff; margin-bottom: 4px; word-break: break-word;
-}
-.list-item-dark .info {
-  font-size: 11px; color: #94a3b8; font-weight: 500;
-}
+.list-item-dark .produk { font-size: 13.5px; font-weight: 700; color: #ffffff; margin-bottom: 4px; word-break: break-word; }
+.list-item-dark .info { font-size: 11px; color: #94a3b8; font-weight: 500; }
 .list-item-dark .kanan { text-align: right; flex-shrink: 0; }
 .list-item-dark .harga { font-size: 14px; font-weight: 800; color: #34d399; }
 .list-item-dark .qty { font-size: 11px; color: #94a3b8; font-weight: 600; margin-top: 2px; }
 
-.empty-state {
-  text-align: center; padding: 40px 20px;
-  color: #94a3b8; font-size: 13px;
-  background: rgba(10, 25, 47, 0.4);
-  border: 1px dashed var(--border);
-  border-radius: 14px;
-}
+.empty-state { text-align: center; padding: 40px 20px; color: #94a3b8; font-size: 13px; background: rgba(10, 25, 47, 0.4); border: 1px dashed var(--border); border-radius: 14px; }
 .empty-state svg { width: 48px; height: 48px; stroke: #475569; stroke-width: 1.5; fill: none; margin-bottom: 12px; }
 .empty-state .pesan { font-weight: 600; }
 
-/* Info Block */
-.info-block {
-  background: rgba(10, 25, 47, 0.6);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 10px;
-}
-.info-block .judul {
-  font-size: 14px; font-weight: 800;
-  color: #38bdf8; margin-bottom: 6px;
-  display: flex; align-items: center; gap: 8px;
-}
+.info-block { background: rgba(10, 25, 47, 0.6); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 10px; }
+.info-block .judul { font-size: 14px; font-weight: 800; color: #38bdf8; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
 .info-block .judul svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.2; fill: none; }
 .info-block .deskripsi { font-size: 12.5px; color: #cbd5e1; line-height: 1.6; }
 .info-block .meta { font-size: 11px; color: #94a3b8; margin-top: 6px; font-weight: 600; }
 
-/* ============================================================ */
-/* ===== RESPONSIVE =========================================== */
-/* ============================================================ */
 @media (max-width: 900px) {
   #login-screen { padding: 12px; align-items: flex-start; padding-top: 20px; overflow-y: auto; }
   .fut-container { grid-template-columns: 1fr; gap: 16px; max-width: 480px; margin: 0 auto; }
@@ -441,7 +341,6 @@ body.dashboard-active {
   .fut-orb-2 { width: 200px; height: 200px; }
   .fut-orb-3 { width: 220px; height: 220px; }
 }
-
 @media (max-width: 480px) {
   body { padding: 12px; }
   body.dashboard-active { padding: 12px; }
@@ -449,7 +348,6 @@ body.dashboard-active {
   .menu-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .dashboard-container { padding: 0; }
 }
-
 @media (max-width: 400px) {
   #login-screen { padding: 8px; }
   .fut-container { gap: 12px; }
@@ -517,19 +415,15 @@ body.dashboard-active {
           </div>
           <div id="custom-select-menu" class="fut-menu"></div>
         </div>
-
         <div class="fut-field">
           <label>Masukkan PIN</label>
           <input type="password" id="login-pin-input" maxlength="4" inputmode="numeric" pattern="[0-9]*" placeholder="••••" autocomplete="off" class="fut-input">
         </div>
-
         <div id="login-error" class="fut-error"></div>
-
         <button type="button" id="btn-login-promotor" class="fut-btn">
           <span>MASUK</span>
           <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
         </button>
-
         <p class="fut-footer">Belum punya PIN? <span>Hubungi admin</span></p>
       </div>
     </div>
@@ -541,7 +435,7 @@ body.dashboard-active {
   <div class="dashboard-container">
     <div class="top-bar">
       <div class="user-info">
-        <span class="user-dot online"></span>
+        <span class="user-dot"></span>
         <span id="userNama">-</span>
       </div>
       <button class="logout-btn" onclick="logoutPromotor()">
@@ -549,7 +443,6 @@ body.dashboard-active {
         Keluar
       </button>
     </div>
-
     <div id="menuGrid" class="menu-grid"></div>
     <div id="detailView" class="hidden"></div>
   </div>
@@ -576,7 +469,6 @@ let infoData = { promo: [], rules: [], punishment: [], reward: [] };
 let currentUser = null;
 let currentMenu = null;
 
-/* SVG ICONS */
 const ICONS = {
   absensi: `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>`,
   penjualan: `<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
@@ -625,7 +517,6 @@ function initParticles() {
 
 function loadPromotorList() {
   window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
-    const labelEl = document.getElementById('custom-select-label');
     const liveEl = document.getElementById('live-status-text');
     if (!snap.exists()) {
       renderCustomSelectOptions([]);
@@ -635,7 +526,7 @@ function loadPromotorList() {
     allPromotor = snap.val();
     const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
       .filter(p => p.aktif !== false)
-      .sort((a,b) => a.namaAbsen.localeCompare(b.namaAbsen));
+      .sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
     renderCustomSelectOptions(list);
     if (liveEl) liveEl.innerText = `${list.length} promotor terdaftar`;
   });
@@ -661,13 +552,8 @@ function toggleCustomSelect() {
   const trigger = document.getElementById('custom-select-trigger');
   if (!menu || !trigger) return;
   const isOpen = menu.classList.contains('open');
-  if (isOpen) {
-    menu.classList.remove('open');
-    trigger.classList.remove('open');
-  } else {
-    menu.classList.add('open');
-    trigger.classList.add('open');
-  }
+  if (isOpen) { menu.classList.remove('open'); trigger.classList.remove('open'); }
+  else { menu.classList.add('open'); trigger.classList.add('open'); }
 }
 
 function pilihOpsiCustom(key, label) {
@@ -712,27 +598,23 @@ async function loginPromotor() {
   const errEl = document.getElementById('login-error');
   const btn = document.getElementById('btn-login-promotor');
   errEl.innerHTML = '';
-  if (!key) { errEl.innerHTML = ICONS.punish + ' Pilih nama dulu!'; return; }
-  if (!pin) { errEl.innerHTML = ICONS.punish + ' Masukkan PIN!'; return; }
+  if (!key) { errEl.innerHTML = '⚠️ Pilih nama dulu!'; return; }
+  if (!pin) { errEl.innerHTML = '⚠️ Masukkan PIN!'; return; }
   const asli = btn.innerHTML;
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span> Memeriksa...';
   try {
     const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
     if (!snap.exists()) {
-      errEl.innerHTML = ICONS.punish + ' Promotor tidak ditemukan.';
-      btn.disabled = false;
-      btn.innerHTML = asli;
-      return;
+      errEl.innerHTML = '⚠️ Promotor tidak ditemukan.';
+      btn.disabled = false; btn.innerHTML = asli; return;
     }
     const data = snap.val();
     if (String(data.pin) !== pin) {
-      errEl.innerHTML = ICONS.punish + ' PIN salah!';
+      errEl.innerHTML = '⚠️ PIN salah!';
       document.getElementById('login-pin-input').value = '';
       document.getElementById('login-pin-input').focus();
-      btn.disabled = false;
-      btn.innerHTML = asli;
-      return;
+      btn.disabled = false; btn.innerHTML = asli; return;
     }
     currentUser = { key, ...data };
     localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
@@ -743,14 +625,12 @@ async function loginPromotor() {
       tampilkanDashboard();
       document.getElementById('login-pin-input').value = '';
       errEl.innerHTML = '';
-      btn.disabled = false;
-      btn.innerHTML = asli;
+      btn.disabled = false; btn.innerHTML = asli;
       setTimeout(() => { toast.classList.remove('active'); }, 600);
     }, 1000);
   } catch (err) {
-    errEl.innerHTML = ICONS.punish + ' ' + err.message;
-    btn.disabled = false;
-    btn.innerHTML = asli;
+    errEl.innerHTML = '⚠️ ' + err.message;
+    btn.disabled = false; btn.innerHTML = asli;
   }
 }
 
@@ -866,9 +746,7 @@ function tampilkanDetail(menuKey) {
   else if (menuKey === 'rewardsaya') content = renderRewardsSaya();
 
   detailEl.innerHTML = `
-    <button class="back-btn" onclick="kembaliKeMenu()">
-      ${ICONS.back} Kembali ke Menu
-    </button>
+    <button class="back-btn" onclick="kembaliKeMenu()">${ICONS.back} Kembali ke Menu</button>
     <h2 class="detail-title">${t.title}</h2>
     <p class="detail-subtitle">${t.subtitle}</p>
     ${content}
@@ -902,13 +780,10 @@ function hitungOmzet(list) {
 function hitungUnit(list) {
   return list.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS').reduce((s, x) => s + (Number(x.qty) || 0), 0);
 }
-function hitungUC(list) {
-  return list.filter(x => x.kategori === 'GARANSI').reduce((s, x) => s + (Number(x.qty) || 0), 0);
-}
 
 /* ===== RENDER SUBMENU ===== */
 
-// PENJUALAN
+// PENJUALAN — format kartu hijau per tanggal
 function renderPenjualan() {
   const list = getDataSaya();
   const listBulanIni = list.filter(x => isBulanIni(x.tanggal));
@@ -934,37 +809,54 @@ function renderPenjualan() {
     </div>
   `;
   if (list.length === 0) {
-    html += `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada transaksi</div></div>`;
-  } else {
-    const grupTanggal = {};
-    list.forEach(x => {
-      if (!grupTanggal[x.tanggal]) grupTanggal[x.tanggal] = [];
-      grupTanggal[x.tanggal].push(x);
-    });
-    const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
-      const da = parseTanggal(a), db = parseTanggal(b);
-      return (db || 0) - (da || 0);
-    });
-    keysSorted.forEach(tgl => {
-      const items = grupTanggal[tgl];
-      const totalHari = hitungOmzet(items);
-      html += `<div style="margin-bottom:16px;">
-        <div style="font-size:12px; font-weight:800; color:#38bdf8; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border);">${tgl} — Rp ${totalHari.toLocaleString('id-ID')}</div>
-        ${items.map(x => `
-          <div class="list-item-dark">
-            <div class="kiri">
-              <div class="produk">${x.namaBarang || '-'}</div>
-              <div class="info">${x.merk || '-'} • ${x.kategori || '-'}</div>
-            </div>
-            <div class="kanan">
-              <div class="harga">Rp ${Number(x.subtotal || 0).toLocaleString('id-ID')}</div>
-              <div class="qty">Qty: ${x.qty || 0}</div>
-            </div>
-          </div>
-        `).join('')}
-      </div>`;
-    });
+    return html + `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada transaksi</div></div>`;
   }
+
+  const grupTanggal = {};
+  list.forEach(x => {
+    if (!grupTanggal[x.tanggal]) grupTanggal[x.tanggal] = [];
+    grupTanggal[x.tanggal].push(x);
+  });
+  const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
+    const da = parseTanggal(a), db = parseTanggal(b);
+    return (db || 0) - (da || 0);
+  });
+
+  html += `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px;">`;
+
+  keysSorted.forEach(tgl => {
+    const items = grupTanggal[tgl];
+    const totalHari = hitungOmzet(items);
+
+    let isiProduk = '';
+    items.forEach((it, idx) => {
+      isiProduk += `
+        <div style="${idx > 0 ? 'margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.05);' : ''}">
+          <div style="font-size:12px; font-weight:600; line-height:1.4; margin-bottom:8px; color:#e5e7eb;">${it.namaBarang || '-'}</div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0; color:#9ca3af; font-size:11.5px;">
+            <span>Qty</span><b style="color:#fff;">${it.qty || 0}</b>
+          </div>
+          <div style="display:flex; justify-content:space-between; padding:3px 0; color:#9ca3af; font-size:11.5px;">
+            <span>Omzet</span><b style="color:#34d399;">Rp ${Number(it.subtotal || 0).toLocaleString('id-ID')}</b>
+          </div>
+        </div>`;
+    });
+
+    html += `
+      <div style="background: rgba(10,25,47,0.7); border: 1px solid var(--border); border-left: 4px solid #10b981; border-radius: 12px; padding: 14px;">
+        <div style="text-align: center; font-weight: 800; color: #ffffff; font-size: 13px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(30,58,95,0.8);">
+          📅 ${tgl}
+        </div>
+        ${isiProduk}
+        <div style="display: flex; justify-content: space-between; padding-top: 10px; margin-top: 8px; border-top: 1px solid rgba(30,58,95,0.8); font-weight: 800; font-size: 12.5px; color: #fff;">
+          <span>Total Hari Ini</span>
+          <span style="color: #34d399;">Rp ${totalHari.toLocaleString('id-ID')}</span>
+        </div>
+      </div>
+    `;
+  });
+
+  html += `</div>`;
   return html;
 }
 
@@ -993,23 +885,24 @@ function renderUC() {
     </div>
   `;
   if (list.length === 0) {
-    html += `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada UC bulan ini</div></div>`;
-  } else {
-    html += `<div style="font-size:12px; font-weight:800; color:#38bdf8; margin-bottom:8px; padding-bottom:6px; border-bottom:1px solid var(--border);">Detail UC</div>`;
-    list.forEach(x => {
-      html += `
-        <div class="list-item-dark">
-          <div class="kiri">
-            <div class="produk">${x.namaBarang || '-'}</div>
-            <div class="info">${x.tanggal} • ${x.merk || '-'}</div>
-          </div>
-          <div class="kanan">
-            <div class="harga">${x.qty} unit</div>
-          </div>
-        </div>
-      `;
-    });
+    return html + `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada UC bulan ini</div></div>`;
   }
+
+  html += `<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px;">`;
+  list.forEach(x => {
+    html += `
+      <div style="background: rgba(10,25,47,0.7); border: 1px solid var(--border); border-left: 4px solid #10b981; border-radius: 12px; padding: 14px;">
+        <div style="text-align: center; font-weight: 800; color: #ffffff; font-size: 13px; margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid rgba(30,58,95,0.8);">
+          📅 ${x.tanggal}
+        </div>
+        <div style="font-size:12px; font-weight:600; line-height:1.4; margin-bottom:8px; color:#e5e7eb;">${x.namaBarang || '-'}</div>
+        <div style="display:flex; justify-content:space-between; padding:3px 0; color:#9ca3af; font-size:11.5px;">
+          <span>Qty</span><b style="color:#fff;">${x.qty || 0}</b>
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
   return html;
 }
 
@@ -1031,9 +924,7 @@ function renderBrand() {
         <div class="produk">${x.brand}</div>
         <div class="info">${x.unit} unit terjual</div>
       </div>
-      <div class="kanan">
-        <div class="harga">Rp ${x.omzet.toLocaleString('id-ID')}</div>
-      </div>
+      <div class="kanan"><div class="harga">Rp ${x.omzet.toLocaleString('id-ID')}</div></div>
     </div>
   `).join('');
 }
@@ -1060,13 +951,10 @@ function renderAbsensi() {
   const svgCalendar = `<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#38bdf8;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`;
 
   let html = `
-    <div style="background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05));
-                border: 1px solid rgba(212,175,55,0.4); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
+    <div style="background: linear-gradient(135deg, rgba(212,175,55,0.15), rgba(212,175,55,0.05)); border: 1px solid rgba(212,175,55,0.4); border-radius: 16px; padding: 20px; margin-bottom: 20px;">
       <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-bottom: 14px; border-bottom: 1px solid rgba(212,175,55,0.2);">
         ${svgTrophy}
-        <span style="font-size: 16px; font-weight: 800; color: #d4af37; letter-spacing: 1px; text-transform: uppercase;">
-          ${currentUser.namaAbsen || '-'}
-        </span>
+        <span style="font-size: 16px; font-weight: 800; color: #d4af37; letter-spacing: 1px; text-transform: uppercase;">${currentUser.namaAbsen || '-'}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 10px; font-size: 13px;">
         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -1128,9 +1016,7 @@ function renderAbsensi() {
           <div style="font-size: 14px; font-weight: 800; color: #ffffff; margin-bottom: 6px; display:flex; align-items:center; justify-content:center; gap:4px;">
             ${svgCalendar} ${x.hari}
           </div>
-          <div style="font-size: 11px; font-weight: 800; color: ${statusColor}; background: ${statusBg}; padding: 3px 10px; border-radius: 100px; display: inline-block;">
-            ${statusText}
-          </div>
+          <div style="font-size: 11px; font-weight: 800; color: ${statusColor}; background: ${statusBg}; padding: 3px 10px; border-radius: 100px; display: inline-block;">${statusText}</div>
         </div>
         <div style="font-size: 11.5px; display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; justify-content: space-between; color: #94a3b8;">
@@ -1206,7 +1092,7 @@ function renderRewardsSaya() {
   `).join('');
 }
 
-// INFO LIST (Promo/SOP/Punishment/Reward)
+// INFO LIST
 function renderInfoList(arr, jenis) {
   if (!arr || arr.length === 0) {
     return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data</div></div>`;
