@@ -12,15 +12,22 @@ import { getDatabase, ref, set, get, update, remove, onValue, push } from "https
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDrrS4E_6e3G1DBfqkFbWoYLhdq6ZIzapg",
-  authDomain: "tes-webapps.firebaseapp.com",
-  databaseURL: "https://tes-webapps-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "tes-webapps",
-  storageBucket: "tes-webapps.firebasestorage.app",
-  messagingSenderId: "87638829660",
-  appId: "1:87638829660:web:5a04a73f02206803fa9499"
-};
 
+  apiKey: "AIzaSyCNj8nRMP0ijH1GUXKeJlsE-EG5AYCkHBU",
+
+  authDomain: "dashboardpromotor.firebaseapp.com",
+
+  databaseURL: "https://dashboardpromotor-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+  projectId: "dashboardpromotor",
+
+  storageBucket: "dashboardpromotor.firebasestorage.app",
+
+  messagingSenderId: "474469951678",
+
+  appId: "1:474469951678:web:f769fed156a36505cbd6ef"
+
+};
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
