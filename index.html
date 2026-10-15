@@ -1464,9 +1464,12 @@ function renderAbsensi() {
   }
 
   let totalTerlambat = 0, tidakMasuk = 0, tidakPulang = 0;
-  entries.forEach(x => {
-    const isNoMasuk = !x.masuk || String(x.masuk).trim() === '' || x.masuk === '-';
-    const isNoPulang = !x.pulang || String(x.pulang).trim() === '' || x.pulang === '-';
+ entries.forEach(x => {
+    const isNoMasuk = !x.masuk || String(x.masuk).trim() === "" || x.masuk === "-";
+    const isNoPulang = !x.pulang || String(x.pulang).trim() === "" || x.pulang === "-";
+    
+    // ✅ FIX: "TERLAMBAT" hanya valid kalau ADA jam masuk (finger sudah tercatat)
+    const isTerlambat = !isNoMasuk && String(x.terlambat || "").toUpperCase() === "YA";;
     const terr = String(x.terlambat || '').trim().toUpperCase();
     if (terr === 'YA' || terr === 'Y' || terr === 'YES' || terr === 'TRUE') totalTerlambat++;
     if (isNoMasuk) tidakMasuk++;
