@@ -506,6 +506,51 @@ body.dashboard-active {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
 .card.success { border-left: 4px solid #10b981; }
 .card.warning { border-left: 4px solid #ef4444; }
+  /* ===== KARTU TERLAMBAT — NEON KUNING MENYALA ===== */
+.card.late {
+  border: 2px solid #facc15 !important;
+  background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(45, 35, 10, 0.9)) !important;
+  box-shadow: 0 0 25px rgba(250, 204, 21, 0.7), 
+              inset 0 0 20px rgba(250, 204, 21, 0.15) !important;
+  animation: pulseLate 2s ease-in-out infinite;
+  position: relative;
+}
+
+.card.late::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #facc15, transparent);
+  animation: scanLate 2s linear infinite;
+}
+
+@keyframes pulseLate {
+  0%, 100% { 
+    box-shadow: 0 0 25px rgba(250, 204, 21, 0.7), 
+                inset 0 0 20px rgba(250, 204, 21, 0.15);
+  }
+  50% { 
+    box-shadow: 0 0 40px rgba(250, 204, 21, 1), 
+                inset 0 0 30px rgba(250, 204, 21, 0.25);
+  }
+}
+
+@keyframes scanLate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+.card.late .tanggal {
+  color: #facc15 !important;
+  text-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
+}
+
+.card.late .row {
+  color: #fde68a;
+}
 .tanggal { text-align: center; font-weight: 700; margin-bottom: 12px; 
     color: #ffffff; font-size: 14px; display: flex; align-items: center; 
     justify-content: center; gap: 6px; flex-direction: column; }
@@ -1462,8 +1507,14 @@ function renderAbsensi() {
     const formatTglFinal = tanggalKeNama(tglAbsenStr);
 
     html += `
-      <div class="card ${isNoMasuk || isNoPulang ? 'warning' : 'success'}">
-        <div class="tanggal">${ICONS.calendar} ${formatTglFinal}<br>${status}</div>
+      const kelasTambahan = isTerlambat ? 'late' : '';
+
+html += `
+  <div class="card ${isNoMasuk || isNoPulang ? 'warning' : 'success'} ${kelasTambahan}">
+    <div class="tanggal">
+      ${ICONS.calendar} ${formatTglFinal}<br>${status}
+      ${isTerlambat ? '<div style="color:#facc15;font-weight:900;margin-top:6px;font-size:11px;letter-spacing:1px;text-shadow:0 0 8px rgba(250,204,21,0.8);">⚠️ TERLAMBAT</div>' : ''}
+    </div>
         <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${x.masuk}</span>`}</div>
         <div class="row"><span>Istirahat 1</span>${x.istirahat1 ? `<span class="ok">${x.istirahat1}</span>` : '<span class="kosong">-</span>'}</div>
         <div class="row"><span>Kembali 1</span>${x.kembali1 ? `<span class="ok">${x.kembali1}</span>` : '<span class="kosong">-</span>'}</div>
