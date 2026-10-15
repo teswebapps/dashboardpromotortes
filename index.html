@@ -1489,6 +1489,81 @@ function renderAbsensi() {
   html += `</div>`;
   return html;
 }
+  /* ============================================================ */
+/* ===== RENDER: PENJUALAN =================================== */
+/* ============================================================ */
+function renderPenjualan() {
+  const list = getDataSaya();
+  const totalOmzet = list.reduce((s, x) => s + (Number(x.subtotal || x.omzet) || 0), 0);
+  const totalUnit = list.reduce((s, x) => s + (Number(x.qty) || 1), 0);
+
+  let tglPertama = '-', tglTerakhir = '-';
+  if (list.length > 0) {
+    const tglSort = list.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
+      const da = parseTanggal(a), db = parseTanggal(b);
+      return (da || 0) - (db || 0);
+    });
+    tglPertama = tglSort[0] || '-';
+    tglTerakhir = tglSort[tglSort.length - 1] || '-';
+  }
+
+  const dataProm = getPromotorTerpilih();
+  const namaTampil = dataProm.namaAbsen || '-';
+
+  let html = `
+    <div class="summary-card">
+      <h2>${ICONS.money} ${namaTampil}</h2>
+      <p>Periode : <b>${tanggalKeNama(tglPertama)} - ${tanggalKeNama(tglTerakhir)}</b></p>
+      <p>Total Unit : <b>${totalUnit}</b></p>
+      <p>Total Omzet : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzet.toLocaleString('id-ID')}</span></p>
+    </div>
+  `;
+
+  if (list.length === 0) {
+    return html + `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada transaksi</div></div>`;
+  }
+
+  const grupTanggal = {};
+  list.forEach(x => {
+    const tglKey = x.tanggal || 'Tanpa Tanggal';
+    if (!grupTanggal[tglKey]) grupTanggal[tglKey] = [];
+    grupTanggal[tglKey].push(x);
+  });
+
+  const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
+    const da = parseTanggal(a), db = parseTanggal(b);
+    return (db || 0) - (da || 0);
+  });
+
+  html += `<div class="card-grid">`;
+  keysSorted.forEach(tgl => {
+    const items = grupTanggal[tgl];
+    const totalHari = items.reduce((s, x) => s + (Number(x.subtotal || x.omzet) || 0), 0);
+    let isiProduk = '';
+    items.forEach((it, idx) => {
+      const kat = it.kategori ? ` <span style="font-size:11px; color:#38bdf8;">(${it.kategori})</span>` : '';
+      isiProduk += `
+        <div style="${idx > 0 ? 'margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.05);' : ''}">
+          <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:4px; color:#e5e7eb;">${it.namaBarang || it.produk || '-'}${kat}</div>
+          <div class="row"><span>Qty</span><span>${it.qty || 1}</span></div>
+          <div class="row"><span>Omzet</span><span>Rp ${Number(it.subtotal || it.omzet || 0).toLocaleString('id-ID')}</span></div>
+        </div>`;
+    });
+    html += `
+      <div class="card success">
+        <div class="tanggal">${ICONS.calendar} ${tanggalKeNama(tgl)}</div>
+        ${isiProduk}
+        <div class="row" style="font-weight:700; font-size:13px; margin-top:6px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;">
+          <span>Total Hari Ini</span>
+          <span style="color:#34d399;">Rp ${totalHari.toLocaleString('id-ID')}</span>
+        </div>
+      </div>
+    `;
+  });
+  html += `</div>`;
+  return html;
+}
+window.renderPenjualan = renderPenjualan;
 /* ============================================================ */
 /* ===== RENDER: UC ========================================== */
 /* ============================================================ */
