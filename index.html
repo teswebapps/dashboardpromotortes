@@ -1463,15 +1463,16 @@ function renderAbsensi() {
     return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data absensi untuk promotor ini</div></div>`;
   }
 
-  let totalTerlambat = 0, tidakMasuk = 0, tidakPulang = 0;
- entries.forEach(x => {
+    let totalTerlambat = 0, tidakMasuk = 0, tidakPulang = 0;
+  entries.forEach(x => {
     const isNoMasuk = !x.masuk || String(x.masuk).trim() === "" || x.masuk === "-";
     const isNoPulang = !x.pulang || String(x.pulang).trim() === "" || x.pulang === "-";
+    const adaMasuk = !isNoMasuk;
     
-    // ✅ FIX: "TERLAMBAT" hanya valid kalau ADA jam masuk (finger sudah tercatat)
-    const isTerlambat = !isNoMasuk && String(x.terlambat || "").toUpperCase() === "YA";;
+    // ✅ FIX: hanya hitung terlambat kalau ada jam masuk
     const terr = String(x.terlambat || '').trim().toUpperCase();
-    if (terr === 'YA' || terr === 'Y' || terr === 'YES' || terr === 'TRUE') totalTerlambat++;
+    const isTerlambat = adaMasuk && (terr === 'YA' || terr === 'Y' || terr === 'YES' || terr === 'TRUE');
+    if (isTerlambat) totalTerlambat++;
     if (isNoMasuk) tidakMasuk++;
     if (isNoPulang) tidakPulang++;
   });
@@ -1490,10 +1491,12 @@ function renderAbsensi() {
     <div class="card-grid">
   `;
 
-  entries.forEach(x => {
-    const isTerlambat = String(x.terlambat || "").toUpperCase() === "YA";
+entries.forEach(x => {
     const isNoMasuk = !x.masuk || String(x.masuk).trim() === "" || x.masuk === "-";
     const isNoPulang = !x.pulang || String(x.pulang).trim() === "" || x.pulang === "-";
+    
+    // ✅ FIX: TERLAMBAT hanya kalau ADA jam masuk
+    const isTerlambat = !isNoMasuk && String(x.terlambat || "").toUpperCase() === "YA";
 
     let statusText = "Lengkap";
     if (isNoMasuk && isNoPulang) statusText = "Tidak Finger";
