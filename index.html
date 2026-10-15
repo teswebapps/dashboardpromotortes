@@ -766,33 +766,39 @@ function renderPenjualan() {
 function renderUC(data) {
     if(!data) return;
     
-    // Ambil data detail penjualan mentah jika tersedia untuk memastikan seluruh unit masuk
+    // Ambil detail dari data server, atau gunakan cache penjualan jika kosong
     let listDetail = data.detail || [];
-    if (cacheData.penjualan && cacheData.penjualan.detail) {
-        // Fallback menggunakan detail penjualan keseluruhan jika cache tersedia
+    if (listDetail.length === 0 && cacheData.penjualan && cacheData.penjualan.detail) {
         listDetail = cacheData.penjualan.detail;
     }
 
-    // Hitung total unit secara keseluruhan dari semua penjualan
     let totalUC = 0;
     listDetail.forEach(x => {
         totalUC += Number(x.qty || 1);
     });
 
+    const namaPromotor = data.nama || currentUser || "Promotor";
+    const tglAwal = data.tanggalPertama || "01/10/2026";
+    const tglAkhir = data.tanggalTerakhir || "31/10/2026";
+
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-        <h2>💎 ${data.nama || currentUser}</h2>
-        <p>Periode : <b>01/10/2026 - 31/10/2026</b></p>
+        <h2>💎 ${namaPromotor}</h2>
+        <p>Periode : <b>${tglAwal} - ${tglAkhir}</b></p>
         <p>Total UC : <b>${totalUC}</b></p>
     </div>`;
 
     let html = "";
     listDetail.forEach(x => {
+        const namaProduk = x.produk || x.namaBarang || "-";
+        const tanggalTrans = x.tanggal || "-";
+        const qtyTrans = x.qty || 1;
+
         html += `
         <div class="card success">
-            <div class="tanggal">📅 ${x.tanggal}</div>
-            <div style="font-size:12px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${x.produk || x.namaBarang}</div>
-            <div class="row"><span>Qty</span><span>${x.qty}</span></div>
+            <div class="tanggal">📅 ${tanggalTrans}</div>
+            <div style="font-size:12px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${namaProduk}</div>
+            <div class="row"><span>Qty</span><span>${qtyTrans}</span></div>
         </div>`;
     });
 
