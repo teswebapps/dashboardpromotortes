@@ -675,27 +675,26 @@ function parseTanggal(str) {
   if (p.length !== 3) return null;
   return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
 }
+
 function isBulanIni(tgl) {
   const d = parseTanggal(tgl); if (!d) return false;
   const n = new Date();
   return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
 }
+
 // --- 1. Fungsi getDataSaya yang Benar (Menggunakan allPenjualan) ---
 function getDataSaya() {
     if (!currentUser) return [];
     
-    // Ambil nama absen dan nama sales dari user yang aktif
     const namaAbsenUser = String(currentUser.namaAbsen || '').trim().toUpperCase();
     const namaSalesUser = String(currentUser.namaSales || '').trim().toUpperCase();
     
-    // Gunakan allPenjualan (bukan window.penjualanData)
     const semuaPenjualan = typeof allPenjualan !== 'undefined' ? allPenjualan : []; 
     
     return semuaPenjualan.filter(x => {
         if (!x) return false;
         const salesTrans = String(x.namaSales || '').trim().toUpperCase();
         
-        // Cocokkan apakah nama di transaksi sama persis dengan namaSales atau mengandung namaAbsen user
         const isMatch = (namaSalesUser && salesTrans === namaSalesUser) || 
                         (namaAbsenUser && (salesTrans.includes(namaAbsenUser) || namaAbsenUser.includes(salesTrans)));
                         
@@ -707,10 +706,8 @@ function getDataSaya() {
 function renderBrand() {
     const listAll = getDataSaya();
     
-    // Ambil brand yang dipegang oleh promotor yang sedang login dari currentUser.merk
     const brandPromotor = currentUser && currentUser.merk ? String(currentUser.merk).trim().toUpperCase() : "";
 
-    // Filter transaksi khusus bulan Oktober 2026 DAN cocok dengan merk promotor (Kecuali ongkos/garansi murni)
     const list = listAll.filter(x => {
         if (!x) return false;
         const tgl = String(x.tanggal || '');
@@ -718,22 +715,21 @@ function renderBrand() {
         const merkBarang = String(x.merk || '').trim().toUpperCase();
         const kat = String(x.kategori || '').trim().toUpperCase();
         
-        // Jangan sertakan kategori ONGKOS atau GARANSI murni di perolehan brand produk
         if (kat === 'GARANSI' || kat === 'ONGKOS') return false;
         
-        // Cek periode Oktober 2026
         const isOktoberFaktur = noFaktur.includes('2610');
         const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10') || tgl.includes('2026-01-10');
         
-        // Cocokkan merk barang dengan merk promotor
         const isMatchBrand = !brandPromotor || (merkBarang === brandPromotor || merkBarang.includes(brandPromotor));
         
         return (isOktoberFaktur || isOktoberTgl) && isMatchBrand;
     });
 
     let totalBrandQty = 0;
+    let totalOmzetBrand = 0;
     list.forEach(x => {
         totalBrandQty += Number(x.qty || 1);
+        totalOmzetBrand += Number(x.subtotal || x.omzet || 0);
     });
 
     const namaPromotor = currentUser ? currentUser.namaAbsen : "Promotor";
@@ -745,26 +741,30 @@ function renderBrand() {
             <p>Brand Pegangan : <b>${infoMerk}</b></p>
             <p>Periode : <b>01/10/2026 - 31/10/2026</b></p>
             <p>Total Perolehan Brand : <b>${totalBrandQty} Unit</b></p>
+            <p>Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetBrand.toLocaleString("id-ID")}</span></p>
         </div>
     `;
 
     if (list.length === 0) {
-        return html + `<div class="card"><div class="pesan">Belum ada data penjualan untuk brand ${infoMerk} pada bulan Oktober 2026</div></div>`;
+        return html + `<div class="card"><div class="pesan" style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data penjualan untuk brand ${infoMerk} pada bulan Oktober 2026</div></div>`;
     }
 
     html += `<div class="card-grid">`;
     list.forEach(x => {
         const namaProduk = x.namaBarang || x.produk || "-";
-        const tanggalTrans = formatTanggalIndo(x.tanggal); // Menggunakan helper format tanggal DD/MM/YYYY
+        const tanggalTrans = formatTanggalIndo(x.tanggal); 
         const qtyTrans = x.qty || 1;
+        const subtotalTrans = Number(x.subtotal || x.omzet || 0);
         const kategoriTrans = x.kategori || "-";
 
         html += `
         <div class="card success">
             <div class="tanggal">${ICONS.calendar} ${tanggalTrans}</div>
-            <div style="font-size:11px; color:#9ca3af; margin-top:4px;">Kategori: ${kategoriTrans}</div>
+            <div style="font-size:11px; color:#d4af37; margin-bottom:2px;">Brand: ${x.merk || infoMerk}</div>
+            <div style="font-size:11px; color:#9ca3af; margin-bottom:4px;">Kategori: ${kategoriTrans}</div>
             <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin:6px 0; color:#e5e7eb;">${namaProduk}</div>
             <div class="row"><span>Qty</span><span>${qtyTrans} Unit</span></div>
+            <div class="row"><span>Omzet</span><span>Rp ${subtotalTrans.toLocaleString("id-ID")}</span></div>
         </div>`;
     });
     html += `</div>`;
@@ -772,7 +772,7 @@ function renderBrand() {
     return html;
 }
 
-// PENJUALAN (Icons updated to SVG)
+// PENJUALAN
 function renderPenjualan() {
   const list = getDataSaya();
   const totalOmzet = list.reduce((s, x) => {
@@ -855,7 +855,6 @@ function formatTanggalIndo(tglStr) {
     if (!tglStr) return "-";
     let s = String(tglStr).trim();
     
-    // Jika formatnya YYYY-MM-DD
     if (s.includes('-')) {
         const parts = s.split(' ')[0].split('-');
         if (parts.length === 3) {
@@ -863,7 +862,6 @@ function formatTanggalIndo(tglStr) {
         }
     }
     
-    // Jika formatnya MM/DD/YYYY dari Excel -> ubah jadi DD/MM/YYYY
     if (s.includes('/')) {
         const parts = s.split(' ')[0].split('/');
         if (parts.length === 3) {
@@ -874,7 +872,7 @@ function formatTanggalIndo(tglStr) {
     return s;
 }
 
-// --- Fungsi Utama Render UC (UFO Care+ / Garansi Saja) ---
+// --- Fungsi Utama Render UC ---
 function renderUC() {
     const listAll = getDataSaya();
     
@@ -885,11 +883,9 @@ function renderUC() {
         const kat = String(x.kategori || '').trim().toUpperCase();
         const namaBrd = String(x.namaBarang || '').trim().toUpperCase();
         
-        // Cek apakah transaksi masuk bulan Oktober 2026
         const isOktoberFaktur = noFaktur.includes('2610');
         const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10') || tgl.includes('2026-01-10');
         
-        // STRICT FILTER: Hanya ambil yang benar-benar UFO Care / Garansi Tambahan murni
         const isMurniUC = (kat === 'GARANSI') && namaBrd.includes('UFO CARE');
         
         return (isOktoberFaktur || isOktoberTgl) && isMurniUC;
@@ -917,7 +913,6 @@ function renderUC() {
     html += `<div class="card-grid">`;
     list.forEach(x => {
         const namaProduk = x.namaBarang || x.produk || "-";
-        // Tanggal otomatis dirapikan jadi DD/MM/YYYY
         const tanggalTrans = formatTanggalIndo(x.tanggal); 
         const qtyTrans = x.qty || 1;
 
@@ -931,64 +926,6 @@ function renderUC() {
     html += `</div>`;
     
     return html;
-}
-function tampilkanHasilUC(listDetail, namaPromotor, totalUC) {
-    const summaryEl = document.getElementById("summary");
-    if (summaryEl) {
-        summaryEl.innerHTML = `
-        <div class="summary-card">
-            <h2>💎 ${namaPromotor || 'Promotor'}</h2>
-            <p>Periode : <b>01/10/2026 - 31/10/2026</b></p>
-            <p>Total UC : <b>${totalUC}</b></p>
-        </div>`;
-    }
-
-    const hasilEl = document.getElementById("hasil");
-    if (!hasilEl) return;
-
-    if (listDetail.length === 0) {
-        hasilEl.className = "grid";
-        hasilEl.innerHTML = `<div class="card">Belum ada data UC untuk bulan Oktober 2026</div>`;
-        return;
-    }
-
-    let html = "";
-    listDetail.forEach(x => {
-        html += `
-        <div class="card success">
-            <div class="tanggal">📅 ${x.tanggal}</div>
-            <div style="font-size:12px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${x.produk}</div>
-            <div class="row"><span>Qty</span><span>${x.qty}</span></div>
-        </div>`;
-    });
-
-    hasilEl.className = "grid";
-    hasilEl.innerHTML = html;
-}
-function renderBrand() {
-  const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS');
-  const perBrand = {};
-  list.forEach(x => {
-    const b = x.merk || 'TANPA MERK';
-    if (!perBrand[b]) perBrand[b] = { omzet: 0, unit: 0 };
-    perBrand[b].omzet += Number(x.subtotal) || 0;
-    perBrand[b].unit += Number(x.qty) || 0;
-  });
-  const arr = Object.keys(perBrand).map(k => ({ brand: k, ...perBrand[k] })).sort((a, b) => b.omzet - a.omzet);
-  if (arr.length === 0) return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada penjualan bulan ini</div></div>`;
-  
-  let html = `<div class="card-grid">`;
-  arr.forEach(x => {
-    html += `
-      <div class="card success">
-        <div style="font-size: 15px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">${x.brand}</div>
-        <div style="font-size: 13px; color: #94a3b8; font-weight: 600; margin-bottom: 14px;">${x.unit} unit terjual</div>
-        <div class="row" style="font-weight:700;"><span>Total Omzet</span><span style="color:#34d399;">Rp ${x.omzet.toLocaleString('id-ID')}</span></div>
-      </div>
-    `;
-  });
-  html += `</div>`;
-  return html;
 }
 
 // ABSENSI
