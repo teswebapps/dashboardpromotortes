@@ -73,7 +73,7 @@ body {
 .hidden { display: none !important; }
 
 /* ============================================================ */
-/* ===== LOGIN SCREEN (FUTURISTIC) ============================ */
+/* ===== LOGIN SCREEN (FUTURISTIK) ============================ */
 /* ============================================================ */
 body.login-active { 
     margin: 0; 
@@ -163,80 +163,60 @@ body.login-active {
 .login-toast-name { color: var(--cyber-cyan); font-weight: 800; text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
 
 /* ============================================================ */
-/* ===== DASHBOARD ============================================ */
+/* ===== DASHBOARD (TATA LETAK KARTU LAMA YANG LEBAR & LUAS) ==== */
 /* ============================================================ */
 body.dashboard-active {
-    margin: 0; padding: 16px;
+    margin: 0; padding: 24px 16px;
     background: #030712;
-    color: #ffffff;
+    color: #f3f4f6;
     min-height: 100vh;
-    display: flex; justify-content: center;
-    overflow-x: hidden;
 }
-.dashboard-container { width: 100%; max-width: 1100px; height: fit-content; }
+.dashboard-container { max-width: 1100px; margin: 0 auto; width: 100%; }
 
 .top-bar {
     display: flex; justify-content: space-between; align-items: center;
     background: rgba(17, 24, 39, 0.75);
+    backdrop-filter: blur(12px);
     border: 1px solid rgba(212, 175, 55, 0.25);
     border-radius: 16px;
-    padding: 12px 20px;
+    padding: 14px 20px;
     margin-bottom: 25px;
-    backdrop-filter: blur(12px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
-.user-info { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: #ffffff; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
-.user-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--success); box-shadow: 0 0 10px rgba(16, 185, 129, 0.8); flex-shrink: 0; }
+.user-info { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: #ffffff; }
+.user-dot { width: 10px; height: 10px; border-radius: 50%; background: #34d399; box-shadow: 0 0 10px rgba(52, 211, 153, 0.8); flex-shrink: 0; }
 .logout-btn {
+    padding: 8px 16px; border: none; border-radius: 9px; cursor: pointer;
+    color: #f87171; background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3); font-weight: 600; font-size: 12.5px;
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 8px 16px;
-    background: rgba(239, 68, 68, 0.1);
-    color: #f87171;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    border-radius: 9px;
-    font-size: 12.5px; font-weight: 600; cursor: pointer;
-    transition: all 0.25s ease;
-    flex-shrink: 0;
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
 .logout-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
 .back-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
 .back-btn {
+    padding: 9px 16px; border: none; border-radius: 10px;
+    cursor: pointer; font-weight: 700; font-size: 12.5px;
+    color: #111827; background: #d4af37;
     display: inline-flex; align-items: center; gap: 6px;
-    padding: 9px 16px;
-    background: #d4af37;
-    color: #111827;
-    border: none;
-    border-radius: 10px;
-    font-size: 12.5px; font-weight: 700;
-    cursor: pointer;
     box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-    transition: all 0.25s ease;
 }
 .back-btn:hover { opacity: 0.9; }
 .back-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
-/* Menu grid (3 kolom luas) */
+/* Menu grid asli (3 kolom besar) */
 .menu-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
-    margin-bottom: 20px;
+    max-width: 1100px; margin: 0 auto;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
 }
 .menu-card {
     background: rgba(17, 24, 39, 0.7);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(212, 175, 55, 0.2);
-    border-radius: 20px;
-    padding: 28px 22px;
-    cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-    overflow: hidden;
-    text-align: center;
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 20px;
+    padding: 28px 22px; text-align: center; cursor: pointer;
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+    display: flex; flex-direction: column; align-items: center;
 }
 .menu-card:hover {
     transform: translateY(-5px);
@@ -245,43 +225,39 @@ body.dashboard-active {
     background: rgba(21, 29, 46, 0.85);
 }
 .menu-icon {
-    font-size: 42px; margin-bottom: 12px;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+    width: 60px; height: 60px; margin-bottom: 12px;
     display: flex; justify-content: center; align-items: center;
+    background: rgba(212, 175, 55, 0.1); border-radius: 16px;
 }
-.menu-icon svg { width: 44px; height: 44px; stroke: #d4af37; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
-.menu-content { flex: 1; min-width: 0; }
-.menu-title { font-size: 18.5px; font-weight: 700; color: #ffffff; margin-bottom: 6px; letter-spacing: -0.3px; }
-.menu-desc { font-size: 13.5px; color: #9ca3af; line-height: 1.4; }
+.menu-icon svg { width: 30px; height: 30px; stroke: #d4af37; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+.menu-content { width: 100%; }
+.menu-title { font-size: 18.5px; color: #ffffff; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.3px; }
+.menu-desc { font-size: 13.5px; color: #9ca3af; line-height: 1.4; margin: 0; }
 
 /* Detail view */
 .detail-view {
-    background: transparent;
-    border: none;
-    padding: 0;
+    max-width: 1100px; margin: 0 auto;
     animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-.detail-title { font-size: 22px; font-weight: 800; color: #ffffff; margin: 0 0 6px 0; }
-.detail-subtitle { font-size: 13px; color: #9ca3af; margin: 0 0 15px 0; }
+.detail-title { font-size: 24px; font-weight: 800; color: #ffffff; margin: 0 0 4px 0; }
+.detail-subtitle { font-size: 13.5px; color: #9ca3af; margin: 0 0 20px 0; }
 
-/* Stat grid & summary */
 .summary-card {
     background: rgba(17, 24, 39, 0.75);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(212, 175, 55, 0.25);
-    border-radius: 16px; padding: 16px; color: #ffffff;
+    border-radius: 16px; padding: 18px; color: #ffffff;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    margin-bottom: 15px;
+    margin-bottom: 20px;
 }
 .summary-card h2 {
-    margin: 0 0 8px 0; font-size: 15.5px; font-weight: 700;
-    color: #d4af37; line-height: 1.4;
-    display: flex; align-items: center; gap: 8px;
+    margin: 0 0 10px 0; font-size: 16px; font-weight: 700;
+    color: #d4af37; display: flex; align-items: center; gap: 8px;
 }
-.summary-card p { margin: 4px 0; color: #d1d5db; font-size: 13px; line-height: 1.4; }
+.summary-card p { margin: 6px 0; color: #d1d5db; font-size: 13.5px; line-height: 1.4; }
 
-.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
+.stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
 .stat-box { background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; text-align: center; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
 .stat-box .label { font-size: 11.5px; font-weight: 700; color: #9ca3af; text-transform: uppercase; margin-bottom: 6px; }
 .stat-box .value { font-size: 22px; font-weight: 800; color: #38bdf8; }
@@ -294,30 +270,30 @@ body.dashboard-active {
 .empty-state svg { width: 48px; height: 48px; stroke: #475569; stroke-width: 1.5; fill: none; margin-bottom: 12px; }
 .empty-state .pesan { font-weight: 600; }
 
-.info-block { background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 16px; margin-bottom: 15px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
-.info-block .judul { font-size: 15px; font-weight: 700; color: #d4af37; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+.info-block { background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 18px; margin-bottom: 15px; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
+.info-block .judul { font-size: 15.5px; font-weight: 700; color: #d4af37; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
 .info-block .judul svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.2; fill: none; }
-.info-block .deskripsi { font-size: 13px; color: #d1d5db; line-height: 1.5; }
-.info-block .meta { font-size: 11px; color: #9ca3af; margin-top: 4px; font-weight: 600; }
+.info-block .deskripsi { font-size: 13.5px; color: #d1d5db; line-height: 1.5; }
+.info-block .meta { font-size: 12px; color: #9ca3af; margin-top: 6px; font-weight: 600; }
 
-/* KARTU GRID LEBAR & FLEKSIBEL SEPERTI TAMPILAN LAMA */
+/* TATA LETAK GRID KARTU LAMA YANG LEBAR & LUAS */
 .card-grid { 
     display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-    gap: 16px; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 18px; 
     width: 100%;
 }
 .card {
     background: rgba(17, 24, 39, 0.75);
     backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px; padding: 16px;
+    border-radius: 16px; padding: 18px;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 .card.success { border-left: 4px solid #10b981; }
 .card.warning { border-left: 4px solid #ef4444; }
 .card.late { border: 2px solid #d4af37; background: rgba(21, 25, 34, 0.9); }
-.tanggal { text-align: center; font-weight: 700; margin-bottom: 12px; color: #ffffff; font-size: 13.5px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-direction: column; }
+.tanggal { text-align: center; font-weight: 700; margin-bottom: 12px; color: #ffffff; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-direction: column; }
 .tanggal svg { width: 15px; height: 15px; stroke: #38bdf8; stroke-width: 2; fill: none; display: inline-block; }
 .row {
     display: flex; justify-content: space-between; align-items: center;
@@ -331,10 +307,10 @@ body.dashboard-active {
 .status-warning { color: #ef4444; font-weight: 700; }
 
 @media (max-width: 1024px) { 
-  .menu-grid { grid-template-columns: repeat(2, 1fr) !important; } 
+  .menu-grid, .card-grid, .stat-grid { grid-template-columns: repeat(2, 1fr) !important; } 
 }
 @media (max-width: 768px) {
-  .menu-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
+  .menu-grid, .card-grid, .stat-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
   #login-screen { padding: 10px; align-items: center; }
   .fut-container { grid-template-columns: 1fr; gap: 12px; max-width: 420px; margin: auto; }
   .fut-left { display: none; }
@@ -655,7 +631,7 @@ function renderMenuGrid() {
       <div class="menu-icon">${ICONS[m.icon]}</div>
       <div class="menu-content">
         <div class="menu-title">${m.title}</div>
-        <div class="menu-desc">${m.desc}</div>
+        <p class="menu-desc">${m.desc}</p>
       </div>
     </div>
   `).join('');
@@ -792,7 +768,7 @@ function renderPenjualan() {
     items.forEach((it, idx) => {
       isiProduk += `
         <div style="${idx > 0 ? 'margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.05);' : ''}">
-          <div style="font-size:12px; font-weight:600; line-height:1.3; margin-bottom:3px; color:#e5e7eb;">${it.namaBarang || '-'}</div>
+          <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:4px; color:#e5e7eb;">${it.namaBarang || '-'}</div>
           <div class="row"><span>Qty</span><span>${it.qty || 0}</span></div>
           <div class="row"><span>Omzet</span><span>Rp ${Number(it.subtotal || 0).toLocaleString('id-ID')}</span></div>
         </div>`;
@@ -802,7 +778,7 @@ function renderPenjualan() {
       <div class="card success">
         <div class="tanggal">📅 ${tanggalKeNama(tgl)}</div>
         ${isiProduk}
-        <div class="row" style="font-weight:700; font-size:12.5px; margin-top:6px;"><span>Total Hari Ini</span><span>Rp ${totalHari.toLocaleString('id-ID')}</span></div>
+        <div class="row" style="font-weight:700; font-size:13px; margin-top:6px;"><span>Total Hari Ini</span><span>Rp ${totalHari.toLocaleString('id-ID')}</span></div>
       </div>
     `;
   });
@@ -835,7 +811,7 @@ function renderUC() {
     html += `
       <div class="card success">
         <div class="tanggal">📅 ${tanggalKeNama(x.tanggal)}</div>
-        <div style="font-size:12px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${x.namaBarang || '-'}</div>
+        <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${x.namaBarang || '-'}</div>
         <div class="row"><span>Qty</span><span>${x.qty || 0}</span></div>
       </div>
     `;
@@ -862,7 +838,7 @@ function renderBrand() {
     html += `
       <div class="card success">
         <div style="font-size: 15px; font-weight: 800; color: #ffffff; margin-bottom: 8px;">${x.brand}</div>
-        <div style="font-size: 12.5px; color: #94a3b8; font-weight: 600; margin-bottom: 14px;">${x.unit} unit terjual</div>
+        <div style="font-size: 13px; color: #94a3b8; font-weight: 600; margin-bottom: 14px;">${x.unit} unit terjual</div>
         <div class="row" style="font-weight:700;"><span>Total Omzet</span><span style="color:#34d399;">Rp ${x.omzet.toLocaleString('id-ID')}</span></div>
       </div>
     `;
