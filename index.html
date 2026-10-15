@@ -764,11 +764,11 @@ function renderPenjualan() {
 
 // UC
 function renderUC(data) {
-    if(!data) return;
-    
-    // Ambil detail dari data server, atau gunakan cache penjualan jika kosong
-    let listDetail = data.detail || [];
-    if (listDetail.length === 0 && cacheData.penjualan && cacheData.penjualan.detail) {
+    // Jika data dari parameter kosong, ambil langsung dari cache penjualan atau objek kosong
+    let listDetail = [];
+    if (data && data.detail) {
+        listDetail = data.detail;
+    } else if (cacheData.penjualan && cacheData.penjualan.detail) {
         listDetail = cacheData.penjualan.detail;
     }
 
@@ -777,9 +777,9 @@ function renderUC(data) {
         totalUC += Number(x.qty || 1);
     });
 
-    const namaPromotor = data.nama || currentUser || "Promotor";
-    const tglAwal = data.tanggalPertama || "01/10/2026";
-    const tglAkhir = data.tanggalTerakhir || "31/10/2026";
+    const namaPromotor = (data && data.nama) ? data.nama : (currentUser || "Promotor");
+    const tglAwal = (data && data.tanggalPertama) ? data.tanggalPertama : "01/10/2026";
+    const tglAkhir = (data && data.tanggalTerakhir) ? data.tanggalTerakhir : "31/10/2026";
 
     document.getElementById("summary").innerHTML = `
     <div class="summary-card">
@@ -787,6 +787,12 @@ function renderUC(data) {
         <p>Periode : <b>${tglAwal} - ${tglAkhir}</b></p>
         <p>Total UC : <b>${totalUC}</b></p>
     </div>`;
+
+    if (listDetail.length === 0) {
+        document.getElementById("hasil").className = "grid";
+        document.getElementById("hasil").innerHTML = `<div class="card">Data UC belum tersedia</div>`;
+        return;
+    }
 
     let html = "";
     listDetail.forEach(x => {
@@ -802,7 +808,7 @@ function renderUC(data) {
         </div>`;
     });
 
-    if(listDetail.length > 0 && currentRole === "ADMIN") {
+    if(currentRole === "ADMIN") {
         document.getElementById("exportArea").style.display = "flex";
     }
     document.getElementById("hasil").className = "grid";
