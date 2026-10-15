@@ -251,11 +251,29 @@ body.dashboard-active {
 
 /* Detail view */
 .detail-view {
-  background: rgba(15, 23, 42, 0.7);
-  border: 1px solid rgba(56, 189, 248, 0.2);
-  border-radius: 20px;
-  padding: 18px;
-  animation: fadeIn 0.3s ease;
+    background: rgba(15, 23, 42, 0.7);
+    border: 1px solid rgba(56, 189, 248, 0.2);
+    border-radius: 20px;
+    padding: 16px; /* Pastikan padding konsisten */
+}
+
+.card-grid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 15px; 
+    width: 100%;
+}
+
+@media (max-width: 1024px) {
+    .card-grid { grid-template-columns: repeat(2, 1fr) !important; } 
+}
+@media (max-width: 768px) {
+    .card-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
+    /* Berikan sedikit ruang aman agar card tidak terlalu mepet ke tepi layar HP */
+    .dashboard-container {
+        padding-left: 4px;
+        padding-right: 4px;
+    }
 }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 .detail-title { font-size: 22px; font-weight: 800; color: #ffffff; margin: 0 0 6px 0; }
