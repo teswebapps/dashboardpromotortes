@@ -84,6 +84,23 @@ button svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4;
 .alert.ok { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
 .alert.err { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
 .alert.warn { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+  /* Tab Terlambat */
+.late-marker {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  border: 2px solid #d97706;
+  border-radius: 8px;
+  padding: 4px 10px;
+  font-size: 10px;
+  font-weight: 800;
+  color: #92400e;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 0 10px rgba(217, 119, 6, 0.4);
+}
+.list-item.late-item {
+  border-left: 4px solid #d97706 !important;
+  background: #fffbeb !important;
+}
 .spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .list-item { background: white; border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
@@ -129,11 +146,12 @@ button svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4;
 
   <div id="panelAdmin" class="hidden">
     <div class="tabs">
-      <button class="tab-btn active" onclick="switchTab('dash', event)">Dashboard</button>
-      <button class="tab-btn" onclick="switchTab('upload', event)">Upload</button>
-      <button class="tab-btn" onclick="switchTab('promotor', event)">Promotor</button>
-      <button class="tab-btn" onclick="switchTab('danger', event)">Reset</button>
-    </div>
+  <button class="tab-btn active" onclick="switchTab('dash', event)">Dashboard</button>
+  <button class="tab-btn" onclick="switchTab('upload', event)">Upload</button>
+  <button class="tab-btn" onclick="switchTab('promotor', event)">Promotor</button>
+  <button class="tab-btn" onclick="switchTab('terlambat', event)">Terlambat</button>
+  <button class="tab-btn" onclick="switchTab('danger', event)">Reset</button>
+</div>
     <div id="tabContent"></div>
     <div style="height:8px;"></div>
     <button class="btn-soft" onclick="logoutAdmin()">Logout</button>
@@ -276,7 +294,10 @@ function mulaiAdmin() {
     allPenjualan = snap.exists() ? snap.val() : {};
     if (currentTab === 'dash') renderTab();
   });
-  window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => { allAbsensi = snap.exists() ? snap.val() : {}; });
+ window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
+  allAbsensi = snap.exists() ? snap.val() : {};
+  if (currentTab === 'terlambat') renderTab();
+});
   window.dbOnValue(window.dbRef(window.db, 'pelanggaran'), snap => { allPelanggaran = snap.exists() ? snap.val() : {}; });
   window.dbOnValue(window.dbRef(window.db, 'rewardsSaya'), snap => { allRewardsSaya = snap.exists() ? snap.val() : {}; });
   renderTab();
@@ -294,6 +315,7 @@ function renderTab() {
   if (currentTab === 'dash') el.innerHTML = renderDash();
   else if (currentTab === 'upload') el.innerHTML = renderUpload();
   else if (currentTab === 'promotor') el.innerHTML = renderPromotor();
+  else if (currentTab === 'terlambat') el.innerHTML = renderTerlambat();
   else if (currentTab === 'danger') el.innerHTML = renderDanger();
 }
 
@@ -708,6 +730,155 @@ async function hapusSemua() {
   await window.dbRemove(window.dbRef(window.db, 'rewardsSaya'));
   await window.dbRemove(window.dbRef(window.db, 'config/lastUpload'));
   alert("Semua data dihapus.");
+}
+  /* ============================================================ */
+/* ===== MENU KELOLA TERLAMBAT ================================ */
+/* ============================================================ */
+function getNamaBulan(bulan) {
+  const nama = ['', 'Januari','Februari','Maret','April','Mei','Juni',
+                'Juli','Agustus','September','Oktober','November','Desember'];
+  return nama[bulan] || '?';
+}
+
+function renderTerlambat() {
+  const listPromotor = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
+    .sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
+  
+  const today = new Date();
+  const bulanIni = today.getMonth() + 1;
+  const tahunIni = today.getFullYear();
+  const hariIni = today.getDate();
+  
+  let html = `
+    <div class="card">
+      <h3>Kelola Terlambat — ${getNamaBulan(bulanIni)} ${tahunIni}</h3>
+      <p style="font-size:12px; color:var(--muted); margin:0 0 12px;">
+        Pilih <b>tanggal</b>, lalu klik <b>Tandai Terlambat</b> pada promotor yang telat hari itu.
+        Data otomatis muncul di dashboard promotor dengan warna kuning neon.
+      </p>
+      <div style="background:white; border:1px solid var(--border); border-radius:10px; padding:12px;">
+        <label style="margin-bottom:8px;">Tanggal (hari ke-)</label>
+        <input type="number" id="tglTerlambat" min="1" max="31" value="${hariIni}" 
+               style="width:100px; font-size:16px; text-align:center; font-weight:800;"
+               onchange="renderRiwayatTerlambat(Number(this.value))">
+      </div>
+    </div>
+  `;
+  
+  html += `<div class="card">
+    <h3>Daftar Promotor — Tandai Terlambat</h3>
+    ${listPromotor.length === 0 ? '<div class="alert warn">Belum ada promotor.</div>' : ''}
+  `;
+  
+  listPromotor.forEach(p => {
+    const absensiP = allAbsensi[p.key] || {};
+    const hariKeyToday = 'hari_' + hariIni;
+    const sudahTerlambat = absensiP[hariKeyToday] && 
+                            String(absensiP[hariKeyToday].terlambat || '').toUpperCase() === 'YA';
+    
+    let totalBulanIni = 0;
+    Object.values(absensiP).forEach(h => {
+      if (h && String(h.terlambat || '').toUpperCase() === 'YA') totalBulanIni++;
+    });
+    
+    html += `
+      <div class="list-item ${sudahTerlambat ? 'late-item' : ''}">
+        <div class="kiri">
+          <div class="nama">${p.namaAbsen}</div>
+          <div class="detail">
+            ${p.namaSales || '-'} • ${p.merk || '-'}
+            ${totalBulanIni > 0 ? `<span style="color:#d97706; font-weight:700;"> • ${totalBulanIni}x terlambat bulan ini</span>` : ''}
+          </div>
+        </div>
+        <div class="kanan">
+          ${sudahTerlambat ? '<span class="late-marker">TERLAMBAT</span>' : ''}
+          <button class="${sudahTerlambat ? 'btn-danger' : 'btn-soft'} btn-sm" 
+                  onclick="toggleTerlambat('${p.key}', ${hariIni}, ${sudahTerlambat})">
+            ${sudahTerlambat ? 'Batal' : 'Tandai'}
+          </button>
+        </div>
+      </div>
+    `;
+  });
+  
+  html += `</div>`;
+  
+  html += `<div class="card">
+    <h3>Riwayat Terlambat — Tanggal ${hariIni}</h3>
+    <div id="riwayatTerlambat"></div>
+  </div>`;
+  
+  setTimeout(() => renderRiwayatTerlambat(hariIni), 100);
+  
+  return html;
+}
+
+function renderRiwayatTerlambat(hari) {
+  const el = document.getElementById('riwayatTerlambat');
+  if (!el) return;
+  
+  let rows = [];
+  Object.keys(allPromotor).forEach(key => {
+    const p = allPromotor[key];
+    const absensiP = allAbsensi[key] || {};
+    const h = absensiP['hari_' + hari];
+    if (h && String(h.terlambat || '').toUpperCase() === 'YA') {
+      rows.push({
+        nama: p.namaAbsen || '-',
+        hari: h.hari || hari,
+        masuk: h.masuk || '-',
+        pulang: h.pulang || '-'
+      });
+    }
+  });
+  
+  if (rows.length === 0) {
+    el.innerHTML = '<div class="alert warn">Belum ada promotor yang ditandai terlambat di tanggal ini.</div>';
+    return;
+  }
+  
+  el.innerHTML = rows.map(r => `
+    <div class="list-item">
+      <div class="kiri">
+        <div class="nama">${r.nama}</div>
+        <div class="detail">Masuk: ${r.masuk} • Pulang: ${r.pulang}</div>
+      </div>
+      <div class="kanan">
+        <span class="late-marker">TERLAMBAT</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+async function toggleTerlambat(promotorKey, hari, sudahTerlambat) {
+  try {
+    const path = `absensi/${promotorKey}/hari_${hari}`;
+    const snap = await window.dbGet(window.dbRef(window.db, path));
+    
+    if (snap.exists()) {
+      await window.dbUpdate(window.dbRef(window.db, path), {
+        terlambat: sudahTerlambat ? '' : 'YA'
+      });
+    } else {
+      const today = new Date();
+      await window.dbSet(window.dbRef(window.db, path), {
+        nama: allPromotor[promotorKey]?.namaAbsen || '',
+        hari: Number(hari),
+        masuk: '',
+        istirahat1: '',
+        kembali1: '',
+        istirahat2: '',
+        kembali2: '',
+        pulang: '',
+        terlambat: sudahTerlambat ? '' : 'YA',
+        bulan: getNamaBulan(today.getMonth() + 1)
+      });
+    }
+    
+    renderTab();
+  } catch (err) {
+    alert('Gagal update: ' + err.message);
+  }
 }
 </script>
 
