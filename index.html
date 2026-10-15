@@ -710,6 +710,16 @@ body.light-mode .fut-live-status {
   border-color: rgba(34, 211, 238, 0.4) !important;
   color: #334155 !important;
 }
+  /* Tombol toggle di light mode */
+body.light-mode .theme-toggle-btn {
+  background: #fff7e0;
+  border-color: rgba(212, 175, 55, 0.5);
+  color: #b8941f;
+}
+body.light-mode .theme-toggle-btn:hover {
+  background: #fde68a;
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+}
 </style>
 </head>
 <body class="login-active">
@@ -2128,16 +2138,7 @@ function updateThemeIcon(isLight) {
 })();
 
 window.toggleTheme = toggleTheme;
-  /* Tombol toggle di light mode */
-body.light-mode .theme-toggle-btn {
-  background: #fff7e0;
-  border-color: rgba(212, 175, 55, 0.5);
-  color: #b8941f;
-}
-body.light-mode .theme-toggle-btn:hover {
-  background: #fde68a;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
-}
+  
 /* ===== LOGOUT (Custom Modal) ===== */
 function logoutPromotor() {
   const old = document.getElementById('logoutModal');
