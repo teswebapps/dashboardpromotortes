@@ -1203,20 +1203,13 @@ function gantiPromotorAdmin(keyPromotor) {
     return;
   }
   
-  const detailEl = document.getElementById('detailView');
-  detailEl.classList.remove('hidden');
-  detailEl.innerHTML = `
-    <div style="text-align:center; padding:40px; color:#d4af37; font-weight:700;">
-      <span class="spinner"></span> Memuat data ${dataPromotor.namaAbsen}...
-    </div>
-  `;
-  
+  // Ambil data absensi secara background tanpa merusak tampilan utama
   window.dbGet(window.dbRef(window.db, 'absensi/' + keyPromotor)).then(snapAbsen => {
-    // Simpan ke penampung master absensi agar sinkron dengan renderAbsensi
     if (typeof allAbsensiAll === 'undefined') window.allAbsensiAll = {};
     window.allAbsensiAll[keyPromotor] = snapAbsen.exists() ? snapAbsen.val() : {};
     allAbsensi = window.allAbsensiAll[keyPromotor];
     
+    // Langsung render ulang menu aktif secara instan
     if (currentMenu) {
       tampilkanDetail(currentMenu);
     } else {
