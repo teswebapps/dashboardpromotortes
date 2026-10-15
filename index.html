@@ -854,16 +854,18 @@ function isiDropdownPromotor(list) {
   });
   menuEl.innerHTML = html;
   
-  if (promotorTerpilih) {
-    const selectedOpt = menuEl.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
-    if (selectedOpt) {
-      selectedOpt.classList.add('selected');
-      if (labelEl) labelEl.innerText = selectedOpt.innerText;
-    }
+  // ✅ Tentukan target key (jika promotorTerpilih belum ada, ambil promotor pertama dari list)
+  const targetKey = (promotorTerpilih && allPromotor[promotorTerpilih]) ? promotorTerpilih : list[0].key;
+  promotorTerpilih = targetKey;
+  
+  const selectedOpt = menuEl.querySelector(`.dd-option[data-value="${targetKey}"]`);
+  if (selectedOpt) {
+    menuEl.querySelectorAll('.dd-option').forEach(o => o.classList.remove('selected'));
+    selectedOpt.classList.add('selected');
+    if (labelEl) labelEl.innerText = selectedOpt.innerText;
   }
 }
 window.isiDropdownPromotor = isiDropdownPromotor;
-
 function toggleDropdownPromotor() {
   const menu = document.getElementById('dropdownMenu');
   const trigger = document.getElementById('dropdownTrigger');
@@ -1641,6 +1643,16 @@ function renderBrand() {
         totalOmzetBrand += Number(x.subtotal || x.omzet || 0);
     });
 
+    let tglPertama = '1 Oktober 2026', tglTerakhir = '31 Oktober 2026';
+    if (list.length > 0) {
+      const tglSort = list.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
+        const da = parseTanggal(a), db = parseTanggal(b);
+        return (da || 0) - (db || 0);
+      });
+      tglPertama = tanggalKeNama(tglSort[0]) || tglPertama;
+      tglTerakhir = tanggalKeNama(tglSort[tglSort.length - 1]) || tglTerakhir;
+    }
+
     const namaPromotor = dataProm ? dataProm.namaAbsen : "Promotor";
     const infoMerk = dataProm && dataProm.merk ? dataProm.merk : "Semua Brand";
 
@@ -1648,7 +1660,7 @@ function renderBrand() {
         <div class="summary-card">
             <h2>${ICONS.brand} ${namaPromotor}</h2>
             <p>Brand : <b>${infoMerk}</b></p>
-            <p>Periode : <b>Bulan Ini</b></p>
+            <p>Periode : <b>${tglPertama} - ${tglTerakhir}</b></p>
             <p>Total Perolehan Unit : <b>${totalBrandQty} Unit</b></p>
             <p>Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetBrand.toLocaleString("id-ID")}</span></p>
         </div>
@@ -1703,7 +1715,6 @@ function renderBrand() {
     html += `</div>`;
     return html;
 }
-
 /* ============================================================ */
 /* ===== RENDER: INFO LIST (Promo/SOP) ======================= */
 /* ============================================================ */
