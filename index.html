@@ -281,7 +281,29 @@ body.dashboard-active {
 .info-block .deskripsi { font-size: 13.5px; color: #cbd5e1; line-height: 1.6; }
 .info-block .meta { font-size: 11.5px; color: #94a3b8; margin-top: 6px; font-weight: 600; }
 
-.card-grid { display: grid; grid-template-columns: 1fr; gap: 16px; }
+/* Sesuaikan .card-grid agar tampil 3 kolom seperti file kedua di layar besar, dan responsif di layar kecil */
+.card-grid { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 15px; 
+}
+
+@media (max-width: 1024px) {
+    .card-grid { grid-template-columns: repeat(2, 1fr) !important; } 
+}
+@media (max-width: 768px) {
+    .card-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
+}
+
+/* Samakan gaya card agar mirip dengan file kedua */
+.card-style-unified {
+    background: rgba(17, 24, 39, 0.75);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
 
 @media (max-width: 900px) {
   #login-screen { padding: 10px; align-items: center; }
