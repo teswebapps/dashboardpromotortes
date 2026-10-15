@@ -967,6 +967,7 @@ function renderUC() {
 }
 
 // ABSENSI
+// ABSENSI
 function renderAbsensi() {
   const entries = Object.values(allAbsensi || {}).filter(x => x && x.hari);
   entries.sort((a, b) => (Number(a.hari) || 0) - (Number(b.hari) || 0));
@@ -1009,9 +1010,18 @@ function renderAbsensi() {
 
     const status = `<span class="${(isNoMasuk || isNoPulang || isTerlambat) ? 'status-warning' : 'status-ok'}">${statusText}</span>`;
 
+    // Format tanggal absensi (Misal: dari angka "2" atau string tanggal menjadi format "2 Oktober 2026")
+    let tglAbsenStr = String(x.hari || '').trim();
+    // Jika data absensi hanya berupa angka hari (misal "2"), ubah ke format lengkap bulan berjalan (Oktober 2026)
+    if (!tglAbsenStr.includes('/') && !tglAbsenStr.includes('-')) {
+        const hariAngka = tglAbsenStr.padStart(2, '0');
+        tglAbsenStr = `10/${hariAngka}/2026`; // Format MM/DD/YYYY agar cocok dibaca tanggalKeNama()
+    }
+    const formatTglFinal = tanggalKeNama(tglAbsenStr);
+
     html += `
       <div class="card ${isNoMasuk || isNoPulang ? 'warning' : 'success'} ${isTerlambat ? 'late' : ''}">
-        <div class="tanggal">${ICONS.calendar} ${x.hari}<br>${status}</div>
+        <div class="tanggal">${ICONS.calendar} ${formatTglFinal}<br>${status}</div>
         <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${x.masuk}</span>`}</div>
         <div class="row"><span>Istirahat 1</span>${x.istirahat1 ? `<span class="ok">${x.istirahat1}</span>` : '<span class="kosong">-</span>'}</div>
         <div class="row"><span>Kembali 1</span>${x.kembali1 ? `<span class="ok">${x.kembali1}</span>` : '<span class="kosong">-</span>'}</div>
@@ -1025,7 +1035,6 @@ function renderAbsensi() {
   html += `</div>`;
   return html;
 }
-
 // INFO LIST (Promo / Rules)
 function renderInfoList(arr, jenis) {
   if (!arr || arr.length === 0) {
