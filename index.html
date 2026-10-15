@@ -680,23 +680,22 @@ function isBulanIni(tgl) {
   const n = new Date();
   return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
 }
-// --- 1. Fungsi getDataSaya yang Lebih Akurat & Fleksibel ---
+// --- 1. Fungsi getDataSaya yang Benar (Menggunakan allPenjualan) ---
 function getDataSaya() {
     if (!currentUser) return [];
     
-    // Ambil nama absen dan nama sales dari user yang aktif (mengantisipasi perbedaan penulisan)
+    // Ambil nama absen dan nama sales dari user yang aktif
     const namaAbsenUser = String(currentUser.namaAbsen || '').trim().toUpperCase();
     const namaSalesUser = String(currentUser.namaSales || '').trim().toUpperCase();
     
-    // Ambil seluruh data penjualan dari variabel global
-    const semuaPenjualan = window.penjualanData || []; 
+    // Gunakan allPenjualan (bukan window.penjualanData)
+    const semuaPenjualan = typeof allPenjualan !== 'undefined' ? allPenjualan : []; 
     
     return semuaPenjualan.filter(x => {
         if (!x) return false;
         const salesTrans = String(x.namaSales || '').trim().toUpperCase();
         
-        // Cek kecocokan: apakah nama di transaksi sama persis dengan namaSales, 
-        // atau mengandung namaAbsen user (misal: "Adhe Beko Mlg" mengandung "ADHE")
+        // Cocokkan apakah nama di transaksi sama persis dengan namaSales atau mengandung namaAbsen user
         const isMatch = (namaSalesUser && salesTrans === namaSalesUser) || 
                         (namaAbsenUser && (salesTrans.includes(namaAbsenUser) || namaAbsenUser.includes(salesTrans)));
                         
@@ -711,19 +710,23 @@ function renderBrand() {
     // Ambil brand yang dipegang oleh promotor yang sedang login dari currentUser.merk
     const brandPromotor = currentUser && currentUser.merk ? String(currentUser.merk).trim().toUpperCase() : "";
 
-    // Filter transaksi khusus bulan Oktober 2026 DAN cocok dengan merk promotor
+    // Filter transaksi khusus bulan Oktober 2026 DAN cocok dengan merk promotor (Kecuali ongkos/garansi murni)
     const list = listAll.filter(x => {
         if (!x) return false;
         const tgl = String(x.tanggal || '');
         const noFaktur = String(x.nomorFaktur || x.noFaktur || '').toUpperCase();
         const merkBarang = String(x.merk || '').trim().toUpperCase();
+        const kat = String(x.kategori || '').trim().toUpperCase();
         
-        // Cek periode Oktober 2026 (mengantisipasi format tanggal tertukar atau nomor faktur 2610)
+        // Jangan sertakan kategori ONGKOS atau GARANSI murni di perolehan brand produk
+        if (kat === 'GARANSI' || kat === 'ONGKOS') return false;
+        
+        // Cek periode Oktober 2026
         const isOktoberFaktur = noFaktur.includes('2610');
         const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10') || tgl.includes('2026-01-10');
         
         // Cocokkan merk barang dengan merk promotor
-        const isMatchBrand = brandPromotor && (merkBarang === brandPromotor || merkBarang.includes(brandPromotor));
+        const isMatchBrand = !brandPromotor || (merkBarang === brandPromotor || merkBarang.includes(brandPromotor));
         
         return (isOktoberFaktur || isOktoberTgl) && isMatchBrand;
     });
@@ -734,7 +737,7 @@ function renderBrand() {
     });
 
     const namaPromotor = currentUser ? currentUser.namaAbsen : "Promotor";
-    const infoMerk = currentUser && currentUser.merk ? currentUser.merk : "Brand";
+    const infoMerk = currentUser && currentUser.merk ? currentUser.merk : "Semua Brand";
 
     let html = `
         <div class="summary-card">
