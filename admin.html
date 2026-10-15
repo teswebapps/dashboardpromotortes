@@ -564,8 +564,7 @@ let currentTab = 'dash';
 let allPromotor = {};
 let allPenjualan = {};
 let allAbsensi = {};
-let allPelanggaran = {};
-let allRewardsSaya = {};
+
 
 /* ============================================================ */
 /* ===== HELPER: CONVERT TANGGAL EXCEL ========================= */
@@ -710,12 +709,7 @@ function mulaiAdmin() {
     allAbsensi = snap.exists() ? snap.val() : {};
     if (currentTab === 'terlambat') renderTab();
   });
-  window.dbOnValue(window.dbRef(window.db, 'pelanggaran'), snap => {
-    allPelanggaran = snap.exists() ? snap.val() : {};
-  });
-  window.dbOnValue(window.dbRef(window.db, 'rewardsSaya'), snap => {
-    allRewardsSaya = snap.exists() ? snap.val() : {};
-  });
+ 
   renderTab();
 }
 
@@ -743,7 +737,7 @@ function renderDash() {
   const trans = Object.values(allPenjualan);
   const jmlTrans = trans.length;
   const jmlAbsensi = Object.keys(allAbsensi).length;
-  const jmlPelanggaran = Object.keys(allPelanggaran).length;
+ 
   const totalOmzet = trans.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS').reduce((s, x) => s + (Number(x.subtotal) || 0), 0);
   
   return `
@@ -770,15 +764,7 @@ function renderDash() {
           <div class="label">Absensi</div>
           <div class="value">${jmlAbsensi}</div>
         </div>
-        <div class="stat-card warning">
-          <div class="label">Pelanggaran</div>
-          <div class="value">${jmlPelanggaran}</div>
-        </div>
-        <div class="stat-card success">
-          <div class="label">Rewards</div>
-          <div class="value">${Object.keys(allRewardsSaya).length}</div>
-        </div>
-        <div class="stat-card">
+              <div class="stat-card">
           <div class="label">Upload</div>
           <div class="value">-</div>
         </div>
@@ -1065,7 +1051,7 @@ function handleFileMaster(e) {
     try {
       const data = new Uint8Array(evt.target.result);
       const wb = XLSX.read(data, { type: 'array' });
-      const result = { promotor: [], penjualan: [], absensi: {}, info: {}, pelanggaran: {}, rewardsSaya: {} };
+     const result = { promotor: [], penjualan: [], absensi: {}, info: {} };
 
       console.log('📋 Sheet terdeteksi:', wb.SheetNames);
 
@@ -1160,52 +1146,20 @@ function handleFileMaster(e) {
       };
       result.info.promo = parseSheet(wb.Sheets['PROMO'], ['judul', 'periode', 'detail']);
       result.info.rules = parseSheet(wb.Sheets['RULES'], ['poin', 'deskripsi']);
-      result.info.punishment = parseSheet(wb.Sheets['PUNISHMENT'], ['judul', 'level', 'detail']);
-      result.info.reward = parseSheet(wb.Sheets['REWARD'], ['judul', 'periode', 'detail']);
+     
 
-      const pl = wb.Sheets['PELANGGARAN'];
-      if (pl) {
-        const rows = XLSX.utils.sheet_to_json(pl, { header: 1, defval: '' });
-        for (let i = 1; i < rows.length; i++) {
-          const r = rows[i];
-          if (!r[0]) continue;
-          const cleanKey = sanitizeKey(String(r[0]).trim());
-          if (!result.pelanggaran[cleanKey]) result.pelanggaran[cleanKey] = {};
-          result.pelanggaran[cleanKey]['item_' + i] = {
-            nama: String(r[0]).trim(),
-            tanggal: String(r[1] || '').trim(),
-            keterangan: String(r[2] || '').trim(),
-            denda: String(r[3] || '').trim()
-          };
-        }
-      }
+  
 
-      const rs = wb.Sheets['RewardSaya'];
-      if (rs) {
-        const rows = XLSX.utils.sheet_to_json(rs, { header: 1, defval: '' });
-        for (let i = 1; i < rows.length; i++) {
-          const r = rows[i];
-          if (!r[0]) continue;
-          const cleanKey = sanitizeKey(String(r[0]).trim());
-          if (!result.rewardsSaya[cleanKey]) result.rewardsSaya[cleanKey] = {};
-          result.rewardsSaya[cleanKey]['item_' + i] = {
-            nama: String(r[0]).trim(),
-            judul: String(r[1] || '').trim(),
-            detail: String(r[2] || '').trim(),
-            tanggal: String(r[3] || '').trim()
-          };
-        }
-      }
+      
 
       const totalAbsensi = Object.values(result.absensi).reduce((s, o) => s + Object.keys(o).length, 0);
 
       el.innerHTML = `
-        <div class="alert ok">
+                <div class="alert ok">
           ✅ Siap upload:<br>
           • ${result.promotor.length} promotor<br>
           • ${result.penjualan.length} transaksi<br>
-          • ${Object.keys(result.absensi).length} orang absensi (${totalAbsensi} hari)<br>
-          • ${Object.keys(result.pelanggaran).length} pelanggaran
+          • ${Object.keys(result.absensi).length} orang absensi (${totalAbsensi} hari)
         </div>
         <button class="btn-success btn-full" onclick="konfirmasiUploadMaster()">
           <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1248,10 +1202,7 @@ async function konfirmasiUploadMaster() {
     Object.keys(data.absensi).forEach(k => { updates['absensi/' + k] = data.absensi[k]; });
     if (data.info.promo.length) updates['info/promo'] = data.info.promo;
     if (data.info.rules.length) updates['info/rules'] = data.info.rules;
-    if (data.info.punishment.length) updates['info/punishment'] = data.info.punishment;
-    if (data.info.reward.length) updates['info/reward'] = data.info.reward;
-    Object.keys(data.pelanggaran).forEach(k => { updates['pelanggaran/' + k] = data.pelanggaran[k]; });
-    Object.keys(data.rewardsSaya).forEach(k => { updates['rewardsSaya/' + k] = data.rewardsSaya[k]; });
+  
 
     await window.dbUpdate(window.dbRef(window.db), updates);
     const totalAbsensi = Object.values(data.absensi).reduce((s, o) => s + Object.keys(o).length, 0);
