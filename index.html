@@ -763,44 +763,44 @@ function renderPenjualan() {
 }
 
 // UC
-function renderUC() {
-  // Hanya mengambil transaksi milik promotor yang tanggalnya berada di bulan Oktober (Bulan 10, Tahun 2026)
-  const list = getDataSaya().filter(x => {
-    const d = parseTanggal(x.tanggal);
-    if (!d) return false;
-    // Bulan di JavaScript dimulai dari 0 (0 = Januari, 9 = Oktober)
-    return d.getMonth() === 9 && d.getFullYear() === 2026;
-  });
-  
-  const totalUC = list.reduce((s, x) => s + (Number(x.qty) || 1), 0);
-  const targetUC = Number(currentUser.targetUC) || 0;
-  const ikutUC = String(currentUser.ikutUC || '').trim().toUpperCase() === 'YA';
-  const kurangUC = ikutUC && totalUC < targetUC ? (targetUC - totalUC) : 0;
+function renderUC(data) {
+    if(!data) return;
+    
+    // Ambil data detail penjualan mentah jika tersedia untuk memastikan seluruh unit masuk
+    let listDetail = data.detail || [];
+    if (cacheData.penjualan && cacheData.penjualan.detail) {
+        // Fallback menggunakan detail penjualan keseluruhan jika cache tersedia
+        listDetail = cacheData.penjualan.detail;
+    }
 
-  let html = `
+    // Hitung total unit secara keseluruhan dari semua penjualan
+    let totalUC = 0;
+    listDetail.forEach(x => {
+        totalUC += Number(x.qty || 1);
+    });
+
+    document.getElementById("summary").innerHTML = `
     <div class="summary-card">
-      <h2>💎 ${currentUser.namaAbsen || '-'}</h2>
-      <p>Target UC : <b>${ikutUC ? targetUC : 'Non-Target'}</b></p>
-      <p>Total UC : <b>${totalUC}</b></p>
-      ${ikutUC ? `<p>Status : <b style="color:${kurangUC > 0 ? '#ef4444' : '#34d399'};">${kurangUC > 0 ? 'Kurang ' + kurangUC + ' unit' : 'Tercapai'}</b></p>` : ''}
-    </div>
-  `;
-  if (list.length === 0) {
-    return html + `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data UC bulan Oktober</div></div>`;
-  }
+        <h2>💎 ${data.nama || currentUser}</h2>
+        <p>Periode : <b>01/10/2026 - 31/10/2026</b></p>
+        <p>Total UC : <b>${totalUC}</b></p>
+    </div>`;
 
-  html += `<div class="card-grid">`;
-  list.forEach(x => {
-    html += `
-      <div class="card success">
-        <div class="tanggal">${ICONS.calendar} ${tanggalKeNama(x.tanggal)}</div>
-        <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${x.namaBarang || '-'}</div>
-        <div class="row"><span>Qty</span><span>${x.qty || 1}</span></div>
-      </div>
-    `;
-  });
-  html += `</div>`;
-  return html;
+    let html = "";
+    listDetail.forEach(x => {
+        html += `
+        <div class="card success">
+            <div class="tanggal">📅 ${x.tanggal}</div>
+            <div style="font-size:12px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${x.produk || x.namaBarang}</div>
+            <div class="row"><span>Qty</span><span>${x.qty}</span></div>
+        </div>`;
+    });
+
+    if(listDetail.length > 0 && currentRole === "ADMIN") {
+        document.getElementById("exportArea").style.display = "flex";
+    }
+    document.getElementById("hasil").className = "grid";
+    document.getElementById("hasil").innerHTML = html;
 }
 function renderBrand() {
   const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS');
