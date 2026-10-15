@@ -787,7 +787,6 @@ function setDefaultPromotorAdmin() {
     return;
   }
   
-  // Jangan auto-set promotor pertama agar placeholder `-- Pilih Nama Promotor --` bisa tampil
   promotorTerpilih = null; 
 }
 window.setDefaultPromotorAdmin = setDefaultPromotorAdmin;
@@ -1108,7 +1107,7 @@ function tampilkanDashboard() {
   const isAdmin = currentUser.role === 'ADMIN';
   
   if (isAdmin) {
-    promotorTerpilih = null; // Biarkan kosong agar placeholder tampil
+    promotorTerpilih = null;
     
     document.getElementById('promotorSelector').classList.remove('hidden');
     document.getElementById('userNama').innerHTML = 
@@ -1239,7 +1238,7 @@ function kembaliKeMenu() {
   document.getElementById('promotorSelector').classList.add('hidden');
   
   if (currentUser.role === 'ADMIN') {
-    promotorTerpilih = null; // Kembali ke netral/placeholder
+    promotorTerpilih = null;
   }
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1337,6 +1336,26 @@ function parseTanggal(str) {
   const p = String(str).split('/');
   if (p.length !== 3) return null;
   return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
+}
+
+function getPeriodeRentangDinamis() {
+  const semuaPenjualan = typeof allPenjualan !== 'undefined' ? allPenjualan : [];
+  if (semuaPenjualan.length === 0) return { pertama: '1 Oktober 2026', terakhir: '31 Oktober 2026' };
+
+  const tglValid = semuaPenjualan.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
+    const da = parseTanggal(a), db = parseTanggal(b);
+    return (da || 0) - (db || 0);
+  });
+
+  if (tglValid.length === 0) return { pertama: '1 Oktober 2026', terakhir: '31 Oktober 2026' };
+
+  const tglPertamaStr = tglValid[0];
+  const tglTerakhirStr = tglValid[tglValid.length - 1];
+
+  return {
+    pertama: tanggalKeNama(tglPertamaStr),
+    terakhir: tanggalKeNama(tglTerakhirStr)
+  };
 }
 
 function getDataSaya() {
@@ -1472,23 +1491,14 @@ function renderPenjualan() {
   const totalOmzet = list.reduce((s, x) => s + (Number(x.subtotal || x.omzet) || 0), 0);
   const totalUnit = list.reduce((s, x) => s + (Number(x.qty) || 1), 0);
 
-  let tglPertama = '-', tglTerakhir = '-';
-  if (list.length > 0) {
-    const tglSort = list.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
-      const da = parseTanggal(a), db = parseTanggal(b);
-      return (da || 0) - (db || 0);
-    });
-    tglPertama = tglSort[0] || '-';
-    tglTerakhir = tglSort[tglSort.length - 1] || '-';
-  }
-
+  const periode = getPeriodeRentangDinamis();
   const dataProm = getPromotorTerpilih();
   const namaTampil = dataProm.namaAbsen || '-';
 
   let html = `
     <div class="summary-card">
       <h2>${ICONS.money} ${namaTampil}</h2>
-      <p>Periode : <b>${tanggalKeNama(tglPertama)} - ${tanggalKeNama(tglTerakhir)}</b></p>
+      <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
       <p>Total Unit : <b>${totalUnit}</b></p>
       <p>Total Omzet : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzet.toLocaleString('id-ID')}</span></p>
     </div>
@@ -1565,23 +1575,14 @@ function renderUC() {
     let totalUC = 0;
     list.forEach(x => { totalUC += Number(x.qty || 1); });
 
-    let tglPertama = '1 Oktober 2026', tglTerakhir = '31 Oktober 2026';
-    if (list.length > 0) {
-      const tglSort = list.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
-        const da = parseTanggal(a), db = parseTanggal(b);
-        return (da || 0) - (db || 0);
-      });
-      tglPertama = tanggalKeNama(tglSort[0]) || tglPertama;
-      tglTerakhir = tanggalKeNama(tglSort[tglSort.length - 1]) || tglTerakhir;
-    }
-
+    const periode = getPeriodeRentangDinamis();
     const dataProm = getPromotorTerpilih();
     const namaPromotor = dataProm.namaAbsen || "Promotor";
 
     let html = `
         <div class="summary-card">
             <h2>${ICONS.uc} ${namaPromotor}</h2>
-            <p>Periode : <b>${tglPertama} - ${tglTerakhir}</b></p>
+            <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
             <p>Total UC : <b>${totalUC}</b></p>
         </div>
     `;
@@ -1637,16 +1638,7 @@ function renderBrand() {
         totalOmzetBrand += Number(x.subtotal || x.omzet || 0);
     });
 
-    let tglPertama = '1 Oktober 2026', tglTerakhir = '31 Oktober 2026';
-    if (list.length > 0) {
-      const tglSort = list.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
-        const da = parseTanggal(a), db = parseTanggal(b);
-        return (da || 0) - (db || 0);
-      });
-      tglPertama = tanggalKeNama(tglSort[0]) || tglPertama;
-      tglTerakhir = tanggalKeNama(tglSort[tglSort.length - 1]) || tglTerakhir;
-    }
-
+    const periode = getPeriodeRentangDinamis();
     const namaPromotor = dataProm ? dataProm.namaAbsen : "Promotor";
     const infoMerk = dataProm && dataProm.merk ? dataProm.merk : "Semua Brand";
 
@@ -1654,7 +1646,7 @@ function renderBrand() {
         <div class="summary-card">
             <h2>${ICONS.brand} ${namaPromotor}</h2>
             <p>Brand : <b>${infoMerk}</b></p>
-            <p>Periode : <b>${tglPertama} - ${tglTerakhir}</b></p>
+            <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
             <p>Total Perolehan Unit : <b>${totalBrandQty} Unit</b></p>
             <p>Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetBrand.toLocaleString("id-ID")}</span></p>
         </div>
