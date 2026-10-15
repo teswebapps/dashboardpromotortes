@@ -479,12 +479,25 @@ function renderAbsensi(result) {
     const data = result.data || [];
     const terlambat = result.terlambat || 0;
 
+    // Hitung total tidak finger masuk & pulang
+    let totalTidakFingerMasuk = 0;
+    let totalTidakFingerPulang = 0;
+
+    data.forEach(x => {
+        const isNoMasuk = !x.masuk || String(x.masuk).trim() === "" || String(x.masuk).trim() === "-";
+        const isNoPulang = !x.pulang || String(x.pulang).trim() === "" || String(x.pulang).trim() === "-";
+        if (isNoMasuk) totalTidakFingerMasuk++;
+        if (isNoPulang) totalTidakFingerPulang++;
+    });
+
     if(data.length){
         document.getElementById("summary").innerHTML = `
         <div class="summary-card">
             <h2>${SVG_TROPHY} ${data[0].nama || currentUser}</h2>
             <p>Total Hari Absen : <b>${data.length}</b></p>
             <p>Datang Terlambat : <b>${terlambat}</b></p>
+            <p>Tidak Finger Masuk : <b style="color:#f87171;">${totalTidakFingerMasuk}</b></p>
+            <p>Tidak Finger Pulang : <b style="color:#f87171;">${totalTidakFingerPulang}</b></p>
         </div>`;
     }
 
