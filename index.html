@@ -855,7 +855,6 @@ function isiDropdownPromotor(list) {
   });
   menuEl.innerHTML = html;
   
-  // Jika promotorTerpilih sudah ada, tampilkan namanya. Jika belum, tampilkan placeholder "Pilih Nama Promotor"
   if (promotorTerpilih && allPromotor[promotorTerpilih]) {
     const activeProm = allPromotor[promotorTerpilih];
     const namaAktif = activeProm.namaAbsen || '-';
@@ -1299,17 +1298,17 @@ function tampilkanDetail(menuKey) {
   
   const isAdmin = currentUser.role === 'ADMIN';
   
-  const menuAdaDropdown = ['absensi', 'penjualan', 'uc', 'brand'];
+ const menuAdaDropdown = ['absensi', 'penjualan', 'uc', 'brand'];
   const showSelector = isAdmin && menuAdaDropdown.includes(menuKey);
   
   if (showSelector) {
     document.getElementById('promotorSelector').classList.remove('hidden');
     const hidden = document.getElementById('selectPromotor');
-    if (hidden && promotorTerpilih) {
-      hidden.value = promotorTerpilih;
-      // Sync dropdown label
-      const menu = document.getElementById('dropdownMenu');
-      const labelEl = document.getElementById('dropdownLabel');
+    const labelEl = document.getElementById('dropdownLabel');
+    const menu = document.getElementById('dropdownMenu');
+    
+    if (promotorTerpilih && allPromotor[promotorTerpilih]) {
+      if (hidden) hidden.value = promotorTerpilih;
       if (menu && labelEl) {
         const selectedOpt = menu.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
         if (selectedOpt) {
@@ -1318,6 +1317,9 @@ function tampilkanDetail(menuKey) {
           labelEl.innerText = selectedOpt.innerText;
         }
       }
+    } else {
+      if (hidden) hidden.value = '';
+      if (labelEl) labelEl.innerText = '-- Pilih Nama Promotor --';
     }
   } else {
     document.getElementById('promotorSelector').classList.add('hidden');
