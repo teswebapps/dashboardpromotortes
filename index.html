@@ -703,11 +703,14 @@ function getDataSaya() {
 }
 
 // --- 2. Fungsi Render Brand (Perolehan Brand Promotor) ---
+// --- Fungsi Perolehan Brand Promotor (Dikelompokkan Per Tanggal) ---
 function renderBrand() {
     const listAll = getDataSaya();
     
+    // Ambil brand yang dipegang oleh promotor dari currentUser.merk
     const brandPromotor = currentUser && currentUser.merk ? String(currentUser.merk).trim().toUpperCase() : "";
 
+    // Filter transaksi khusus bulan Oktober 2026 DAN cocok dengan merk promotor (Kecuali ongkos/garansi murni)
     const list = listAll.filter(x => {
         if (!x) return false;
         const tgl = String(x.tanggal || '');
@@ -749,29 +752,61 @@ function renderBrand() {
         return html + `<div class="card"><div class="pesan" style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data penjualan untuk brand ${infoMerk} pada bulan Oktober 2026</div></div>`;
     }
 
-    html += `<div class="card-grid">`;
+    // Kelompokkan data brand berdasarkan tanggal
+    const grupTanggal = {};
     list.forEach(x => {
-        const namaProduk = x.namaBarang || x.produk || "-";
-        const tanggalTrans = formatTanggalIndo(x.tanggal); 
-        const qtyTrans = x.qty || 1;
-        const subtotalTrans = Number(x.subtotal || x.omzet || 0);
-        const kategoriTrans = x.kategori || "-";
+        const tglKey = x.tanggal || 'Tanpa Tanggal';
+        if (!grupTanggal[tglKey]) grupTanggal[tglKey] = [];
+        grupTanggal[tglKey].push(x);
+    });
+
+    // Urutkan tanggal (dari terbaru ke terlama)
+    const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
+        const da = parseTanggal(a), db = parseTanggal(b);
+        return (db || 0) - (da || 0);
+    });
+
+    html += `<div class="card-grid">`;
+    keysSorted.forEach(tgl => {
+        const items = grupTanggal[tgl];
+        let subTotalQtyHari = 0;
+        let subTotalOmzetHari = 0;
+
+        let isiProduk = '';
+        items.forEach((it, idx) => {
+            const namaProduk = it.namaBarang || it.produk || "-";
+            const qtyTrans = Number(it.qty || 1);
+            const subtotalTrans = Number(it.subtotal || it.omzet || 0);
+            const kategoriTrans = it.kategori || "-";
+
+            subTotalQtyHari += qtyTrans;
+            subTotalOmzetHari += subtotalTrans;
+
+            isiProduk += `
+                <div style="${idx > 0 ? 'margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.05);' : ''}">
+                    <div style="font-size:11px; color:#d4af37; margin-bottom:2px;">Brand: ${it.merk || infoMerk}</div>
+                    <div style="font-size:11px; color:#9ca3af; margin-bottom:2px;">Kategori: ${kategoriTrans}</div>
+                    <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:4px; color:#e5e7eb;">${namaProduk}</div>
+                    <div class="row"><span>Qty</span><span>${qtyTrans} Unit</span></div>
+                    <div class="row"><span>Omzet</span><span>Rp ${subtotalTrans.toLocaleString("id-ID")}</span></div>
+                </div>
+            `;
+        });
 
         html += `
         <div class="card success">
-            <div class="tanggal">${ICONS.calendar} ${tanggalTrans}</div>
-            <div style="font-size:11px; color:#d4af37; margin-bottom:2px;">Brand: ${x.merk || infoMerk}</div>
-            <div style="font-size:11px; color:#9ca3af; margin-bottom:4px;">Kategori: ${kategoriTrans}</div>
-            <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin:6px 0; color:#e5e7eb;">${namaProduk}</div>
-            <div class="row"><span>Qty</span><span>${qtyTrans} Unit</span></div>
-            <div class="row"><span>Omzet</span><span>Rp ${subtotalTrans.toLocaleString("id-ID")}</span></div>
+            <div class="tanggal">${ICONS.calendar} ${tanggalKeNama(tgl)}</div>
+            ${isiProduk}
+            <div class="row" style="font-weight:700; font-size:13px; margin-top:6px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;">
+                <span>Total Hari Ini</span>
+                <span style="color:#34d399;">${subTotalQtyHari} Unit (Rp ${subTotalOmzetHari.toLocaleString("id-ID")})</span>
+            </div>
         </div>`;
     });
     html += `</div>`;
     
     return html;
 }
-
 // PENJUALAN
 function renderPenjualan() {
   const list = getDataSaya();
