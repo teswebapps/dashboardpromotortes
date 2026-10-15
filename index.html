@@ -843,7 +843,7 @@ function isiDropdownPromotor(list) {
   
   if (!list || list.length === 0) {
     menuEl.innerHTML = '<div class="dd-option" style="color:#64748b;font-style:italic;justify-content:center;">Belum ada promotor</div>';
-    if (labelEl) labelEl.innerText = '-- Belum ada promotor --';
+    if (labelEl) labelEl.innerText = '-- Pilih Nama Promotor --';
     return;
   }
   
@@ -855,20 +855,21 @@ function isiDropdownPromotor(list) {
   });
   menuEl.innerHTML = html;
   
-  if (!promotorTerpilih || !allPromotor[promotorTerpilih]) {
-    promotorTerpilih = list[0].key;
-  }
-  
-  const activeProm = allPromotor[promotorTerpilih];
-  const namaAktif = activeProm ? (activeProm.namaAbsen || list[0].namaAbsen) : list[0].namaAbsen;
-  
-  if (labelEl) labelEl.innerText = namaAktif;
-  if (hiddenInput) hiddenInput.value = promotorTerpilih;
-  
-  const selectedOpt = menuEl.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
-  if (selectedOpt) {
-    menuEl.querySelectorAll('.dd-option').forEach(o => o.classList.remove('selected'));
-    selectedOpt.classList.add('selected');
+  // Jika promotorTerpilih sudah ada, tampilkan namanya. Jika belum, tampilkan placeholder "Pilih Nama Promotor"
+  if (promotorTerpilih && allPromotor[promotorTerpilih]) {
+    const activeProm = allPromotor[promotorTerpilih];
+    const namaAktif = activeProm.namaAbsen || '-';
+    if (labelEl) labelEl.innerText = namaAktif;
+    if (hiddenInput) hiddenInput.value = promotorTerpilih;
+    
+    const selectedOpt = menuEl.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
+    if (selectedOpt) {
+      menuEl.querySelectorAll('.dd-option').forEach(o => o.classList.remove('selected'));
+      selectedOpt.classList.add('selected');
+    }
+  } else {
+    if (labelEl) labelEl.innerText = '-- Pilih Nama Promotor --';
+    if (hiddenInput) hiddenInput.value = '';
   }
 }
 window.isiDropdownPromotor = isiDropdownPromotor;
