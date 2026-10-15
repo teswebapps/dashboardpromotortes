@@ -1586,16 +1586,29 @@ function renderUC() {
     let totalUC = 0;
     list.forEach(x => { totalUC += Number(x.qty || 1); });
 
+    // Cari tanggal pertama dan terakhir dari transaksi
+    let tglPertama = '1 Oktober 2026', tglTerakhir = '31 Oktober 2026';
+    if (list.length > 0) {
+      const tglSort = list.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
+        const da = parseTanggal(a), db = parseTanggal(b);
+        return (da || 0) - (db || 0);
+      });
+      tglPertama = tanggalKeNama(tglSort[0]) || tglPertama;
+      tglTerakhir = tanggalKeNama(tglSort[tglSort.length - 1]) || tglTerakhir;
+    }
+
     const dataProm = getPromotorTerpilih();
     const namaPromotor = dataProm.namaAbsen || "Promotor";
 
     let html = `
         <div class="summary-card">
             <h2>${ICONS.uc} ${namaPromotor}</h2>
-            <p>Periode : <b>Bulan Ini</b></p>
+            <p>Periode : <b>${tglPertama} - ${tglTerakhir}</b></p>
             <p>Total UC : <b>${totalUC}</b></p>
         </div>
     `;
+    
+    // ... (lanjutan kode renderUC berikutnya)
 
     if (list.length === 0) {
         return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UC bulan ini</div></div>`;
