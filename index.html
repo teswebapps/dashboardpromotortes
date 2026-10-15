@@ -852,6 +852,135 @@ body.light-mode .ok { color: #0f172a !important; font-weight: 700 !important; }
 body.light-mode .card span[style*="color:#f87171"] { color: #dc2626 !important; }
 body.light-mode .card span[style*="color:#facc15"] { color: #b45309 !important; }
 body.light-mode .card span[style*="color:#34d399"] { color: #059669 !important; }
+  /* ============================================================ */
+/* ===== FIX LIGHT MODE — HALAMAN LOGIN ======================= */
+/* ============================================================ */
+
+/* Judul "PILIH NAMA PROMOTOR" & "MASUKKAN PIN" */
+body.light-mode .fut-field label {
+  color: #0284c7 !important;
+  font-weight: 800 !important;
+}
+
+/* Placeholder dropdown "-- Pilih Nama Anda --" */
+body.light-mode .fut-select span {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+/* Placeholder input PIN "••••••" */
+body.light-mode .fut-input::placeholder {
+  color: rgba(100, 116, 139, 0.55) !important;
+}
+
+/* Footer "Belum punya PIN? Hubungi admin" */
+body.light-mode .fut-footer {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+body.light-mode .fut-footer span {
+  color: #0284c7 !important;
+  font-weight: 800 !important;
+}
+
+/* Subheadline "UFO Malang Kebonsari" */
+body.light-mode .fut-subheadline {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+
+/* Tagline "MONITORING KINERJA PROMOTOR" */
+body.light-mode .fut-tagline {
+  background: rgba(14, 165, 233, 0.12) !important;
+  border-color: rgba(14, 165, 233, 0.4) !important;
+  color: #0284c7 !important;
+  font-weight: 800 !important;
+}
+body.light-mode .fut-tagline .fut-dot {
+  background: #0284c7 !important;
+  box-shadow: 0 0 10px #0284c7 !important;
+}
+
+/* Headline "DASHBOARD PROMOTOR" */
+body.light-mode .fut-headline {
+  color: #0c4a6e !important;
+  text-shadow: 0 0 30px rgba(14, 165, 233, 0.25) !important;
+}
+
+/* Live status "23 promotor terdaftar" */
+body.light-mode .fut-live-status {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: rgba(14, 165, 233, 0.4) !important;
+  color: #075985 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 4px 15px rgba(14, 165, 233, 0.15) !important;
+}
+body.light-mode .fut-live-status .fut-pulse-dot {
+  background: #0284c7 !important;
+  box-shadow: 0 0 10px #0284c7 !important;
+}
+
+/* Tab PROMOTOR/ADMIN yang tidak aktif */
+body.light-mode .login-tab {
+  color: #475569 !important;
+  font-weight: 800 !important;
+}
+body.light-mode .login-tab:hover {
+  color: #0284c7 !important;
+  background: rgba(14, 165, 233, 0.1) !important;
+}
+body.light-mode .login-tab.active {
+  color: #ffffff !important;
+}
+
+/* Dropdown menu promotor */
+body.light-mode .fut-menu .option {
+  color: #334155 !important;
+  font-weight: 600 !important;
+}
+body.light-mode .fut-menu .option:hover {
+  background: rgba(14, 165, 233, 0.12) !important;
+  color: #0284c7 !important;
+}
+body.light-mode .fut-menu .option.selected {
+  background: rgba(14, 165, 233, 0.2) !important;
+  color: #0284c7 !important;
+  font-weight: 700 !important;
+}
+body.light-mode .fut-menu .option.empty {
+  color: #94a3b8 !important;
+}
+
+/* Input admin username */
+body.light-mode .fut-input-admin {
+  background: #fef9ec !important;
+  border-color: rgba(212, 175, 55, 0.5) !important;
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+body.light-mode .fut-input-admin::placeholder {
+  color: rgba(100, 116, 139, 0.5) !important;
+}
+
+/* Kartu login — shadow lebih lembut di light mode */
+body.light-mode .fut-card {
+  background: #ffffff !important;
+  border-color: rgba(14, 165, 233, 0.25) !important;
+  box-shadow: 0 20px 50px rgba(14, 165, 233, 0.15),
+              0 8px 20px rgba(0, 0, 0, 0.05) !important;
+}
+
+/* Orbs di light mode — jangan terlalu terang */
+body.light-mode .fut-orb {
+  opacity: 0.25 !important;
+  filter: blur(100px) !important;
+}
+
+/* Error text */
+body.light-mode .fut-error {
+  color: #dc2626 !important;
+  font-weight: 800 !important;
+}
 </style>
 </head>
 <body class="login-active">
