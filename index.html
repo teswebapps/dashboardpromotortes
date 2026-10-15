@@ -763,30 +763,42 @@ function renderPenjualan() {
 }
 
 // UC
-function renderUC() {
-    // Ambil data penjualan dari cache background yang sudah tersinkron
+function renderUC(data) {
+    // Ambil detail data secara aman dari parameter yang masuk
     let listDetail = [];
-    if (cacheData.penjualan && cacheData.penjualan.detail) {
-        // Filter khusus transaksi bulan Oktober 2026
-        listDetail = cacheData.penjualan.detail.filter(x => {
-            const tgl = String(x.tanggal || '');
-            return tgl.includes('/10/2026');
-        });
+    if (data && Array.isArray(data.detail)) {
+        listDetail = data.detail;
+    } else if (data && Array.isArray(data)) {
+        listDetail = data;
+    } else if (typeof data === 'object' && data !== null) {
+        // Jika data berupa objek tunggal atau map
+        listDetail = Object.values(data);
     }
 
-    let totalUC = 0;
-    listDetail.forEach(x => {
-        totalUC += Number(x.qty || 1);
+    // Filter khusus transaksi bulan Oktober 2026 jika tanggal tersedia
+    const filteredList = listDetail.filter(x => {
+        if (!x) return false;
+        const tgl = String(x.tanggal || x.date || '');
+        // Jika ada filter tanggal Oktober, sesuaikan; jika tidak, tampilkan semua
+        if (tgl) return tgl.includes('/10/2026');
+        return true;
     });
 
-    const namaPromotor = currentUser || "Promotor";
+    let totalUC = 0;
+    filteredList.forEach(x => {
+        totalUC += Number(x.qty || x.quantity || 1);
+    });
+
+    const namaPromotor = (data && data.nama) ? data.nama : (typeof currentUser !== 'undefined' ? currentUser : "Promotor");
+    const tglAwal = (data && data.tanggalPertama) ? data.tanggalPertama : "01/10/2026";
+    const tglAkhir = (data && data.tanggalTerakhir) ? data.tanggalTerakhir : "31/10/2026";
 
     const summaryEl = document.getElementById("summary");
     if (summaryEl) {
         summaryEl.innerHTML = `
         <div class="summary-card">
             <h2>💎 ${namaPromotor}</h2>
-            <p>Periode : <b>01/10/2026 - 31/10/2026</b></p>
+            <p>Periode : <b>${tglAwal} - ${tglAkhir}</b></p>
             <p>Total UC : <b>${totalUC}</b></p>
         </div>`;
     }
@@ -794,17 +806,17 @@ function renderUC() {
     const hasilEl = document.getElementById("hasil");
     if (!hasilEl) return;
 
-    if (listDetail.length === 0) {
+    if (filteredList.length === 0) {
         hasilEl.className = "grid";
-        hasilEl.innerHTML = `<div class="card">Belum ada data UC untuk bulan Oktober 2026</div>`;
+        hasilEl.innerHTML = `<div class="card">Belum ada data UC untuk periode ini</div>`;
         return;
     }
 
     let html = "";
-    listDetail.forEach(x => {
-        const namaProduk = x.produk || x.namaBarang || "-";
+    filteredList.forEach(x => {
+        const namaProduk = x.produk || x.namaBarang || x.name || "-";
         const tanggalTrans = x.tanggal || "-";
-        const qtyTrans = x.qty || 1;
+        const qtyTrans = x.qty || x.quantity || 1;
 
         html += `
         <div class="card success">
@@ -815,7 +827,7 @@ function renderUC() {
     });
 
     const exportArea = document.getElementById("exportArea");
-    if (exportArea && currentRole === "ADMIN") {
+    if (exportArea && typeof currentRole !== 'undefined' && currentRole === "ADMIN") {
         exportArea.style.display = "flex";
     }
     
