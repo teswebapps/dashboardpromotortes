@@ -642,7 +642,7 @@ body.dashboard-active {
         <label>PILIH PROMOTOR :</label>
         <div class="custom-dropdown" id="customDropdownWrap">
             <div class="custom-dropdown-trigger" id="dropdownTrigger" onclick="toggleDropdownPromotor()">
-                <span class="label-text" id="dropdownLabel">-- Pilih Promotor --</span>
+                <span class="label-text" id="dropdownLabel">-- Pilih Nama Promotor --</span>
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <polyline points="6 9 12 15 18 9"></polyline>
                 </svg>
@@ -770,47 +770,28 @@ function switchLoginTab(mode) {
     document.getElementById('login-error').innerHTML = '';
 }
 window.switchLoginTab = switchLoginTab;
+
 /* ============================================================ */
 /* ===== SET DEFAULT PROMOTOR UNTUK ADMIN ==================== */
 /* ============================================================ */
 function setDefaultPromotorAdmin() {
   if (!currentUser || currentUser.role !== 'ADMIN') return;
   
-  // Kalau promotorTerpilih sudah valid, jangan di-reset
   if (promotorTerpilih && allPromotor[promotorTerpilih]) {
-    console.log('✅ promotorTerpilih sudah valid:', promotorTerpilih);
     return;
   }
   
-  // Ambil promotor pertama
   const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
   if (promotorKeys.length === 0) {
-    console.log('⚠️ Belum ada promotor terdaftar');
     promotorTerpilih = null;
     return;
   }
   
-  promotorTerpilih = promotorKeys[0];
-  console.log('✅ Auto-set promotorTerpilih:', promotorTerpilih);
-  
-  // Update dropdown label
-  const menu = document.getElementById('dropdownMenu');
-  const labelEl = document.getElementById('dropdownLabel');
-  if (menu && labelEl) {
-    const opt = menu.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
-    if (opt) {
-      menu.querySelectorAll('.dd-option').forEach(o => o.classList.remove('selected'));
-      opt.classList.add('selected');
-      labelEl.innerText = opt.innerText;
-    }
-  }
-  
-  // Re-render kalau sedang buka absensi / penjualan / uc / brand
-  if (currentMenu && ['absensi', 'penjualan', 'uc', 'brand'].includes(currentMenu)) {
-    tampilkanDetail(currentMenu);
-  }
+  // Jangan auto-set promotor pertama agar placeholder `-- Pilih Nama Promotor --` bisa tampil
+  promotorTerpilih = null; 
 }
 window.setDefaultPromotorAdmin = setDefaultPromotorAdmin;
+
 /* ============================================================ */
 /* ===== LOAD PROMOTOR LIST ================================== */
 /* ============================================================ */
@@ -829,7 +810,6 @@ function loadPromotorList() {
     renderCustomSelectOptions(list);
     if (liveEl) liveEl.innerText = `${list.length} promotor terdaftar`;
     
-    // Isi dropdown promotor custom
     isiDropdownPromotor(list);
     setDefaultPromotorAdmin();
   });
@@ -872,6 +852,7 @@ function isiDropdownPromotor(list) {
   }
 }
 window.isiDropdownPromotor = isiDropdownPromotor;
+
 function toggleDropdownPromotor() {
   const menu = document.getElementById('dropdownMenu');
   const trigger = document.getElementById('dropdownTrigger');
@@ -904,12 +885,10 @@ function pilihDropdownPromotor(key, label) {
   }
   if (trigger) trigger.classList.remove('open');
   
-  // Trigger ganti promotor
   gantiPromotorAdmin(key);
 }
 window.pilihDropdownPromotor = pilihDropdownPromotor;
 
-// Tutup dropdown kalau klik di luar
 document.addEventListener('click', (e) => {
   const wrap = document.getElementById('customDropdownWrap');
   const menu = document.getElementById('dropdownMenu');
@@ -1128,20 +1107,8 @@ function tampilkanDashboard() {
   
   const isAdmin = currentUser.role === 'ADMIN';
   
-  // === DEFAULT PROMOTOR ===
-  // Untuk admin: JANGAN set ke currentUser.key (yang = "admin_utama")
-  // Nanti akan auto-set di setDefaultPromotorAdmin() setelah allPromotor siap
   if (isAdmin) {
-    // Kalau promotorTerpilih belum valid, biarkan null dulu
-    // Akan di-set oleh setDefaultPromotorAdmin() saat listener promotor selesai
-    if (!promotorTerpilih || !allPromotor[promotorTerpilih]) {
-      // Coba set sekarang kalau allPromotor sudah ada
-      const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
-      if (promotorKeys.length > 0) {
-        promotorTerpilih = promotorKeys[0];
-        console.log('✅ Set promotorTerpilih (sync):', promotorTerpilih);
-      }
-    }
+    promotorTerpilih = null; // Biarkan kosong agar placeholder tampil
     
     document.getElementById('promotorSelector').classList.remove('hidden');
     document.getElementById('userNama').innerHTML = 
@@ -1155,7 +1122,6 @@ function tampilkanDashboard() {
     document.getElementById('topBar').classList.remove('admin-mode');
   }
   
-  // Load penjualan
   window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
     allPenjualan = [];
     if (snap.exists()) {
@@ -1167,11 +1133,9 @@ function tampilkanDashboard() {
     else tampilkanDetail(currentMenu);
   });
   
-  // Load absensi
-  // Load absensi secara real-time untuk semua promotor atau inisialisasi
   window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
     if (snap.exists()) {
-      allAbsensiAll = snap.val(); // simpan semua absensi
+      allAbsensiAll = snap.val();
       if (currentUser.role === 'ADMIN' && promotorTerpilih) {
         allAbsensi = allAbsensiAll[promotorTerpilih] || {};
       } else if (currentUser.role !== 'ADMIN') {
@@ -1186,11 +1150,6 @@ function tampilkanDashboard() {
   });
   
   renderMenuGrid();
-  
-  // ✅ FIX: Cek lagi setelah 1.5 detik (kalau allPromotor belum siap)
-  setTimeout(() => {
-    if (isAdmin) setDefaultPromotorAdmin();
-  }, 1500);
 }
 
 /* ============================================================ */
@@ -1211,13 +1170,11 @@ function gantiPromotorAdmin(keyPromotor) {
     return;
   }
   
-  // Ambil data absensi secara background tanpa merusak tampilan utama
   window.dbGet(window.dbRef(window.db, 'absensi/' + keyPromotor)).then(snapAbsen => {
     if (typeof allAbsensiAll === 'undefined') window.allAbsensiAll = {};
     window.allAbsensiAll[keyPromotor] = snapAbsen.exists() ? snapAbsen.val() : {};
     allAbsensi = window.allAbsensiAll[keyPromotor];
     
-    // Langsung render ulang menu aktif secara instan
     if (currentMenu) {
       tampilkanDetail(currentMenu);
     } else {
@@ -1281,15 +1238,14 @@ function kembaliKeMenu() {
   document.getElementById('menuGrid').classList.remove('hidden');
   document.getElementById('promotorSelector').classList.add('hidden');
   
-  // Reset promotor ke promotor pertama (untuk admin)
   if (currentUser.role === 'ADMIN') {
-    const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
-    promotorTerpilih = promotorKeys.length > 0 ? promotorKeys[0] : null;
+    promotorTerpilih = null; // Kembali ke netral/placeholder
   }
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 window.kembaliKeMenu = kembaliKeMenu;
+
 function tampilkanDetail(menuKey) {
   currentMenu = menuKey;
   document.getElementById('menuGrid').classList.add('hidden');
@@ -1298,7 +1254,7 @@ function tampilkanDetail(menuKey) {
   
   const isAdmin = currentUser.role === 'ADMIN';
   
- const menuAdaDropdown = ['absensi', 'penjualan', 'uc', 'brand'];
+  const menuAdaDropdown = ['absensi', 'penjualan', 'uc', 'brand'];
   const showSelector = isAdmin && menuAdaDropdown.includes(menuKey);
   
   if (showSelector) {
@@ -1416,12 +1372,14 @@ function getPromotorTerpilih() {
 /* ============================================================ */
 function renderAbsensi() {
   const isAdmin = currentUser.role === 'ADMIN';
+  
+  if (isAdmin && !promotorTerpilih) {
+    return `<div class="empty-state">${ICONS.empty}<div class="pesan">Silakan pilih promotor terlebih dahulu dari menu di atas</div></div>`;
+  }
+
   let entries = [];
+  const targetKey = isAdmin ? promotorTerpilih : currentUser.key;
   
-  // Ambil key promotor yang sedang aktif dilihat
-  const targetKey = isAdmin ? (promotorTerpilih || currentUser.key) : currentUser.key;
-  
-  // Ambil data absensi langsung dari master allAbsensiAll atau allAbsensi
   let dataP = {};
   if (typeof allAbsensiAll !== 'undefined' && allAbsensiAll[targetKey]) {
     dataP = allAbsensiAll[targetKey];
@@ -1438,7 +1396,7 @@ function renderAbsensi() {
   entries.sort((a, b) => (Number(a.hari) || 0) - (Number(b.hari) || 0));
 
   if (entries.length === 0) {
-    return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data absensi</div></div>`;
+    return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data absensi untuk promotor ini</div></div>`;
   }
 
   let totalTerlambat = 0, tidakMasuk = 0, tidakPulang = 0;
@@ -1500,10 +1458,16 @@ function renderAbsensi() {
   html += `</div>`;
   return html;
 }
-  /* ============================================================ */
+
+/* ============================================================ */
 /* ===== RENDER: PENJUALAN =================================== */
 /* ============================================================ */
 function renderPenjualan() {
+  const isAdmin = currentUser.role === 'ADMIN';
+  if (isAdmin && !promotorTerpilih) {
+    return `<div class="empty-state">${ICONS.empty}<div class="pesan">Silakan pilih promotor terlebih dahulu dari menu di atas</div></div>`;
+  }
+
   const list = getDataSaya();
   const totalOmzet = list.reduce((s, x) => s + (Number(x.subtotal || x.omzet) || 0), 0);
   const totalUnit = list.reduce((s, x) => s + (Number(x.qty) || 1), 0);
@@ -1575,10 +1539,16 @@ function renderPenjualan() {
   return html;
 }
 window.renderPenjualan = renderPenjualan;
+
 /* ============================================================ */
 /* ===== RENDER: UC ========================================== */
 /* ============================================================ */
 function renderUC() {
+    const isAdmin = currentUser.role === 'ADMIN';
+    if (isAdmin && !promotorTerpilih) {
+      return `<div class="empty-state">${ICONS.empty}<div class="pesan">Silakan pilih promotor terlebih dahulu dari menu di atas</div></div>`;
+    }
+
     const listAll = getDataSaya();
     const list = listAll.filter(x => {
         if (!x) return false;
@@ -1595,7 +1565,6 @@ function renderUC() {
     let totalUC = 0;
     list.forEach(x => { totalUC += Number(x.qty || 1); });
 
-    // Cari tanggal pertama dan terakhir dari transaksi
     let tglPertama = '1 Oktober 2026', tglTerakhir = '31 Oktober 2026';
     if (list.length > 0) {
       const tglSort = list.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
@@ -1635,10 +1604,16 @@ function renderUC() {
     html += `</div>`;
     return html;
 }
+
 /* ============================================================ */
 /* ===== RENDER: BRAND ======================================= */
 /* ============================================================ */
 function renderBrand() {
+    const isAdmin = currentUser.role === 'ADMIN';
+    if (isAdmin && !promotorTerpilih) {
+      return `<div class="empty-state">${ICONS.empty}<div class="pesan">Silakan pilih promotor terlebih dahulu dari menu di atas</div></div>`;
+    }
+
     const listAll = getDataSaya();
     const dataProm = getPromotorTerpilih();
     const brandPromotor = dataProm && dataProm.merk ? String(dataProm.merk).trim().toUpperCase() : "";
@@ -1734,6 +1709,7 @@ function renderBrand() {
     html += `</div>`;
     return html;
 }
+
 /* ============================================================ */
 /* ===== RENDER: INFO LIST (Promo/SOP) ======================= */
 /* ============================================================ */
