@@ -762,7 +762,31 @@ function renderPenjualan() {
   return html;
 }
 
-// UC (UFO Care+ / Garansi Saja)
+// --- Fungsi Helper untuk Merapikan Format Tanggal (DD/MM/YYYY) ---
+function formatTanggalIndo(tglStr) {
+    if (!tglStr) return "-";
+    let s = String(tglStr).trim();
+    
+    // Jika formatnya YYYY-MM-DD
+    if (s.includes('-')) {
+        const parts = s.split(' ')[0].split('-');
+        if (parts.length === 3) {
+            return `${parts[2]}/${parts[1]}/${parts[0]}`;
+        }
+    }
+    
+    // Jika formatnya MM/DD/YYYY dari Excel -> ubah jadi DD/MM/YYYY
+    if (s.includes('/')) {
+        const parts = s.split(' ')[0].split('/');
+        if (parts.length === 3) {
+            return `${parts[1]}/${parts[0]}/${parts[2]}`;
+        }
+    }
+    
+    return s;
+}
+
+// --- Fungsi Utama Render UC (UFO Care+ / Garansi Saja) ---
 function renderUC() {
     const listAll = getDataSaya();
     
@@ -777,8 +801,7 @@ function renderUC() {
         const isOktoberFaktur = noFaktur.includes('2610');
         const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10') || tgl.includes('2026-01-10');
         
-        // STRICT FILTER: Hanya ambil yang benar-benar UFO Care / Garansi Tambahan
-        // (Pastikan kategori adalah GARANSI dan nama barang wajib mengandung 'UFO CARE')
+        // STRICT FILTER: Hanya ambil yang benar-benar UFO Care / Garansi Tambahan murni
         const isMurniUC = (kat === 'GARANSI') && namaBrd.includes('UFO CARE');
         
         return (isOktoberFaktur || isOktoberTgl) && isMurniUC;
@@ -806,7 +829,8 @@ function renderUC() {
     html += `<div class="card-grid">`;
     list.forEach(x => {
         const namaProduk = x.namaBarang || x.produk || "-";
-        const tanggalTrans = x.tanggal || "-";
+        // Tanggal otomatis dirapikan jadi DD/MM/YYYY
+        const tanggalTrans = formatTanggalIndo(x.tanggal); 
         const qtyTrans = x.qty || 1;
 
         html += `
