@@ -981,6 +981,39 @@ body.light-mode .fut-error {
   color: #dc2626 !important;
   font-weight: 800 !important;
 }
+  /* ============================================================ */
+/* ===== FIX TAB LOGIN — LIGHT MODE ============================ */
+/* ============================================================ */
+
+/* Tab AKTIF = nyala terang */
+body.light-mode .login-tab.active {
+  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%) !important;
+  color: #ffffff !important;
+  font-weight: 800 !important;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5),
+              0 0 30px rgba(34, 211, 238, 0.4) !important;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4) !important;
+}
+
+/* Tab TIDAK AKTIF = redup */
+body.light-mode .login-tab:not(.active) {
+  background: transparent !important;
+  color: #94a3b8 !important;
+  font-weight: 700 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+body.light-mode .login-tab:not(.active):hover {
+  color: #0284c7 !important;
+  background: rgba(14, 165, 233, 0.08) !important;
+}
+
+/* Container tab di light mode */
+body.light-mode .login-tabs {
+  background: #f1f5f9 !important;
+  border-color: rgba(14, 165, 233, 0.2) !important;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
+}
 </style>
 </head>
 <body class="login-active">
