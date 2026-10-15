@@ -110,7 +110,7 @@ body {
 /* TABS */
 .tabs {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 8px;
   margin-bottom: 24px;
   background: var(--soft);
@@ -155,7 +155,7 @@ label {
   color: var(--muted); text-transform: uppercase; 
   margin-bottom: 6px; letter-spacing: 0.3px; 
 }
-input, select { 
+input, select, textarea { 
   width: 100%; padding: 12px 14px; 
   border-radius: 12px; 
   border: 1px solid var(--border); 
@@ -163,7 +163,11 @@ input, select {
   font-size: 14px; font-weight: 600; color: var(--text); 
   outline: none; transition: all 0.2s;
 }
-input:focus, select:focus { 
+textarea {
+  resize: vertical;
+  font-family: 'Inter', sans-serif !important;
+}
+input:focus, select:focus, textarea:focus { 
   border-color: var(--primary); 
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
@@ -259,8 +263,6 @@ button:hover { transform: translateY(-1px); }
 .stat-card .value { font-size: 20px; font-weight: 900; color: var(--primary); }
 .stat-card.full { grid-column: 1 / -1; }
 .stat-card.success .value { color: var(--success); }
-.stat-card.warning .value { color: var(--warning); }
-.stat-card.danger .value { color: var(--danger); }
 
 /* BADGE */
 .late-marker {
@@ -296,8 +298,7 @@ button:hover { transform: translateY(-1px); }
 
 /* MODAL POPUP CUSTOM */
 .modal-overlay {
-  position: fixed;
-  top: 0; left: 0;
+  position: fixed; top: 0; left: 0;
   width: 100%; height: 100%;
   background: rgba(15, 23, 42, 0.5);
   backdrop-filter: blur(6px);
@@ -341,12 +342,18 @@ button:hover { transform: translateY(-1px); }
 .modal-btn-cancel { background: var(--soft); color: var(--text); border: 1px solid var(--border); }
 .modal-btn-cancel:hover { background: var(--border); }
 .modal-btn-ok-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
-.modal-btn-ok-primary:hover { background: var(--primary-dark); }
 .modal-btn-ok-danger { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
 .modal-btn-ok-success { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
 
 /* HIDDEN */
 .hidden { display: none !important; }
+
+/* SOP PREVIEW IMAGE */
+.sop-preview {
+  width: 60px; height: 60px;
+  object-fit: cover; border-radius: 8px;
+  border: 1px solid var(--border);
+}
 
 /* RESPONSIVE */
 @media (max-width: 640px) {
@@ -422,6 +429,10 @@ button:hover { transform: translateY(-1px); }
       <button class="tab-btn" onclick="switchTab('terlambat', event)">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
         Terlambat
+      </button>
+      <button class="tab-btn" onclick="switchTab('promo', event)">
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Promo & SOP
       </button>
       <button class="tab-btn" onclick="switchTab('danger', event)">
         <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
@@ -529,6 +540,9 @@ let currentTab = 'dash';
 let allPromotor = {};
 let allPenjualan = {};
 let allAbsensi = {};
+let allPromo = [];
+let allRules = [];
+let _sopImageData = null;
 
 /* ============================================================ */
 /* ===== HELPER ================================================ */
@@ -679,6 +693,14 @@ function mulaiAdmin() {
     allAbsensi = snap.exists() ? snap.val() : {};
     if (currentTab === 'terlambat') renderTab();
   });
+  window.dbOnValue(window.dbRef(window.db, 'info/promo'), snap => {
+    allPromo = snap.exists() ? snap.val() : [];
+    if (currentTab === 'promo') renderTab();
+  });
+  window.dbOnValue(window.dbRef(window.db, 'info/rules'), snap => {
+    allRules = snap.exists() ? snap.val() : [];
+    if (currentTab === 'promo') renderTab();
+  });
   renderTab();
 }
 
@@ -695,6 +717,7 @@ function renderTab() {
   else if (currentTab === 'upload') el.innerHTML = renderUpload();
   else if (currentTab === 'promotor') el.innerHTML = renderPromotor();
   else if (currentTab === 'terlambat') el.innerHTML = renderTerlambat();
+  else if (currentTab === 'promo') el.innerHTML = renderPromoSOP();
   else if (currentTab === 'danger') el.innerHTML = renderDanger();
 }
 
@@ -711,7 +734,7 @@ function renderDash() {
   return `
     <div class="welcome-card">
       <h2>👋 Selamat Datang, Admin</h2>
-      <p>Kelola data promotor, absensi finger, penjualan, dan tanda terlambat dari sini.</p>
+      <p>Kelola data promotor, absensi finger, penjualan, promo, dan SOP dari sini.</p>
     </div>
 
     <div class="card">
@@ -766,7 +789,7 @@ function renderUpload() {
         <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg>
         2. Upload Data Master
       </h3>
-      <p>Upload file <b>ABSEN FINGER.xlsx</b> lengkap (promotor, finger, penjualan, promo, dll).</p>
+      <p>Upload file <b>ABSEN FINGER.xlsx</b> lengkap (promotor, finger, penjualan).</p>
       <div class="file-wrap" onclick="document.getElementById('fileMaster').click()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <p><strong>Klik pilih file Master</strong></p>
@@ -884,8 +907,7 @@ function handleFileFinger(e) {
           }
           
           absensiData[foundKey]['hari_' + hariNum] = {
-            nama: foundPromotor.namaAbsen,
-            hari: hariNum,
+            nama: foundPromotor.namaAbsen, hari: hariNum,
             masuk: masuk, istirahat1: ist1, kembali1: kem1,
             istirahat2: ist2, kembali2: kem2, pulang: pulang,
             terlambat: '', bulan: bulanIni
@@ -1361,6 +1383,212 @@ async function toggleTerlambat(promotorKey, hari, sudahTerlambat) {
 }
 
 /* ============================================================ */
+/* ===== PROMO & SOP =========================================== */
+/* ============================================================ */
+function renderPromoSOP() {
+  const promoList = Array.isArray(allPromo) ? allPromo : Object.values(allPromo || {});
+  const rulesList = Array.isArray(allRules) ? allRules : Object.values(allRules || {});
+  
+  return `
+    <!-- ===== PROMO ===== -->
+    <div class="card">
+      <h3>
+        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        Tambah Promo Toko
+      </h3>
+      <p>Isi form di bawah, klik <b>Tambah Promo</b>. Promo langsung muncul di halaman promotor.</p>
+      <div style="margin-bottom:10px;">
+        <label>Judul Promo</label>
+        <input type="text" id="promo_judul" placeholder="Contoh: PROMO BULAN INI">
+      </div>
+      <div style="margin-bottom:10px;">
+        <label>Periode</label>
+        <input type="text" id="promo_periode" placeholder="Contoh: Oktober 2026">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label>Detail Promo</label>
+        <textarea id="promo_detail" rows="3" placeholder="Contoh: FREE BRACKET untuk pembelian LED TV" style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--border); font-size:14px; font-weight:600; resize:vertical; font-family:'Inter',sans-serif;"></textarea>
+      </div>
+      <button class="btn-primary btn-full" onclick="tambahPromo()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Tambah Promo
+      </button>
+      <div id="promoMsg" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+      <h3>Daftar Promo (${promoList.length})</h3>
+      ${promoList.length === 0 ? '<div class="alert warn">Belum ada promo.</div>' : ''}
+      ${promoList.map((p, i) => `
+        <div class="list-item">
+          <div class="kiri">
+            <div class="nama">🔥 ${p.judul || '-'}</div>
+            <div class="detail">
+              ${p.periode ? `📅 ${p.periode} • ` : ''}
+              ${p.detail || '-'}
+            </div>
+          </div>
+          <div class="kanan">
+            <button class="btn-danger btn-sm" onclick="hapusPromo(${i})">Hapus</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- ===== SOP ===== -->
+    <div class="card">
+      <h3>
+        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        Tambah SOP Promotor
+      </h3>
+      <p>Upload gambar SOP (maks 500KB). Gambar akan muncul di halaman promotor (menu SOP Promotor).</p>
+      <div style="margin-bottom:10px;">
+        <label>Judul SOP</label>
+        <input type="text" id="sop_judul" placeholder="Contoh: SOP UFO Malang Kebonsari">
+      </div>
+      <div style="margin-bottom:12px;">
+        <label>Upload Gambar SOP</label>
+        <div class="file-wrap" onclick="document.getElementById('sop_file').click()" style="padding:20px;">
+          <svg viewBox="0 0 24 24" style="width:32px;height:32px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          <p id="sop_file_label"><strong>Klik pilih gambar</strong></p>
+          <input type="file" id="sop_file" accept="image/*" onchange="pilihFileSOP(event);">
+        </div>
+      </div>
+      <button class="btn-primary btn-full" onclick="tambahSOP()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Tambah SOP
+      </button>
+      <div id="sopMsg" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+      <h3>Daftar SOP (${rulesList.length})</h3>
+      ${rulesList.length === 0 ? '<div class="alert warn">Belum ada SOP.</div>' : ''}
+      ${rulesList.map((r, i) => `
+        <div class="list-item">
+          <div class="kiri">
+            <div class="nama">📌 ${r.poin || r.judul || '-'}</div>
+            <div class="detail">
+              ${r.gambar ? '🖼️ Ada gambar SOP' : 'Tanpa gambar'}
+            </div>
+          </div>
+          <div class="kanan">
+            ${r.gambar ? `<img src="${r.gambar}" class="sop-preview">` : ''}
+            <button class="btn-danger btn-sm" onclick="hapusSOP(${i})">Hapus</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function tambahPromo() {
+  const judul = document.getElementById('promo_judul').value.trim();
+  const periode = document.getElementById('promo_periode').value.trim();
+  const detail = document.getElementById('promo_detail').value.trim();
+  const msg = document.getElementById('promoMsg');
+  
+  if (!judul) { msg.innerHTML = '<div class="alert err">Isi judul promo!</div>'; return; }
+  
+  try {
+    const snap = await window.dbGet(window.dbRef(window.db, 'info/promo'));
+    let arr = snap.exists() ? snap.val() : [];
+    if (!Array.isArray(arr)) arr = Object.values(arr);
+    arr.push({ judul, periode, detail });
+    await window.dbSet(window.dbRef(window.db, 'info/promo'), arr);
+    msg.innerHTML = '<div class="alert ok">✅ Promo ditambahkan! Cek di halaman promotor.</div>';
+    document.getElementById('promo_judul').value = '';
+    document.getElementById('promo_periode').value = '';
+    document.getElementById('promo_detail').value = '';
+    setTimeout(() => msg.innerHTML = '', 3000);
+  } catch (err) {
+    msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
+  }
+}
+
+async function hapusPromo(index) {
+  tampilkanKonfirmasi(
+    'Hapus Promo?',
+    'Yakin ingin hapus promo ini?',
+    async () => {
+      try {
+        const snap = await window.dbGet(window.dbRef(window.db, 'info/promo'));
+        let arr = snap.exists() ? snap.val() : [];
+        if (!Array.isArray(arr)) arr = Object.values(arr);
+        arr.splice(index, 1);
+        await window.dbSet(window.dbRef(window.db, 'info/promo'), arr);
+        tampilkanNotif('Berhasil', 'Promo dihapus.', 'success');
+        renderTab();
+      } catch (err) {
+        tampilkanNotif('Gagal', err.message, 'danger');
+      }
+    },
+    'danger'
+  );
+}
+
+function pilihFileSOP(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  if (file.size > 500 * 1024) {
+    tampilkanNotif('File Terlalu Besar', 'Maksimal 500KB. Kompres gambar dulu di tinypng.com', 'danger');
+    return;
+  }
+  
+  const reader = new FileReader();
+  reader.onload = (evt) => {
+    _sopImageData = evt.target.result;
+    document.getElementById('sop_file_label').innerHTML = `<strong>✅ ${file.name}</strong><br><small>${Math.round(file.size/1024)} KB</small>`;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function tambahSOP() {
+  const judul = document.getElementById('sop_judul').value.trim();
+  const msg = document.getElementById('sopMsg');
+  
+  if (!judul) { msg.innerHTML = '<div class="alert err">Isi judul SOP!</div>'; return; }
+  if (!_sopImageData) { msg.innerHTML = '<div class="alert err">Pilih gambar SOP!</div>'; return; }
+  
+  try {
+    const snap = await window.dbGet(window.dbRef(window.db, 'info/rules'));
+    let arr = snap.exists() ? snap.val() : [];
+    if (!Array.isArray(arr)) arr = Object.values(arr);
+    arr.push({ poin: judul, deskripsi: '', gambar: _sopImageData });
+    await window.dbSet(window.dbRef(window.db, 'info/rules'), arr);
+    msg.innerHTML = '<div class="alert ok">✅ SOP ditambahkan! Cek di halaman promotor.</div>';
+    document.getElementById('sop_judul').value = '';
+    document.getElementById('sop_file_label').innerHTML = '<strong>Klik pilih gambar</strong>';
+    _sopImageData = null;
+    setTimeout(() => msg.innerHTML = '', 3000);
+  } catch (err) {
+    msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
+  }
+}
+
+async function hapusSOP(index) {
+  tampilkanKonfirmasi(
+    'Hapus SOP?',
+    'Yakin ingin hapus SOP ini?',
+    async () => {
+      try {
+        const snap = await window.dbGet(window.dbRef(window.db, 'info/rules'));
+        let arr = snap.exists() ? snap.val() : [];
+        if (!Array.isArray(arr)) arr = Object.values(arr);
+        arr.splice(index, 1);
+        await window.dbSet(window.dbRef(window.db, 'info/rules'), arr);
+        tampilkanNotif('Berhasil', 'SOP dihapus.', 'success');
+        renderTab();
+      } catch (err) {
+        tampilkanNotif('Gagal', err.message, 'danger');
+      }
+    },
+    'danger'
+  );
+}
+
+/* ============================================================ */
 /* ===== DANGER ZONE =========================================== */
 /* ============================================================ */
 function renderDanger() {
@@ -1418,7 +1646,7 @@ async function hapusPromotorAll() {
 async function hapusSemua() {
   tampilkanKonfirmasi(
     '⚠️ HAPUS SEMUA DATA?',
-    'Semua data (promotor, penjualan, absensi, dll) akan dihapus permanen.\n\nData tidak bisa dikembalikan!\n\nYakin ingin lanjut?',
+    'Semua data (promotor, penjualan, absensi, promo, SOP) akan dihapus permanen.\n\nData tidak bisa dikembalikan!\n\nYakin ingin lanjut?',
     async () => {
       await window.dbRemove(window.dbRef(window.db, 'penjualan'));
       await window.dbRemove(window.dbRef(window.db, 'users'));
