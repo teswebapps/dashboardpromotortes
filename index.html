@@ -61,7 +61,6 @@ html { scroll-behavior: smooth; }
     box-sizing: border-box;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
 }
 body {
     margin: 0;
@@ -72,59 +71,29 @@ body {
 }
 .hidden { display: none !important; }
 
-/* ============================================================ */
-/* ===== LOGIN SCREEN ========================================= */
-/* ============================================================ */
+/* ===== LOGIN SCREEN ===== */
 body.login-active { 
-    margin: 0; 
-    padding: 0; 
-    background: #050814; 
-    height: 100vh; 
-    height: 100dvh; 
-    overflow: hidden; 
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    margin: 0; padding: 0; background: #050814; 
+    height: 100vh; height: 100dvh; overflow: hidden; 
+    display: flex; align-items: center; justify-content: center;
 }
 #login-screen { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: #050814; 
-    z-index: 99999; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 16px;
-    overflow: hidden;
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: #050814; z-index: 99999; 
+    display: flex; align-items: center; justify-content: center; 
+    padding: 16px; overflow: hidden;
 }
-
 .fut-grid { 
-    position: fixed; 
-    inset: 0; 
+    position: fixed; inset: 0; 
     background-image: linear-gradient(rgba(14,165,233,0.08) 1px, transparent 1px), 
                       linear-gradient(90deg, rgba(14,165,233,0.08) 1px, transparent 1px); 
-    background-size: 40px 40px; 
-    animation: futGridMove 20s linear infinite; 
-    pointer-events: none; 
-    z-index: 1; 
+    background-size: 40px 40px; animation: futGridMove 20s linear infinite; 
+    pointer-events: none; z-index: 1; 
 }
-@keyframes futGridMove { 
-    0% { background-position: 0 0; } 
-    100% { background-position: 40px 40px; } 
-}
+@keyframes futGridMove { 0% { background-position: 0 0; } 100% { background-position: 40px 40px; } }
 
-.fut-orb { 
-    position: fixed; 
-    border-radius: 50%; 
-    filter: blur(80px); 
-    opacity: 0.6; 
-    animation: futOrbFloat 12s ease-in-out infinite; 
-    pointer-events: none; 
-    z-index: 1; 
-}
+.fut-orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.6; 
+    animation: futOrbFloat 12s ease-in-out infinite; pointer-events: none; z-index: 1; }
 .fut-orb-1 { width: 400px; height: 400px; background: #0ea5e9; top: -100px; left: -100px; }
 .fut-orb-2 { width: 300px; height: 300px; background: #a855f7; bottom: -80px; right: -80px; animation-delay: -4s; }
 .fut-orb-3 { width: 350px; height: 350px; background: #06b6d4; top: 40%; left: 45%; animation-delay: -8s; opacity: 0.4; }
@@ -135,404 +104,163 @@ body.login-active {
 }
 
 .fut-particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
-.fut-particle { 
-    position: absolute; 
-    width: 2px; 
-    height: 2px; 
-    border-radius: 50%; 
-    animation: futParticleFloat linear infinite; 
-}
+.fut-particle { position: absolute; width: 2px; height: 2px; border-radius: 50%; 
+    animation: futParticleFloat linear infinite; }
 @keyframes futParticleFloat { 
     0% { transform: translateY(100vh) scale(0); opacity: 0; } 
-    10% { opacity: 1; } 
-    90% { opacity: 1; } 
+    10% { opacity: 1; } 90% { opacity: 1; } 
     100% { transform: translateY(-100vh) scale(1); opacity: 0; } 
 }
 
-.fut-container { 
-    position: relative; 
-    z-index: 10; 
-    display: grid; 
-    grid-template-columns: 1fr 1fr; 
-    gap: 40px; 
-    align-items: center; 
-    max-width: 1100px; 
-    width: 100%; 
-    animation: futFadeIn 0.8s ease-out;
-}
+.fut-container { position: relative; z-index: 10; display: grid; 
+    grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; 
+    max-width: 1100px; width: 100%; animation: futFadeIn 0.8s ease-out; }
 @keyframes futFadeIn { 
     from { opacity: 0; transform: translateY(20px); } 
     to { opacity: 1; transform: translateY(0); } 
 }
 
 .fut-left { color: #ffffff; text-align: center; padding: 20px; }
-
-.fut-tagline { 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 8px; 
-    padding: 6px 16px; 
-    background: rgba(14,165,233,0.1); 
-    border: 1px solid rgba(14,165,233,0.3); 
-    border-radius: 100px; 
-    font-size: 11px; 
-    font-weight: 700; 
-    letter-spacing: 2px; 
-    color: #22d3ee; 
-    margin-bottom: 20px; 
-    text-transform: uppercase; 
-}
-.fut-dot { 
-    width: 6px; 
-    height: 6px; 
-    background: #22d3ee; 
-    border-radius: 50%; 
-    box-shadow: 0 0 10px #22d3ee; 
-    animation: futDotPulse 1.5s infinite; 
-}
+.fut-tagline { display: inline-flex; align-items: center; gap: 8px; 
+    padding: 6px 16px; background: rgba(14,165,233,0.1); 
+    border: 1px solid rgba(14,165,233,0.3); border-radius: 100px; 
+    font-size: 11px; font-weight: 700; letter-spacing: 2px; color: #22d3ee; 
+    margin-bottom: 20px; text-transform: uppercase; }
+.fut-dot { width: 6px; height: 6px; background: #22d3ee; border-radius: 50%; 
+    box-shadow: 0 0 10px #22d3ee; animation: futDotPulse 1.5s infinite; }
 @keyframes futDotPulse { 
     0%, 100% { transform: scale(1); opacity: 1; } 
     50% { transform: scale(1.5); opacity: 0.5; } 
 }
-
-.fut-headline { 
-    font-size: 42px; 
-    font-weight: 900; 
-    margin: 0 0 8px 0; 
-    color: #ffffff; 
-    text-shadow: 0 0 30px rgba(34,211,238,0.5); 
-    line-height: 1.1; 
-}
-.fut-subheadline { 
-    font-size: 14px; 
-    color: #94a3b8; 
-    font-weight: 500; 
-    margin: 0 0 30px 0; 
-    letter-spacing: 1px; 
-}
-
-.fut-characters { 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    margin-bottom: 30px; 
-}
-.fut-characters .team-3d-img { 
-    max-width: 100%; 
-    max-height: 260px; 
-    height: auto; 
+.fut-headline { font-size: 42px; font-weight: 900; margin: 0 0 8px 0; 
+    color: #ffffff; text-shadow: 0 0 30px rgba(34,211,238,0.5); line-height: 1.1; }
+.fut-subheadline { font-size: 14px; color: #94a3b8; font-weight: 500; 
+    margin: 0 0 30px 0; letter-spacing: 1px; }
+.fut-characters { display: flex; justify-content: center; align-items: center; margin-bottom: 30px; }
+.fut-characters .team-3d-img { max-width: 100%; max-height: 260px; height: auto; 
     filter: drop-shadow(0 20px 30px rgba(0, 200, 255, 0.35)); 
-    animation: floatTeam 3.5s ease-in-out infinite; 
-}
+    animation: floatTeam 3.5s ease-in-out infinite; }
 @keyframes floatTeam { 
     0%, 100% { transform: translateY(0) scale(1); } 
     50% { transform: translateY(-12px) scale(1.02); } 
 }
-
-.fut-live-status { 
-    display: inline-flex; 
-    align-items: center; 
-    gap: 10px; 
-    padding: 10px 20px; 
-    background: rgba(5,8,20,0.6); 
-    border: 1px solid rgba(34,211,238,0.3); 
-    border-radius: 100px; 
-    font-size: 12px; 
-    color: #e2e8f0; 
-    font-weight: 600; 
-}
-.fut-pulse-dot { 
-    width: 8px; 
-    height: 8px; 
-    background: #22d3ee; 
-    border-radius: 50%; 
-    animation: futDotPulse 1.5s infinite; 
-}
-
+.fut-live-status { display: inline-flex; align-items: center; gap: 10px; 
+    padding: 10px 20px; background: rgba(5,8,20,0.6); 
+    border: 1px solid rgba(34,211,238,0.3); border-radius: 100px; 
+    font-size: 12px; color: #e2e8f0; font-weight: 600; }
+.fut-pulse-dot { width: 8px; height: 8px; background: #22d3ee; 
+    border-radius: 50%; animation: futDotPulse 1.5s infinite; }
 .fut-right { display: flex; justify-content: center; }
-
-.fut-card { 
-    width: 100%; 
-    max-width: 400px; 
-    background: rgba(15, 23, 42, 0.7); 
-    backdrop-filter: blur(24px); 
-    border: 1px solid rgba(34,211,238,0.2); 
-    border-radius: 24px; 
-    padding: 40px 32px; 
+.fut-card { width: 100%; max-width: 400px; background: rgba(15, 23, 42, 0.7); 
+    backdrop-filter: blur(24px); border: 1px solid rgba(34,211,238,0.2); 
+    border-radius: 24px; padding: 40px 32px; 
     box-shadow: 0 0 60px rgba(14,165,233,0.15); 
-    position: relative; 
-    overflow: hidden; 
-}
-.fut-card::before { 
-    content: ''; 
-    position: absolute; 
-    top: 0; left: 0; right: 0; 
-    height: 1px; 
-    background: linear-gradient(90deg, transparent, #22d3ee, transparent); 
-}
-
-.fut-logo { 
-    width: 110px; 
-    height: 110px; 
-    margin: 0 auto 20px; 
-    background: rgba(14,165,233,0.15); 
-    border: 1px solid rgba(34,211,238,0.3); 
-    border-radius: 22px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    padding: 14px; 
-    box-shadow: 0 0 40px rgba(34,211,238,0.4); 
-}
+    position: relative; overflow: hidden; }
+.fut-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; 
+    height: 1px; background: linear-gradient(90deg, transparent, #22d3ee, transparent); }
+.fut-logo { width: 110px; height: 110px; margin: 0 auto 20px; 
+    background: rgba(14,165,233,0.15); border: 1px solid rgba(34,211,238,0.3); 
+    border-radius: 22px; display: flex; align-items: center; justify-content: center; 
+    padding: 14px; box-shadow: 0 0 40px rgba(34,211,238,0.4); }
 .fut-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-/* ===== LOGIN TABS ===== */
-.login-tabs {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 22px;
-    background: rgba(2, 6, 23, 0.6);
-    padding: 5px;
-    border-radius: 12px;
-    border: 1px solid rgba(34, 211, 238, 0.15);
-}
-.login-tab {
-    flex: 1;
-    padding: 10px 12px;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    color: #94a3b8;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    font-family: inherit;
-}
-.login-tab:hover {
-    color: #22d3ee;
-    background: rgba(34, 211, 238, 0.08);
-}
-.login-tab.active {
-    background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%);
-    color: #ffffff;
-    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
-}
+/* Login Tabs */
+.login-tabs { display: flex; gap: 8px; margin-bottom: 22px; 
+    background: rgba(2, 6, 23, 0.6); padding: 5px; 
+    border-radius: 12px; border: 1px solid rgba(34, 211, 238, 0.15); }
+.login-tab { flex: 1; padding: 10px 12px; background: transparent; border: none; 
+    border-radius: 8px; color: #94a3b8; font-size: 12px; font-weight: 800; 
+    letter-spacing: 1px; text-transform: uppercase; cursor: pointer; 
+    transition: all 0.25s ease; font-family: inherit; }
+.login-tab:hover { color: #22d3ee; background: rgba(34, 211, 238, 0.08); }
+.login-tab.active { background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%); 
+    color: #ffffff; box-shadow: 0 0 20px rgba(34, 211, 238, 0.4); }
 
 .fut-field { margin-bottom: 18px; position: relative; }
-.fut-field label { 
-    display: block; 
-    font-size: 11px; 
-    font-weight: 700; 
-    color: #22d3ee; 
-    text-transform: uppercase; 
-    letter-spacing: 1.5px; 
-    margin-bottom: 8px; 
-}
+.fut-field label { display: block; font-size: 11px; font-weight: 700; 
+    color: #22d3ee; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
 
-.fut-select { 
-    width: 100%; 
-    padding: 14px 16px; 
-    background: rgba(2,6,23,0.6); 
-    border: 1px solid rgba(34,211,238,0.2); 
-    border-radius: 12px; 
-    color: #e2e8f0; 
-    font-size: 14px; 
-    font-weight: 600; 
-    cursor: pointer; 
-    display: flex; 
-    align-items: center; 
-    justify-content: space-between; 
-    gap: 10px; 
-}
+.fut-select { width: 100%; padding: 14px 16px; background: rgba(2,6,23,0.6); 
+    border: 1px solid rgba(34,211,238,0.2); border-radius: 12px; 
+    color: #e2e8f0; font-size: 14px; font-weight: 600; cursor: pointer; 
+    display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 .fut-select span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fut-select svg { 
-    width: 16px; 
-    height: 16px; 
-    color: #22d3ee; 
-    flex-shrink: 0; 
-    transition: transform 0.3s ease; 
-}
+.fut-select svg { width: 16px; height: 16px; color: #22d3ee; flex-shrink: 0; 
+    transition: transform 0.3s ease; }
 #custom-select-trigger.open svg { transform: rotate(180deg); }
-
-.fut-menu { 
-    position: absolute; 
-    left: 0; right: 0; 
-    top: 100%; 
-    margin-top: 6px; 
-    background: rgba(15,23,42,0.98); 
-    backdrop-filter: blur(20px); 
-    border: 1px solid rgba(34,211,238,0.3); 
-    border-radius: 12px; 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
-    max-height: 240px; 
-    overflow-y: auto; 
-    z-index: 999; 
-    padding: 6px; 
-    opacity: 0; 
-    visibility: hidden; 
-    transform: translateY(-8px); 
-    transition: all 0.2s ease; 
-}
-.fut-menu.open { 
-    opacity: 1 !important; 
-    visibility: visible !important; 
-    transform: translateY(0) !important; 
-}
-.fut-menu .option { 
-    padding: 10px 14px; 
-    border-radius: 8px; 
-    font-size: 14px; 
-    font-weight: 600; 
-    color: #e2e8f0; 
-    cursor: pointer; 
-}
+.fut-menu { position: absolute; left: 0; right: 0; top: 100%; margin-top: 6px; 
+    background: rgba(15,23,42,0.98); backdrop-filter: blur(20px); 
+    border: 1px solid rgba(34,211,238,0.3); border-radius: 12px; 
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5); max-height: 240px; 
+    overflow-y: auto; z-index: 999; padding: 6px; opacity: 0; 
+    visibility: hidden; transform: translateY(-8px); transition: all 0.2s ease; }
+.fut-menu.open { opacity: 1 !important; visibility: visible !important; 
+    transform: translateY(0) !important; }
+.fut-menu .option { padding: 10px 14px; border-radius: 8px; font-size: 14px; 
+    font-weight: 600; color: #e2e8f0; cursor: pointer; }
 .fut-menu .option:hover { background: rgba(34,211,238,0.15); color: #22d3ee; }
 .fut-menu .option.selected { background: rgba(34,211,238,0.25); color: #22d3ee; }
 .fut-menu .option.empty { color: #64748b; font-style: italic; text-align: center; }
 
-.fut-input { 
-    width: 100%; 
-    padding: 14px 16px; 
-    background: rgba(2,6,23,0.6); 
-    border: 1px solid rgba(34,211,238,0.2); 
-    border-radius: 12px; 
-    color: #ffffff; 
-    font-size: 22px; 
-    font-weight: 800; 
-    text-align: center; 
-    letter-spacing: 10px; 
-    outline: none; 
-    transition: all 0.25s ease;
-}
+.fut-input { width: 100%; padding: 14px 16px; background: rgba(2,6,23,0.6); 
+    border: 1px solid rgba(34,211,238,0.2); border-radius: 12px; 
+    color: #ffffff; font-size: 22px; font-weight: 800; text-align: center; 
+    letter-spacing: 10px; outline: none; transition: all 0.25s ease; }
 .fut-input::placeholder { color: rgba(148,163,184,0.4); }
 .fut-input:focus { border-color: #22d3ee; box-shadow: 0 0 25px rgba(34,211,238,0.4); }
 
-.fut-input-admin {
-    width: 100%;
-    padding: 14px 16px;
-    background: rgba(2, 6, 23, 0.6);
-    border: 1px solid rgba(212, 175, 55, 0.3);
-    border-radius: 12px;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 600;
-    outline: none;
-    transition: all 0.25s ease;
-    letter-spacing: 1px;
-    text-align: left;
-}
-.fut-input-admin:focus {
-    border-color: #d4af37;
-    box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
-}
-.fut-input-admin::placeholder {
-    color: rgba(148, 163, 184, 0.4);
-    font-weight: 500;
-    letter-spacing: 0.5px;
-}
+.fut-input-admin { width: 100%; padding: 14px 16px; background: rgba(2, 6, 23, 0.6); 
+    border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; 
+    color: #ffffff; font-size: 14px; font-weight: 600; outline: none; 
+    transition: all 0.25s ease; letter-spacing: 1px; text-align: left; }
+.fut-input-admin:focus { border-color: #d4af37; box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); }
+.fut-input-admin::placeholder { color: rgba(148, 163, 184, 0.4); font-weight: 500; }
 
-.fut-error { 
-    color: #f87171; 
-    font-size: 12px; 
-    font-weight: 700; 
-    text-align: center; 
-    min-height: 18px; 
-    margin-bottom: 8px; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 6px; 
-}
+.fut-error { color: #f87171; font-size: 12px; font-weight: 700; text-align: center; 
+    min-height: 18px; margin-bottom: 8px; display: flex; align-items: center; 
+    justify-content: center; gap: 6px; }
 
-.fut-btn { 
-    width: 100%; 
-    padding: 16px; 
+.fut-btn { width: 100%; padding: 16px; 
     background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%); 
-    color: #ffffff; 
-    border: none; 
-    border-radius: 12px; 
-    font-size: 14px; 
-    font-weight: 800; 
-    text-transform: uppercase; 
-    letter-spacing: 2px; 
-    cursor: pointer; 
-    display: flex; 
-    align-items: center; 
-    justify-content: center; 
-    gap: 10px; 
-    box-shadow: 0 0 30px rgba(34,211,238,0.4); 
-}
+    color: #ffffff; border: none; border-radius: 12px; font-size: 14px; 
+    font-weight: 800; text-transform: uppercase; letter-spacing: 2px; 
+    cursor: pointer; display: flex; align-items: center; justify-content: center; 
+    gap: 10px; box-shadow: 0 0 30px rgba(34,211,238,0.4); }
 .fut-btn:active { transform: scale(0.98); }
 .fut-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 .fut-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
-.fut-footer { 
-    text-align: center; 
-    font-size: 12px; 
-    color: #64748b; 
-    margin: 20px 0 0 0; 
-    font-weight: 500; 
-}
+.fut-footer { text-align: center; font-size: 12px; color: #64748b; 
+    margin: 20px 0 0 0; font-weight: 500; }
 .fut-footer span { color: #22d3ee; font-weight: 700; }
 
-.spinner { 
-    display: inline-block; 
-    width: 14px; 
-    height: 14px; 
-    border: 2px solid rgba(255,255,255,0.3); 
-    border-top-color: white; 
-    border-radius: 50%; 
-    animation: spin 0.8s linear infinite; 
-}
+.spinner { display: inline-block; width: 14px; height: 14px; 
+    border: 2px solid rgba(255,255,255,0.3); border-top-color: white; 
+    border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* Toast Login */
-.login-toast-overlay { 
-    position: fixed; 
-    top: 0; left: 0; 
-    width: 100%; height: 100%; 
-    background: rgba(15, 23, 42, 0.4); 
-    backdrop-filter: blur(4px); 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 999999; 
-    opacity: 0; 
-    visibility: hidden; 
-    transition: all 0.3s ease; 
-    padding: 16px; 
-}
+/* Toast */
+.login-toast-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); 
+    display: flex; justify-content: center; align-items: center; z-index: 999999; 
+    opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 16px; }
 .login-toast-overlay.active { opacity: 1; visibility: visible; }
-.login-toast-card { 
-    background: var(--cyber-card); 
-    padding: 32px 40px; 
-    border-radius: 24px; 
-    text-align: center; 
-    border: 2px solid var(--cyber-cyan); 
+.login-toast-card { background: var(--cyber-card); padding: 32px 40px; 
+    border-radius: 24px; text-align: center; border: 2px solid var(--cyber-cyan); 
     box-shadow: 0 0 40px rgba(56, 189, 248, 0.5), 0 25px 60px rgba(0, 0, 0, 0.6); 
     transform: scale(0.8); 
     transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
-    min-width: 240px; 
-}
+    min-width: 240px; }
 .login-toast-overlay.active .login-toast-card { transform: scale(1); }
-.login-toast-icon { 
-    width: 72px; 
-    height: 72px; 
-    border-radius: 50%; 
+.login-toast-icon { width: 72px; height: 72px; border-radius: 50%; 
     background: linear-gradient(135deg, #10b981, #059669); 
-    display: inline-flex; 
-    align-items: center; 
-    justify-content: center; 
-    margin-bottom: 16px; 
-    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); 
-}
+    display: inline-flex; align-items: center; justify-content: center; 
+    margin-bottom: 16px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
 .login-toast-icon svg { width: 40px; height: 40px; stroke: #ffffff; stroke-width: 3; fill: none; }
 .login-toast-title { font-size: 18px; font-weight: 800; color: #ffffff; margin-bottom: 4px; }
 .login-toast-subtitle { font-size: 13px; font-weight: 600; color: #94a3b8; }
-.login-toast-name { color: var(--cyber-cyan); font-weight: 800; text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
+.login-toast-name { color: var(--cyber-cyan); font-weight: 800; 
+    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
 
 /* Responsive Login */
 @media (max-width: 900px) {
@@ -570,168 +298,143 @@ body.login-active {
     .login-tab { font-size: 11px; padding: 9px 8px; }
 }
 
-/* ============================================================ */
-/* ===== DASHBOARD ============================================ */
-/* ============================================================ */
+/* ===== DASHBOARD ===== */
 body.dashboard-active {
-    margin: 0; padding: 24px 16px;
-    background: #030712;
-    color: #f3f4f6;
-    min-height: 100vh;
+    margin: 0; padding: 24px 16px; background: #030712; 
+    color: #f3f4f6; min-height: 100vh;
 }
 .dashboard-container { max-width: 1100px; margin: 0 auto; width: 100%; }
 
-.top-bar {
-    display: flex; justify-content: space-between; align-items: center;
-    background: rgba(17, 24, 39, 0.75);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    border-radius: 16px;
-    padding: 14px 20px;
-    margin-bottom: 25px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-}
-.top-bar.admin-mode {
-    border: 2px solid rgba(212, 175, 55, 0.6);
-    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(35, 28, 15, 0.85));
-    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
-}
-.user-info { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: #ffffff; flex-wrap: wrap; }
-.user-dot { width: 10px; height: 10px; border-radius: 50%; background: #34d399; box-shadow: 0 0 10px rgba(52, 211, 153, 0.8); flex-shrink: 0; }
-.logout-btn {
-    padding: 8px 16px; border: none; border-radius: 9px; cursor: pointer;
-    color: #f87171; background: rgba(239, 68, 68, 0.1);
-    border: 1px solid rgba(239, 68, 68, 0.3); font-weight: 600; font-size: 12.5px;
-    display: inline-flex; align-items: center; gap: 6px;
-}
+.top-bar { display: flex; justify-content: space-between; align-items: center; 
+    background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(12px); 
+    border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; 
+    padding: 14px 20px; margin-bottom: 25px; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); transition: all 0.3s ease; }
+.top-bar.admin-mode { 
+    border: 2px solid rgba(212, 175, 55, 0.6); 
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(35, 28, 15, 0.85)); 
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15); }
+.user-info { display: flex; align-items: center; gap: 10px; 
+    font-size: 14px; font-weight: 700; color: #ffffff; flex-wrap: wrap; }
+.user-dot { width: 10px; height: 10px; border-radius: 50%; 
+    background: #34d399; box-shadow: 0 0 10px rgba(52, 211, 153, 0.8); flex-shrink: 0; }
+.logout-btn { padding: 8px 16px; border: none; border-radius: 9px; 
+    cursor: pointer; color: #f87171; background: rgba(239, 68, 68, 0.1); 
+    border: 1px solid rgba(239, 68, 68, 0.3); font-weight: 600; font-size: 12.5px; 
+    display: inline-flex; align-items: center; gap: 6px; }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
 .logout-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
-/* Admin badge */
-.admin-badge-inline {
-    display: inline-block;
-    font-size: 9px;
-    font-weight: 800;
-    background: linear-gradient(135deg, #d4af37, #b8941f);
-    color: #111827;
-    padding: 3px 8px;
-    border-radius: 5px;
-    margin-left: 8px;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    vertical-align: middle;
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
-}
+.admin-badge-inline { display: inline-block; font-size: 9px; font-weight: 800; 
+    background: linear-gradient(135deg, #d4af37, #b8941f); color: #111827; 
+    padding: 3px 8px; border-radius: 5px; margin-left: 8px; 
+    text-transform: uppercase; letter-spacing: 0.5px; vertical-align: middle; 
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
 
 .back-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-.back-btn {
-    padding: 9px 16px; border: none; border-radius: 10px;
-    cursor: pointer; font-weight: 700; font-size: 12.5px;
-    color: #111827; background: #d4af37;
-    display: inline-flex; align-items: center; gap: 6px;
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
-}
+.back-btn { padding: 9px 16px; border: none; border-radius: 10px; cursor: pointer; 
+    font-weight: 700; font-size: 12.5px; color: #111827; background: #d4af37; 
+    display: inline-flex; align-items: center; gap: 6px; 
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); }
 .back-btn:hover { opacity: 0.9; }
 .back-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
-.menu-grid {
-    max-width: 1100px; margin: 0 auto;
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px;
+/* ===== DROPDOWN PILIH PROMOTOR ===== */
+.promotor-selector { max-width: 1100px; margin: 0 auto 20px; 
+    padding: 14px 18px; background: rgba(17, 24, 39, 0.85); 
+    backdrop-filter: blur(12px); border: 2px solid rgba(212, 175, 55, 0.5); 
+    border-radius: 14px; display: flex; align-items: center; gap: 12px; 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); }
+.promotor-selector label { font-size: 12.5px; font-weight: 800; 
+    color: #d4af37; white-space: nowrap; text-transform: uppercase; 
+    letter-spacing: 0.5px; }
+.promotor-selector select { flex: 1; padding: 11px 40px 11px 14px; 
+    background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(212, 175, 55, 0.4); 
+    border-radius: 10px; color: #ffffff; font-size: 14px; font-weight: 600; 
+    outline: none; cursor: pointer; appearance: none; 
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23d4af37' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; }
+.promotor-selector select:focus { border-color: #d4af37; 
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+.promotor-selector select option { background: #111827; color: #ffffff; }
+
+@media (max-width: 768px) {
+    .promotor-selector { flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 14px; }
+    .promotor-selector label { text-align: left; font-size: 11.5px; }
 }
-.menu-card {
-    background: rgba(17, 24, 39, 0.7);
-    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 20px;
-    padding: 28px 22px; text-align: center; cursor: pointer;
-    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
-    display: flex; flex-direction: column; align-items: center;
-    position: relative;
-}
-.menu-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(212, 175, 55, 0.6);
-    box-shadow: 0 20px 40px -10px rgba(212, 175, 55, 0.2);
-    background: rgba(21, 29, 46, 0.85);
-}
-.menu-card.admin-only {
-    border-color: rgba(212, 175, 55, 0.6) !important;
-    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(35, 28, 15, 0.9)) !important;
-}
-.menu-card.admin-only::after {
-    content: '👑 ADMIN';
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    font-size: 9px;
-    font-weight: 800;
-    background: #d4af37;
-    color: #111827;
-    padding: 3px 7px;
-    border-radius: 4px;
-    letter-spacing: 0.5px;
-    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
-}
-.menu-icon {
-    width: 60px; height: 60px; margin-bottom: 12px;
-    display: flex; justify-content: center; align-items: center;
-    background: rgba(212, 175, 55, 0.1); border-radius: 16px;
-}
-.menu-icon svg { width: 30px; height: 30px; stroke: #d4af37; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+
+.menu-grid { max-width: 1100px; margin: 0 auto; 
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.menu-card { background: rgba(17, 24, 39, 0.7); backdrop-filter: blur(12px); 
+    border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 20px; 
+    padding: 28px 22px; text-align: center; cursor: pointer; 
+    box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5); 
+    display: flex; flex-direction: column; align-items: center; position: relative; }
+.menu-card:hover { transform: translateY(-5px); 
+    border-color: rgba(212, 175, 55, 0.6); 
+    box-shadow: 0 20px 40px -10px rgba(212, 175, 55, 0.2); 
+    background: rgba(21, 29, 46, 0.85); }
+.menu-card.admin-only { 
+    border-color: rgba(212, 175, 55, 0.6) !important; 
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(35, 28, 15, 0.9)) !important; }
+.menu-card.admin-only::after { content: 'ADMIN'; position: absolute; 
+    top: 8px; right: 8px; font-size: 9px; font-weight: 800; 
+    background: #d4af37; color: #111827; padding: 3px 7px; border-radius: 4px; 
+    letter-spacing: 0.5px; box-shadow: 0 0 10px rgba(212, 175, 55, 0.5); }
+.menu-icon { width: 60px; height: 60px; margin-bottom: 12px; 
+    display: flex; justify-content: center; align-items: center; 
+    background: rgba(212, 175, 55, 0.1); border-radius: 16px; }
+.menu-icon svg { width: 30px; height: 30px; stroke: #d4af37; stroke-width: 1.8; 
+    fill: none; stroke-linecap: round; stroke-linejoin: round; }
 .menu-content { width: 100%; }
-.menu-title { font-size: 18.5px; color: #ffffff; font-weight: 700; margin-bottom: 6px; letter-spacing: -0.3px; }
+.menu-title { font-size: 18.5px; color: #ffffff; font-weight: 700; 
+    margin-bottom: 6px; letter-spacing: -0.3px; }
 .menu-desc { font-size: 13.5px; color: #9ca3af; line-height: 1.4; margin: 0; }
 
-.detail-view {
-    max-width: 1100px; margin: 0 auto;
-    animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+.detail-view { max-width: 1100px; margin: 0 auto; 
+    animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes fadeIn { 
+    from { opacity: 0; transform: translateY(10px); } 
+    to { opacity: 1; transform: translateY(0); } 
 }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 .detail-title { font-size: 24px; font-weight: 800; color: #ffffff; margin: 0 0 4px 0; }
 .detail-subtitle { font-size: 13.5px; color: #9ca3af; margin: 0 0 20px 0; }
 
-.summary-card {
-    background: rgba(17, 24, 39, 0.75);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(212, 175, 55, 0.25);
-    border-radius: 16px; padding: 18px; color: #ffffff;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-    margin-bottom: 20px;
-}
-.summary-card h2 {
-    margin: 0 0 10px 0; font-size: 16px; font-weight: 700;
-    color: #d4af37; display: flex; align-items: center; gap: 8px;
-}
-.summary-card h2 svg { width: 20px; height: 20px; stroke: #d4af37; stroke-width: 2; fill: none; flex-shrink: 0; }
+.summary-card { background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(12px); 
+    border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; 
+    padding: 18px; color: #ffffff; 
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3); margin-bottom: 20px; }
+.summary-card h2 { margin: 0 0 10px 0; font-size: 16px; font-weight: 700; 
+    color: #d4af37; display: flex; align-items: center; gap: 8px; }
+.summary-card h2 svg { width: 20px; height: 20px; stroke: #d4af37; 
+    stroke-width: 2; fill: none; flex-shrink: 0; }
 .summary-card p { margin: 6px 0; color: #d1d5db; font-size: 13.5px; line-height: 1.4; }
 
-.card-grid { 
-    display: grid; 
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 18px; 
-    width: 100%;
-}
-.card {
-    background: rgba(17, 24, 39, 0.75);
-    backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 16px; padding: 18px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
-}
+.card-grid { display: grid; grid-template-columns: repeat(3, 1fr); 
+    gap: 18px; width: 100%; }
+.card { background: rgba(17, 24, 39, 0.75); backdrop-filter: blur(12px); 
+    border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 16px; padding: 18px; 
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
 .card.success { border-left: 4px solid #10b981; }
 .card.warning { border-left: 4px solid #ef4444; }
-.tanggal { text-align: center; font-weight: 700; margin-bottom: 12px; color: #ffffff; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-direction: column; }
-.tanggal svg { width: 15px; height: 15px; stroke: #38bdf8; stroke-width: 2; fill: none; display: inline-block; }
-.row {
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    color: #9ca3af; font-size: 13px;
-}
+.tanggal { text-align: center; font-weight: 700; margin-bottom: 12px; 
+    color: #ffffff; font-size: 14px; display: flex; align-items: center; 
+    justify-content: center; gap: 6px; flex-direction: column; }
+.tanggal svg { width: 15px; height: 15px; stroke: #38bdf8; stroke-width: 2; 
+    fill: none; display: inline-block; }
+.row { display: flex; justify-content: space-between; align-items: center; 
+    padding: 8px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); 
+    color: #9ca3af; font-size: 13px; }
 .row:last-child { border-bottom: none; }
 .ok { font-weight: 600; color: #ffffff; }
 .kosong { color: #f87171; font-weight: 700; }
 .status-ok { color: #34d399; font-weight: 700; }
 .status-warning { color: #f87171; font-weight: 700; }
+
+.empty-state { text-align: center; padding: 40px 20px; color: #64748b; }
+.empty-state svg { width: 60px; height: 60px; stroke: #374151; stroke-width: 1.5; 
+    fill: none; margin-bottom: 12px; }
+.empty-state .pesan { font-size: 14px; font-weight: 600; }
 
 @media (max-width: 1024px) { 
   .menu-grid, .card-grid { grid-template-columns: repeat(2, 1fr) !important; } 
@@ -775,20 +478,18 @@ body.dashboard-active {
         <div class="fut-right">
             <div class="fut-card">
                 <div class="fut-logo">
-                    <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>🛸</span>';">
+                    <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>UFO</span>';">
                 </div>
 
-                <!-- ===== TAB LOGIN ===== -->
                 <div class="login-tabs">
                     <button type="button" class="login-tab active" id="tab-promotor" onclick="switchLoginTab('promotor')">
-                        👤 PROMOTOR
+                        PROMOTOR
                     </button>
                     <button type="button" class="login-tab" id="tab-admin" onclick="switchLoginTab('admin')">
-                        👑 ADMIN
+                        ADMIN
                     </button>
                 </div>
 
-                <!-- FORM PROMOTOR -->
                 <div id="form-promotor">
                     <div class="fut-field">
                         <label>Pilih Nama Promotor</label>
@@ -803,7 +504,6 @@ body.dashboard-active {
                     </div>
                 </div>
 
-                <!-- FORM ADMIN -->
                 <div id="form-admin" style="display:none;">
                     <div class="fut-field">
                         <label>Username Admin</label>
@@ -811,7 +511,6 @@ body.dashboard-active {
                     </div>
                 </div>
 
-                <!-- PIN -->
                 <div class="fut-field">
                     <label>Masukkan PIN</label>
                     <input type="password" id="login-pin-input" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="••••••" autocomplete="off" class="fut-input">
@@ -846,12 +545,22 @@ body.dashboard-active {
         Keluar
       </button>
     </div>
+
     <div id="menuGrid" class="menu-grid"></div>
+
+    <!-- DROPDOWN PILIH PROMOTOR (Khusus Admin) -->
+    <div id="promotorSelector" class="promotor-selector hidden">
+        <label>PILIH PROMOTOR :</label>
+        <select id="selectPromotor" onchange="gantiPromotorAdmin(this.value)">
+            <option value="">-- Memuat --</option>
+        </select>
+    </div>
+
     <div id="detailView" class="detail-view hidden"></div>
   </div>
 </div>
 
-<!-- Toast Login -->
+<!-- Toast -->
 <div class="login-toast-overlay" id="login-toast">
   <div class="login-toast-card">
     <div class="login-toast-icon">
@@ -863,6 +572,9 @@ body.dashboard-active {
 </div>
 
 <script>
+/* ============================================================ */
+/* ===== GLOBAL VARIABLES ===================================== */
+/* ============================================================ */
 let allPenjualan = [];
 let allPromotor = {};
 let allAbsensi = {};
@@ -870,7 +582,11 @@ let infoData = { promo: [], rules: [] };
 let currentUser = null;
 let currentMenu = null;
 let loginMode = 'promotor';
+let promotorTerpilih = null;
 
+/* ============================================================ */
+/* ===== SVG ICONS ============================================ */
+/* ============================================================ */
 const ICONS = {
   absensi: `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>`,
   penjualan: `<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
@@ -880,35 +596,55 @@ const ICONS = {
   sop: `<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
   back: `<svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
   empty: `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`,
-  money: `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#d4af37;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
-  calendar: `<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#38bdf8;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  money: `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#d4af37;stroke-width:2;fill:none;display:inline-block;vertical-align:middle;margin-right:4px;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+  calendar: `<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#38bdf8;stroke-width:2;fill:none;display:inline-block;vertical-align:middle;margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
   perolehan: `<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>`,
-  denda: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
-};
-  /* ============================================================ */
-/* ===== SVG ICONS MODERN (PENGGANTI EMOJI) =================== */
-/* ============================================================ */
-const SVG_ICONS = {
-    chart: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:6px;"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>`,
-    users: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
-    money: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
-    diamond: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
-    trophy: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:6px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`,
-    star: `<svg width="12" height="12" viewBox="0 0 24 24" fill="#d4af37" stroke="#d4af37" stroke-width="1" style="display:inline-block;vertical-align:middle;margin-right:3px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
-    alert: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:6px;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
-    calendar: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
-    crown: `<svg width="14" height="14" viewBox="0 0 24 24" fill="#d4af37" stroke="#d4af37" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M2 18l2-10 6 5 2-9 2 9 6-5 2 10H2z"/></svg>`,
-    wallet: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:6px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4z"/></svg>`,
-    check: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:3px;"><polyline points="20 6 9 17 4 12"/></svg>`,
-    warning: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
-    logout: `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>`,
-    download: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`,
-    document: `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>`,
-    info: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:inline-block;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`
+  denda: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  trophy: `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#d4af37;stroke-width:2;fill:none;display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`,
+  warning: `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#ef4444;stroke-width:2;fill:none;display:inline-block;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+  star: `<svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#d4af37;stroke:#d4af37;stroke-width:1;display:inline-block;vertical-align:middle;margin-right:3px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  crown: `<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#d4af37;stroke:#d4af37;stroke-width:1.5;display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M2 18l2-10 6 5 2-9 2 9 6-5 2 10H2z"/></svg>`
 };
 
 /* ============================================================ */
-/* ===== SWITCH TAB LOGIN ===================================== */
+/* ===== FIREBASE READY ======================================= */
+/* ============================================================ */
+window.addEventListener('firebase-ready', () => {
+  initParticles();
+  loadPromotorList();
+  loadInfoRealtime();
+  const saved = localStorage.getItem('ufo_promotor_session_v3');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      currentUser = data;
+      tampilkanDashboard();
+    } catch(e) {}
+  }
+});
+
+/* ============================================================ */
+/* ===== PARTICLES ============================================ */
+/* ============================================================ */
+function initParticles() {
+    const container = document.getElementById('fut-particles');
+    if (!container) return;
+    for (let i = 0; i < 25; i++) {
+        const p = document.createElement('div');
+        p.className = 'fut-particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDuration = (8 + Math.random() * 12) + 's';
+        p.style.animationDelay = (Math.random() * 10) + 's';
+        const colors = ['#22d3ee', '#a855f7', '#3b82f6'];
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        p.style.background = color;
+        p.style.boxShadow = `0 0 6px ${color}, 0 0 12px ${color}`;
+        container.appendChild(p);
+    }
+}
+
+/* ============================================================ */
+/* ===== LOGIN TAB SWITCH ===================================== */
 /* ============================================================ */
 function switchLoginTab(mode) {
     loginMode = mode;
@@ -936,177 +672,8 @@ function switchLoginTab(mode) {
 window.switchLoginTab = switchLoginTab;
 
 /* ============================================================ */
-/* ===== LOGIN HANDLER ======================================== */
+/* ===== LOAD PROMOTOR LIST ================================== */
 /* ============================================================ */
-async function loginPromotor() {
-    const errEl = document.getElementById('login-error');
-    const btn = document.getElementById('btn-login-promotor');
-    const pin = document.getElementById('login-pin-input').value.trim();
-    errEl.innerHTML = '';
-    
-    if (!pin) {
-        errEl.innerHTML = '⚠️ Masukkan PIN!';
-        return;
-    }
-    
-    const asli = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Memeriksa...';
-    
-    try {
-        if (loginMode === 'promotor') {
-            const key = document.getElementById('login-pilih-sales').value;
-            if (!key) {
-                errEl.innerHTML = '⚠️ Pilih nama promotor dulu!';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            
-            const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
-            if (!snap.exists()) {
-                errEl.innerHTML = '⚠️ Promotor tidak ditemukan.';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            
-            const data = snap.val();
-            if (String(data.pin) !== pin) {
-                errEl.innerHTML = '⚠️ PIN salah!';
-                document.getElementById('login-pin-input').value = '';
-                document.getElementById('login-pin-input').focus();
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            
-            if (data.aktif === false) {
-                errEl.innerHTML = '⚠️ Akun promotor ini tidak aktif.';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            
-            currentUser = { 
-                key, 
-                ...data, 
-                role: 'PROMOTOR',
-                loginType: 'promotor'
-            };
-            localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
-            
-        } else {
-            const username = document.getElementById('login-admin-username').value.trim().toUpperCase();
-            if (!username) {
-                errEl.innerHTML = '⚠️ Masukkan username admin!';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            
-            const snap = await window.dbGet(window.dbRef(window.db, 'users/admin'));
-            if (!snap.exists()) {
-                errEl.innerHTML = '⚠️ Belum ada admin terdaftar.';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            
-            const admins = snap.val();
-            let foundKey = null;
-            let foundData = null;
-            
-            Object.keys(admins).forEach(k => {
-                const a = admins[k];
-                if (a && String(a.username || '').toUpperCase() === username) {
-                    foundKey = k;
-                    foundData = a;
-                }
-            });
-            
-            if (!foundKey) {
-                errEl.innerHTML = '⚠️ Username admin tidak ditemukan.';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            
-            if (String(foundData.pin) !== pin) {
-                errEl.innerHTML = '⚠️ PIN admin salah!';
-                document.getElementById('login-pin-input').value = '';
-                document.getElementById('login-pin-input').focus();
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            
-            if (foundData.aktif === false) {
-                errEl.innerHTML = '⚠️ Akun admin ini tidak aktif.';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            
-            currentUser = {
-                key: foundKey,
-                username: foundData.username,
-                namaAbsen: foundData.nama || foundData.username,
-                namaSales: '',
-                pin: foundData.pin,
-                role: 'ADMIN',
-                loginType: 'admin'
-            };
-            localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
-        }
-        
-        // ===== SUKSES =====
-        document.getElementById('login-toast-name').innerText = currentUser.namaAbsen;
-        const toast = document.getElementById('login-toast');
-        toast.classList.add('active');
-        
-        setTimeout(() => {
-            tampilkanDashboard();
-            document.getElementById('login-pin-input').value = '';
-            document.getElementById('login-admin-username').value = '';
-            errEl.innerHTML = '';
-            btn.disabled = false; btn.innerHTML = asli;
-            setTimeout(() => { toast.classList.remove('active'); }, 600);
-        }, 1000);
-        
-    } catch (err) {
-        console.error('Login error:', err);
-        errEl.innerHTML = '⚠️ ' + err.message;
-        btn.disabled = false; btn.innerHTML = asli;
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('btn-login-promotor');
-  if (btn) btn.onclick = loginPromotor;
-  const pin = document.getElementById('login-pin-input');
-  if (pin) {
-    pin.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
-    pin.addEventListener('keypress', e => { if (e.key === 'Enter') loginPromotor(); });
-  }
-});
-
-/* ============================================================ */
-/* ===== INIT ================================================== */
-/* ============================================================ */
-window.addEventListener('firebase-ready', () => {
-  initParticles();
-  loadPromotorList();
-  loadInfoRealtime();
-  const saved = localStorage.getItem('ufo_promotor_session_v3');
-  if (saved) {
-    try {
-      const data = JSON.parse(saved);
-      currentUser = data;
-      tampilkanDashboard();
-    } catch(e) {}
-  }
-});
-
-function initParticles() {
-    const container = document.getElementById('fut-particles');
-    if (!container) return;
-    for (let i = 0; i < 25; i++) {
-        const p = document.createElement('div');
-        p.className = 'fut-particle';
-        p.style.left = Math.random() * 100 + '%';
-        p.style.animationDuration = (8 + Math.random() * 12) + 's';
-        p.style.animationDelay = (Math.random() * 10) + 's';
-        const colors = ['#22d3ee', '#a855f7', '#3b82f6'];
-        const color = colors[Math.floor(Math.random() * colors.length)];
-        p.style.background = color;
-        p.style.boxShadow = `0 0 6px ${color}, 0 0 12px ${color}`;
-        container.appendChild(p);
-    }
-}
-
 function loadPromotorList() {
   window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
     const liveEl = document.getElementById('live-status-text');
@@ -1121,9 +688,33 @@ function loadPromotorList() {
       .sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
     renderCustomSelectOptions(list);
     if (liveEl) liveEl.innerText = `${list.length} promotor terdaftar`;
+    
+    // Isi dropdown promotor
+    isiDropdownPromotor(list);
   });
 }
 
+function isiDropdownPromotor(list) {
+  const selectEl = document.getElementById('selectPromotor');
+  if (!selectEl) return;
+  
+  let html = '<option value="">-- Pilih Promotor --</option>';
+  list.forEach(p => {
+    const key = String(p.key).replace(/"/g, '&quot;');
+    const label = String(p.namaAbsen || '-').replace(/</g, '&lt;');
+    html += `<option value="${key}">${label}</option>`;
+  });
+  selectEl.innerHTML = html;
+  
+  if (promotorTerpilih) {
+    selectEl.value = promotorTerpilih;
+  }
+}
+window.isiDropdownPromotor = isiDropdownPromotor;
+
+/* ============================================================ */
+/* ===== LOAD INFO (Promo/SOP) =============================== */
+/* ============================================================ */
 function loadInfoRealtime() {
   window.dbOnValue(window.dbRef(window.db, 'info'), snap => {
     if (snap.exists()) {
@@ -1138,7 +729,7 @@ function loadInfoRealtime() {
 }
 
 /* ============================================================ */
-/* ===== CUSTOM SELECT ========================================= */
+/* ===== CUSTOM SELECT LOGIN ================================= */
 /* ============================================================ */
 function toggleCustomSelect() {
   const menu = document.getElementById('custom-select-menu');
@@ -1188,6 +779,136 @@ document.addEventListener('click', (e) => {
 });
 
 /* ============================================================ */
+/* ===== LOGIN HANDLER ======================================== */
+/* ============================================================ */
+async function loginPromotor() {
+    const errEl = document.getElementById('login-error');
+    const btn = document.getElementById('btn-login-promotor');
+    const pin = document.getElementById('login-pin-input').value.trim();
+    errEl.innerHTML = '';
+    
+    if (!pin) {
+        errEl.innerHTML = 'Masukkan PIN!';
+        return;
+    }
+    
+    const asli = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Memeriksa...';
+    
+    try {
+        if (loginMode === 'promotor') {
+            const key = document.getElementById('login-pilih-sales').value;
+            if (!key) {
+                errEl.innerHTML = 'Pilih nama promotor dulu!';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
+            if (!snap.exists()) {
+                errEl.innerHTML = 'Promotor tidak ditemukan.';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            const data = snap.val();
+            if (String(data.pin) !== pin) {
+                errEl.innerHTML = 'PIN salah!';
+                document.getElementById('login-pin-input').value = '';
+                document.getElementById('login-pin-input').focus();
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            if (data.aktif === false) {
+                errEl.innerHTML = 'Akun promotor ini tidak aktif.';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            currentUser = { key, ...data, role: 'PROMOTOR', loginType: 'promotor' };
+            localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
+            
+        } else {
+            const username = document.getElementById('login-admin-username').value.trim().toUpperCase();
+            if (!username) {
+                errEl.innerHTML = 'Masukkan username admin!';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            const snap = await window.dbGet(window.dbRef(window.db, 'users/admin'));
+            if (!snap.exists()) {
+                errEl.innerHTML = 'Belum ada admin terdaftar.';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            const admins = snap.val();
+            let foundKey = null, foundData = null;
+            Object.keys(admins).forEach(k => {
+                const a = admins[k];
+                if (a && String(a.username || '').toUpperCase() === username) {
+                    foundKey = k;
+                    foundData = a;
+                }
+            });
+            
+            if (!foundKey) {
+                errEl.innerHTML = 'Username admin tidak ditemukan.';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            if (String(foundData.pin) !== pin) {
+                errEl.innerHTML = 'PIN admin salah!';
+                document.getElementById('login-pin-input').value = '';
+                document.getElementById('login-pin-input').focus();
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            if (foundData.aktif === false) {
+                errEl.innerHTML = 'Akun admin ini tidak aktif.';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            currentUser = {
+                key: foundKey,
+                username: foundData.username,
+                namaAbsen: foundData.nama || foundData.username,
+                namaSales: '',
+                pin: foundData.pin,
+                role: 'ADMIN',
+                loginType: 'admin'
+            };
+            localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
+        }
+        
+        document.getElementById('login-toast-name').innerText = currentUser.namaAbsen;
+        const toast = document.getElementById('login-toast');
+        toast.classList.add('active');
+        
+        setTimeout(() => {
+            tampilkanDashboard();
+            document.getElementById('login-pin-input').value = '';
+            document.getElementById('login-admin-username').value = '';
+            errEl.innerHTML = '';
+            btn.disabled = false; btn.innerHTML = asli;
+            setTimeout(() => { toast.classList.remove('active'); }, 600);
+        }, 1000);
+        
+    } catch (err) {
+        console.error('Login error:', err);
+        errEl.innerHTML = err.message;
+        btn.disabled = false; btn.innerHTML = asli;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('btn-login-promotor');
+  if (btn) btn.onclick = loginPromotor;
+  const pin = document.getElementById('login-pin-input');
+  if (pin) {
+    pin.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
+    pin.addEventListener('keypress', e => { if (e.key === 'Enter') loginPromotor(); });
+  }
+});
+
+/* ============================================================ */
 /* ===== DASHBOARD ============================================ */
 /* ============================================================ */
 function tampilkanDashboard() {
@@ -1198,18 +919,23 @@ function tampilkanDashboard() {
   
   const isAdmin = currentUser.role === 'ADMIN';
   
-  // Top bar
+  // Default promotor terpilih
+  promotorTerpilih = currentUser.key;
+  
+  // Tampilkan dropdown selector hanya untuk admin
   if (isAdmin) {
+    document.getElementById('promotorSelector').classList.remove('hidden');
     document.getElementById('userNama').innerHTML = 
-      `👑 <b>${currentUser.namaAbsen}</b> <span class="admin-badge-inline">ADMIN</span>`;
+      `${ICONS.crown} <b>${currentUser.namaAbsen}</b> <span class="admin-badge-inline">ADMIN</span>`;
     document.getElementById('topBar').classList.add('admin-mode');
   } else {
+    document.getElementById('promotorSelector').classList.add('hidden');
     document.getElementById('userNama').innerHTML = 
       `⭕ <b>${currentUser.namaAbsen}</b>`;
     document.getElementById('topBar').classList.remove('admin-mode');
   }
   
-  // Load penjualan
+  // Load penjualan (untuk semua)
   window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
     allPenjualan = [];
     if (snap.exists()) {
@@ -1222,25 +948,78 @@ function tampilkanDashboard() {
   });
   
   // Load absensi
-  if (isAdmin) {
-    window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
-      allAbsensi = snap.exists() ? snap.val() : {};
-      if (currentMenu === 'absensi' || currentMenu === 'denda') tampilkanDetail(currentMenu);
-    });
-  } else {
-    window.dbOnValue(window.dbRef(window.db, 'absensi/' + currentUser.key), snap => {
-      allAbsensi = snap.exists() ? snap.val() : {};
-      if (currentMenu === 'absensi') tampilkanDetail('absensi');
-    });
-  }
+  loadAbsensiUntukUser();
   
   renderMenuGrid();
 }
 
+function loadAbsensiUntukUser() {
+  const isAdmin = currentUser.role === 'ADMIN';
+  const targetKey = isAdmin ? (promotorTerpilih || currentUser.key) : currentUser.key;
+  
+  // Listen semua absensi (untuk admin), atau spesifik (untuk promotor)
+  if (isAdmin) {
+    window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
+      allAbsensi = snap.exists() ? snap.val() : {};
+      if (currentMenu === 'absensi') tampilkanDetail('absensi');
+    });
+  } else {
+    window.dbOnValue(window.dbRef(window.db, 'absensi/' + targetKey), snap => {
+      allAbsensi = snap.exists() ? snap.val() : {};
+      if (currentMenu === 'absensi') tampilkanDetail('absensi');
+    });
+  }
+}
+
+/* ============================================================ */
+/* ===== GANTI PROMOTOR (ADMIN) =============================== */
+/* ============================================================ */
+function gantiPromotorAdmin(keyPromotor) {
+  if (currentUser.role !== 'ADMIN') {
+    alert("Hanya admin yang bisa ganti promotor.");
+    return;
+  }
+  if (!keyPromotor) return;
+  
+  promotorTerpilih = keyPromotor;
+  
+  const dataPromotor = allPromotor[keyPromotor];
+  if (!dataPromotor) {
+    alert("Data promotor tidak ditemukan.");
+    return;
+  }
+  
+  // Loading indicator
+  const detailEl = document.getElementById('detailView');
+  detailEl.classList.remove('hidden');
+  detailEl.innerHTML = `
+    <div style="text-align:center; padding:40px; color:#d4af37; font-weight:700;">
+      <span class="spinner"></span> Memuat data ${dataPromotor.namaAbsen}...
+    </div>
+  `;
+  
+  // Ambil absensi spesifik promotor ini
+  window.dbGet(window.dbRef(window.db, 'absensi/' + keyPromotor)).then(snap => {
+    allAbsensi = snap.exists() ? snap.val() : {};
+    
+    // Render ulang menu aktif
+    if (currentMenu) {
+      tampilkanDetail(currentMenu);
+    } else {
+      tampilkanDetail('absensi');
+    }
+  });
+}
+window.gantiPromotorAdmin = gantiPromotorAdmin;
+
+/* ============================================================ */
+/* ===== MENU GRID ============================================ */
+/* ============================================================ */
 function renderMenuGrid() {
   currentMenu = null;
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
+  document.getElementById('promotorSelector').classList.add('hidden');
   const grid = document.getElementById('menuGrid');
   grid.classList.remove('hidden');
   
@@ -1282,6 +1061,15 @@ function kembaliKeMenu() {
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
   document.getElementById('menuGrid').classList.remove('hidden');
+  document.getElementById('promotorSelector').classList.add('hidden');
+  
+  // Reset promotor terpilih ke diri sendiri (untuk admin)
+  if (currentUser.role === 'ADMIN') {
+    promotorTerpilih = currentUser.key;
+    const selEl = document.getElementById('selectPromotor');
+    if (selEl) selEl.value = currentUser.key;
+  }
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 window.kembaliKeMenu = kembaliKeMenu;
@@ -1292,6 +1080,20 @@ function tampilkanDetail(menuKey) {
   const detailEl = document.getElementById('detailView');
   detailEl.classList.remove('hidden');
   
+  const isAdmin = currentUser.role === 'ADMIN';
+  
+  // Tampilkan dropdown promotor untuk menu tertentu (admin only)
+  const menuAdaDropdown = ['absensi', 'penjualan', 'uc', 'brand'];
+  const showSelector = isAdmin && menuAdaDropdown.includes(menuKey);
+  
+  if (showSelector) {
+    document.getElementById('promotorSelector').classList.remove('hidden');
+    const selEl = document.getElementById('selectPromotor');
+    if (selEl && promotorTerpilih) selEl.value = promotorTerpilih;
+  } else {
+    document.getElementById('promotorSelector').classList.add('hidden');
+  }
+  
   const titles = {
     absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
     penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
@@ -1299,8 +1101,8 @@ function tampilkanDetail(menuKey) {
     brand: { title: 'Perolehan Brand', subtitle: 'Rekap penjualan khusus brand Anda' },
     promo: { title: 'Promo Toko', subtitle: 'Daftar promo produk & program toko aktif' },
     sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' },
-    perolehan: { title: 'Perolehan Semua Promotor', subtitle: 'Peringkat & akumulasi omzet seluruh promotor' },
-    denda: { title: '⚖️ Denda & Keterlambatan', subtitle: 'Rekap denda UC & late semua promotor (Khusus Admin)' }
+    perolehan: { title: 'Perolehan All Promotor', subtitle: 'Peringkat & akumulasi omzet seluruh promotor' },
+    denda: { title: 'Denda & Keterlambatan', subtitle: 'Rekap denda UC & late semua promotor' }
   };
   
   const t = titles[menuKey] || { title: 'Detail', subtitle: '' };
@@ -1350,10 +1152,18 @@ function parseTanggal(str) {
   return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
 }
 
+/* ===== DATA SAYA (pakai promotorTerpilih kalau admin) ===== */
 function getDataSaya() {
     if (!currentUser) return [];
-    const namaAbsenUser = String(currentUser.namaAbsen || '').trim().toUpperCase();
-    const namaSalesUser = String(currentUser.namaSales || '').trim().toUpperCase();
+    
+    const targetKey = (currentUser.role === 'ADMIN' && promotorTerpilih) 
+        ? promotorTerpilih 
+        : currentUser.key;
+    
+    const dataP = allPromotor[targetKey] || currentUser;
+    const namaAbsenUser = String(dataP.namaAbsen || '').trim().toUpperCase();
+    const namaSalesUser = String(dataP.namaSales || '').trim().toUpperCase();
+    
     const semuaPenjualan = typeof allPenjualan !== 'undefined' ? allPenjualan : []; 
     return semuaPenjualan.filter(x => {
         if (!x) return false;
@@ -1364,96 +1174,95 @@ function getDataSaya() {
     });
 }
 
+/* ===== DATA PROMOTOR TERPILIH ===== */
+function getPromotorTerpilih() {
+    const targetKey = (currentUser.role === 'ADMIN' && promotorTerpilih) 
+        ? promotorTerpilih 
+        : currentUser.key;
+    return allPromotor[targetKey] || currentUser;
+}
+
 /* ============================================================ */
-/* ===== RENDER: BRAND ======================================== */
+/* ===== RENDER: ABSENSI ===================================== */
 /* ============================================================ */
-function renderBrand() {
-    const listAll = getDataSaya();
-    const brandPromotor = currentUser && currentUser.merk ? String(currentUser.merk).trim().toUpperCase() : "";
-    const list = listAll.filter(x => {
-        if (!x) return false;
-        const tgl = String(x.tanggal || '');
-        const noFaktur = String(x.nomorFaktur || x.noFaktur || '').toUpperCase();
-        const merkBarang = String(x.merk || '').trim().toUpperCase();
-        const kat = String(x.kategori || '').trim().toUpperCase();
-        if (kat === 'GARANSI' || kat === 'ONGKOS') return false;
-        const isOktoberFaktur = noFaktur.includes('2610');
-        const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10') || tgl.includes('2026-01-10');
-        const isMatchBrand = !brandPromotor || (merkBarang === brandPromotor || merkBarang.includes(brandPromotor));
-        return (isOktoberFaktur || isOktoberTgl) && isMatchBrand;
+function renderAbsensi() {
+  const isAdmin = currentUser.role === 'ADMIN';
+  
+  let entries = [];
+  
+  if (isAdmin) {
+    const targetKey = promotorTerpilih || currentUser.key;
+    const dataP = allAbsensi[targetKey] || {};
+    Object.values(dataP).forEach(item => {
+      if (item && item.hari) entries.push(item);
     });
+  } else {
+    entries = Object.values(allAbsensi || {}).filter(x => x && x.hari);
+  }
+  
+  entries.sort((a, b) => (Number(a.hari) || 0) - (Number(b.hari) || 0));
 
-    let totalBrandQty = 0;
-    let totalOmzetBrand = 0;
-    list.forEach(x => {
-        totalBrandQty += Number(x.qty || 1);
-        totalOmzetBrand += Number(x.subtotal || x.omzet || 0);
-    });
+  if (entries.length === 0) {
+    return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data absensi</div></div>`;
+  }
 
-    const namaPromotor = currentUser ? currentUser.namaAbsen : "Promotor";
-    const infoMerk = currentUser && currentUser.merk ? currentUser.merk : "Semua Brand";
+  let totalTerlambat = 0, tidakMasuk = 0, tidakPulang = 0;
+  entries.forEach(x => {
+    const isNoMasuk = !x.masuk || String(x.masuk).trim() === '' || x.masuk === '-';
+    const isNoPulang = !x.pulang || String(x.pulang).trim() === '' || x.pulang === '-';
+    if (String(x.terlambat).toUpperCase() === 'YA') totalTerlambat++;
+    if (isNoMasuk) tidakMasuk++;
+    if (isNoPulang) tidakPulang++;
+  });
 
-    let html = `
-        <div class="summary-card">
-            <h2>🏷️ ${namaPromotor}</h2>
-            <p>Brand: <b>${infoMerk}</b></p>
-            <p>Periode : <b>01/10/2026 - 31/10/2026</b></p>
-            <p>Total Perolehan Unit : <b>${totalBrandQty} Unit</b></p>
-            <p>Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetBrand.toLocaleString("id-ID")}</span></p>
-        </div>
-    `;
+  const dataProm = getPromotorTerpilih();
+  const namaTampil = dataProm.namaAbsen || '-';
 
-    if (list.length === 0) {
-        return html + `<div class="card"><div class="pesan" style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data penjualan untuk brand ${infoMerk}</div></div>`;
+  let html = `
+    <div class="summary-card">
+      <h2>${ICONS.trophy} ${namaTampil}</h2>
+      <p>Total Hari Absen : <b>${entries.length}</b></p>
+      <p>Datang Terlambat : <b>${totalTerlambat}</b></p>
+      <p>Tidak Finger Masuk : <b style="color:#f87171;">${tidakMasuk}</b></p>
+      <p>Tidak Finger Pulang : <b style="color:#f87171;">${tidakPulang}</b></p>
+    </div>
+    <div class="card-grid">
+  `;
+
+  entries.forEach(x => {
+    const isTerlambat = String(x.terlambat || "").toUpperCase() === "YA";
+    const isNoMasuk = !x.masuk || String(x.masuk).trim() === "" || x.masuk === "-";
+    const isNoPulang = !x.pulang || String(x.pulang).trim() === "" || x.pulang === "-";
+
+    let statusText = "Lengkap";
+    if (isNoMasuk && isNoPulang) statusText = "Tidak Finger";
+    else if (isNoMasuk) statusText = "Tidak Finger Masuk";
+    else if (isNoPulang) statusText = "Tidak Finger Pulang";
+
+    const status = `<span class="${(isNoMasuk || isNoPulang || isTerlambat) ? 'status-warning' : 'status-ok'}">${statusText}</span>`;
+
+    let tglAbsenStr = String(x.hari || '').trim();
+    if (!tglAbsenStr.includes('/') && !tglAbsenStr.includes('-')) {
+        const hariAngka = tglAbsenStr.padStart(2, '0');
+        tglAbsenStr = `10/${hariAngka}/2026`;
     }
+    const formatTglFinal = tanggalKeNama(tglAbsenStr);
 
-    const grupTanggal = {};
-    list.forEach(x => {
-        const tglKey = x.tanggal || 'Tanpa Tanggal';
-        if (!grupTanggal[tglKey]) grupTanggal[tglKey] = [];
-        grupTanggal[tglKey].push(x);
-    });
+    html += `
+      <div class="card ${isNoMasuk || isNoPulang ? 'warning' : 'success'}">
+        <div class="tanggal">${ICONS.calendar} ${formatTglFinal}<br>${status}</div>
+        <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${x.masuk}</span>`}</div>
+        <div class="row"><span>Istirahat 1</span>${x.istirahat1 ? `<span class="ok">${x.istirahat1}</span>` : '<span class="kosong">-</span>'}</div>
+        <div class="row"><span>Kembali 1</span>${x.kembali1 ? `<span class="ok">${x.kembali1}</span>` : '<span class="kosong">-</span>'}</div>
+        <div class="row"><span>Istirahat 2</span>${x.istirahat2 ? `<span class="ok">${x.istirahat2}</span>` : '<span class="kosong">-</span>'}</div>
+        <div class="row"><span>Kembali 2</span>${x.kembali2 ? `<span class="ok">${x.kembali2}</span>` : '<span class="kosong">-</span>'}</div>
+        <div class="row"><span>Pulang</span>${isNoPulang ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${x.pulang}</span>`}</div>
+      </div>
+    `;
+  });
 
-    const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
-        const da = parseTanggal(a), db = parseTanggal(b);
-        return (db || 0) - (da || 0);
-    });
-
-    html += `<div class="card-grid">`;
-    keysSorted.forEach(tgl => {
-        const items = grupTanggal[tgl];
-        let subTotalQtyHari = 0;
-        let subTotalOmzetHari = 0;
-        let isiProduk = '';
-        items.forEach((it, idx) => {
-            const namaProduk = it.namaBarang || it.produk || "-";
-            const qtyTrans = Number(it.qty || 1);
-            const subtotalTrans = Number(it.subtotal || it.omzet || 0);
-            const kategoriTrans = it.kategori || "-";
-            subTotalQtyHari += qtyTrans;
-            subTotalOmzetHari += subtotalTrans;
-            isiProduk += `
-                <div style="${idx > 0 ? 'margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.05);' : ''}">
-                    <div style="font-size:11px; color:#d4af37; margin-bottom:2px;">Brand: ${it.merk || infoMerk}</div>
-                    <div style="font-size:11px; color:#9ca3af; margin-bottom:2px;">Kategori: ${kategoriTrans}</div>
-                    <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:4px; color:#e5e7eb;">${namaProduk}</div>
-                    <div class="row"><span>Qty</span><span>${qtyTrans} Unit</span></div>
-                    <div class="row"><span>Omzet</span><span>Rp ${subtotalTrans.toLocaleString("id-ID")}</span></div>
-                </div>
-            `;
-        });
-        html += `
-        <div class="card success">
-            <div class="tanggal">${ICONS.calendar} ${tanggalKeNama(tgl)}</div>
-            ${isiProduk}
-            <div class="row" style="font-weight:700; font-size:13px; margin-top:6px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;">
-                <span>Total Hari Ini</span>
-                <span style="color:#34d399;">${subTotalQtyHari} Unit (Rp ${subTotalOmzetHari.toLocaleString("id-ID")})</span>
-            </div>
-        </div>`;
-    });
-    html += `</div>`;
-    return html;
+  html += `</div>`;
+  return html;
 }
 
 /* ============================================================ */
@@ -1474,9 +1283,12 @@ function renderPenjualan() {
     tglTerakhir = tglSort[tglSort.length - 1] || '-';
   }
 
+  const dataProm = getPromotorTerpilih();
+  const namaTampil = dataProm.namaAbsen || '-';
+
   let html = `
     <div class="summary-card">
-      <h2>${ICONS.money} ${currentUser.namaAbsen || '-'}</h2>
+      <h2>${ICONS.money} ${namaTampil}</h2>
       <p>Periode : <b>${tanggalKeNama(tglPertama)} - ${tanggalKeNama(tglTerakhir)}</b></p>
       <p>Total Unit : <b>${totalUnit}</b></p>
       <p>Total Omzet : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzet.toLocaleString('id-ID')}</span></p>
@@ -1540,7 +1352,7 @@ function renderUC() {
         const kat = String(x.kategori || '').trim().toUpperCase();
         const namaBrd = String(x.namaBarang || '').trim().toUpperCase();
         const isOktoberFaktur = noFaktur.includes('2610');
-        const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10') || tgl.includes('2026-01-10');
+        const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10');
         const isMurniUC = (kat === 'GARANSI') && namaBrd.includes('UFO CARE');
         return (isOktoberFaktur || isOktoberTgl) && isMurniUC;
     });
@@ -1548,17 +1360,19 @@ function renderUC() {
     let totalUC = 0;
     list.forEach(x => { totalUC += Number(x.qty || 1); });
 
-    const namaPromotor = currentUser ? currentUser.namaAbsen : "Promotor";
+    const dataProm = getPromotorTerpilih();
+    const namaPromotor = dataProm.namaAbsen || "Promotor";
+
     let html = `
         <div class="summary-card">
-            <h2>💎 ${namaPromotor}</h2>
+            <h2>${ICONS.uc} ${namaPromotor}</h2>
             <p>Periode : <b>Bulan Ini</b></p>
             <p>Total UC : <b>${totalUC}</b></p>
         </div>
     `;
 
     if (list.length === 0) {
-        return html + `<div class="card"><div class="pesan">Belum ada data UC</div></div>`;
+        return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UC bulan ini</div></div>`;
     }
 
     html += `<div class="card-grid">`;
@@ -1577,88 +1391,93 @@ function renderUC() {
 }
 
 /* ============================================================ */
-/* ===== RENDER: ABSENSI ===================================== */
+/* ===== RENDER: BRAND ======================================= */
 /* ============================================================ */
-function renderAbsensi() {
-  const isAdmin = currentUser.role === 'ADMIN';
-  
-  let entries = [];
-  if (isAdmin) {
-    // Admin: allAbsensi = { keyPromotor: { data1, data2 } }
-    Object.keys(allAbsensi || {}).forEach(key => {
-      const dataP = allAbsensi[key];
-      if (!dataP || typeof dataP !== 'object') return;
-      Object.values(dataP).forEach(item => {
-        if (item && item.hari) entries.push(item);
-      });
+function renderBrand() {
+    const listAll = getDataSaya();
+    const dataProm = getPromotorTerpilih();
+    const brandPromotor = dataProm && dataProm.merk ? String(dataProm.merk).trim().toUpperCase() : "";
+    
+    const list = listAll.filter(x => {
+        if (!x) return false;
+        const tgl = String(x.tanggal || '');
+        const noFaktur = String(x.nomorFaktur || x.noFaktur || '').toUpperCase();
+        const merkBarang = String(x.merk || '').trim().toUpperCase();
+        const kat = String(x.kategori || '').trim().toUpperCase();
+        if (kat === 'GARANSI' || kat === 'ONGKOS') return false;
+        const isOktoberFaktur = noFaktur.includes('2610');
+        const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10');
+        const isMatchBrand = !brandPromotor || (merkBarang === brandPromotor || merkBarang.includes(brandPromotor));
+        return (isOktoberFaktur || isOktoberTgl) && isMatchBrand;
     });
-  } else {
-    entries = Object.values(allAbsensi || {}).filter(x => x && x.hari);
-  }
-  
-  entries.sort((a, b) => (Number(a.hari) || 0) - (Number(b.hari) || 0));
 
-  if (entries.length === 0) {
-    return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data absensi</div></div>`;
-  }
+    let totalBrandQty = 0, totalOmzetBrand = 0;
+    list.forEach(x => {
+        totalBrandQty += Number(x.qty || 1);
+        totalOmzetBrand += Number(x.subtotal || x.omzet || 0);
+    });
 
-  let totalTerlambat = 0, tidakMasuk = 0, tidakPulang = 0;
-  entries.forEach(x => {
-    const isNoMasuk = !x.masuk || String(x.masuk).trim() === '' || x.masuk === '-';
-    const isNoPulang = !x.pulang || String(x.pulang).trim() === '' || x.pulang === '-';
-    if (String(x.terlambat).toUpperCase() === 'YA') totalTerlambat++;
-    if (isNoMasuk) tidakMasuk++;
-    if (isNoPulang) tidakPulang++;
-  });
+    const namaPromotor = dataProm ? dataProm.namaAbsen : "Promotor";
+    const infoMerk = dataProm && dataProm.merk ? dataProm.merk : "Semua Brand";
 
-  const svgTrophy = `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#d4af37;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`;
-
-  const judul = isAdmin ? 'Absensi Semua Promotor' : (currentUser.namaAbsen || '-');
-  let html = `
-    <div class="summary-card">
-      <h2>${svgTrophy} ${judul}</h2>
-      <p>Total Hari Absen : <b>${entries.length}</b></p>
-      <p>Datang Terlambat : <b>${totalTerlambat}</b></p>
-      <p>Tidak Finger Masuk : <b style="color:#f87171;">${tidakMasuk}</b></p>
-      <p>Tidak Finger Pulang : <b style="color:#f87171;">${tidakPulang}</b></p>
-    </div>
-    <div class="card-grid">
-  `;
-
-  entries.forEach(x => {
-    const isTerlambat = String(x.terlambat || "").toUpperCase() === "YA";
-    const isNoMasuk = !x.masuk || String(x.masuk).trim() === "" || x.masuk === "-";
-    const isNoPulang = !x.pulang || String(x.pulang).trim() === "" || x.pulang === "-";
-
-    let statusText = "Lengkap";
-    if (isNoMasuk && isNoPulang) statusText = "Tidak Finger";
-    else if (isNoMasuk) statusText = "Tidak Finger Masuk";
-    else if (isNoPulang) statusText = "Tidak Finger Pulang";
-
-    const status = `<span class="${(isNoMasuk || isNoPulang || isTerlambat) ? 'status-warning' : 'status-ok'}">${statusText}</span>`;
-
-    let tglAbsenStr = String(x.hari || '').trim();
-    if (!tglAbsenStr.includes('/') && !tglAbsenStr.includes('-')) {
-        const hariAngka = tglAbsenStr.padStart(2, '0');
-        tglAbsenStr = `10/${hariAngka}/2026`;
-    }
-    const formatTglFinal = tanggalKeNama(tglAbsenStr);
-
-    html += `
-      <div class="card ${isNoMasuk || isNoPulang ? 'warning' : 'success'}">
-        <div class="tanggal">${ICONS.calendar} ${formatTglFinal}<br>${status}${isAdmin && x.nama ? '<br><span style="font-size:11px; color:#d4af37;">' + x.nama + '</span>' : ''}</div>
-        <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${x.masuk}</span>`}</div>
-        <div class="row"><span>Istirahat 1</span>${x.istirahat1 ? `<span class="ok">${x.istirahat1}</span>` : '<span class="kosong">-</span>'}</div>
-        <div class="row"><span>Kembali 1</span>${x.kembali1 ? `<span class="ok">${x.kembali1}</span>` : '<span class="kosong">-</span>'}</div>
-        <div class="row"><span>Istirahat 2</span>${x.istirahat2 ? `<span class="ok">${x.istirahat2}</span>` : '<span class="kosong">-</span>'}</div>
-        <div class="row"><span>Kembali 2</span>${x.kembali2 ? `<span class="ok">${x.kembali2}</span>` : '<span class="kosong">-</span>'}</div>
-        <div class="row"><span>Pulang</span>${isNoPulang ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${x.pulang}</span>`}</div>
-      </div>
+    let html = `
+        <div class="summary-card">
+            <h2>${ICONS.brand} ${namaPromotor}</h2>
+            <p>Brand : <b>${infoMerk}</b></p>
+            <p>Periode : <b>Bulan Ini</b></p>
+            <p>Total Perolehan Unit : <b>${totalBrandQty} Unit</b></p>
+            <p>Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetBrand.toLocaleString("id-ID")}</span></p>
+        </div>
     `;
-  });
 
-  html += `</div>`;
-  return html;
+    if (list.length === 0) {
+        return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data penjualan untuk brand ${infoMerk}</div></div>`;
+    }
+
+    const grupTanggal = {};
+    list.forEach(x => {
+        const tglKey = x.tanggal || 'Tanpa Tanggal';
+        if (!grupTanggal[tglKey]) grupTanggal[tglKey] = [];
+        grupTanggal[tglKey].push(x);
+    });
+
+    const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
+        const da = parseTanggal(a), db = parseTanggal(b);
+        return (db || 0) - (da || 0);
+    });
+
+    html += `<div class="card-grid">`;
+    keysSorted.forEach(tgl => {
+        const items = grupTanggal[tgl];
+        let subQty = 0, subOmzet = 0;
+        let isiProduk = '';
+        items.forEach((it, idx) => {
+            const q = Number(it.qty || 1);
+            const om = Number(it.subtotal || it.omzet || 0);
+            subQty += q;
+            subOmzet += om;
+            isiProduk += `
+                <div style="${idx > 0 ? 'margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.05);' : ''}">
+                    <div style="font-size:11px; color:#d4af37; margin-bottom:2px;">Brand: ${it.merk || infoMerk}</div>
+                    <div style="font-size:11px; color:#9ca3af; margin-bottom:2px;">Kategori: ${it.kategori || '-'}</div>
+                    <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:4px; color:#e5e7eb;">${it.namaBarang || it.produk || '-'}</div>
+                    <div class="row"><span>Qty</span><span>${q} Unit</span></div>
+                    <div class="row"><span>Omzet</span><span>Rp ${om.toLocaleString("id-ID")}</span></div>
+                </div>
+            `;
+        });
+        html += `
+        <div class="card success">
+            <div class="tanggal">${ICONS.calendar} ${tanggalKeNama(tgl)}</div>
+            ${isiProduk}
+            <div class="row" style="font-weight:700; font-size:13px; margin-top:6px; border-top:1px solid rgba(255,255,255,0.1); padding-top:6px;">
+                <span>Total Hari Ini</span>
+                <span style="color:#34d399;">${subQty} Unit (Rp ${subOmzet.toLocaleString("id-ID")})</span>
+            </div>
+        </div>`;
+    });
+    html += `</div>`;
+    return html;
 }
 
 /* ============================================================ */
@@ -1671,7 +1490,7 @@ function renderInfoList(arr, jenis) {
   if (jenis === 'promo') {
     return arr.map(x => `
       <div class="info-block" style="background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 18px; margin-bottom: 12px;">
-        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px;">🔥 ${x.judul || '-'}</div>
+        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px;">${ICONS.promo} ${x.judul || '-'}</div>
         ${x.periode ? `<div class="meta" style="color:#9ca3af; font-size: 12.5px;"><b>Periode:</b> ${x.periode}</div>` : ''}
         <div class="deskripsi" style="margin-top:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px; color:#d1d5db; font-size: 13px; line-height: 1.5;">${x.detail || '-'}</div>
       </div>
@@ -1679,7 +1498,7 @@ function renderInfoList(arr, jenis) {
   } else if (jenis === 'rules') {
     return arr.map(x => `
       <div class="info-block" style="background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 18px; margin-bottom: 12px;">
-        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px;">📌 ${x.poin || '-'}</div>
+        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px;">${ICONS.sop} ${x.poin || '-'}</div>
         <div class="deskripsi" style="margin-top:6px; color:#d1d5db; font-size: 13px; line-height: 1.5;">${x.deskripsi || '-'}</div>
       </div>
     `).join('');
@@ -1736,35 +1555,29 @@ function renderPerolehan() {
     const totalOmzetSemua = arr.reduce((s, x) => s + x.omzet, 0);
     const totalUCSemua = arr.reduce((s, x) => s + x.uc, 0);
 
-    // ===== SUMMARY dengan SVG =====
     let html = `
         <div class="summary-card">
             <h2>Perolehan All Promotor</h2>
-            <p>${SVG_ICONS.users} Jumlah Promotor : <b>${arr.length}</b></p>
-            <p>${SVG_ICONS.money} Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
-            <p>${SVG_ICONS.diamond} Total UC : <b>${totalUCSemua}</b></p>
+            <p>Jumlah Promotor : <b>${arr.length}</b></p>
+            <p>Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
+            <p>Total UC : <b>${totalUCSemua}</b></p>
         </div>
+        <div class="summary-card">
     `;
-
-    // ===== LIST RINGKAS =====
-    html += `<div class="summary-card">`;
 
     arr.forEach((p, i) => {
         const rank = i + 1;
         const omzetVal = Number(p.omzet || 0);
 
-        // Warna otomatis
-        let warnaOmzet = '#ef4444';        // Merah < 80jt
-        if (omzetVal >= 100000000) {
-            warnaOmzet = '#34d399';         // Hijau ≥ 100jt
-        } else if (omzetVal >= 80000000) {
-            warnaOmzet = '#f59e0b';         // Kuning 80jt-99jt
-        }
+        let warnaOmzet = '#ef4444';
+        if (omzetVal >= 100000000) warnaOmzet = '#34d399';
+        else if (omzetVal >= 80000000) warnaOmzet = '#f59e0b';
+
+        const isSelected = (currentUser.role === 'ADMIN' && promotorTerpilih === p.key);
+        const bgStyle = isSelected ? 'background:rgba(212,175,55,0.15); border-radius:8px; padding:10px 12px; margin:4px 0;' : '';
 
         html += `
-            <div class="row-perolehan" style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
-                
-                <!-- KIRI: Rank + Nama -->
+            <div class="row-perolehan" style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px; ${bgStyle}">
                 <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
                     <div style="width:26px; height:26px; border-radius:50%; background:#1f2937; border:1px solid rgba(212,175,55,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; color:#d4af37;">
                         ${rank}
@@ -1773,14 +1586,12 @@ function renderPerolehan() {
                         ${p.nama}
                     </div>
                 </div>
-
-                <!-- KANAN: Omzet + UC -->
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
                     <div style="font-weight:700; font-size:13.5px; color:${warnaOmzet};">
                         Rp ${omzetVal.toLocaleString('id-ID')}
                     </div>
-                    <div style="font-size:11.5px; font-weight:600; color:#d4af37; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
-                        ${SVG_ICONS.star} UC : ${p.uc || 0}
+                    <div style="font-size:11.5px; font-weight:600; color:#d4af37; margin-top:2px;">
+                        ${ICONS.star} UC : ${p.uc || 0}
                     </div>
                 </div>
             </div>
@@ -1791,6 +1602,9 @@ function renderPerolehan() {
     return html;
 }
 
+/* ============================================================ */
+/* ===== RENDER: DENDA (ADMIN) =============================== */
+/* ============================================================ */
 function renderDenda() {
     const DENDA_UC_PER_UNIT = 5000;
     const DENDA_LATE_PER_KALI = 10000;
@@ -1802,7 +1616,7 @@ function renderDenda() {
 
     let html = `
         <div class="summary-card">
-            <h2>${SVG_ICONS.warning} Denda & Keterlambatan Semua Promotor</h2>
+            <h2>${ICONS.warning} Denda & Keterlambatan Semua Promotor</h2>
             <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
                 <div style="flex:1; min-width:140px; background:rgba(239,68,68,0.1); padding:10px; border-radius:10px; border:1px solid rgba(239,68,68,0.3);">
                     <div style="font-size:10px; color:#9ca3af; font-weight:700;">DENDA UC</div>
@@ -1874,6 +1688,7 @@ function logoutPromotor() {
   allPenjualan = [];
   currentMenu = null;
   loginMode = 'promotor';
+  promotorTerpilih = null;
   
   document.getElementById('dashboard').classList.add('hidden');
   document.body.classList.remove('dashboard-active');
