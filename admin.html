@@ -83,67 +83,31 @@ body {
   border-bottom: 2px solid var(--border);
   margin-bottom: 24px;
 }
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
+.header-left { display: flex; align-items: center; gap: 14px; }
 .header-logo {
-  width: 48px;
-  height: 48px;
+  width: 48px; height: 48px;
   border-radius: 12px;
   background: linear-gradient(135deg, #3b82f6, #2563eb);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: flex; align-items: center; justify-content: center;
   box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
 }
-.header-logo svg {
-  width: 24px;
-  height: 24px;
-  stroke: white;
-  stroke-width: 2.2;
-  fill: none;
-}
-.header-title h1 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 800;
-  color: var(--text);
-  letter-spacing: -0.3px;
-}
-.header-title p {
-  margin: 2px 0 0;
-  font-size: 12px;
-  color: var(--muted);
-  font-weight: 500;
-}
-.header-right {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-}
+.header-logo svg { width: 24px; height: 24px; stroke: white; stroke-width: 2.2; fill: none; }
+.header-title h1 { margin: 0; font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
+.header-title p { margin: 2px 0 0; font-size: 12px; color: var(--muted); font-weight: 500; }
+.header-right { display: flex; gap: 8px; align-items: center; }
 .header-user {
   padding: 8px 14px;
-  background: #ecfdf5;
-  color: #065f46;
+  background: #ecfdf5; color: #065f46;
   border-radius: 99px;
-  font-size: 12px;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
+  font-size: 12px; font-weight: 700;
+  display: inline-flex; align-items: center; gap: 6px;
 }
 .header-user::before {
-  content: '';
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: #10b981;
-  box-shadow: 0 0 8px #10b981;
+  content: ''; width: 8px; height: 8px; border-radius: 50%;
+  background: #10b981; box-shadow: 0 0 8px #10b981;
 }
 
-/* TABS MODERN — SEMUA TAMPIL */
+/* TABS */
 .tabs {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
@@ -157,39 +121,17 @@ body {
 .tab-btn {
   padding: 12px 8px;
   border-radius: 10px;
-  background: transparent;
-  border: none;
+  background: transparent; border: none;
   color: var(--muted);
-  font-size: 11.5px;
-  font-weight: 700;
-  cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
+  font-size: 11.5px; font-weight: 700;
+  cursor: pointer; text-transform: uppercase; letter-spacing: 0.3px;
+  display: flex; flex-direction: column; align-items: center; gap: 4px;
   transition: all 0.2s ease;
 }
-.tab-btn svg {
-  width: 18px;
-  height: 18px;
-  stroke: currentColor;
-  stroke-width: 2.2;
-  fill: none;
-}
-.tab-btn:hover {
-  background: white;
-  color: var(--primary);
-}
-.tab-btn.active {
-  background: var(--primary);
-  color: white;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
-.tab-btn.active svg {
-  stroke: white;
-}
+.tab-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.2; fill: none; }
+.tab-btn:hover { background: white; color: var(--primary); }
+.tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
+.tab-btn.active svg { stroke: white; }
 
 /* CARD */
 .card { 
@@ -201,43 +143,25 @@ body {
 }
 .card h3 { 
   margin: 0 0 14px; 
-  font-size: 14px; 
-  font-weight: 800; 
-  color: var(--text); 
-  display: flex; 
-  align-items: center; 
-  gap: 8px; 
+  font-size: 14px; font-weight: 800; color: var(--text); 
+  display: flex; align-items: center; gap: 8px; 
 }
-.card h3 svg {
-  width: 18px;
-  height: 18px;
-  stroke: var(--primary);
-  stroke-width: 2.2;
-  fill: none;
-}
+.card h3 svg { width: 18px; height: 18px; stroke: var(--primary); stroke-width: 2.2; fill: none; }
 .card p { margin: 0 0 12px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
 
 /* FORM */
 label { 
-  display: block; 
-  font-size: 11px; 
-  font-weight: 700; 
-  color: var(--muted); 
-  text-transform: uppercase; 
-  margin-bottom: 6px; 
-  letter-spacing: 0.3px; 
+  display: block; font-size: 11px; font-weight: 700; 
+  color: var(--muted); text-transform: uppercase; 
+  margin-bottom: 6px; letter-spacing: 0.3px; 
 }
 input, select { 
-  width: 100%; 
-  padding: 12px 14px; 
+  width: 100%; padding: 12px 14px; 
   border-radius: 12px; 
   border: 1px solid var(--border); 
   background: white; 
-  font-size: 14px; 
-  font-weight: 600; 
-  color: var(--text); 
-  outline: none; 
-  transition: all 0.2s;
+  font-size: 14px; font-weight: 600; color: var(--text); 
+  outline: none; transition: all 0.2s;
 }
 input:focus, select:focus { 
   border-color: var(--primary); 
@@ -248,25 +172,13 @@ input:focus, select:focus {
 button { 
   padding: 12px 16px; 
   border-radius: 12px; 
-  font-size: 12px; 
-  font-weight: 700; 
-  cursor: pointer; 
-  border: none; 
-  text-transform: uppercase; 
-  letter-spacing: 0.5px; 
+  font-size: 12px; font-weight: 700; 
+  cursor: pointer; border: none; 
+  text-transform: uppercase; letter-spacing: 0.5px; 
   transition: all 0.2s; 
-  display: inline-flex; 
-  justify-content: center; 
-  align-items: center; 
-  gap: 8px; 
+  display: inline-flex; justify-content: center; align-items: center; gap: 8px; 
 }
-button svg { 
-  width: 14px; 
-  height: 14px; 
-  stroke: currentColor; 
-  stroke-width: 2.4; 
-  fill: none; 
-}
+button svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 button:hover { transform: translateY(-1px); }
 .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
 .btn-primary:hover { background: var(--primary-dark); }
@@ -287,24 +199,9 @@ button:hover { transform: translateY(-1px); }
   background: rgba(37, 99, 235, 0.04);
   transition: all 0.2s;
 }
-.file-wrap:hover { 
-  background: rgba(37, 99, 235, 0.08); 
-  border-color: var(--primary-dark);
-}
-.file-wrap svg { 
-  width: 44px; 
-  height: 44px; 
-  stroke: var(--primary); 
-  stroke-width: 1.8; 
-  fill: none; 
-  margin-bottom: 10px; 
-}
-.file-wrap p { 
-  margin: 0; 
-  font-size: 13px; 
-  color: var(--muted); 
-  font-weight: 600; 
-}
+.file-wrap:hover { background: rgba(37, 99, 235, 0.08); border-color: var(--primary-dark); }
+.file-wrap svg { width: 44px; height: 44px; stroke: var(--primary); stroke-width: 1.8; fill: none; margin-bottom: 10px; }
+.file-wrap p { margin: 0; font-size: 13px; color: var(--muted); font-weight: 600; }
 .file-wrap strong { color: var(--primary); }
 .file-wrap input { display: none; }
 
@@ -312,12 +209,9 @@ button:hover { transform: translateY(-1px); }
 .alert { 
   padding: 12px 14px; 
   border-radius: 12px; 
-  font-size: 12.5px; 
-  font-weight: 600; 
+  font-size: 12.5px; font-weight: 600; 
   margin-bottom: 12px; 
-  display: flex; 
-  align-items: center; 
-  gap: 10px; 
+  display: flex; align-items: center; gap: 10px; 
   line-height: 1.5;
 }
 .alert.ok { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
@@ -326,18 +220,11 @@ button:hover { transform: translateY(-1px); }
 
 /* SPINNER */
 .spinner { 
-  display: inline-block; 
-  width: 14px; 
-  height: 14px; 
-  border: 2px solid rgba(255,255,255,0.3); 
-  border-top-color: white; 
-  border-radius: 50%; 
-  animation: spin 0.8s linear infinite; 
+  display: inline-block; width: 14px; height: 14px; 
+  border: 2px solid rgba(255,255,255,0.3); border-top-color: white; 
+  border-radius: 50%; animation: spin 0.8s linear infinite; 
 }
-.spinner-dark {
-  border: 2px solid rgba(0,0,0,0.1);
-  border-top-color: var(--primary);
-}
+.spinner-dark { border: 2px solid rgba(0,0,0,0.1); border-top-color: var(--primary); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* LIST ITEM */
@@ -347,10 +234,7 @@ button:hover { transform: translateY(-1px); }
   border-radius: 12px; 
   padding: 14px; 
   margin-bottom: 8px; 
-  display: flex; 
-  justify-content: space-between; 
-  align-items: center; 
-  gap: 12px;
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
   transition: all 0.15s;
 }
 .list-item:hover { box-shadow: var(--shadow); }
@@ -358,42 +242,21 @@ button:hover { transform: translateY(-1px); }
 .list-item .nama { font-size: 13.5px; font-weight: 700; color: var(--text); }
 .list-item .detail { font-size: 11.5px; color: var(--muted); margin-top: 3px; font-weight: 500; }
 .list-item .kanan { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
-.list-item.late-item {
-  border-left: 4px solid var(--warning) !important;
-  background: #fffbeb !important;
-}
+.list-item.late-item { border-left: 4px solid var(--warning) !important; background: #fffbeb !important; }
 
 /* STATS */
-.stats-grid { 
-  display: grid; 
-  grid-template-columns: repeat(3, 1fr); 
-  gap: 12px; 
-}
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
 .stat-card { 
-  background: white; 
-  border: 1px solid var(--border); 
-  border-radius: 14px; 
-  padding: 16px 12px; 
-  text-align: center; 
-  transition: all 0.2s;
+  background: white; border: 1px solid var(--border); 
+  border-radius: 14px; padding: 16px 12px; 
+  text-align: center; transition: all 0.2s;
 }
-.stat-card:hover { 
-  box-shadow: var(--shadow); 
-  transform: translateY(-2px);
-}
+.stat-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
 .stat-card .label { 
-  font-size: 10px; 
-  font-weight: 800; 
-  color: var(--muted); 
-  text-transform: uppercase; 
-  letter-spacing: 0.5px; 
-  margin-bottom: 6px; 
+  font-size: 10px; font-weight: 800; color: var(--muted); 
+  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; 
 }
-.stat-card .value { 
-  font-size: 20px; 
-  font-weight: 900; 
-  color: var(--primary); 
-}
+.stat-card .value { font-size: 20px; font-weight: 900; color: var(--primary); }
 .stat-card.full { grid-column: 1 / -1; }
 .stat-card.success .value { color: var(--success); }
 .stat-card.warning .value { color: var(--warning); }
@@ -403,73 +266,84 @@ button:hover { transform: translateY(-1px); }
 .late-marker {
   background: linear-gradient(135deg, #fef3c7, #fde68a);
   border: 1.5px solid var(--warning);
-  border-radius: 8px;
-  padding: 4px 10px;
-  font-size: 10px;
-  font-weight: 800;
-  color: #92400e;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  border-radius: 8px; padding: 4px 10px;
+  font-size: 10px; font-weight: 800;
+  color: #92400e; text-transform: uppercase; letter-spacing: 0.5px;
 }
 
 /* FORM GRID */
-.form-grid { 
-  display: grid; 
-  grid-template-columns: 1fr 1fr; 
-  gap: 10px; 
-  margin-bottom: 12px;
-}
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 
-/* DASHBOARD WELCOME */
+/* WELCOME CARD */
 .welcome-card {
   background: linear-gradient(135deg, #1e40af, #3b82f6);
-  color: white;
-  border-radius: 16px;
-  padding: 24px;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
+  color: white; border-radius: 16px;
+  padding: 24px; margin-bottom: 20px;
+  position: relative; overflow: hidden;
 }
 .welcome-card::before {
-  content: '';
-  position: absolute;
-  top: -50px;
-  right: -50px;
-  width: 200px;
-  height: 200px;
-  background: rgba(255,255,255,0.1);
-  border-radius: 50%;
+  content: ''; position: absolute; top: -50px; right: -50px;
+  width: 200px; height: 200px;
+  background: rgba(255,255,255,0.1); border-radius: 50%;
 }
-.welcome-card h2 {
-  margin: 0 0 6px;
-  font-size: 22px;
-  font-weight: 800;
-  position: relative;
-}
-.welcome-card p {
-  margin: 0;
-  font-size: 13px;
-  opacity: 0.9;
-  position: relative;
-  color: white;
-}
+.welcome-card h2 { margin: 0 0 6px; font-size: 22px; font-weight: 800; position: relative; }
+.welcome-card p { margin: 0; font-size: 13px; opacity: 0.9; position: relative; color: white; }
 
 /* LOGIN */
-#loginBox {
-  max-width: 400px;
-  margin: 40px auto;
+#loginBox { max-width: 400px; margin: 40px auto; }
+#loginBox .card { background: white; padding: 28px; border-radius: 20px; box-shadow: var(--shadow-lg); }
+#loginBox h3 { font-size: 18px; text-align: center; margin-bottom: 20px; }
+
+/* MODAL POPUP CUSTOM */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(15, 23, 42, 0.5);
+  backdrop-filter: blur(6px);
+  display: flex; justify-content: center; align-items: center;
+  z-index: 99999;
+  opacity: 0; visibility: hidden;
+  transition: all 0.25s ease;
+  padding: 16px;
 }
-#loginBox .card {
-  background: white;
-  padding: 28px;
-  border-radius: 20px;
-  box-shadow: var(--shadow-lg);
-}
-#loginBox h3 {
-  font-size: 18px;
+.modal-overlay.active { opacity: 1; visibility: visible; }
+.modal-box {
+  background: white; border-radius: 20px;
+  padding: 28px 24px; max-width: 380px; width: 100%;
   text-align: center;
-  margin-bottom: 20px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  transform: scale(0.9);
+  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
+.modal-overlay.active .modal-box { transform: scale(1); }
+.modal-icon {
+  width: 64px; height: 64px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.modal-icon.warning { background: #fef3c7; color: #d97706; }
+.modal-icon.success { background: #ecfdf5; color: #10b981; }
+.modal-icon.danger { background: #fef2f2; color: #ef4444; }
+.modal-icon.info { background: #eff6ff; color: #2563eb; }
+.modal-icon svg { width: 32px; height: 32px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+.modal-title { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+.modal-desc { font-size: 13.5px; color: var(--muted); line-height: 1.5; margin-bottom: 22px; white-space: pre-line; }
+.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-actions.single { grid-template-columns: 1fr; }
+.modal-btn {
+  padding: 12px 16px; border-radius: 12px;
+  font-size: 12px; font-weight: 700; cursor: pointer; border: none;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  transition: all 0.2s;
+  display: inline-flex; justify-content: center; align-items: center; gap: 6px;
+}
+.modal-btn-cancel { background: var(--soft); color: var(--text); border: 1px solid var(--border); }
+.modal-btn-cancel:hover { background: var(--border); }
+.modal-btn-ok-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
+.modal-btn-ok-primary:hover { background: var(--primary-dark); }
+.modal-btn-ok-danger { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
+.modal-btn-ok-success { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
 
 /* HIDDEN */
 .hidden { display: none !important; }
@@ -558,16 +432,106 @@ button:hover { transform: translateY(-1px); }
   </div>
 </div>
 
+<!-- ===== MODAL POPUP CUSTOM ===== -->
+<div id="modalPopup" class="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-icon warning" id="modalIcon">
+      <svg viewBox="0 0 24 24">
+        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+        <line x1="12" y1="9" x2="12" y2="13"/>
+        <line x1="12" y1="17" x2="12.01" y2="17"/>
+      </svg>
+    </div>
+    <div class="modal-title" id="modalTitle">Konfirmasi</div>
+    <div class="modal-desc" id="modalDesc">Yakin ingin melanjutkan?</div>
+    <div class="modal-actions" id="modalActions">
+      <button class="modal-btn modal-btn-cancel" onclick="tutupModal()">Batal</button>
+      <button class="modal-btn modal-btn-ok-primary" id="modalBtnOk" onclick="konfirmasiModal()">OK</button>
+    </div>
+  </div>
+</div>
+
 <script>
+/* ============================================================ */
+/* ===== MODAL POPUP CUSTOM ==================================== */
+/* ============================================================ */
+let _modalCallback = null;
+
+function tampilkanModal(title, desc, opts, onOk) {
+  opts = opts || {};
+  const type = opts.type || 'warning';
+  const okText = opts.okText || 'OK';
+  const cancelText = opts.cancelText || 'Batal';
+  const showCancel = opts.showCancel !== false;
+  
+  document.getElementById('modalTitle').innerText = title;
+  document.getElementById('modalDesc').innerText = desc;
+  
+  const iconEl = document.getElementById('modalIcon');
+  iconEl.className = 'modal-icon ' + type;
+  
+  let iconSvg = '';
+  if (type === 'warning') {
+    iconSvg = '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>';
+  } else if (type === 'success') {
+    iconSvg = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>';
+  } else if (type === 'danger') {
+    iconSvg = '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
+  } else {
+    iconSvg = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>';
+  }
+  iconEl.innerHTML = '<svg viewBox="0 0 24 24">' + iconSvg + '</svg>';
+  
+  const actionsEl = document.getElementById('modalActions');
+  const btnClass = type === 'danger' ? 'modal-btn-ok-danger' : type === 'success' ? 'modal-btn-ok-success' : 'modal-btn-ok-primary';
+  
+  if (showCancel) {
+    actionsEl.className = 'modal-actions';
+    actionsEl.innerHTML = `
+      <button class="modal-btn modal-btn-cancel" onclick="tutupModal()">${cancelText}</button>
+      <button class="modal-btn ${btnClass}" id="modalBtnOk" onclick="konfirmasiModal()">${okText}</button>
+    `;
+  } else {
+    actionsEl.className = 'modal-actions single';
+    actionsEl.innerHTML = `
+      <button class="modal-btn ${btnClass}" id="modalBtnOk" onclick="konfirmasiModal()">${okText}</button>
+    `;
+  }
+  
+  _modalCallback = onOk || null;
+  document.getElementById('modalPopup').classList.add('active');
+}
+
+function tutupModal() {
+  document.getElementById('modalPopup').classList.remove('active');
+  _modalCallback = null;
+}
+
+function konfirmasiModal() {
+  const cb = _modalCallback;
+  tutupModal();
+  if (cb) cb();
+}
+
+function tampilkanNotif(title, desc, type) {
+  tampilkanModal(title, desc, { type: type || 'info', showCancel: false, okText: 'OK' }, null);
+}
+
+function tampilkanKonfirmasi(title, desc, onOk, type) {
+  tampilkanModal(title, desc, { type: type || 'warning', showCancel: true }, onOk);
+}
+
+/* ============================================================ */
+/* ===== STATE ================================================= */
+/* ============================================================ */
 let savedPin = localStorage.getItem('ufo_admin_pin3') || '';
 let currentTab = 'dash';
 let allPromotor = {};
 let allPenjualan = {};
 let allAbsensi = {};
 
-
 /* ============================================================ */
-/* ===== HELPER: CONVERT TANGGAL EXCEL ========================= */
+/* ===== HELPER ================================================ */
 /* ============================================================ */
 function convertTanggalExcel(val) {
   if (val === undefined || val === null || val === '') return '';
@@ -684,13 +648,19 @@ async function loginAdmin() {
 }
 
 function logoutAdmin() {
-  if (!confirm('Yakin ingin keluar?')) return;
-  localStorage.removeItem('ufo_admin_pin3');
-  savedPin = '';
-  document.getElementById('panelAdmin').classList.add('hidden');
-  document.getElementById('loginBox').classList.remove('hidden');
-  document.getElementById('headerUser').classList.add('hidden');
-  document.getElementById('btnLogoutHeader').classList.add('hidden');
+  tampilkanKonfirmasi(
+    'Keluar dari Akun?',
+    'Yakin ingin keluar dari dashboard admin?',
+    () => {
+      localStorage.removeItem('ufo_admin_pin3');
+      savedPin = '';
+      document.getElementById('panelAdmin').classList.add('hidden');
+      document.getElementById('loginBox').classList.remove('hidden');
+      document.getElementById('headerUser').classList.add('hidden');
+      document.getElementById('btnLogoutHeader').classList.add('hidden');
+    },
+    'warning'
+  );
 }
 
 /* ============================================================ */
@@ -709,7 +679,6 @@ function mulaiAdmin() {
     allAbsensi = snap.exists() ? snap.val() : {};
     if (currentTab === 'terlambat') renderTab();
   });
- 
   renderTab();
 }
 
@@ -737,7 +706,6 @@ function renderDash() {
   const trans = Object.values(allPenjualan);
   const jmlTrans = trans.length;
   const jmlAbsensi = Object.keys(allAbsensi).length;
- 
   const totalOmzet = trans.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS').reduce((s, x) => s + (Number(x.subtotal) || 0), 0);
   
   return `
@@ -764,10 +732,6 @@ function renderDash() {
           <div class="label">Absensi</div>
           <div class="value">${jmlAbsensi}</div>
         </div>
-              <div class="stat-card">
-          <div class="label">Upload</div>
-          <div class="value">-</div>
-        </div>
         <div class="stat-card full success">
           <div class="label">Total Omzet</div>
           <div class="value" style="font-size:24px;">Rp ${totalOmzet.toLocaleString('id-ID')}</div>
@@ -778,7 +742,7 @@ function renderDash() {
 }
 
 /* ============================================================ */
-/* ===== UPLOAD (3 MENU) ======================================= */
+/* ===== UPLOAD ================================================ */
 /* ============================================================ */
 function renderUpload() {
   return `
@@ -802,7 +766,7 @@ function renderUpload() {
         <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg>
         2. Upload Data Master
       </h3>
-      <p>Upload file <b>ABSEN FINGER.xlsx</b> lengkap (promotor, finger, penjualan, promo, dll). Untuk upload pertama kali atau update menyeluruh.</p>
+      <p>Upload file <b>ABSEN FINGER.xlsx</b> lengkap (promotor, finger, penjualan, promo, dll).</p>
       <div class="file-wrap" onclick="document.getElementById('fileMaster').click()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <p><strong>Klik pilih file Master</strong></p>
@@ -827,9 +791,7 @@ function renderUpload() {
   `;
 }
 
-/* ============================================================ */
-/* ===== HANDLE FILE FINGER (SHEET "Punch") ==================== */
-/* ============================================================ */
+/* ===== HANDLE FILE FINGER ===== */
 function handleFileFinger(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -842,8 +804,6 @@ function handleFileFinger(e) {
       const data = new Uint8Array(evt.target.result);
       const wb = XLSX.read(data, { type: 'array' });
       
-      console.log('📋 Sheet terdeteksi:', wb.SheetNames);
-      
       const sheetName = wb.SheetNames.find(n => 
         n.toLowerCase().includes('punch') || n.toLowerCase().includes('raw')
       ) || wb.SheetNames[0];
@@ -854,30 +814,22 @@ function handleFileFinger(e) {
         return;
       }
       
-      console.log('📋 Pakai sheet:', sheetName);
-      
       const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
-      console.log('📋 Total baris:', rows.length);
-      
       const absensiData = {};
       let promotorCount = 0;
       let hariCount = 0;
       let skipList = [];
-      let cocokList = [];
       
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         if (!row || !row[0]) continue;
-        
         const rowText = String(row[0]);
         if (!rowText.includes('Nama:')) continue;
-        
         const m = rowText.match(/Nama:(\S+)/);
         if (!m) continue;
         let namaFinger = m[1].trim();
         if (!namaFinger) continue;
         
-        // Cari promotor yang cocok
         const cleanKey = sanitizeKey(namaFinger);
         let foundKey = null;
         let foundPromotor = null;
@@ -886,7 +838,6 @@ function handleFileFinger(e) {
           foundKey = cleanKey;
           foundPromotor = allPromotor[cleanKey];
         } else {
-          // Coba cari berdasarkan nama yang mengandung namaFinger
           const upperNamaFinger = namaFinger.toUpperCase();
           for (const k of Object.keys(allPromotor)) {
             const p = allPromotor[k];
@@ -903,8 +854,6 @@ function handleFileFinger(e) {
           continue;
         }
         
-        cocokList.push(`${namaFinger} → ${foundPromotor.namaAbsen}`);
-        
         const dateRow = rows[i + 1];
         const jamRow = rows[i + 2];
         if (!dateRow || !jamRow) continue;
@@ -917,12 +866,10 @@ function handleFileFinger(e) {
         for (let col = 1; col < Math.max(dateRow.length, jamRow.length); col++) {
           const hariNum = parseInt(dateRow[col]) || 0;
           const jamStr = String(jamRow[col] || '').trim();
-          
           if (hariNum < 1 || hariNum > 31) continue;
           if (!jamStr) continue;
           
           const jamParts = jamStr.split(/\s+/).filter(j => j.includes(':'));
-          
           let masuk = '', ist1 = '', kem1 = '', ist2 = '', kem2 = '', pulang = '';
           
           switch (jamParts.length) {
@@ -932,31 +879,20 @@ function handleFileFinger(e) {
             case 4: masuk = jamParts[0]; ist1 = jamParts[1]; kem1 = jamParts[2]; pulang = jamParts[3]; break;
             case 5: masuk = jamParts[0]; ist1 = jamParts[1]; kem1 = jamParts[2]; ist2 = jamParts[3]; pulang = jamParts[4]; break;
             default:
-              masuk = jamParts[0] || ''; 
-              ist1 = jamParts[1] || ''; 
-              kem1 = jamParts[2] || ''; 
-              ist2 = jamParts[3] || ''; 
-              kem2 = jamParts[4] || ''; 
-              pulang = jamParts[5] || '';
+              masuk = jamParts[0] || ''; ist1 = jamParts[1] || ''; kem1 = jamParts[2] || ''; 
+              ist2 = jamParts[3] || ''; kem2 = jamParts[4] || ''; pulang = jamParts[5] || '';
           }
           
           absensiData[foundKey]['hari_' + hariNum] = {
             nama: foundPromotor.namaAbsen,
             hari: hariNum,
-            masuk: masuk,
-            istirahat1: ist1,
-            kembali1: kem1,
-            istirahat2: ist2,
-            kembali2: kem2,
-            pulang: pulang,
-            terlambat: '',
-            bulan: bulanIni
+            masuk: masuk, istirahat1: ist1, kembali1: kem1,
+            istirahat2: ist2, kembali2: kem2, pulang: pulang,
+            terlambat: '', bulan: bulanIni
           };
           hariCount++;
         }
       }
-      
-      console.log('✅ Proses selesai:', promotorCount, 'promotor,', hariCount, 'hari');
       
       if (promotorCount === 0) {
         el.innerHTML = `
@@ -981,7 +917,6 @@ function handleFileFinger(e) {
       `;
       
       window._fingerData = absensiData;
-      
     } catch (err) {
       console.error(err);
       el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
@@ -993,14 +928,12 @@ function handleFileFinger(e) {
 async function konfirmasiUploadFinger() {
   const data = window._fingerData;
   if (!data) return;
-  
   const el = document.getElementById('fingerInfo');
   el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Uploading ke Firebase...</div>';
   
   try {
     const snap = await window.dbGet(window.dbRef(window.db, 'absensi'));
     const existing = snap.exists() ? snap.val() : {};
-    
     const updates = {};
     let totalHari = 0;
     let totalUpdate = 0;
@@ -1009,12 +942,10 @@ async function konfirmasiUploadFinger() {
       Object.keys(data[keyPromotor]).forEach(hariKey => {
         const newData = data[keyPromotor][hariKey];
         const oldData = existing[keyPromotor]?.[hariKey];
-        
         if (oldData && String(oldData.terlambat || '').toUpperCase() === 'YA') {
           newData.terlambat = 'YA';
           totalUpdate++;
         }
-        
         updates[`absensi/${keyPromotor}/${hariKey}`] = newData;
         totalHari++;
       });
@@ -1030,7 +961,6 @@ async function konfirmasiUploadFinger() {
       </div>
       <button class="btn-soft btn-full" onclick="location.reload()">Refresh Halaman</button>
     `;
-    
     window._fingerData = null;
   } catch (err) {
     console.error(err);
@@ -1038,9 +968,7 @@ async function konfirmasiUploadFinger() {
   }
 }
 
-/* ============================================================ */
-/* ===== HANDLE FILE MASTER =================================== */
-/* ============================================================ */
+/* ===== HANDLE FILE MASTER ===== */
 function handleFileMaster(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -1051,9 +979,7 @@ function handleFileMaster(e) {
     try {
       const data = new Uint8Array(evt.target.result);
       const wb = XLSX.read(data, { type: 'array' });
-     const result = { promotor: [], penjualan: [], absensi: {}, info: {} };
-
-      console.log('📋 Sheet terdeteksi:', wb.SheetNames);
+      const result = { promotor: [], penjualan: [], absensi: {}, info: {} };
 
       const ms = wb.Sheets['MASTER_SALES'];
       if (ms) {
@@ -1064,17 +990,12 @@ function handleFileMaster(e) {
           const aktif = String(r[2]).trim().toUpperCase();
           const tampil = String(r[5] || '').trim().toUpperCase();
           const role = String(r[4] || 'USER').trim().toUpperCase();
-          if (aktif !== 'YA') continue;
-          if (tampil !== 'YA') continue;
-          if (role !== 'USER') continue;
+          if (aktif !== 'YA' || tampil !== 'YA' || role !== 'USER') continue;
           result.promotor.push({
-            namaAbsen: String(r[0]).trim(),
-            namaSales: String(r[1]).trim(),
+            namaAbsen: String(r[0]).trim(), namaSales: String(r[1]).trim(),
             pin: String(r[3]).trim().replace(/\.0$/, ''),
             ikutUC: String(r[6] || 'YA').trim().toUpperCase(),
-            targetUC: Number(r[7]) || 16,
-            merk: String(r[8] || '').trim(),
-            aktif: true
+            targetUC: Number(r[7]) || 16, merk: String(r[8] || '').trim(), aktif: true
           });
         }
       }
@@ -1087,12 +1008,9 @@ function handleFileMaster(e) {
           if (!r[0] || !r[1]) continue;
           if (String(r[5]).trim().toUpperCase() === 'TOTAL') continue;
           result.penjualan.push({
-            noFaktur: String(r[1]).trim(),
-            tanggal: convertTanggalExcel(r[2]),
-            barcode: String(r[3]).trim(),
-            namaBarang: String(r[5]).trim(),
-            qty: Number(r[6]) || 0,
-            subtotal: Number(r[10]) || 0,
+            noFaktur: String(r[1]).trim(), tanggal: convertTanggalExcel(r[2]),
+            barcode: String(r[3]).trim(), namaBarang: String(r[5]).trim(),
+            qty: Number(r[6]) || 0, subtotal: Number(r[10]) || 0,
             namaSales: String(r[15]).trim(),
             kategori: String(r[17]).trim().toUpperCase(),
             merk: String(r[18]).trim().toUpperCase()
@@ -1103,12 +1021,10 @@ function handleFileMaster(e) {
       const ab = wb.Sheets['ABSENFINGER'];
       if (ab) {
         const rows = XLSX.utils.sheet_to_json(ab, { header: 1, defval: '' });
-        let countAbsensi = 0;
         for (let i = 1; i < rows.length; i++) {
           const r = rows[i];
           if (!r || !r[0] || String(r[0]).trim() === '') continue;
           const namaAbsen = String(r[0]).trim();
-          if (!namaAbsen) continue;
           let hariNum = 0;
           const tglRaw = r[1];
           if (tglRaw !== undefined && tglRaw !== null && tglRaw !== '') {
@@ -1127,7 +1043,6 @@ function handleFileMaster(e) {
             terlambat: String(r[8] || '').trim().toUpperCase(),
             bulan: String(r[9] || '').trim()
           };
-          countAbsensi++;
         }
       }
 
@@ -1146,16 +1061,11 @@ function handleFileMaster(e) {
       };
       result.info.promo = parseSheet(wb.Sheets['PROMO'], ['judul', 'periode', 'detail']);
       result.info.rules = parseSheet(wb.Sheets['RULES'], ['poin', 'deskripsi']);
-     
-
-  
-
-      
 
       const totalAbsensi = Object.values(result.absensi).reduce((s, o) => s + Object.keys(o).length, 0);
 
       el.innerHTML = `
-                <div class="alert ok">
+        <div class="alert ok">
           ✅ Siap upload:<br>
           • ${result.promotor.length} promotor<br>
           • ${result.penjualan.length} transaksi<br>
@@ -1202,7 +1112,6 @@ async function konfirmasiUploadMaster() {
     Object.keys(data.absensi).forEach(k => { updates['absensi/' + k] = data.absensi[k]; });
     if (data.info.promo.length) updates['info/promo'] = data.info.promo;
     if (data.info.rules.length) updates['info/rules'] = data.info.rules;
-  
 
     await window.dbUpdate(window.dbRef(window.db), updates);
     const totalAbsensi = Object.values(data.absensi).reduce((s, o) => s + Object.keys(o).length, 0);
@@ -1222,9 +1131,7 @@ async function konfirmasiUploadMaster() {
   }
 }
 
-/* ============================================================ */
-/* ===== HANDLE FILE PENJUALAN ================================= */
-/* ============================================================ */
+/* ===== HANDLE FILE PENJUALAN ===== */
 function handleFilePenjualan(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -1248,12 +1155,9 @@ function handleFilePenjualan(e) {
         if (!r || !r[1] || !r[2]) continue;
         if (String(r[5]).trim().toUpperCase() === 'TOTAL') continue;
         parsed.push({
-          noFaktur: String(r[1]).trim(),
-          tanggal: convertTanggalExcel(r[2]),
-          barcode: String(r[3]).trim(),
-          namaBarang: String(r[5]).trim(),
-          qty: Number(r[6]) || 0,
-          subtotal: Number(r[10]) || 0,
+          noFaktur: String(r[1]).trim(), tanggal: convertTanggalExcel(r[2]),
+          barcode: String(r[3]).trim(), namaBarang: String(r[5]).trim(),
+          qty: Number(r[6]) || 0, subtotal: Number(r[10]) || 0,
           namaSales: String(r[15]).trim(),
           kategori: String(r[17]).trim().toUpperCase(),
           merk: String(r[18]).trim().toUpperCase()
@@ -1353,8 +1257,15 @@ async function tambahPromotor() {
 }
 
 async function hapusPromotor(key, nama) {
-  if (!confirm(`Hapus "${nama}"?`)) return;
-  await window.dbRemove(window.dbRef(window.db, 'users/promotor/' + key));
+  tampilkanKonfirmasi(
+    'Hapus Promotor?',
+    `Yakin ingin hapus "${nama}"?\nData tidak bisa dikembalikan!`,
+    async () => {
+      await window.dbRemove(window.dbRef(window.db, 'users/promotor/' + key));
+      tampilkanNotif('Berhasil', 'Promotor berhasil dihapus.', 'success');
+    },
+    'danger'
+  );
 }
 
 /* ============================================================ */
@@ -1396,7 +1307,6 @@ function renderTerlambat() {
     const absensiP = allAbsensi[p.key] || {};
     const hariKeyToday = 'hari_' + tglDipilih;
     const h = absensiP[hariKeyToday];
-    
     const adaFinger = h && h.masuk && String(h.masuk).trim() !== '' && h.masuk !== '-';
     const sudahTerlambat = adaFinger && String(h.terlambat || '').toUpperCase() === 'YA';
     
@@ -1439,30 +1349,14 @@ async function toggleTerlambat(promotorKey, hari, sudahTerlambat) {
   try {
     const path = `absensi/${promotorKey}/hari_${hari}`;
     const snap = await window.dbGet(window.dbRef(window.db, path));
-    
     if (snap.exists()) {
       await window.dbUpdate(window.dbRef(window.db, path), {
         terlambat: sudahTerlambat ? '' : 'YA'
       });
-    } else {
-      const today = new Date();
-      await window.dbSet(window.dbRef(window.db, path), {
-        nama: allPromotor[promotorKey]?.namaAbsen || '',
-        hari: Number(hari),
-        masuk: '',
-        istirahat1: '',
-        kembali1: '',
-        istirahat2: '',
-        kembali2: '',
-        pulang: '',
-        terlambat: sudahTerlambat ? '' : 'YA',
-        bulan: getNamaBulan(today.getMonth() + 1)
-      });
     }
-    
     renderTab();
   } catch (err) {
-    alert('Gagal update: ' + err.message);
+    tampilkanNotif('Gagal', err.message, 'danger');
   }
 }
 
@@ -1485,19 +1379,56 @@ function renderDanger() {
   `;
 }
 
-async function hapusPenjualan() { if (confirm("Hapus SEMUA penjualan?")) { await window.dbRemove(window.dbRef(window.db, 'penjualan')); alert("✅ Dihapus."); } }
-async function hapusAbsensi() { if (confirm("Hapus SEMUA absensi?")) { await window.dbRemove(window.dbRef(window.db, 'absensi')); alert("✅ Dihapus."); } }
-async function hapusPromotorAll() { if (confirm("Hapus SEMUA promotor?")) { await window.dbRemove(window.dbRef(window.db, 'users/promotor')); alert("✅ Dihapus."); } }
+async function hapusPenjualan() {
+  tampilkanKonfirmasi(
+    'Hapus Semua Penjualan?',
+    'Semua data penjualan akan dihapus permanen.\n\nData tidak bisa dikembalikan!',
+    async () => {
+      await window.dbRemove(window.dbRef(window.db, 'penjualan'));
+      tampilkanNotif('Berhasil', 'Semua penjualan berhasil dihapus.', 'success');
+    },
+    'danger'
+  );
+}
+
+async function hapusAbsensi() {
+  tampilkanKonfirmasi(
+    'Hapus Semua Absensi?',
+    'Semua data absensi akan dihapus permanen.\n\nData tidak bisa dikembalikan!',
+    async () => {
+      await window.dbRemove(window.dbRef(window.db, 'absensi'));
+      tampilkanNotif('Berhasil', 'Semua absensi berhasil dihapus.', 'success');
+    },
+    'danger'
+  );
+}
+
+async function hapusPromotorAll() {
+  tampilkanKonfirmasi(
+    'Hapus Semua Promotor?',
+    'Semua data promotor akan dihapus permanen.\n\nData tidak bisa dikembalikan!',
+    async () => {
+      await window.dbRemove(window.dbRef(window.db, 'users/promotor'));
+      tampilkanNotif('Berhasil', 'Semua promotor berhasil dihapus.', 'success');
+    },
+    'danger'
+  );
+}
+
 async function hapusSemua() {
-  if (prompt('Ketik "HAPUS":') !== 'HAPUS') return;
-  await window.dbRemove(window.dbRef(window.db, 'penjualan'));
-  await window.dbRemove(window.dbRef(window.db, 'users'));
-  await window.dbRemove(window.dbRef(window.db, 'info'));
-  await window.dbRemove(window.dbRef(window.db, 'absensi'));
-  await window.dbRemove(window.dbRef(window.db, 'pelanggaran'));
-  await window.dbRemove(window.dbRef(window.db, 'rewardsSaya'));
-  await window.dbRemove(window.dbRef(window.db, 'config/lastUpload'));
-  alert("✅ Semua data dihapus.");
+  tampilkanKonfirmasi(
+    '⚠️ HAPUS SEMUA DATA?',
+    'Semua data (promotor, penjualan, absensi, dll) akan dihapus permanen.\n\nData tidak bisa dikembalikan!\n\nYakin ingin lanjut?',
+    async () => {
+      await window.dbRemove(window.dbRef(window.db, 'penjualan'));
+      await window.dbRemove(window.dbRef(window.db, 'users'));
+      await window.dbRemove(window.dbRef(window.db, 'info'));
+      await window.dbRemove(window.dbRef(window.db, 'absensi'));
+      await window.dbRemove(window.dbRef(window.db, 'config/lastUpload'));
+      tampilkanNotif('Berhasil', 'Semua data berhasil dihapus.', 'success');
+    },
+    'danger'
+  );
 }
 </script>
 
