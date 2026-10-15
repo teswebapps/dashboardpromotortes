@@ -720,6 +720,138 @@ body.light-mode .theme-toggle-btn:hover {
   background: #fde68a;
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
 }
+  /* ============================================================ */
+/* ===== FIX TEKS YANG TIDAK TERBACA DI LIGHT MODE =========== */
+/* ============================================================ */
+
+/* Nama produk dalam kartu penjualan/UC/brand */
+body.light-mode .card [style*="color:#e5e7eb"],
+body.light-mode .card [style*="color: #e5e7eb"] {
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+
+/* Kategori (MESIN CUCI), (GARANSI), dll */
+body.light-mode .card [style*="color:#38bdf8"],
+body.light-mode .card [style*="color: #38bdf8"] {
+  color: #0284c7 !important;
+  font-weight: 700 !important;
+}
+
+/* Brand di kartu Brand */
+body.light-mode .card [style*="color:#d4af37"],
+body.light-mode .card [style*="color: #d4af37"] {
+  color: #b8941f !important;
+  font-weight: 700 !important;
+}
+
+/* Kategori abu-abu di kartu Brand */
+body.light-mode .card [style*="color:#9ca3af"],
+body.light-mode .card [style*="color: #9ca3af"] {
+  color: #64748b !important;
+}
+
+/* Qty dan Omzet (row) sudah diatur, tapi pastikan teks lebih tebal */
+body.light-mode .card .row {
+  color: #475569 !important;
+  font-weight: 600 !important;
+}
+body.light-mode .card .row span:last-child {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* Total Hari Ini */
+body.light-mode .card .row[style*="font-weight:700"] {
+  color: #0f172a !important;
+}
+
+/* Pesan "Belum ada data" */
+body.light-mode .card [style*="color:#9ca3af"],
+body.light-mode .card [style*="text-align:center"] {
+  color: #64748b !important;
+}
+
+/* Tanggal di kartu */
+body.light-mode .tanggal {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+body.light-mode .tanggal svg {
+  stroke: #0284c7 !important;
+}
+
+/* Kartu late mode terang */
+body.light-mode .card.late .tanggal {
+  color: #92400e !important;
+  text-shadow: none !important;
+}
+body.light-mode .card.late .row {
+  color: #78350f !important;
+  font-weight: 700 !important;
+}
+body.light-mode .card.late .row span:last-child {
+  color: #78350f !important;
+}
+
+/* Row perolehan - nama promotor & angka */
+body.light-mode .row-perolehan div {
+  color: #1e293b !important;
+}
+body.light-mode .row-perolehan [style*="color:#d4af37"] {
+  color: #b8941f !important;
+}
+
+/* Info block (promo) - detail teks */
+body.light-mode .info-block div[style*="color:#e5e7eb"] {
+  color: #1e293b !important;
+}
+body.light-mode .info-block div[style*="color:#9ca3af"] {
+  color: #64748b !important;
+}
+body.light-mode .info-block div[style*="color:#facc15"] {
+  color: #b45309 !important;
+}
+
+/* SOP list - judul & sub */
+body.light-mode [onclick*="bukaModalSOP"] div[style*="color: #d4af37"] {
+  color: #b8941f !important;
+}
+body.light-mode [onclick*="bukaModalSOP"] div[style*="color: #9ca3af"] {
+  color: #64748b !important;
+}
+
+/* Modal SOP - background putih */
+body.light-mode #sopModal > div {
+  background: #ffffff !important;
+  border-color: rgba(212, 175, 55, 0.6) !important;
+}
+body.light-mode #sopModal > div > div[style*="color: #d4af37"] {
+  color: #b8941f !important;
+}
+
+/* Summary card - pastikan semua teks terbaca */
+body.light-mode .summary-card span {
+  color: inherit !important;
+}
+body.light-mode .summary-card span[style*="color:#34d399"] {
+  color: #059669 !important;
+  font-weight: 700 !important;
+}
+body.light-mode .summary-card span[style*="color:#f87171"] {
+  color: #dc2626 !important;
+}
+
+/* Kartu absensi - status text */
+body.light-mode .status-ok { color: #059669 !important; font-weight: 800 !important; }
+body.light-mode .status-warning { color: #dc2626 !important; font-weight: 800 !important; }
+body.light-mode .kosong { color: #dc2626 !important; font-weight: 800 !important; }
+body.light-mode .ok { color: #0f172a !important; font-weight: 700 !important; }
+
+/* Denda card - warna nominal */
+body.light-mode .card span[style*="color:#f87171"] { color: #dc2626 !important; }
+body.light-mode .card span[style*="color:#facc15"] { color: #b45309 !important; }
+body.light-mode .card span[style*="color:#34d399"] { color: #059669 !important; }
 </style>
 </head>
 <body class="login-active">
