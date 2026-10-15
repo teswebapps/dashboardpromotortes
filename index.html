@@ -764,14 +764,12 @@ function renderPenjualan() {
 
 // UC
 function renderUC() {
+  // Hanya mengambil transaksi milik promotor yang tanggalnya berada di bulan Oktober (Bulan 10, Tahun 2026)
   const list = getDataSaya().filter(x => {
-    if (!isBulanIni(x.tanggal)) return false;
-    
-    const kat = String(x.kategori || '').trim().toUpperCase();
-    const barang = String(x.namaBarang || '').trim().toUpperCase();
-    
-    // Menerima jika kategorinya GARANSI/UC ATAU nama barangnya mengandung kata ADHE/GARANSI
-    return kat === 'GARANSI' || kat === 'UC' || barang.includes('GARANSI') || barang.includes('ADHE');
+    const d = parseTanggal(x.tanggal);
+    if (!d) return false;
+    // Bulan di JavaScript dimulai dari 0 (0 = Januari, 9 = Oktober)
+    return d.getMonth() === 9 && d.getFullYear() === 2026;
   });
   
   const totalUC = list.reduce((s, x) => s + (Number(x.qty) || 1), 0);
@@ -788,7 +786,7 @@ function renderUC() {
     </div>
   `;
   if (list.length === 0) {
-    return html + `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data UC bulan ini</div></div>`;
+    return html + `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data UC bulan Oktober</div></div>`;
   }
 
   html += `<div class="card-grid">`;
@@ -804,8 +802,6 @@ function renderUC() {
   html += `</div>`;
   return html;
 }
-
-// BRAND
 function renderBrand() {
   const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS');
   const perBrand = {};
