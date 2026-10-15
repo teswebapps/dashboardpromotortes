@@ -770,15 +770,20 @@ function renderTerlambat() {
     ${listPromotor.length === 0 ? '<div class="alert warn">Belum ada promotor.</div>' : ''}
   `;
   
-  listPromotor.forEach(p => {
+ listPromotor.forEach(p => {
     const absensiP = allAbsensi[p.key] || {};
     const hariKeyToday = 'hari_' + hariIni;
-    const sudahTerlambat = absensiP[hariKeyToday] && 
-                            String(absensiP[hariKeyToday].terlambat || '').toUpperCase() === 'YA';
+    const h = absensiP[hariKeyToday];
     
+    // ✅ FIX: Cek apakah finger hari ini sudah ada
+    const adaFinger = h && h.masuk && String(h.masuk).trim() !== '' && h.masuk !== '-';
+    const sudahTerlambat = adaFinger && String(h.terlambat || '').toUpperCase() === 'YA';
+    
+    // Hitung total terlambat bulan ini (hanya yang ada finger)
     let totalBulanIni = 0;
-    Object.values(absensiP).forEach(h => {
-      if (h && String(h.terlambat || '').toUpperCase() === 'YA') totalBulanIni++;
+    Object.values(absensiP).forEach(a => {
+      const adaMasuk = a && a.masuk && String(a.masuk).trim() !== '' && a.masuk !== '-';
+      if (adaMasuk && String(a.terlambat || '').toUpperCase() === 'YA') totalBulanIni++;
     });
     
     html += `
@@ -787,19 +792,24 @@ function renderTerlambat() {
           <div class="nama">${p.namaAbsen}</div>
           <div class="detail">
             ${p.namaSales || '-'} • ${p.merk || '-'}
+            ${!adaFinger ? '<span style="color:#94a3b8; font-style:italic;"> • Finger belum diupload</span>' : ''}
             ${totalBulanIni > 0 ? `<span style="color:#d97706; font-weight:700;"> • ${totalBulanIni}x terlambat bulan ini</span>` : ''}
           </div>
         </div>
         <div class="kanan">
           ${sudahTerlambat ? '<span class="late-marker">TERLAMBAT</span>' : ''}
-          <button class="${sudahTerlambat ? 'btn-danger' : 'btn-soft'} btn-sm" 
-                  onclick="toggleTerlambat('${p.key}', ${hariIni}, ${sudahTerlambat})">
-            ${sudahTerlambat ? 'Batal' : 'Tandai'}
-          </button>
+          ${adaFinger ? `
+            <button class="${sudahTerlambat ? 'btn-danger' : 'btn-soft'} btn-sm" 
+                    onclick="toggleTerlambat('${p.key}', ${hariIni}, ${sudahTerlambat})">
+              ${sudahTerlambat ? 'Batal' : 'Tandai'}
+            </button>
+          ` : `
+            <button class="btn-soft btn-sm" disabled style="opacity:0.4; cursor:not-allowed;">-</button>
+          `}
         </div>
       </div>
     `;
-  });
+});
   
   html += `</div>`;
   
