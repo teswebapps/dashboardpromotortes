@@ -1133,41 +1133,7 @@ function tampilkanDetail(menuKey) {
   `;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-window.tampilkanDetail = tampilkanDetail;
-  
-  const titles = {
-    absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
-    penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
-    uc: { title: 'UC', subtitle: 'Pencapaian poin UC promotor' },
-    brand: { title: 'Perolehan Brand', subtitle: 'Rekap penjualan khusus brand Anda' },
-    promo: { title: 'Promo Toko', subtitle: 'Daftar promo produk & program toko aktif' },
-    sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' },
-    perolehan: { title: 'Perolehan All Promotor', subtitle: 'Peringkat & akumulasi omzet seluruh promotor' },
-    denda: { title: 'Denda & Keterlambatan', subtitle: 'Rekap denda UC & late semua promotor' }
-  };
-  
-  const t = titles[menuKey] || { title: 'Detail', subtitle: '' };
-  let content = '';
-  
-  if (menuKey === 'absensi') content = renderAbsensi();
-  else if (menuKey === 'penjualan') content = renderPenjualan();
-  else if (menuKey === 'uc') content = renderUC();
-  else if (menuKey === 'brand') content = renderBrand();
-  else if (menuKey === 'promo') content = renderInfoList(infoData.promo, 'promo');
-  else if (menuKey === 'sop') content = renderInfoList(infoData.rules, 'rules');
-  else if (menuKey === 'perolehan') content = renderPerolehan();
-  else if (menuKey === 'denda') content = renderDenda();
-  
-  detailEl.innerHTML = `
-    <div class="back-bar">
-      <button class="back-btn" onclick="kembaliKeMenu()">${ICONS.back} Kembali ke Menu</button>
-    </div>
-    <h2 class="detail-title">${t.title}</h2>
-    <p class="detail-subtitle">${t.subtitle}</p>
-    ${content}
-  `;
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
+
 
 
 /* ============================================================ */
