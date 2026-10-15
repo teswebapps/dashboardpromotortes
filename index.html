@@ -73,7 +73,7 @@ body {
 .hidden { display: none !important; }
 
 /* ============================================================ */
-/* ===== LOGIN SCREEN (FUTURISTIK) ============================ */
+/* ===== LOGIN SCREEN (DISAMAKAN DENGAN HTML 2) =============== */
 /* ============================================================ */
 body.login-active { 
     margin: 0; 
@@ -480,7 +480,7 @@ body.login-active {
 .login-toast-subtitle { font-size: 13px; font-weight: 600; color: #94a3b8; }
 .login-toast-name { color: var(--cyber-cyan); font-weight: 800; text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
 
-/* Responsive */
+/* Responsive Login */
 @media (max-width: 900px) {
     #login-screen { padding: 12px; align-items: flex-start; padding-top: 20px; overflow-y: auto; }
     .fut-container { grid-template-columns: 1fr; gap: 16px; max-width: 480px; margin: 0 auto; }
@@ -516,7 +516,7 @@ body.login-active {
 }
 
 /* ============================================================ */
-/* ===== DASHBOARD ============================================ */
+/* ===== DASHBOARD (TIDAK DIUBAH) ============================== */
 /* ============================================================ */
 body.dashboard-active {
     margin: 0; padding: 24px 16px;
@@ -637,10 +637,6 @@ body.dashboard-active {
 }
 @media (max-width: 768px) {
   .menu-grid, .card-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
-  #login-screen { padding: 10px; align-items: center; }
-  .fut-container { grid-template-columns: 1fr; gap: 12px; max-width: 420px; margin: auto; }
-  .fut-left { display: none; }
-  .fut-card { padding: 24px 20px; border-radius: 20px; max-height: 90vh; }
 }
 </style>
 </head>
@@ -659,15 +655,13 @@ body.dashboard-active {
                 <span class="fut-dot"></span>
                 <span>SISTEM ANTRIAN DIGITAL</span>
             </div>
-            <h1 class="fut-headline" id="fut-headline" style="opacity: 0; transition: opacity 0.4s ease;">
-                <span id="fut-headline-text"></span>
+            <h1 class="fut-headline" id="fut-headline" style="opacity: 1;">
+                <span id="fut-headline-text">SISTEM ANTRIAN DIGITAL</span>
             </h1>
             <p class="fut-subheadline" id="fut-subheadline">UFO Malang Kebonsari</p>
 
             <div class="fut-characters">
-                <img src="team-3d.png" alt="Tim Promotor UFO" class="team-3d-img" 
-                     onerror="this.onerror=null; this.style.display='none'; document.getElementById('fallback-team-icon').style.display='flex';" />
-                <div id="fallback-team-icon" style="display:none; font-size: 50px; padding: 20px;">👥🛸</div>
+                <img src="team-3d.png" alt="Tim Promotor UFO" class="team-3d-img" />
             </div>
 
             <div class="fut-live-status">
@@ -679,8 +673,7 @@ body.dashboard-active {
         <div class="fut-right">
             <div class="fut-card">
                 <div class="fut-logo">
-                    <img id="logo-app" src="logo.png" alt="Logo" 
-                         onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>🛸</span>';">
+                    <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>🛸</span>';">
                 </div>
 
                 <div class="fut-field">
@@ -755,10 +748,10 @@ let currentMenu = null;
 const ICONS = {
   absensi: `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>`,
   penjualan: `<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
-  uc: `<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`, // Diamond / Poin
-  brand: `<svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`, // Tag Merek
-  promo: `<svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`, // Diskon / Persen
-  sop: `<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`, // Buku SOP
+  uc: `<svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
+  brand: `<svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+  promo: `<svg viewBox="0 0 24 24"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>`,
+  sop: `<svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>`,
   back: `<svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
   empty: `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`,
   money: `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#d4af37;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
@@ -1046,49 +1039,33 @@ function isBulanIni(tgl) {
   return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
 }
 
-// --- 1. Fungsi getDataSaya yang Benar (Menggunakan allPenjualan) ---
 function getDataSaya() {
     if (!currentUser) return [];
-    
     const namaAbsenUser = String(currentUser.namaAbsen || '').trim().toUpperCase();
     const namaSalesUser = String(currentUser.namaSales || '').trim().toUpperCase();
-    
     const semuaPenjualan = typeof allPenjualan !== 'undefined' ? allPenjualan : []; 
-    
     return semuaPenjualan.filter(x => {
         if (!x) return false;
         const salesTrans = String(x.namaSales || '').trim().toUpperCase();
-        
         const isMatch = (namaSalesUser && salesTrans === namaSalesUser) || 
                         (namaAbsenUser && (salesTrans.includes(namaAbsenUser) || namaAbsenUser.includes(salesTrans)));
-                        
         return isMatch;
     });
 }
 
-// --- 2. Fungsi Render Brand (Perolehan Brand Promotor) ---
-// --- Fungsi Perolehan Brand Promotor (Dikelompokkan Per Tanggal) ---
 function renderBrand() {
     const listAll = getDataSaya();
-    
-    // Ambil brand yang dipegang oleh promotor dari currentUser.merk
     const brandPromotor = currentUser && currentUser.merk ? String(currentUser.merk).trim().toUpperCase() : "";
-
-    // Filter transaksi khusus bulan Oktober 2026 DAN cocok dengan merk promotor (Kecuali ongkos/garansi murni)
     const list = listAll.filter(x => {
         if (!x) return false;
         const tgl = String(x.tanggal || '');
         const noFaktur = String(x.nomorFaktur || x.noFaktur || '').toUpperCase();
         const merkBarang = String(x.merk || '').trim().toUpperCase();
         const kat = String(x.kategori || '').trim().toUpperCase();
-        
         if (kat === 'GARANSI' || kat === 'ONGKOS') return false;
-        
         const isOktoberFaktur = noFaktur.includes('2610');
         const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10') || tgl.includes('2026-01-10');
-        
         const isMatchBrand = !brandPromotor || (merkBarang === brandPromotor || merkBarang.includes(brandPromotor));
-        
         return (isOktoberFaktur || isOktoberTgl) && isMatchBrand;
     });
 
@@ -1116,7 +1093,6 @@ function renderBrand() {
         return html + `<div class="card"><div class="pesan" style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data penjualan untuk brand ${infoMerk} pada bulan Oktober 2026</div></div>`;
     }
 
-    // Kelompokkan data brand berdasarkan tanggal
     const grupTanggal = {};
     list.forEach(x => {
         const tglKey = x.tanggal || 'Tanpa Tanggal';
@@ -1124,7 +1100,6 @@ function renderBrand() {
         grupTanggal[tglKey].push(x);
     });
 
-    // Urutkan tanggal (dari terbaru ke terlama)
     const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
         const da = parseTanggal(a), db = parseTanggal(b);
         return (db || 0) - (da || 0);
@@ -1135,17 +1110,14 @@ function renderBrand() {
         const items = grupTanggal[tgl];
         let subTotalQtyHari = 0;
         let subTotalOmzetHari = 0;
-
         let isiProduk = '';
         items.forEach((it, idx) => {
             const namaProduk = it.namaBarang || it.produk || "-";
             const qtyTrans = Number(it.qty || 1);
             const subtotalTrans = Number(it.subtotal || it.omzet || 0);
             const kategoriTrans = it.kategori || "-";
-
             subTotalQtyHari += qtyTrans;
             subTotalOmzetHari += subtotalTrans;
-
             isiProduk += `
                 <div style="${idx > 0 ? 'margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.05);' : ''}">
                     <div style="font-size:11px; color:#d4af37; margin-bottom:2px;">Brand: ${it.merk || infoMerk}</div>
@@ -1156,7 +1128,6 @@ function renderBrand() {
                 </div>
             `;
         });
-
         html += `
         <div class="card success">
             <div class="tanggal">${ICONS.calendar} ${tanggalKeNama(tgl)}</div>
@@ -1168,11 +1139,9 @@ function renderBrand() {
         </div>`;
     });
     html += `</div>`;
-    
     return html;
 }
-// PENJUALAN
-// PENJUALAN (Semua kategori dihitung: Reguler, Ongkos, & Garansi)
+
 function renderPenjualan() {
   const list = getDataSaya();
   const totalOmzet = list.reduce((s, x) => {
@@ -1252,44 +1221,35 @@ function renderPenjualan() {
   return html;
 }
 
-// --- Fungsi Helper untuk Merapikan Format Tanggal (DD/MM/YYYY) ---
 function formatTanggalIndo(tglStr) {
     if (!tglStr) return "-";
     let s = String(tglStr).trim();
-    
     if (s.includes('-')) {
         const parts = s.split(' ')[0].split('-');
         if (parts.length === 3) {
             return `${parts[2]}/${parts[1]}/${parts[0]}`;
         }
     }
-    
     if (s.includes('/')) {
         const parts = s.split(' ')[0].split('/');
         if (parts.length === 3) {
             return `${parts[1]}/${parts[0]}/${parts[2]}`;
         }
     }
-    
     return s;
 }
 
-// --- Fungsi Utama Render UC ---
 function renderUC() {
     const listAll = getDataSaya();
-    
     const list = listAll.filter(x => {
         if (!x) return false;
         const tgl = String(x.tanggal || '');
         const noFaktur = String(x.nomorFaktur || x.noFaktur || '').toUpperCase();
         const kat = String(x.kategori || '').trim().toUpperCase();
         const namaBrd = String(x.namaBarang || '').trim().toUpperCase();
-        
         const isOktoberFaktur = noFaktur.includes('2610');
         const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10') || tgl.includes('2026-01-10');
-        
         const isMurniUC = (kat === 'GARANSI') && namaBrd.includes('UFO CARE');
-        
         return (isOktoberFaktur || isOktoberTgl) && isMurniUC;
     });
 
@@ -1326,12 +1286,9 @@ function renderUC() {
         </div>`;
     });
     html += `</div>`;
-    
     return html;
 }
 
-// ABSENSI
-// ABSENSI
 function renderAbsensi() {
   const entries = Object.values(allAbsensi || {}).filter(x => x && x.hari);
   entries.sort((a, b) => (Number(a.hari) || 0) - (Number(b.hari) || 0));
@@ -1374,12 +1331,10 @@ function renderAbsensi() {
 
     const status = `<span class="${(isNoMasuk || isNoPulang || isTerlambat) ? 'status-warning' : 'status-ok'}">${statusText}</span>`;
 
-    // Format tanggal absensi (Misal: dari angka "2" atau string tanggal menjadi format "2 Oktober 2026")
     let tglAbsenStr = String(x.hari || '').trim();
-    // Jika data absensi hanya berupa angka hari (misal "2"), ubah ke format lengkap bulan berjalan (Oktober 2026)
     if (!tglAbsenStr.includes('/') && !tglAbsenStr.includes('-')) {
         const hariAngka = tglAbsenStr.padStart(2, '0');
-        tglAbsenStr = `10/${hariAngka}/2026`; // Format MM/DD/YYYY agar cocok dibaca tanggalKeNama()
+        tglAbsenStr = `10/${hariAngka}/2026`;
     }
     const formatTglFinal = tanggalKeNama(tglAbsenStr);
 
@@ -1399,7 +1354,7 @@ function renderAbsensi() {
   html += `</div>`;
   return html;
 }
-// INFO LIST (Promo / Rules)
+
 function renderInfoList(arr, jenis) {
   if (!arr || arr.length === 0) {
     return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data</div></div>`;
