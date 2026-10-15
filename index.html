@@ -955,22 +955,27 @@ function tampilkanDashboard() {
 
 function loadAbsensiUntukUser() {
   const isAdmin = currentUser.role === 'ADMIN';
-  const targetKey = isAdmin ? (promotorTerpilih || currentUser.key) : currentUser.key;
   
-  // Listen semua absensi (untuk admin), atau spesifik (untuk promotor)
   if (isAdmin) {
+    // Admin: load SEMUA absensi semua promotor
     window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
       allAbsensi = snap.exists() ? snap.val() : {};
-      if (currentMenu === 'absensi') tampilkanDetail('absensi');
+      console.log('📥 Absensi loaded:', Object.keys(allAbsensi).length, 'promotor');
+      console.log('📥 Data achmad_electrolux:', allAbsensi['achmad_electrolux']);
+      
+      // Re-render kalau menu absensi sedang aktif
+      if (currentMenu === 'absensi') {
+        tampilkanDetail('absensi');
+      }
     });
   } else {
-    window.dbOnValue(window.dbRef(window.db, 'absensi/' + targetKey), snap => {
+    // Promotor: load absensi sendiri
+    window.dbOnValue(window.dbRef(window.db, 'absensi/' + currentUser.key), snap => {
       allAbsensi = snap.exists() ? snap.val() : {};
       if (currentMenu === 'absensi') tampilkanDetail('absensi');
     });
   }
 }
-
 /* ============================================================ */
 /* ===== GANTI PROMOTOR (ADMIN) =============================== */
 /* ============================================================ */
@@ -1094,6 +1099,42 @@ function tampilkanDetail(menuKey) {
     document.getElementById('promotorSelector').classList.add('hidden');
   }
   
+  // ===== LANJUTAN YANG HILANG =====
+  const titles = {
+    absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
+    penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
+    uc: { title: 'UC', subtitle: 'Pencapaian poin UC promotor' },
+    brand: { title: 'Perolehan Brand', subtitle: 'Rekap penjualan khusus brand Anda' },
+    promo: { title: 'Promo Toko', subtitle: 'Daftar promo produk & program toko aktif' },
+    sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' },
+    perolehan: { title: 'Perolehan All Promotor', subtitle: 'Peringkat & akumulasi omzet seluruh promotor' },
+    denda: { title: 'Denda & Keterlambatan', subtitle: 'Rekap denda UC & late semua promotor' }
+  };
+  
+  const t = titles[menuKey] || { title: 'Detail', subtitle: '' };
+  let content = '';
+  
+  if (menuKey === 'absensi') content = renderAbsensi();
+  else if (menuKey === 'penjualan') content = renderPenjualan();
+  else if (menuKey === 'uc') content = renderUC();
+  else if (menuKey === 'brand') content = renderBrand();
+  else if (menuKey === 'promo') content = renderInfoList(infoData.promo, 'promo');
+  else if (menuKey === 'sop') content = renderInfoList(infoData.rules, 'rules');
+  else if (menuKey === 'perolehan') content = renderPerolehan();
+  else if (menuKey === 'denda') content = renderDenda();
+  
+  detailEl.innerHTML = `
+    <div class="back-bar">
+      <button class="back-btn" onclick="kembaliKeMenu()">${ICONS.back} Kembali ke Menu</button>
+    </div>
+    <h2 class="detail-title">${t.title}</h2>
+    <p class="detail-subtitle">${t.subtitle}</p>
+    ${content}
+  `;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+window.tampilkanDetail = tampilkanDetail;
+  
   const titles = {
     absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
     penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
@@ -1210,7 +1251,8 @@ function renderAbsensi() {
   entries.forEach(x => {
     const isNoMasuk = !x.masuk || String(x.masuk).trim() === '' || x.masuk === '-';
     const isNoPulang = !x.pulang || String(x.pulang).trim() === '' || x.pulang === '-';
-    if (String(x.terlambat).toUpperCase() === 'YA') totalTerlambat++;
+  const terr = String(x.terlambat || '').trim().toUpperCase();
+if (terr === 'YA' || terr === 'Y' || terr === 'YES' || terr === 'TRUE') totalTerlambat++;
     if (isNoMasuk) tidakMasuk++;
     if (isNoPulang) tidakPulang++;
   });
