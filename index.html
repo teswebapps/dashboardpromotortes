@@ -763,76 +763,76 @@ function renderPenjualan() {
 }
 
 // UC
-function renderUC(data) {
-    // Ambil detail data secara aman dari parameter yang masuk
-    let listDetail = [];
-    if (data && Array.isArray(data.detail)) {
-        listDetail = data.detail;
-    } else if (data && Array.isArray(data)) {
-        listDetail = data;
-    } else if (typeof data === 'object' && data !== null) {
-        // Jika data berupa objek tunggal atau map
-        listDetail = Object.values(data);
-    }
-
-    // Filter khusus transaksi bulan Oktober 2026 jika tanggal tersedia
-    const filteredList = listDetail.filter(x => {
+// UC
+function renderUC() {
+    // Ambil data penjualan khusus promotor yang sedang login berdasarkan namaSales
+    const list = getDataSaya().filter(x => {
         if (!x) return false;
-        const tgl = String(x.tanggal || x.date || '');
-        // Jika ada filter tanggal Oktober, sesuaikan; jika tidak, tampilkan semua
-        if (tgl) return tgl.includes('/10/2026');
-        return true;
+        const tgl = String(x.tanggal || '');
+        // Filter khusus bulan Oktober 2026 (01/10/2026 - 31/10/2026)
+        return tgl.includes('/10/2026');
     });
 
     let totalUC = 0;
-    filteredList.forEach(x => {
-        totalUC += Number(x.qty || x.quantity || 1);
+    list.forEach(x => {
+        totalUC += Number(x.qty || 1);
     });
 
-    const namaPromotor = (data && data.nama) ? data.nama : (typeof currentUser !== 'undefined' ? currentUser : "Promotor");
-    const tglAwal = (data && data.tanggalPertama) ? data.tanggalPertama : "01/10/2026";
-    const tglAkhir = (data && data.tanggalTerakhir) ? data.tanggalTerakhir : "31/10/2026";
+    const namaPromotor = currentUser ? currentUser.namaAbsen : "Promotor";
 
     const summaryEl = document.getElementById("summary");
-    if (summaryEl) {
-        summaryEl.innerHTML = `
+    // Jika elemen summary belum ada di wadah detailView, kita buatkan struktur card-nya di awal
+    let html = `
         <div class="summary-card">
             <h2>💎 ${namaPromotor}</h2>
-            <p>Periode : <b>${tglAwal} - ${tglAkhir}</b></p>
+            <p>Periode : <b>01/10/2026 - 31/10/2026</b></p>
             <p>Total UC : <b>${totalUC}</b></p>
-        </div>`;
-    }
+        </div>
+    `;
 
-    const hasilEl = document.getElementById("hasil");
-    if (!hasilEl) return;
-
-    if (filteredList.length === 0) {
-        hasilEl.className = "grid";
-        hasilEl.innerHTML = `<div class="card">Belum ada data UC untuk periode ini</div>`;
+    if (list.length === 0) {
+        html += `<div class="card"><div class="pesan">Belum ada data UC untuk bulan Oktober 2026</div></div>`;
+        const detailEl = document.getElementById('detailView');
+        if (detailEl) {
+            // Pastikan struktur di dalam detailView memuat summary & hasil
+            detailEl.innerHTML = `
+                <div class="back-bar">
+                    <button class="back-btn" onclick="kembaliKeMenu()">${ICONS.back} Kembali ke Menu</button>
+                </div>
+                <h2 class="detail-title">UC</h2>
+                <p class="detail-subtitle">Pencapaian poin UC promotor</p>
+                ${html}
+            `;
+        }
         return;
     }
 
-    let html = "";
-    filteredList.forEach(x => {
-        const namaProduk = x.produk || x.namaBarang || x.name || "-";
+    html += `<div class="card-grid">`;
+    list.forEach(x => {
+        const namaProduk = x.namaBarang || x.produk || "-";
         const tanggalTrans = x.tanggal || "-";
-        const qtyTrans = x.qty || x.quantity || 1;
+        const qtyTrans = x.qty || 1;
 
         html += `
         <div class="card success">
-            <div class="tanggal">📅 ${tanggalTrans}</div>
-            <div style="font-size:12px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${namaProduk}</div>
+            <div class="tanggal">${ICONS.calendar} ${tanggalTrans}</div>
+            <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${namaProduk}</div>
             <div class="row"><span>Qty</span><span>${qtyTrans}</span></div>
         </div>`;
     });
+    html += `</div>`;
 
-    const exportArea = document.getElementById("exportArea");
-    if (exportArea && typeof currentRole !== 'undefined' && currentRole === "ADMIN") {
-        exportArea.style.display = "flex";
+    const detailEl = document.getElementById('detailView');
+    if (detailEl) {
+        detailEl.innerHTML = `
+            <div class="back-bar">
+                <button class="back-btn" onclick="kembaliKeMenu()">${ICONS.back} Kembali ke Menu</button>
+            </div>
+            <h2 class="detail-title">UC</h2>
+            <p class="detail-subtitle">Pencapaian poin UC promotor</p>
+            ${html}
+        `;
     }
-    
-    hasilEl.className = "grid";
-    hasilEl.innerHTML = html;
 }
 function tampilkanHasilUC(listDetail, namaPromotor, totalUC) {
     const summaryEl = document.getElementById("summary");
