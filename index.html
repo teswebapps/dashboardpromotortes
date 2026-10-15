@@ -1079,16 +1079,24 @@ function tampilkanDashboard() {
   
   const isAdmin = currentUser.role === 'ADMIN';
   
-  // Default promotor terpilih
-  promotorTerpilih = currentUser.key;
-  
-  // Tampilkan dropdown selector hanya untuk admin
+  // === FIX: Admin tidak punya data promotor sendiri ===
+  // Set promotorTerpilih ke promotor PERTAMA yang ada, bukan "admin_utama"
   if (isAdmin) {
+    // Cari promotor pertama dari allPromotor
+    const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
+    if (promotorKeys.length > 0) {
+      promotorTerpilih = promotorKeys[0];
+    } else {
+      promotorTerpilih = null;   // belum ada promotor
+    }
+    
     document.getElementById('promotorSelector').classList.remove('hidden');
     document.getElementById('userNama').innerHTML = 
       `${ICONS.crown} <b>${currentUser.namaAbsen}</b> <span class="admin-badge-inline">ADMIN</span>`;
     document.getElementById('topBar').classList.add('admin-mode');
   } else {
+    // Promotor: pakai key sendiri
+    promotorTerpilih = currentUser.key;
     document.getElementById('promotorSelector').classList.add('hidden');
     document.getElementById('userNama').innerHTML = 
       `<span style="color:#34d399;">●</span> <b>${currentUser.namaAbsen}</b>`;
@@ -1111,26 +1119,22 @@ function tampilkanDashboard() {
   loadAbsensiUntukUser();
   
   renderMenuGrid();
-}
-
-function loadAbsensiUntukUser() {
-  const isAdmin = currentUser.role === 'ADMIN';
   
-  if (isAdmin) {
-    window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
-      allAbsensi = snap.exists() ? snap.val() : {};
-      console.log('📥 Absensi loaded:', Object.keys(allAbsensi).length, 'promotor');
-      
-      if (currentMenu === 'absensi') {
-        tampilkanDetail('absensi');
+  // Sync dropdown label
+  setTimeout(() => {
+    if (isAdmin && promotorTerpilih) {
+      const menu = document.getElementById('dropdownMenu');
+      const labelEl = document.getElementById('dropdownLabel');
+      if (menu && labelEl) {
+        const opt = menu.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
+        if (opt) {
+          menu.querySelectorAll('.dd-option').forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          labelEl.innerText = opt.innerText;
+        }
       }
-    });
-  } else {
-    window.dbOnValue(window.dbRef(window.db, 'absensi/' + currentUser.key), snap => {
-      allAbsensi = snap.exists() ? snap.val() : {};
-      if (currentMenu === 'absensi') tampilkanDetail('absensi');
-    });
-  }
+    }
+  }, 200);
 }
 
 /* ============================================================ */
