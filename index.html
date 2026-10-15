@@ -339,24 +339,113 @@ body.dashboard-active {
 .back-btn:hover { opacity: 0.9; }
 .back-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
-/* ===== DROPDOWN PILIH PROMOTOR ===== */
+/* ===== DROPDOWN PILIH PROMOTOR (CUSTOM - BUKAN BROWSER DEFAULT) ===== */
 .promotor-selector { max-width: 1100px; margin: 0 auto 20px; 
     padding: 14px 18px; background: rgba(17, 24, 39, 0.85); 
     backdrop-filter: blur(12px); border: 2px solid rgba(212, 175, 55, 0.5); 
     border-radius: 14px; display: flex; align-items: center; gap: 12px; 
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); }
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); position: relative; z-index: 100; }
 .promotor-selector label { font-size: 12.5px; font-weight: 800; 
     color: #d4af37; white-space: nowrap; text-transform: uppercase; 
     letter-spacing: 0.5px; }
-.promotor-selector select { flex: 1; padding: 11px 40px 11px 14px; 
-    background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(212, 175, 55, 0.4); 
-    border-radius: 10px; color: #ffffff; font-size: 14px; font-weight: 600; 
-    outline: none; cursor: pointer; appearance: none; 
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23d4af37' viewBox='0 0 16 16'%3E%3Cpath d='M1.5 5.5l6 6 6-6'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 14px center; }
-.promotor-selector select:focus { border-color: #d4af37; 
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
-.promotor-selector select option { background: #111827; color: #ffffff; }
+
+/* Custom Dropdown Trigger */
+.custom-dropdown { position: relative; flex: 1; }
+.custom-dropdown-trigger {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(2, 6, 23, 0.7);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 10px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    transition: all 0.2s ease;
+}
+.custom-dropdown-trigger:hover {
+    border-color: #d4af37;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+}
+.custom-dropdown-trigger.open {
+    border-color: #d4af37;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
+}
+.custom-dropdown-trigger .label-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex: 1;
+}
+.custom-dropdown-trigger svg {
+    width: 16px;
+    height: 16px;
+    color: #d4af37;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+.custom-dropdown-trigger.open svg {
+    transform: rotate(180deg);
+}
+
+/* Custom Dropdown Menu */
+.custom-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.98);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    border-radius: 12px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    max-height: 280px;
+    overflow-y: auto;
+    z-index: 999;
+    padding: 6px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+}
+.custom-dropdown-menu.open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+.custom-dropdown-menu .dd-option {
+    padding: 11px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #e2e8f0;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.custom-dropdown-menu .dd-option:hover {
+    background: rgba(212, 175, 55, 0.15);
+    color: #d4af37;
+}
+.custom-dropdown-menu .dd-option.selected {
+    background: rgba(212, 175, 55, 0.25);
+    color: #d4af37;
+}
+.custom-dropdown-menu .dd-option.selected::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #d4af37;
+    box-shadow: 0 0 8px #d4af37;
+    flex-shrink: 0;
+}
 
 @media (max-width: 768px) {
     .promotor-selector { flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 14px; }
@@ -408,7 +497,7 @@ body.dashboard-active {
     color: #d4af37; display: flex; align-items: center; gap: 8px; }
 .summary-card h2 svg { width: 20px; height: 20px; stroke: #d4af37; 
     stroke-width: 2; fill: none; flex-shrink: 0; }
-.summary-card p { margin: 6px 0; color: #d1d5db; font-size: 13.5px; line-height: 1.4; }
+.summary-card p { margin: 6px 0; color: #d1d5db; font-size: 13.5px; line-height: 1.4; display: flex; align-items: center; gap: 4px; }
 
 .card-grid { display: grid; grid-template-columns: repeat(3, 1fr); 
     gap: 18px; width: 100%; }
@@ -548,12 +637,19 @@ body.dashboard-active {
 
     <div id="menuGrid" class="menu-grid"></div>
 
-    <!-- DROPDOWN PILIH PROMOTOR (Khusus Admin) -->
+    <!-- DROPDOWN PILIH PROMOTOR (Khusus Admin) - CUSTOM THEMED -->
     <div id="promotorSelector" class="promotor-selector hidden">
         <label>PILIH PROMOTOR :</label>
-        <select id="selectPromotor" onchange="gantiPromotorAdmin(this.value)">
-            <option value="">-- Memuat --</option>
-        </select>
+        <div class="custom-dropdown" id="customDropdownWrap">
+            <div class="custom-dropdown-trigger" id="dropdownTrigger" onclick="toggleDropdownPromotor()">
+                <span class="label-text" id="dropdownLabel">-- Pilih Promotor --</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </div>
+            <div class="custom-dropdown-menu" id="dropdownMenu"></div>
+        </div>
+        <input type="hidden" id="selectPromotor" value="">
     </div>
 
     <div id="detailView" class="detail-view hidden"></div>
@@ -603,7 +699,11 @@ const ICONS = {
   trophy: `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#d4af37;stroke-width:2;fill:none;display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`,
   warning: `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#ef4444;stroke-width:2;fill:none;display:inline-block;vertical-align:middle;margin-right:4px;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
   star: `<svg viewBox="0 0 24 24" style="width:12px;height:12px;fill:#d4af37;stroke:#d4af37;stroke-width:1;display:inline-block;vertical-align:middle;margin-right:3px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`,
-  crown: `<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#d4af37;stroke:#d4af37;stroke-width:1.5;display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M2 18l2-10 6 5 2-9 2 9 6-5 2 10H2z"/></svg>`
+  crown: `<svg viewBox="0 0 24 24" style="width:14px;height:14px;fill:#d4af37;stroke:#d4af37;stroke-width:1.5;display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M2 18l2-10 6 5 2-9 2 9 6-5 2 10H2z"/></svg>`,
+  chart: `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#d4af37;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:6px;"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>`,
+  users: `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#94a3b8;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+  moneySmall: `<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:#34d399;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+  diamondSmall: `<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#d4af37;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
 };
 
 /* ============================================================ */
@@ -689,28 +789,88 @@ function loadPromotorList() {
     renderCustomSelectOptions(list);
     if (liveEl) liveEl.innerText = `${list.length} promotor terdaftar`;
     
-    // Isi dropdown promotor
+    // Isi dropdown promotor custom
     isiDropdownPromotor(list);
   });
 }
 
 function isiDropdownPromotor(list) {
-  const selectEl = document.getElementById('selectPromotor');
-  if (!selectEl) return;
+  const menuEl = document.getElementById('dropdownMenu');
+  const labelEl = document.getElementById('dropdownLabel');
+  if (!menuEl) return;
   
-  let html = '<option value="">-- Pilih Promotor --</option>';
+  if (!list || list.length === 0) {
+    menuEl.innerHTML = '<div class="dd-option" style="color:#64748b;font-style:italic;justify-content:center;">Belum ada promotor</div>';
+    if (labelEl) labelEl.innerText = '-- Belum ada promotor --';
+    return;
+  }
+  
+  let html = '';
   list.forEach(p => {
     const key = String(p.key).replace(/"/g, '&quot;');
     const label = String(p.namaAbsen || '-').replace(/</g, '&lt;');
-    html += `<option value="${key}">${label}</option>`;
+    html += `<div class="dd-option" data-value="${key}" onclick="pilihDropdownPromotor('${key}', '${label.replace(/'/g, "\\'")}')">${label}</div>`;
   });
-  selectEl.innerHTML = html;
+  menuEl.innerHTML = html;
   
   if (promotorTerpilih) {
-    selectEl.value = promotorTerpilih;
+    const selectedOpt = menuEl.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
+    if (selectedOpt) {
+      selectedOpt.classList.add('selected');
+      if (labelEl) labelEl.innerText = selectedOpt.innerText;
+    }
   }
 }
 window.isiDropdownPromotor = isiDropdownPromotor;
+
+function toggleDropdownPromotor() {
+  const menu = document.getElementById('dropdownMenu');
+  const trigger = document.getElementById('dropdownTrigger');
+  if (!menu || !trigger) return;
+  const isOpen = menu.classList.contains('open');
+  if (isOpen) {
+    menu.classList.remove('open');
+    trigger.classList.remove('open');
+  } else {
+    menu.classList.add('open');
+    trigger.classList.add('open');
+  }
+}
+window.toggleDropdownPromotor = toggleDropdownPromotor;
+
+function pilihDropdownPromotor(key, label) {
+  const menu = document.getElementById('dropdownMenu');
+  const trigger = document.getElementById('dropdownTrigger');
+  const labelEl = document.getElementById('dropdownLabel');
+  const hidden = document.getElementById('selectPromotor');
+  
+  if (hidden) hidden.value = key;
+  if (labelEl) labelEl.innerText = label;
+  
+  if (menu) {
+    menu.querySelectorAll('.dd-option').forEach(o => {
+      o.classList.toggle('selected', o.dataset.value === key);
+    });
+    menu.classList.remove('open');
+  }
+  if (trigger) trigger.classList.remove('open');
+  
+  // Trigger ganti promotor
+  gantiPromotorAdmin(key);
+}
+window.pilihDropdownPromotor = pilihDropdownPromotor;
+
+// Tutup dropdown kalau klik di luar
+document.addEventListener('click', (e) => {
+  const wrap = document.getElementById('customDropdownWrap');
+  const menu = document.getElementById('dropdownMenu');
+  const trigger = document.getElementById('dropdownTrigger');
+  if (!wrap || !menu || !trigger) return;
+  if (!wrap.contains(e.target)) {
+    menu.classList.remove('open');
+    trigger.classList.remove('open');
+  }
+});
 
 /* ============================================================ */
 /* ===== LOAD INFO (Promo/SOP) =============================== */
@@ -931,11 +1091,11 @@ function tampilkanDashboard() {
   } else {
     document.getElementById('promotorSelector').classList.add('hidden');
     document.getElementById('userNama').innerHTML = 
-      `⭕ <b>${currentUser.namaAbsen}</b>`;
+      `<span style="color:#34d399;">●</span> <b>${currentUser.namaAbsen}</b>`;
     document.getElementById('topBar').classList.remove('admin-mode');
   }
   
-  // Load penjualan (untuk semua)
+  // Load penjualan
   window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
     allPenjualan = [];
     if (snap.exists()) {
@@ -957,25 +1117,22 @@ function loadAbsensiUntukUser() {
   const isAdmin = currentUser.role === 'ADMIN';
   
   if (isAdmin) {
-    // Admin: load SEMUA absensi semua promotor
     window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
       allAbsensi = snap.exists() ? snap.val() : {};
       console.log('📥 Absensi loaded:', Object.keys(allAbsensi).length, 'promotor');
-      console.log('📥 Data achmad_electrolux:', allAbsensi['achmad_electrolux']);
       
-      // Re-render kalau menu absensi sedang aktif
       if (currentMenu === 'absensi') {
         tampilkanDetail('absensi');
       }
     });
   } else {
-    // Promotor: load absensi sendiri
     window.dbOnValue(window.dbRef(window.db, 'absensi/' + currentUser.key), snap => {
       allAbsensi = snap.exists() ? snap.val() : {};
       if (currentMenu === 'absensi') tampilkanDetail('absensi');
     });
   }
 }
+
 /* ============================================================ */
 /* ===== GANTI PROMOTOR (ADMIN) =============================== */
 /* ============================================================ */
@@ -1007,7 +1164,6 @@ function gantiPromotorAdmin(keyPromotor) {
   window.dbGet(window.dbRef(window.db, 'absensi/' + keyPromotor)).then(snap => {
     allAbsensi = snap.exists() ? snap.val() : {};
     
-    // Render ulang menu aktif
     if (currentMenu) {
       tampilkanDetail(currentMenu);
     } else {
@@ -1068,11 +1224,10 @@ function kembaliKeMenu() {
   document.getElementById('menuGrid').classList.remove('hidden');
   document.getElementById('promotorSelector').classList.add('hidden');
   
-  // Reset promotor terpilih ke diri sendiri (untuk admin)
   if (currentUser.role === 'ADMIN') {
     promotorTerpilih = currentUser.key;
-    const selEl = document.getElementById('selectPromotor');
-    if (selEl) selEl.value = currentUser.key;
+    const hidden = document.getElementById('selectPromotor');
+    if (hidden) hidden.value = currentUser.key;
   }
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1087,19 +1242,30 @@ function tampilkanDetail(menuKey) {
   
   const isAdmin = currentUser.role === 'ADMIN';
   
-  // Tampilkan dropdown promotor untuk menu tertentu (admin only)
   const menuAdaDropdown = ['absensi', 'penjualan', 'uc', 'brand'];
   const showSelector = isAdmin && menuAdaDropdown.includes(menuKey);
   
   if (showSelector) {
     document.getElementById('promotorSelector').classList.remove('hidden');
-    const selEl = document.getElementById('selectPromotor');
-    if (selEl && promotorTerpilih) selEl.value = promotorTerpilih;
+    const hidden = document.getElementById('selectPromotor');
+    if (hidden && promotorTerpilih) {
+      hidden.value = promotorTerpilih;
+      // Sync dropdown label
+      const menu = document.getElementById('dropdownMenu');
+      const labelEl = document.getElementById('dropdownLabel');
+      if (menu && labelEl) {
+        const selectedOpt = menu.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
+        if (selectedOpt) {
+          menu.querySelectorAll('.dd-option').forEach(o => o.classList.remove('selected'));
+          selectedOpt.classList.add('selected');
+          labelEl.innerText = selectedOpt.innerText;
+        }
+      }
+    }
   } else {
     document.getElementById('promotorSelector').classList.add('hidden');
   }
   
-  // ===== LANJUTAN YANG HILANG =====
   const titles = {
     absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
     penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
@@ -1133,8 +1299,7 @@ function tampilkanDetail(menuKey) {
   `;
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
-
-
+window.tampilkanDetail = tampilkanDetail;
 
 /* ============================================================ */
 /* ===== HELPER =============================================== */
@@ -1159,7 +1324,6 @@ function parseTanggal(str) {
   return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
 }
 
-/* ===== DATA SAYA (pakai promotorTerpilih kalau admin) ===== */
 function getDataSaya() {
     if (!currentUser) return [];
     
@@ -1181,7 +1345,6 @@ function getDataSaya() {
     });
 }
 
-/* ===== DATA PROMOTOR TERPILIH ===== */
 function getPromotorTerpilih() {
     const targetKey = (currentUser.role === 'ADMIN' && promotorTerpilih) 
         ? promotorTerpilih 
@@ -1201,10 +1364,12 @@ function renderAbsensi() {
     const targetKey = promotorTerpilih || currentUser.key;
     const dataP = allAbsensi[targetKey] || {};
     Object.values(dataP).forEach(item => {
-      if (item && item.hari) entries.push(item);
+      if (item && typeof item === 'object' && (item.hari || item.masuk || item.pulang)) {
+        entries.push(item);
+      }
     });
   } else {
-    entries = Object.values(allAbsensi || {}).filter(x => x && x.hari);
+    entries = Object.values(allAbsensi || {}).filter(x => x && typeof x === 'object' && (x.hari || x.masuk || x.pulang));
   }
   
   entries.sort((a, b) => (Number(a.hari) || 0) - (Number(b.hari) || 0));
@@ -1217,8 +1382,8 @@ function renderAbsensi() {
   entries.forEach(x => {
     const isNoMasuk = !x.masuk || String(x.masuk).trim() === '' || x.masuk === '-';
     const isNoPulang = !x.pulang || String(x.pulang).trim() === '' || x.pulang === '-';
-  const terr = String(x.terlambat || '').trim().toUpperCase();
-if (terr === 'YA' || terr === 'Y' || terr === 'YES' || terr === 'TRUE') totalTerlambat++;
+    const terr = String(x.terlambat || '').trim().toUpperCase();
+    if (terr === 'YA' || terr === 'Y' || terr === 'YES' || terr === 'TRUE') totalTerlambat++;
     if (isNoMasuk) tidakMasuk++;
     if (isNoPulang) tidakPulang++;
   });
@@ -1498,7 +1663,7 @@ function renderInfoList(arr, jenis) {
   if (jenis === 'promo') {
     return arr.map(x => `
       <div class="info-block" style="background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 18px; margin-bottom: 12px;">
-        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px;">${ICONS.promo} ${x.judul || '-'}</div>
+        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px; display:flex; align-items:center; gap:6px;">${ICONS.promo} ${x.judul || '-'}</div>
         ${x.periode ? `<div class="meta" style="color:#9ca3af; font-size: 12.5px;"><b>Periode:</b> ${x.periode}</div>` : ''}
         <div class="deskripsi" style="margin-top:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px; color:#d1d5db; font-size: 13px; line-height: 1.5;">${x.detail || '-'}</div>
       </div>
@@ -1506,7 +1671,7 @@ function renderInfoList(arr, jenis) {
   } else if (jenis === 'rules') {
     return arr.map(x => `
       <div class="info-block" style="background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 18px; margin-bottom: 12px;">
-        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px;">${ICONS.sop} ${x.poin || '-'}</div>
+        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px; display:flex; align-items:center; gap:6px;">${ICONS.sop} ${x.poin || '-'}</div>
         <div class="deskripsi" style="margin-top:6px; color:#d1d5db; font-size: 13px; line-height: 1.5;">${x.deskripsi || '-'}</div>
       </div>
     `).join('');
@@ -1565,10 +1730,10 @@ function renderPerolehan() {
 
     let html = `
         <div class="summary-card">
-            <h2>Perolehan All Promotor</h2>
-            <p>Jumlah Promotor : <b>${arr.length}</b></p>
-            <p>Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
-            <p>Total UC : <b>${totalUCSemua}</b></p>
+            <h2>${ICONS.chart} Perolehan All Promotor</h2>
+            <p>${ICONS.users} Jumlah Promotor : <b>${arr.length}</b></p>
+            <p>${ICONS.moneySmall} Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
+            <p>${ICONS.diamondSmall} Total UC : <b>${totalUCSemua}</b></p>
         </div>
         <div class="summary-card">
     `;
@@ -1598,7 +1763,7 @@ function renderPerolehan() {
                     <div style="font-weight:700; font-size:13.5px; color:${warnaOmzet};">
                         Rp ${omzetVal.toLocaleString('id-ID')}
                     </div>
-                    <div style="font-size:11.5px; font-weight:600; color:#d4af37; margin-top:2px;">
+                    <div style="font-size:11.5px; font-weight:600; color:#d4af37; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
                         ${ICONS.star} UC : ${p.uc || 0}
                     </div>
                 </div>
