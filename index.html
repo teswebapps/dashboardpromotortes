@@ -1506,15 +1506,15 @@ function renderAbsensi() {
     }
     const formatTglFinal = tanggalKeNama(tglAbsenStr);
 
-    html += `
-      const kelasTambahan = isTerlambat ? 'late' : '';
+    const kelasTambahan = isTerlambat ? 'late' : '';
+    const labelTerlambat = isTerlambat ? '<div style="color:#facc15;font-weight:900;margin-top:6px;font-size:11px;letter-spacing:1px;text-shadow:0 0 8px rgba(250,204,21,0.8);">⚠️ TERLAMBAT</div>' : '';
 
-html += `
-  <div class="card ${isNoMasuk || isNoPulang ? 'warning' : 'success'} ${kelasTambahan}">
-    <div class="tanggal">
-      ${ICONS.calendar} ${formatTglFinal}<br>${status}
-      ${isTerlambat ? '<div style="color:#facc15;font-weight:900;margin-top:6px;font-size:11px;letter-spacing:1px;text-shadow:0 0 8px rgba(250,204,21,0.8);">⚠️ TERLAMBAT</div>' : ''}
-    </div>
+    html += `
+      <div class="card ${isNoMasuk || isNoPulang ? 'warning' : 'success'} ${kelasTambahan}">
+        <div class="tanggal">
+          ${ICONS.calendar} ${formatTglFinal}<br>${status}
+          ${labelTerlambat}
+        </div>
         <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${x.masuk}</span>`}</div>
         <div class="row"><span>Istirahat 1</span>${x.istirahat1 ? `<span class="ok">${x.istirahat1}</span>` : '<span class="kosong">-</span>'}</div>
         <div class="row"><span>Kembali 1</span>${x.kembali1 ? `<span class="ok">${x.kembali1}</span>` : '<span class="kosong">-</span>'}</div>
