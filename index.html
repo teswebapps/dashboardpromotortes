@@ -110,15 +110,11 @@
             box-shadow: 0 20px 40px -10px rgba(212, 175, 55, 0.2);
             background: rgba(21, 29, 46, 0.85);
         }
-        .menu-card-item .icon { font-size: 42px; margin-bottom: 12px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); }
+        .menu-card-item .icon { font-size: 42px; margin-bottom: 12px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3)); display: flex; justify-content: center; align-items: center; }
+        .menu-card-item .icon svg { width: 44px; height: 44px; stroke: #d4af37; stroke-width: 1.8; fill: none; stroke-linecap: round; stroke-linejoin: round; }
         .menu-card-item h3 { margin: 0 0 6px; font-size: 18.5px; color: #ffffff; font-weight: 700; letter-spacing: -0.3px; }
         .menu-card-item p { margin: 0; font-size: 13.5px; color: #9ca3af; line-height: 1.4; }
-        .admin-badge {
-            position: absolute; top: 12px; right: 12px;
-            background: rgba(212, 175, 55, 0.15); color: #d4af37;
-            font-size: 10px; font-weight: 700; padding: 3px 8px;
-            border-radius: 6px; border: 1px solid rgba(212, 175, 55, 0.3); display: none;
-        }
+        
         #detailViewSection {
             display: none; max-width: 1100px; margin: 0 auto;
             animation: fadeInSmooth 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
@@ -263,32 +259,44 @@
 
     <div id="menuGridContainer">
         <div class="menu-card-item" onclick="pindahMenu('Absensi')">
-            <div class="icon">📅</div>
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>
+            </div>
             <h3>Absensi</h3>
             <p>Rekap kehadiran dan status finger harian</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Penjualan')">
-            <div class="icon">💼</div>
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
             <h3>Penjualan</h3>
             <p>Omzet produk harian dan perolehan unit</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('UC')">
-            <div class="icon">⭐</div>
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </div>
             <h3>UC</h3>
             <p>Pencapaian poin UC promotor</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('PerolehanBrand')">
-            <div class="icon">🏷️</div>
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            </div>
             <h3>Perolehan Brand</h3>
             <p>Rekap penjualan khusus brand/ID Anda sendiri</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Promo')">
-            <div class="icon">🏷️</div>
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+            </div>
             <h3>Promo Toko</h3>
             <p>Daftar promo produk & program toko aktif</p>
         </div>
         <div class="menu-card-item" onclick="pindahMenu('Rules')">
-            <div class="icon">✨</div>
+            <div class="icon">
+                <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
             <h3>SOP Promotor</h3>
             <p>Aturan kerja & standar operasional</p>
         </div>
