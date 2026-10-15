@@ -764,53 +764,64 @@ function renderPenjualan() {
 
 // UC
 function renderUC() {
-    // Pastikan database Firebase sudah siap dan ada data penjualan
-    if (typeof window.db === 'undefined' || !window.dbRef || !window.dbGet) {
-        document.getElementById("hasil").innerHTML = `<div class="card">Menghubungkan ke database...</div>`;
+    // Ambil data penjualan dari cache background yang sudah tersinkron
+    let listDetail = [];
+    if (cacheData.penjualan && cacheData.penjualan.detail) {
+        // Filter khusus transaksi bulan Oktober 2026
+        listDetail = cacheData.penjualan.detail.filter(x => {
+            const tgl = String(x.tanggal || '');
+            return tgl.includes('/10/2026');
+        });
+    }
+
+    let totalUC = 0;
+    listDetail.forEach(x => {
+        totalUC += Number(x.qty || 1);
+    });
+
+    const namaPromotor = currentUser || "Promotor";
+
+    const summaryEl = document.getElementById("summary");
+    if (summaryEl) {
+        summaryEl.innerHTML = `
+        <div class="summary-card">
+            <h2>💎 ${namaPromotor}</h2>
+            <p>Periode : <b>01/10/2026 - 31/10/2026</b></p>
+            <p>Total UC : <b>${totalUC}</b></p>
+        </div>`;
+    }
+
+    const hasilEl = document.getElementById("hasil");
+    if (!hasilEl) return;
+
+    if (listDetail.length === 0) {
+        hasilEl.className = "grid";
+        hasilEl.innerHTML = `<div class="card">Belum ada data UC untuk bulan Oktober 2026</div>`;
         return;
     }
 
-    // Ambil nama promotor yang sedang aktif login
-    const namaAktif = (typeof currentUser !== 'undefined' ? currentUser : "").trim().toUpperCase();
+    let html = "";
+    listDetail.forEach(x => {
+        const namaProduk = x.produk || x.namaBarang || "-";
+        const tanggalTrans = x.tanggal || "-";
+        const qtyTrans = x.qty || 1;
 
-    // Ambil data langsung dari Firebase path 'penjualan'
-    window.dbGet(window.dbRef(window.db, 'penjualan')).then(snapshot => {
-        if (!snapshot.exists()) {
-            tampilkanHasilUC([], namaAktif, 0);
-            return;
-        }
-
-        const rawData = snapshot.val();
-        let listDetail = [];
-
-        Object.values(rawData).forEach(item => {
-            if (!item) return;
-            
-            // Cocokkan berdasarkan nama sales atau brand promotor yang login
-            const itemSales = String(item.namaSales || '').trim().toUpperCase();
-            const itemMerk = String(item.merk || '').trim().toUpperCase();
-            
-            // Filter khusus bulan Oktober 2026 (01/10/2026 - 31/10/2026)
-            const tgl = String(item.tanggal || '');
-            const isOktober = tgl.includes('/10/2026');
-
-            if (isOktober && (itemSales.includes(namaAktif) || namaAktif.includes(itemSales) || itemSales === namaAktif)) {
-                listDetail.push({
-                    tanggal: item.tanggal || '-',
-                    produk: item.namaBarang || '-',
-                    qty: Number(item.qty) || 1,
-                    omzet: Number(item.subtotal) || 0
-                });
-            }
-        });
-
-        tampilkanHasilUC(listDetail, namaAktif, listDetail.reduce((s, x) => s + x.qty, 0));
-    }).catch(err => {
-        console.error("Gagal ambil data UC:", err);
-        document.getElementById("hasil").innerHTML = `<div class="card">Gagal memuat data dari database.</div>`;
+        html += `
+        <div class="card success">
+            <div class="tanggal">📅 ${tanggalTrans}</div>
+            <div style="font-size:12px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${namaProduk}</div>
+            <div class="row"><span>Qty</span><span>${qtyTrans}</span></div>
+        </div>`;
     });
-}
 
+    const exportArea = document.getElementById("exportArea");
+    if (exportArea && currentRole === "ADMIN") {
+        exportArea.style.display = "flex";
+    }
+    
+    hasilEl.className = "grid";
+    hasilEl.innerHTML = html;
+}
 function tampilkanHasilUC(listDetail, namaPromotor, totalUC) {
     const summaryEl = document.getElementById("summary");
     if (summaryEl) {
