@@ -838,6 +838,7 @@ function loadPromotorList() {
 function isiDropdownPromotor(list) {
   const menuEl = document.getElementById('dropdownMenu');
   const labelEl = document.getElementById('dropdownLabel');
+  const hiddenInput = document.getElementById('selectPromotor');
   if (!menuEl) return;
   
   if (!list || list.length === 0) {
@@ -854,15 +855,20 @@ function isiDropdownPromotor(list) {
   });
   menuEl.innerHTML = html;
   
-  // ✅ Tentukan target key (jika promotorTerpilih belum ada, ambil promotor pertama dari list)
-  const targetKey = (promotorTerpilih && allPromotor[promotorTerpilih]) ? promotorTerpilih : list[0].key;
-  promotorTerpilih = targetKey;
+  if (!promotorTerpilih || !allPromotor[promotorTerpilih]) {
+    promotorTerpilih = list[0].key;
+  }
   
-  const selectedOpt = menuEl.querySelector(`.dd-option[data-value="${targetKey}"]`);
+  const activeProm = allPromotor[promotorTerpilih];
+  const namaAktif = activeProm ? (activeProm.namaAbsen || list[0].namaAbsen) : list[0].namaAbsen;
+  
+  if (labelEl) labelEl.innerText = namaAktif;
+  if (hiddenInput) hiddenInput.value = promotorTerpilih;
+  
+  const selectedOpt = menuEl.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
   if (selectedOpt) {
     menuEl.querySelectorAll('.dd-option').forEach(o => o.classList.remove('selected'));
     selectedOpt.classList.add('selected');
-    if (labelEl) labelEl.innerText = selectedOpt.innerText;
   }
 }
 window.isiDropdownPromotor = isiDropdownPromotor;
@@ -1607,11 +1613,9 @@ function renderUC() {
             <p>Total UC : <b>${totalUC}</b></p>
         </div>
     `;
-    
-    // ... (lanjutan kode renderUC berikutnya)
 
     if (list.length === 0) {
-        return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UC bulan ini</div></div>`;
+        return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UC periode ini</div></div>`;
     }
 
     html += `<div class="card-grid">`;
@@ -1628,7 +1632,6 @@ function renderUC() {
     html += `</div>`;
     return html;
 }
-
 /* ============================================================ */
 /* ===== RENDER: BRAND ======================================= */
 /* ============================================================ */
