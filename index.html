@@ -680,8 +680,93 @@ function isBulanIni(tgl) {
   const n = new Date();
   return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
 }
+// --- 1. Fungsi getDataSaya yang Lebih Akurat & Fleksibel ---
 function getDataSaya() {
-  return allPenjualan.filter(x => x.namaSales === currentUser.namaSales);
+    if (!currentUser) return [];
+    
+    // Ambil nama absen dan nama sales dari user yang aktif (mengantisipasi perbedaan penulisan)
+    const namaAbsenUser = String(currentUser.namaAbsen || '').trim().toUpperCase();
+    const namaSalesUser = String(currentUser.namaSales || '').trim().toUpperCase();
+    
+    // Ambil seluruh data penjualan dari variabel global
+    const semuaPenjualan = window.penjualanData || []; 
+    
+    return semuaPenjualan.filter(x => {
+        if (!x) return false;
+        const salesTrans = String(x.namaSales || '').trim().toUpperCase();
+        
+        // Cek kecocokan: apakah nama di transaksi sama persis dengan namaSales, 
+        // atau mengandung namaAbsen user (misal: "Adhe Beko Mlg" mengandung "ADHE")
+        const isMatch = (namaSalesUser && salesTrans === namaSalesUser) || 
+                        (namaAbsenUser && (salesTrans.includes(namaAbsenUser) || namaAbsenUser.includes(salesTrans)));
+                        
+        return isMatch;
+    });
+}
+
+// --- 2. Fungsi Render Brand (Perolehan Brand Promotor) ---
+function renderBrand() {
+    const listAll = getDataSaya();
+    
+    // Ambil brand yang dipegang oleh promotor yang sedang login dari currentUser.merk
+    const brandPromotor = currentUser && currentUser.merk ? String(currentUser.merk).trim().toUpperCase() : "";
+
+    // Filter transaksi khusus bulan Oktober 2026 DAN cocok dengan merk promotor
+    const list = listAll.filter(x => {
+        if (!x) return false;
+        const tgl = String(x.tanggal || '');
+        const noFaktur = String(x.nomorFaktur || x.noFaktur || '').toUpperCase();
+        const merkBarang = String(x.merk || '').trim().toUpperCase();
+        
+        // Cek periode Oktober 2026 (mengantisipasi format tanggal tertukar atau nomor faktur 2610)
+        const isOktoberFaktur = noFaktur.includes('2610');
+        const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10') || tgl.includes('2026-01-10');
+        
+        // Cocokkan merk barang dengan merk promotor
+        const isMatchBrand = brandPromotor && (merkBarang === brandPromotor || merkBarang.includes(brandPromotor));
+        
+        return (isOktoberFaktur || isOktoberTgl) && isMatchBrand;
+    });
+
+    let totalBrandQty = 0;
+    list.forEach(x => {
+        totalBrandQty += Number(x.qty || 1);
+    });
+
+    const namaPromotor = currentUser ? currentUser.namaAbsen : "Promotor";
+    const infoMerk = currentUser && currentUser.merk ? currentUser.merk : "Brand";
+
+    let html = `
+        <div class="summary-card">
+            <h2>🏷️ ${namaPromotor}</h2>
+            <p>Brand Pegangan : <b>${infoMerk}</b></p>
+            <p>Periode : <b>01/10/2026 - 31/10/2026</b></p>
+            <p>Total Perolehan Brand : <b>${totalBrandQty} Unit</b></p>
+        </div>
+    `;
+
+    if (list.length === 0) {
+        return html + `<div class="card"><div class="pesan">Belum ada data penjualan untuk brand ${infoMerk} pada bulan Oktober 2026</div></div>`;
+    }
+
+    html += `<div class="card-grid">`;
+    list.forEach(x => {
+        const namaProduk = x.namaBarang || x.produk || "-";
+        const tanggalTrans = formatTanggalIndo(x.tanggal); // Menggunakan helper format tanggal DD/MM/YYYY
+        const qtyTrans = x.qty || 1;
+        const kategoriTrans = x.kategori || "-";
+
+        html += `
+        <div class="card success">
+            <div class="tanggal">${ICONS.calendar} ${tanggalTrans}</div>
+            <div style="font-size:11px; color:#9ca3af; margin-top:4px;">Kategori: ${kategoriTrans}</div>
+            <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin:6px 0; color:#e5e7eb;">${namaProduk}</div>
+            <div class="row"><span>Qty</span><span>${qtyTrans} Unit</span></div>
+        </div>`;
+    });
+    html += `</div>`;
+    
+    return html;
 }
 
 // PENJUALAN (Icons updated to SVG)
