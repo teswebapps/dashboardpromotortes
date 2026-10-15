@@ -1160,7 +1160,22 @@ function tampilkanDashboard() {
   });
   
   // Load absensi
-  loadAbsensiUntukUser();
+  // Load absensi secara real-time untuk semua promotor atau inisialisasi
+  window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
+    if (snap.exists()) {
+      allAbsensiAll = snap.val(); // simpan semua absensi
+      if (currentUser.role === 'ADMIN' && promotorTerpilih) {
+        allAbsensi = allAbsensiAll[promotorTerpilih] || {};
+      } else if (currentUser.role !== 'ADMIN') {
+        allAbsensi = allAbsensiAll[currentUser.key] || {};
+      }
+    } else {
+      allAbsensi = {};
+    }
+    if (currentMenu === 'absensi') {
+      tampilkanDetail('absensi');
+    }
+  });
   
   renderMenuGrid();
   
@@ -1197,15 +1212,20 @@ function gantiPromotorAdmin(keyPromotor) {
     </div>
   `;
   
-  // Ambil absensi spesifik promotor ini
-  window.dbGet(window.dbRef(window.db, 'absensi/' + keyPromotor)).then(snap => {
-    allAbsensi = snap.exists() ? snap.val() : {};
+  // ✅ AMBIL DATA ABSENSI & PENJUALAN SPESIFIK PROMOTOR INI
+  window.dbGet(window.dbRef(window.db, 'absensi/' + keyPromotor)).then(snapAbsen => {
+    allAbsensi = snapAbsen.exists() ? snapAbsen.val() : {};
     
+    // Refresh tampilan jika sedang membuka menu terkait
     if (currentMenu) {
       tampilkanDetail(currentMenu);
     } else {
       tampilkanDetail('absensi');
     }
+  }).catch(err => {
+    console.error("Gagal ambil absensi:", err);
+    allAbsensi = {};
+    if (currentMenu) tampilkanDetail(currentMenu);
   });
 }
 window.gantiPromotorAdmin = gantiPromotorAdmin;
