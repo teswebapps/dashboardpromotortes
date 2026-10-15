@@ -770,7 +770,47 @@ function switchLoginTab(mode) {
     document.getElementById('login-error').innerHTML = '';
 }
 window.switchLoginTab = switchLoginTab;
-
+/* ============================================================ */
+/* ===== SET DEFAULT PROMOTOR UNTUK ADMIN ==================== */
+/* ============================================================ */
+function setDefaultPromotorAdmin() {
+  if (!currentUser || currentUser.role !== 'ADMIN') return;
+  
+  // Kalau promotorTerpilih sudah valid, jangan di-reset
+  if (promotorTerpilih && allPromotor[promotorTerpilih]) {
+    console.log('✅ promotorTerpilih sudah valid:', promotorTerpilih);
+    return;
+  }
+  
+  // Ambil promotor pertama
+  const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
+  if (promotorKeys.length === 0) {
+    console.log('⚠️ Belum ada promotor terdaftar');
+    promotorTerpilih = null;
+    return;
+  }
+  
+  promotorTerpilih = promotorKeys[0];
+  console.log('✅ Auto-set promotorTerpilih:', promotorTerpilih);
+  
+  // Update dropdown label
+  const menu = document.getElementById('dropdownMenu');
+  const labelEl = document.getElementById('dropdownLabel');
+  if (menu && labelEl) {
+    const opt = menu.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
+    if (opt) {
+      menu.querySelectorAll('.dd-option').forEach(o => o.classList.remove('selected'));
+      opt.classList.add('selected');
+      labelEl.innerText = opt.innerText;
+    }
+  }
+  
+  // Re-render kalau sedang buka absensi / penjualan / uc / brand
+  if (currentMenu && ['absensi', 'penjualan', 'uc', 'brand'].includes(currentMenu)) {
+    tampilkanDetail(currentMenu);
+  }
+}
+window.setDefaultPromotorAdmin = setDefaultPromotorAdmin;
 /* ============================================================ */
 /* ===== LOAD PROMOTOR LIST ================================== */
 /* ============================================================ */
@@ -791,6 +831,7 @@ function loadPromotorList() {
     
     // Isi dropdown promotor custom
     isiDropdownPromotor(list);
+    setDefaultPromotorAdmin();
   });
 }
 
@@ -1079,15 +1120,19 @@ function tampilkanDashboard() {
   
   const isAdmin = currentUser.role === 'ADMIN';
   
-  // === FIX: Admin tidak punya data promotor sendiri ===
-  // Set promotorTerpilih ke promotor PERTAMA yang ada, bukan "admin_utama"
+  // === DEFAULT PROMOTOR ===
+  // Untuk admin: JANGAN set ke currentUser.key (yang = "admin_utama")
+  // Nanti akan auto-set di setDefaultPromotorAdmin() setelah allPromotor siap
   if (isAdmin) {
-    // Cari promotor pertama dari allPromotor
-    const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
-    if (promotorKeys.length > 0) {
-      promotorTerpilih = promotorKeys[0];
-    } else {
-      promotorTerpilih = null;   // belum ada promotor
+    // Kalau promotorTerpilih belum valid, biarkan null dulu
+    // Akan di-set oleh setDefaultPromotorAdmin() saat listener promotor selesai
+    if (!promotorTerpilih || !allPromotor[promotorTerpilih]) {
+      // Coba set sekarang kalau allPromotor sudah ada
+      const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
+      if (promotorKeys.length > 0) {
+        promotorTerpilih = promotorKeys[0];
+        console.log('✅ Set promotorTerpilih (sync):', promotorTerpilih);
+      }
     }
     
     document.getElementById('promotorSelector').classList.remove('hidden');
@@ -1095,7 +1140,6 @@ function tampilkanDashboard() {
       `${ICONS.crown} <b>${currentUser.namaAbsen}</b> <span class="admin-badge-inline">ADMIN</span>`;
     document.getElementById('topBar').classList.add('admin-mode');
   } else {
-    // Promotor: pakai key sendiri
     promotorTerpilih = currentUser.key;
     document.getElementById('promotorSelector').classList.add('hidden');
     document.getElementById('userNama').innerHTML = 
@@ -1120,21 +1164,10 @@ function tampilkanDashboard() {
   
   renderMenuGrid();
   
-  // Sync dropdown label
+  // ✅ FIX: Cek lagi setelah 1.5 detik (kalau allPromotor belum siap)
   setTimeout(() => {
-    if (isAdmin && promotorTerpilih) {
-      const menu = document.getElementById('dropdownMenu');
-      const labelEl = document.getElementById('dropdownLabel');
-      if (menu && labelEl) {
-        const opt = menu.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
-        if (opt) {
-          menu.querySelectorAll('.dd-option').forEach(o => o.classList.remove('selected'));
-          opt.classList.add('selected');
-          labelEl.innerText = opt.innerText;
-        }
-      }
-    }
-  }, 200);
+    if (isAdmin) setDefaultPromotorAdmin();
+  }, 1500);
 }
 
 /* ============================================================ */
@@ -1228,7 +1261,7 @@ function kembaliKeMenu() {
   document.getElementById('menuGrid').classList.remove('hidden');
   document.getElementById('promotorSelector').classList.add('hidden');
   
-  // FIX: Reset ke promotor PERTAMA (bukan currentUser.key yang = admin_utama)
+  // Reset promotor ke promotor pertama (untuk admin)
   if (currentUser.role === 'ADMIN') {
     const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
     promotorTerpilih = promotorKeys.length > 0 ? promotorKeys[0] : null;
@@ -1237,7 +1270,6 @@ function kembaliKeMenu() {
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 window.kembaliKeMenu = kembaliKeMenu;
-
 function tampilkanDetail(menuKey) {
   currentMenu = menuKey;
   document.getElementById('menuGrid').classList.add('hidden');
