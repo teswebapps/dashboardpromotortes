@@ -1228,10 +1228,10 @@ function kembaliKeMenu() {
   document.getElementById('menuGrid').classList.remove('hidden');
   document.getElementById('promotorSelector').classList.add('hidden');
   
+  // FIX: Reset ke promotor PERTAMA (bukan currentUser.key yang = admin_utama)
   if (currentUser.role === 'ADMIN') {
-    promotorTerpilih = currentUser.key;
-    const hidden = document.getElementById('selectPromotor');
-    if (hidden) hidden.value = currentUser.key;
+    const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
+    promotorTerpilih = promotorKeys.length > 0 ? promotorKeys[0] : null;
   }
   
   window.scrollTo({ top: 0, behavior: 'smooth' });
