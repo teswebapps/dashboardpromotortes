@@ -762,25 +762,25 @@ function renderPenjualan() {
   return html;
 }
 
-// UC
 // UC (UFO Care+ / Garansi)
 function renderUC() {
-    // Ambil data milik sales yang sedang login
     const listAll = getDataSaya();
     
-    // Filter khusus bulan Oktober 2026 DAN kategori GARANSI / UFO CARE
     const list = listAll.filter(x => {
         if (!x) return false;
         const tgl = String(x.tanggal || '');
+        const noFaktur = String(x.nomorFaktur || x.noFaktur || '').toUpperCase();
         const kat = String(x.kategori || '').trim().toUpperCase();
         const namaBrd = String(x.namaBarang || '').trim().toUpperCase();
         
-        const isOktober = tgl.includes('/10/2026');
+        // Pastikan transaksi milik bulan Oktober 2026 (terdeteksi dari nomor faktur 2610 atau tanggal Oktober)
+        const isOktoberFaktur = noFaktur.includes('2610');
+        const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10') || tgl.includes('2026-01-10'); // Mengantisipasi tertukar format
         
-        // UC di data kasir masuk dalam kategori 'GARANSI' atau mengandung 'UFO CARE' / 'CARE+'
+        // UC / Garansi
         const isGaransiOrUC = kat === 'GARANSI' || kat.includes('UC') || namaBrd.includes('UFO CARE') || namaBrd.includes('CARE+');
         
-        return isOktober && isGaransiOrUC;
+        return (isOktoberFaktur || isOktoberTgl) && isGaransiOrUC;
     });
 
     let totalUC = 0;
