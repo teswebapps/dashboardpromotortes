@@ -73,7 +73,7 @@ body {
 .hidden { display: none !important; }
 
 /* ============================================================ */
-/* ===== LOGIN SCREEN (DISAMAKAN DENGAN HTML 2) =============== */
+/* ===== LOGIN SCREEN ========================================= */
 /* ============================================================ */
 body.login-active { 
     margin: 0; 
@@ -101,7 +101,6 @@ body.login-active {
     overflow: hidden;
 }
 
-/* Grid */
 .fut-grid { 
     position: fixed; 
     inset: 0; 
@@ -117,7 +116,6 @@ body.login-active {
     100% { background-position: 40px 40px; } 
 }
 
-/* Orb */
 .fut-orb { 
     position: fixed; 
     border-radius: 50%; 
@@ -136,7 +134,6 @@ body.login-active {
     66% { transform: translate(-30px,40px) scale(0.9); } 
 }
 
-/* Particles */
 .fut-particles { position: fixed; inset: 0; pointer-events: none; z-index: 1; }
 .fut-particle { 
     position: absolute; 
@@ -152,7 +149,6 @@ body.login-active {
     100% { transform: translateY(-100vh) scale(1); opacity: 0; } 
 }
 
-/* Container */
 .fut-container { 
     position: relative; 
     z-index: 10; 
@@ -169,7 +165,6 @@ body.login-active {
     to { opacity: 1; transform: translateY(0); } 
 }
 
-/* Left */
 .fut-left { color: #ffffff; text-align: center; padding: 20px; }
 
 .fut-tagline { 
@@ -254,7 +249,6 @@ body.login-active {
     animation: futDotPulse 1.5s infinite; 
 }
 
-/* Right / Card */
 .fut-right { display: flex; justify-content: center; }
 
 .fut-card { 
@@ -291,6 +285,41 @@ body.login-active {
     box-shadow: 0 0 40px rgba(34,211,238,0.4); 
 }
 .fut-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
+
+/* ===== LOGIN TABS ===== */
+.login-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 22px;
+    background: rgba(2, 6, 23, 0.6);
+    padding: 5px;
+    border-radius: 12px;
+    border: 1px solid rgba(34, 211, 238, 0.15);
+}
+.login-tab {
+    flex: 1;
+    padding: 10px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    font-family: inherit;
+}
+.login-tab:hover {
+    color: #22d3ee;
+    background: rgba(34, 211, 238, 0.08);
+}
+.login-tab.active {
+    background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%);
+    color: #ffffff;
+    box-shadow: 0 0 20px rgba(34, 211, 238, 0.4);
+}
 
 .fut-field { margin-bottom: 18px; position: relative; }
 .fut-field label { 
@@ -376,9 +405,34 @@ body.login-active {
     text-align: center; 
     letter-spacing: 10px; 
     outline: none; 
+    transition: all 0.25s ease;
 }
 .fut-input::placeholder { color: rgba(148,163,184,0.4); }
 .fut-input:focus { border-color: #22d3ee; box-shadow: 0 0 25px rgba(34,211,238,0.4); }
+
+.fut-input-admin {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(2, 6, 23, 0.6);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    outline: none;
+    transition: all 0.25s ease;
+    letter-spacing: 1px;
+    text-align: left;
+}
+.fut-input-admin:focus {
+    border-color: #d4af37;
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
+}
+.fut-input-admin::placeholder {
+    color: rgba(148, 163, 184, 0.4);
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
 
 .fut-error { 
     color: #f87171; 
@@ -513,10 +567,11 @@ body.login-active {
     .fut-input { padding: 11px 12px; font-size: 18px; letter-spacing: 6px; }
     .fut-btn { padding: 13px; font-size: 12px; }
     .fut-field label { font-size: 10px; }
+    .login-tab { font-size: 11px; padding: 9px 8px; }
 }
 
 /* ============================================================ */
-/* ===== DASHBOARD (TIDAK DIUBAH) ============================== */
+/* ===== DASHBOARD ============================================ */
 /* ============================================================ */
 body.dashboard-active {
     margin: 0; padding: 24px 16px;
@@ -535,8 +590,14 @@ body.dashboard-active {
     padding: 14px 20px;
     margin-bottom: 25px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
 }
-.user-info { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: #ffffff; }
+.top-bar.admin-mode {
+    border: 2px solid rgba(212, 175, 55, 0.6);
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(35, 28, 15, 0.85));
+    box-shadow: 0 10px 30px rgba(212, 175, 55, 0.15);
+}
+.user-info { display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; color: #ffffff; flex-wrap: wrap; }
 .user-dot { width: 10px; height: 10px; border-radius: 50%; background: #34d399; box-shadow: 0 0 10px rgba(52, 211, 153, 0.8); flex-shrink: 0; }
 .logout-btn {
     padding: 8px 16px; border: none; border-radius: 9px; cursor: pointer;
@@ -546,6 +607,22 @@ body.dashboard-active {
 }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
 .logout-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.4; fill: none; }
+
+/* Admin badge */
+.admin-badge-inline {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 800;
+    background: linear-gradient(135deg, #d4af37, #b8941f);
+    color: #111827;
+    padding: 3px 8px;
+    border-radius: 5px;
+    margin-left: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    vertical-align: middle;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+}
 
 .back-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
 .back-btn {
@@ -569,12 +646,31 @@ body.dashboard-active {
     padding: 28px 22px; text-align: center; cursor: pointer;
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
     display: flex; flex-direction: column; align-items: center;
+    position: relative;
 }
 .menu-card:hover {
     transform: translateY(-5px);
     border-color: rgba(212, 175, 55, 0.6);
     box-shadow: 0 20px 40px -10px rgba(212, 175, 55, 0.2);
     background: rgba(21, 29, 46, 0.85);
+}
+.menu-card.admin-only {
+    border-color: rgba(212, 175, 55, 0.6) !important;
+    background: linear-gradient(135deg, rgba(17, 24, 39, 0.9), rgba(35, 28, 15, 0.9)) !important;
+}
+.menu-card.admin-only::after {
+    content: '👑 ADMIN';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 9px;
+    font-weight: 800;
+    background: #d4af37;
+    color: #111827;
+    padding: 3px 7px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 .menu-icon {
     width: 60px; height: 60px; margin-bottom: 12px;
@@ -623,6 +719,7 @@ body.dashboard-active {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 .card.success { border-left: 4px solid #10b981; }
+.card.warning { border-left: 4px solid #ef4444; }
 .tanggal { text-align: center; font-weight: 700; margin-bottom: 12px; color: #ffffff; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 6px; flex-direction: column; }
 .tanggal svg { width: 15px; height: 15px; stroke: #38bdf8; stroke-width: 2; fill: none; display: inline-block; }
 .row {
@@ -631,6 +728,10 @@ body.dashboard-active {
     color: #9ca3af; font-size: 13px;
 }
 .row:last-child { border-bottom: none; }
+.ok { font-weight: 600; color: #ffffff; }
+.kosong { color: #f87171; font-weight: 700; }
+.status-ok { color: #34d399; font-weight: 700; }
+.status-warning { color: #f87171; font-weight: 700; }
 
 @media (max-width: 1024px) { 
   .menu-grid, .card-grid { grid-template-columns: repeat(2, 1fr) !important; } 
@@ -641,6 +742,7 @@ body.dashboard-active {
 </style>
 </head>
 <body class="login-active">
+
 <!-- ========== LAYAR LOGIN ========== -->
 <div id="login-screen">
     <div class="fut-grid"></div>
@@ -653,10 +755,10 @@ body.dashboard-active {
         <div class="fut-left">
             <div class="fut-tagline">
                 <span class="fut-dot"></span>
-                <span>SISTEM DASHBOARD PROMOTOR</span>
+                <span>MONITORING KINERJA PROMOTOR</span>
             </div>
             <h1 class="fut-headline" id="fut-headline" style="opacity: 1;">
-                <span id="fut-headline-text">Promotor UFO Performance</span>
+                <span id="fut-headline-text">DASHBOARD PROMOTOR</span>
             </h1>
             <p class="fut-subheadline" id="fut-subheadline">UFO Malang Kebonsari</p>
 
@@ -676,18 +778,40 @@ body.dashboard-active {
                     <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>🛸</span>';">
                 </div>
 
-                <div class="fut-field">
-                    <label>Pilih Nama</label>
-                    <input type="hidden" id="login-pilih-sales" value="">
-                    <div id="custom-select-trigger" onclick="toggleCustomSelect()" class="fut-select">
-                        <span id="custom-select-label">-- Memuat daftar promotor --</span>
-                        <svg id="custom-select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </div>
-                    <div id="custom-select-menu" class="fut-menu"></div>
+                <!-- ===== TAB LOGIN ===== -->
+                <div class="login-tabs">
+                    <button type="button" class="login-tab active" id="tab-promotor" onclick="switchLoginTab('promotor')">
+                        👤 PROMOTOR
+                    </button>
+                    <button type="button" class="login-tab" id="tab-admin" onclick="switchLoginTab('admin')">
+                        👑 ADMIN
+                    </button>
                 </div>
 
+                <!-- FORM PROMOTOR -->
+                <div id="form-promotor">
+                    <div class="fut-field">
+                        <label>Pilih Nama Promotor</label>
+                        <input type="hidden" id="login-pilih-sales" value="">
+                        <div id="custom-select-trigger" onclick="toggleCustomSelect()" class="fut-select">
+                            <span id="custom-select-label">-- Memuat daftar promotor --</span>
+                            <svg id="custom-select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </div>
+                        <div id="custom-select-menu" class="fut-menu"></div>
+                    </div>
+                </div>
+
+                <!-- FORM ADMIN -->
+                <div id="form-admin" style="display:none;">
+                    <div class="fut-field">
+                        <label>Username Admin</label>
+                        <input type="text" id="login-admin-username" class="fut-input-admin" placeholder="Masukkan username admin" autocomplete="off">
+                    </div>
+                </div>
+
+                <!-- PIN -->
                 <div class="fut-field">
                     <label>Masukkan PIN</label>
                     <input type="password" id="login-pin-input" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="••••••" autocomplete="off" class="fut-input">
@@ -696,7 +820,7 @@ body.dashboard-active {
                 <div id="login-error" class="fut-error"></div>
 
                 <button type="button" id="btn-login-promotor" class="fut-btn">
-                    <span>MASUK</span>
+                    <span id="btn-login-text">MASUK</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;">
                         <line x1="5" y1="12" x2="19" y2="12"></line>
                         <polyline points="12 5 19 12 12 19"></polyline>
@@ -708,10 +832,11 @@ body.dashboard-active {
         </div>
     </div>
 </div>
+
 <!-- ========== DASHBOARD ========== -->
 <div id="dashboard" class="hidden">
   <div class="dashboard-container">
-    <div class="top-bar">
+    <div class="top-bar" id="topBar">
       <div class="user-info">
         <span class="user-dot"></span>
         <span id="userNama">-</span>
@@ -744,6 +869,7 @@ let allAbsensi = {};
 let infoData = { promo: [], rules: [] };
 let currentUser = null;
 let currentMenu = null;
+let loginMode = 'promotor';
 
 const ICONS = {
   absensi: `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>`,
@@ -755,9 +881,180 @@ const ICONS = {
   back: `<svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`,
   empty: `<svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>`,
   money: `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#d4af37;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
-  calendar: `<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#38bdf8;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`
+  calendar: `<svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#38bdf8;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
+  perolehan: `<svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>`,
+  denda: `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`
 };
 
+/* ============================================================ */
+/* ===== SWITCH TAB LOGIN ===================================== */
+/* ============================================================ */
+function switchLoginTab(mode) {
+    loginMode = mode;
+    const tabPromotor = document.getElementById('tab-promotor');
+    const tabAdmin = document.getElementById('tab-admin');
+    const formPromotor = document.getElementById('form-promotor');
+    const formAdmin = document.getElementById('form-admin');
+    const btnText = document.getElementById('btn-login-text');
+    
+    if (mode === 'promotor') {
+        tabPromotor.classList.add('active');
+        tabAdmin.classList.remove('active');
+        formPromotor.style.display = 'block';
+        formAdmin.style.display = 'none';
+        btnText.innerText = 'MASUK';
+    } else {
+        tabAdmin.classList.add('active');
+        tabPromotor.classList.remove('active');
+        formPromotor.style.display = 'none';
+        formAdmin.style.display = 'block';
+        btnText.innerText = 'MASUK ADMIN';
+    }
+    document.getElementById('login-error').innerHTML = '';
+}
+window.switchLoginTab = switchLoginTab;
+
+/* ============================================================ */
+/* ===== LOGIN HANDLER ======================================== */
+/* ============================================================ */
+async function loginPromotor() {
+    const errEl = document.getElementById('login-error');
+    const btn = document.getElementById('btn-login-promotor');
+    const pin = document.getElementById('login-pin-input').value.trim();
+    errEl.innerHTML = '';
+    
+    if (!pin) {
+        errEl.innerHTML = '⚠️ Masukkan PIN!';
+        return;
+    }
+    
+    const asli = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spinner"></span> Memeriksa...';
+    
+    try {
+        if (loginMode === 'promotor') {
+            const key = document.getElementById('login-pilih-sales').value;
+            if (!key) {
+                errEl.innerHTML = '⚠️ Pilih nama promotor dulu!';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
+            if (!snap.exists()) {
+                errEl.innerHTML = '⚠️ Promotor tidak ditemukan.';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            const data = snap.val();
+            if (String(data.pin) !== pin) {
+                errEl.innerHTML = '⚠️ PIN salah!';
+                document.getElementById('login-pin-input').value = '';
+                document.getElementById('login-pin-input').focus();
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            if (data.aktif === false) {
+                errEl.innerHTML = '⚠️ Akun promotor ini tidak aktif.';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            currentUser = { 
+                key, 
+                ...data, 
+                role: 'PROMOTOR',
+                loginType: 'promotor'
+            };
+            localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
+            
+        } else {
+            const username = document.getElementById('login-admin-username').value.trim().toUpperCase();
+            if (!username) {
+                errEl.innerHTML = '⚠️ Masukkan username admin!';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            const snap = await window.dbGet(window.dbRef(window.db, 'users/admin'));
+            if (!snap.exists()) {
+                errEl.innerHTML = '⚠️ Belum ada admin terdaftar.';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            const admins = snap.val();
+            let foundKey = null;
+            let foundData = null;
+            
+            Object.keys(admins).forEach(k => {
+                const a = admins[k];
+                if (a && String(a.username || '').toUpperCase() === username) {
+                    foundKey = k;
+                    foundData = a;
+                }
+            });
+            
+            if (!foundKey) {
+                errEl.innerHTML = '⚠️ Username admin tidak ditemukan.';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            if (String(foundData.pin) !== pin) {
+                errEl.innerHTML = '⚠️ PIN admin salah!';
+                document.getElementById('login-pin-input').value = '';
+                document.getElementById('login-pin-input').focus();
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            if (foundData.aktif === false) {
+                errEl.innerHTML = '⚠️ Akun admin ini tidak aktif.';
+                btn.disabled = false; btn.innerHTML = asli; return;
+            }
+            
+            currentUser = {
+                key: foundKey,
+                username: foundData.username,
+                namaAbsen: foundData.nama || foundData.username,
+                namaSales: '',
+                pin: foundData.pin,
+                role: 'ADMIN',
+                loginType: 'admin'
+            };
+            localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
+        }
+        
+        // ===== SUKSES =====
+        document.getElementById('login-toast-name').innerText = currentUser.namaAbsen;
+        const toast = document.getElementById('login-toast');
+        toast.classList.add('active');
+        
+        setTimeout(() => {
+            tampilkanDashboard();
+            document.getElementById('login-pin-input').value = '';
+            document.getElementById('login-admin-username').value = '';
+            errEl.innerHTML = '';
+            btn.disabled = false; btn.innerHTML = asli;
+            setTimeout(() => { toast.classList.remove('active'); }, 600);
+        }, 1000);
+        
+    } catch (err) {
+        console.error('Login error:', err);
+        errEl.innerHTML = '⚠️ ' + err.message;
+        btn.disabled = false; btn.innerHTML = asli;
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('btn-login-promotor');
+  if (btn) btn.onclick = loginPromotor;
+  const pin = document.getElementById('login-pin-input');
+  if (pin) {
+    pin.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
+    pin.addEventListener('keypress', e => { if (e.key === 'Enter') loginPromotor(); });
+  }
+});
+
+/* ============================================================ */
+/* ===== INIT ================================================== */
+/* ============================================================ */
 window.addEventListener('firebase-ready', () => {
   initParticles();
   loadPromotorList();
@@ -819,6 +1116,9 @@ function loadInfoRealtime() {
   });
 }
 
+/* ============================================================ */
+/* ===== CUSTOM SELECT ========================================= */
+/* ============================================================ */
 function toggleCustomSelect() {
   const menu = document.getElementById('custom-select-menu');
   const trigger = document.getElementById('custom-select-trigger');
@@ -827,6 +1127,7 @@ function toggleCustomSelect() {
   if (isOpen) { menu.classList.remove('open'); trigger.classList.remove('open'); }
   else { menu.classList.add('open'); trigger.classList.add('open'); }
 }
+window.toggleCustomSelect = toggleCustomSelect;
 
 function pilihOpsiCustom(key, label) {
   document.getElementById('login-pilih-sales').value = key;
@@ -837,7 +1138,6 @@ function pilihOpsiCustom(key, label) {
   document.getElementById('custom-select-trigger').classList.remove('open');
 }
 window.pilihOpsiCustom = pilihOpsiCustom;
-window.toggleCustomSelect = toggleCustomSelect;
 
 function renderCustomSelectOptions(list) {
   const menu = document.getElementById('custom-select-menu');
@@ -866,65 +1166,29 @@ document.addEventListener('click', (e) => {
   }
 });
 
-async function loginPromotor() {
-  const key = document.getElementById('login-pilih-sales').value;
-  const pin = document.getElementById('login-pin-input').value.trim();
-  const errEl = document.getElementById('login-error');
-  const btn = document.getElementById('btn-login-promotor');
-  errEl.innerHTML = '';
-  if (!key) { errEl.innerHTML = '⚠️ Pilih nama dulu!'; return; }
-  if (!pin) { errEl.innerHTML = '⚠️ Masukkan PIN!'; return; }
-  const asli = btn.innerHTML;
-  btn.disabled = true;
-  btn.innerHTML = '<span class="spinner"></span> Memeriksa...';
-  try {
-    const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
-    if (!snap.exists()) {
-      errEl.innerHTML = '⚠️ Promotor tidak ditemukan.';
-      btn.disabled = false; btn.innerHTML = asli; return;
-    }
-    const data = snap.val();
-    if (String(data.pin) !== pin) {
-      errEl.innerHTML = '⚠️ PIN salah!';
-      document.getElementById('login-pin-input').value = '';
-      document.getElementById('login-pin-input').focus();
-      btn.disabled = false; btn.innerHTML = asli; return;
-    }
-    currentUser = { key, ...data };
-    localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
-    document.getElementById('login-toast-name').innerText = data.namaAbsen;
-    const toast = document.getElementById('login-toast');
-    toast.classList.add('active');
-    setTimeout(() => {
-      tampilkanDashboard();
-      document.getElementById('login-pin-input').value = '';
-      errEl.innerHTML = '';
-      btn.disabled = false; btn.innerHTML = asli;
-      setTimeout(() => { toast.classList.remove('active'); }, 600);
-    }, 1000);
-  } catch (err) {
-    errEl.innerHTML = '⚠️ ' + err.message;
-    btn.disabled = false; btn.innerHTML = asli;
-  }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('btn-login-promotor');
-  if (btn) btn.onclick = loginPromotor;
-  const pin = document.getElementById('login-pin-input');
-  if (pin) {
-    pin.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
-    pin.addEventListener('keypress', e => { if (e.key === 'Enter') loginPromotor(); });
-  }
-});
-
+/* ============================================================ */
+/* ===== DASHBOARD ============================================ */
+/* ============================================================ */
 function tampilkanDashboard() {
   document.body.classList.remove('login-active');
   document.body.classList.add('dashboard-active');
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard').classList.remove('hidden');
-  document.getElementById('userNama').innerHTML = `⭕ <b>${currentUser.namaAbsen}</b>`;
-
+  
+  const isAdmin = currentUser.role === 'ADMIN';
+  
+  // Top bar
+  if (isAdmin) {
+    document.getElementById('userNama').innerHTML = 
+      `👑 <b>${currentUser.namaAbsen}</b> <span class="admin-badge-inline">ADMIN</span>`;
+    document.getElementById('topBar').classList.add('admin-mode');
+  } else {
+    document.getElementById('userNama').innerHTML = 
+      `⭕ <b>${currentUser.namaAbsen}</b>`;
+    document.getElementById('topBar').classList.remove('admin-mode');
+  }
+  
+  // Load penjualan
   window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
     allPenjualan = [];
     if (snap.exists()) {
@@ -935,12 +1199,20 @@ function tampilkanDashboard() {
     if (!currentMenu) renderMenuGrid();
     else tampilkanDetail(currentMenu);
   });
-
-  window.dbOnValue(window.dbRef(window.db, 'absensi/' + currentUser.key), snap => {
-    allAbsensi = snap.exists() ? snap.val() : {};
-    if (currentMenu === 'absensi') tampilkanDetail('absensi');
-  });
-
+  
+  // Load absensi
+  if (isAdmin) {
+    window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
+      allAbsensi = snap.exists() ? snap.val() : {};
+      if (currentMenu === 'absensi' || currentMenu === 'denda') tampilkanDetail(currentMenu);
+    });
+  } else {
+    window.dbOnValue(window.dbRef(window.db, 'absensi/' + currentUser.key), snap => {
+      allAbsensi = snap.exists() ? snap.val() : {};
+      if (currentMenu === 'absensi') tampilkanDetail('absensi');
+    });
+  }
+  
   renderMenuGrid();
 }
 
@@ -950,7 +1222,10 @@ function renderMenuGrid() {
   document.getElementById('detailView').innerHTML = '';
   const grid = document.getElementById('menuGrid');
   grid.classList.remove('hidden');
-  const menus = [
+  
+  const isAdmin = currentUser.role === 'ADMIN';
+  
+  const menusUmum = [
     { key: 'absensi', icon: 'absensi', title: 'Absensi', desc: 'Rekap kehadiran dan status finger harian' },
     { key: 'penjualan', icon: 'penjualan', title: 'Penjualan', desc: 'Omzet produk harian dan perolehan unit' },
     { key: 'uc', icon: 'uc', title: 'UC', desc: 'Pencapaian poin UC promotor' },
@@ -958,15 +1233,26 @@ function renderMenuGrid() {
     { key: 'promo', icon: 'promo', title: 'Promo Toko', desc: 'Daftar promo produk & program toko aktif' },
     { key: 'sop', icon: 'sop', title: 'SOP Promotor', desc: 'Aturan kerja & standar operasional' }
   ];
-  grid.innerHTML = menus.map(m => `
-    <div class="menu-card" onclick="tampilkanDetail('${m.key}')">
-      <div class="menu-icon">${ICONS[m.icon]}</div>
-      <div class="menu-content">
-        <div class="menu-title">${m.title}</div>
-        <p class="menu-desc">${m.desc}</p>
+  
+  const menusAdmin = [
+    { key: 'perolehan', icon: 'perolehan', title: 'Perolehan Semua Promotor', desc: 'Peringkat & akumulasi omzet seluruh promotor' },
+    { key: 'denda', icon: 'denda', title: 'Denda & Keterlambatan', desc: 'Rekap denda UC & late semua promotor' }
+  ];
+  
+  const allMenus = isAdmin ? [...menusUmum, ...menusAdmin] : menusUmum;
+  
+  grid.innerHTML = allMenus.map(m => {
+    const isAdminMenu = (m.key === 'perolehan' || m.key === 'denda');
+    return `
+      <div class="menu-card ${isAdminMenu ? 'admin-only' : ''}" onclick="tampilkanDetail('${m.key}')">
+        <div class="menu-icon">${ICONS[m.icon]}</div>
+        <div class="menu-content">
+          <div class="menu-title">${m.title}</div>
+          <p class="menu-desc">${m.desc}</p>
+        </div>
       </div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 window.renderMenuGrid = renderMenuGrid;
 
@@ -984,23 +1270,30 @@ function tampilkanDetail(menuKey) {
   document.getElementById('menuGrid').classList.add('hidden');
   const detailEl = document.getElementById('detailView');
   detailEl.classList.remove('hidden');
+  
   const titles = {
     absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
     penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
     uc: { title: 'UC', subtitle: 'Pencapaian poin UC promotor' },
     brand: { title: 'Perolehan Brand', subtitle: 'Rekap penjualan khusus brand Anda' },
     promo: { title: 'Promo Toko', subtitle: 'Daftar promo produk & program toko aktif' },
-    sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' }
+    sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' },
+    perolehan: { title: '📊 Perolehan Semua Promotor', subtitle: 'Peringkat & akumulasi omzet seluruh promotor (Khusus Admin)' },
+    denda: { title: '⚖️ Denda & Keterlambatan', subtitle: 'Rekap denda UC & late semua promotor (Khusus Admin)' }
   };
+  
   const t = titles[menuKey] || { title: 'Detail', subtitle: '' };
   let content = '';
+  
   if (menuKey === 'absensi') content = renderAbsensi();
   else if (menuKey === 'penjualan') content = renderPenjualan();
   else if (menuKey === 'uc') content = renderUC();
   else if (menuKey === 'brand') content = renderBrand();
   else if (menuKey === 'promo') content = renderInfoList(infoData.promo, 'promo');
   else if (menuKey === 'sop') content = renderInfoList(infoData.rules, 'rules');
-
+  else if (menuKey === 'perolehan') content = renderPerolehan();
+  else if (menuKey === 'denda') content = renderDenda();
+  
   detailEl.innerHTML = `
     <div class="back-bar">
       <button class="back-btn" onclick="kembaliKeMenu()">${ICONS.back} Kembali ke Menu</button>
@@ -1013,6 +1306,9 @@ function tampilkanDetail(menuKey) {
 }
 window.tampilkanDetail = tampilkanDetail;
 
+/* ============================================================ */
+/* ===== HELPER =============================================== */
+/* ============================================================ */
 function tanggalKeNama(tglStr) {
   if (!tglStr) return '-';
   const parts = String(tglStr).split('/');
@@ -1033,12 +1329,6 @@ function parseTanggal(str) {
   return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
 }
 
-function isBulanIni(tgl) {
-  const d = parseTanggal(tgl); if (!d) return false;
-  const n = new Date();
-  return d.getMonth() === n.getMonth() && d.getFullYear() === n.getFullYear();
-}
-
 function getDataSaya() {
     if (!currentUser) return [];
     const namaAbsenUser = String(currentUser.namaAbsen || '').trim().toUpperCase();
@@ -1053,6 +1343,9 @@ function getDataSaya() {
     });
 }
 
+/* ============================================================ */
+/* ===== RENDER: BRAND ======================================== */
+/* ============================================================ */
 function renderBrand() {
     const listAll = getDataSaya();
     const brandPromotor = currentUser && currentUser.merk ? String(currentUser.merk).trim().toUpperCase() : "";
@@ -1090,7 +1383,7 @@ function renderBrand() {
     `;
 
     if (list.length === 0) {
-        return html + `<div class="card"><div class="pesan" style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data penjualan untuk brand ${infoMerk} pada bulan Oktober 2026</div></div>`;
+        return html + `<div class="card"><div class="pesan" style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data penjualan untuk brand ${infoMerk}</div></div>`;
     }
 
     const grupTanggal = {};
@@ -1142,14 +1435,13 @@ function renderBrand() {
     return html;
 }
 
+/* ============================================================ */
+/* ===== RENDER: PENJUALAN =================================== */
+/* ============================================================ */
 function renderPenjualan() {
   const list = getDataSaya();
-  const totalOmzet = list.reduce((s, x) => {
-    return s + (Number(x.subtotal || x.omzet) || 0);
-  }, 0);
-  const totalUnit = list.reduce((s, x) => {
-    return s + (Number(x.qty) || 1);
-  }, 0);
+  const totalOmzet = list.reduce((s, x) => s + (Number(x.subtotal || x.omzet) || 0), 0);
+  const totalUnit = list.reduce((s, x) => s + (Number(x.qty) || 1), 0);
 
   let tglPertama = '-', tglTerakhir = '-';
   if (list.length > 0) {
@@ -1187,13 +1479,9 @@ function renderPenjualan() {
   });
 
   html += `<div class="card-grid">`;
-
   keysSorted.forEach(tgl => {
     const items = grupTanggal[tgl];
-    const totalHari = items.reduce((s, x) => {
-      return s + (Number(x.subtotal || x.omzet) || 0);
-    }, 0);
-
+    const totalHari = items.reduce((s, x) => s + (Number(x.subtotal || x.omzet) || 0), 0);
     let isiProduk = '';
     items.forEach((it, idx) => {
       const kat = it.kategori ? ` <span style="font-size:11px; color:#38bdf8;">(${it.kategori})</span>` : '';
@@ -1204,7 +1492,6 @@ function renderPenjualan() {
           <div class="row"><span>Omzet</span><span>Rp ${Number(it.subtotal || it.omzet || 0).toLocaleString('id-ID')}</span></div>
         </div>`;
     });
-
     html += `
       <div class="card success">
         <div class="tanggal">${ICONS.calendar} ${tanggalKeNama(tgl)}</div>
@@ -1216,29 +1503,13 @@ function renderPenjualan() {
       </div>
     `;
   });
-
   html += `</div>`;
   return html;
 }
 
-function formatTanggalIndo(tglStr) {
-    if (!tglStr) return "-";
-    let s = String(tglStr).trim();
-    if (s.includes('-')) {
-        const parts = s.split(' ')[0].split('-');
-        if (parts.length === 3) {
-            return `${parts[2]}/${parts[1]}/${parts[0]}`;
-        }
-    }
-    if (s.includes('/')) {
-        const parts = s.split(' ')[0].split('/');
-        if (parts.length === 3) {
-            return `${parts[1]}/${parts[0]}/${parts[2]}`;
-        }
-    }
-    return s;
-}
-
+/* ============================================================ */
+/* ===== RENDER: UC ========================================== */
+/* ============================================================ */
 function renderUC() {
     const listAll = getDataSaya();
     const list = listAll.filter(x => {
@@ -1254,33 +1525,28 @@ function renderUC() {
     });
 
     let totalUC = 0;
-    list.forEach(x => {
-        totalUC += Number(x.qty || 1);
-    });
+    list.forEach(x => { totalUC += Number(x.qty || 1); });
 
     const namaPromotor = currentUser ? currentUser.namaAbsen : "Promotor";
-
     let html = `
         <div class="summary-card">
             <h2>💎 ${namaPromotor}</h2>
-            <p>Periode : <b>01/10/2026 - 31/10/2026</b></p>
+            <p>Periode : <b>Bulan Ini</b></p>
             <p>Total UC : <b>${totalUC}</b></p>
         </div>
     `;
 
     if (list.length === 0) {
-        return html + `<div class="card"><div class="pesan">Belum ada data UC untuk bulan Oktober 2026</div></div>`;
+        return html + `<div class="card"><div class="pesan">Belum ada data UC</div></div>`;
     }
 
     html += `<div class="card-grid">`;
     list.forEach(x => {
         const namaProduk = x.namaBarang || x.produk || "-";
-        const tanggalTrans = formatTanggalIndo(x.tanggal); 
         const qtyTrans = x.qty || 1;
-
         html += `
         <div class="card success">
-            <div class="tanggal">${ICONS.calendar} ${tanggalTrans}</div>
+            <div class="tanggal">${ICONS.calendar} ${x.tanggal || '-'}</div>
             <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${namaProduk}</div>
             <div class="row"><span>Qty</span><span>${qtyTrans}</span></div>
         </div>`;
@@ -1289,8 +1555,26 @@ function renderUC() {
     return html;
 }
 
+/* ============================================================ */
+/* ===== RENDER: ABSENSI ===================================== */
+/* ============================================================ */
 function renderAbsensi() {
-  const entries = Object.values(allAbsensi || {}).filter(x => x && x.hari);
+  const isAdmin = currentUser.role === 'ADMIN';
+  
+  let entries = [];
+  if (isAdmin) {
+    // Admin: allAbsensi = { keyPromotor: { data1, data2 } }
+    Object.keys(allAbsensi || {}).forEach(key => {
+      const dataP = allAbsensi[key];
+      if (!dataP || typeof dataP !== 'object') return;
+      Object.values(dataP).forEach(item => {
+        if (item && item.hari) entries.push(item);
+      });
+    });
+  } else {
+    entries = Object.values(allAbsensi || {}).filter(x => x && x.hari);
+  }
+  
   entries.sort((a, b) => (Number(a.hari) || 0) - (Number(b.hari) || 0));
 
   if (entries.length === 0) {
@@ -1308,9 +1592,10 @@ function renderAbsensi() {
 
   const svgTrophy = `<svg viewBox="0 0 24 24" style="width:20px;height:20px;stroke:#d4af37;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>`;
 
+  const judul = isAdmin ? 'Absensi Semua Promotor' : (currentUser.namaAbsen || '-');
   let html = `
     <div class="summary-card">
-      <h2>${svgTrophy} ${currentUser.namaAbsen || '-'}</h2>
+      <h2>${svgTrophy} ${judul}</h2>
       <p>Total Hari Absen : <b>${entries.length}</b></p>
       <p>Datang Terlambat : <b>${totalTerlambat}</b></p>
       <p>Tidak Finger Masuk : <b style="color:#f87171;">${tidakMasuk}</b></p>
@@ -1339,8 +1624,8 @@ function renderAbsensi() {
     const formatTglFinal = tanggalKeNama(tglAbsenStr);
 
     html += `
-      <div class="card ${isNoMasuk || isNoPulang ? 'warning' : 'success'} ${isTerlambat ? 'late' : ''}">
-        <div class="tanggal">${ICONS.calendar} ${formatTglFinal}<br>${status}</div>
+      <div class="card ${isNoMasuk || isNoPulang ? 'warning' : 'success'}">
+        <div class="tanggal">${ICONS.calendar} ${formatTglFinal}<br>${status}${isAdmin && x.nama ? '<br><span style="font-size:11px; color:#d4af37;">' + x.nama + '</span>' : ''}</div>
         <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${x.masuk}</span>`}</div>
         <div class="row"><span>Istirahat 1</span>${x.istirahat1 ? `<span class="ok">${x.istirahat1}</span>` : '<span class="kosong">-</span>'}</div>
         <div class="row"><span>Kembali 1</span>${x.kembali1 ? `<span class="ok">${x.kembali1}</span>` : '<span class="kosong">-</span>'}</div>
@@ -1355,43 +1640,200 @@ function renderAbsensi() {
   return html;
 }
 
+/* ============================================================ */
+/* ===== RENDER: INFO LIST (Promo/SOP) ======================= */
+/* ============================================================ */
 function renderInfoList(arr, jenis) {
   if (!arr || arr.length === 0) {
     return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data</div></div>`;
   }
   if (jenis === 'promo') {
     return arr.map(x => `
-      <div class="info-block">
-        <div class="judul" style="color:#d4af37;">🔥 ${x.judul || '-'}</div>
-        ${x.periode ? `<div class="meta"><b>Periode:</b> ${x.periode}</div>` : ''}
-        <div class="deskripsi" style="margin-top:6px; border-top:1px solid rgba(255,255,255,0.05); padding-top:6px;">${x.detail || '-'}</div>
+      <div class="info-block" style="background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 18px; margin-bottom: 12px;">
+        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px;">🔥 ${x.judul || '-'}</div>
+        ${x.periode ? `<div class="meta" style="color:#9ca3af; font-size: 12.5px;"><b>Periode:</b> ${x.periode}</div>` : ''}
+        <div class="deskripsi" style="margin-top:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px; color:#d1d5db; font-size: 13px; line-height: 1.5;">${x.detail || '-'}</div>
       </div>
     `).join('');
   } else if (jenis === 'rules') {
     return arr.map(x => `
-      <div class="info-block">
-        <div class="judul" style="color:#d4af37;">📌 ${x.poin || '-'}</div>
-        <div class="deskripsi" style="margin-top:6px;">${x.deskripsi || '-'}</div>
+      <div class="info-block" style="background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 18px; margin-bottom: 12px;">
+        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px;">📌 ${x.poin || '-'}</div>
+        <div class="deskripsi" style="margin-top:6px; color:#d1d5db; font-size: 13px; line-height: 1.5;">${x.deskripsi || '-'}</div>
       </div>
     `).join('');
   }
   return '';
 }
 
+/* ============================================================ */
+/* ===== RENDER: PEROLEHAN (ADMIN) =========================== */
+/* ============================================================ */
+function renderPerolehan() {
+    if (!allPenjualan || allPenjualan.length === 0) {
+        return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data penjualan</div></div>`;
+    }
+
+    const perPromotor = {};
+    Object.keys(allPromotor).forEach(key => {
+        const p = allPromotor[key];
+        if (p.aktif === false) return;
+        perPromotor[key] = {
+            key: key,
+            nama: p.namaAbsen || '-',
+            omzet: 0,
+            unit: 0,
+            transaksi: 0
+        };
+    });
+
+    allPenjualan.forEach(x => {
+        if (!x || !x.namaSales) return;
+        const salesName = String(x.namaSales).trim().toUpperCase();
+        Object.keys(perPromotor).forEach(k => {
+            const p = allPromotor[k];
+            const pSales = String(p.namaSales || '').trim().toUpperCase();
+            const pAbsen = String(p.namaAbsen || '').trim().toUpperCase();
+            if (salesName === pSales || salesName.includes(pAbsen) || pAbsen.includes(salesName)) {
+                perPromotor[k].omzet += Number(x.subtotal || x.omzet || 0);
+                perPromotor[k].unit += Number(x.qty || 1);
+                perPromotor[k].transaksi += 1;
+            }
+        });
+    });
+
+    const arr = Object.values(perPromotor).sort((a, b) => b.omzet - a.omzet);
+    const totalOmzetSemua = arr.reduce((s, x) => s + x.omzet, 0);
+    const totalUnitSemua = arr.reduce((s, x) => s + x.unit, 0);
+
+    let html = `
+        <div class="summary-card">
+            <h2>📊 Perolehan Semua Promotor</h2>
+            <p>Total Promotor : <b>${arr.length}</b></p>
+            <p>Total Omzet Toko : <b style="color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</b></p>
+            <p>Total Unit Terjual : <b>${totalUnitSemua}</b></p>
+        </div>
+        <div class="card-grid">
+    `;
+
+    arr.forEach((p, i) => {
+        const rank = i + 1;
+        const warna = rank === 1 ? '#d4af37' : rank === 2 ? '#c0c0c0' : rank === 3 ? '#cd7f32' : '#6b7280';
+        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+
+        html += `
+            <div class="card success">
+                <div class="tanggal" style="color:${warna};">${medal} ${p.nama}</div>
+                <div class="row"><span>Omzet</span><span style="color:#34d399; font-weight:700;">Rp ${p.omzet.toLocaleString('id-ID')}</span></div>
+                <div class="row"><span>Unit</span><span>${p.unit}</span></div>
+                <div class="row"><span>Transaksi</span><span>${p.transaksi}</span></div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    return html;
+}
+
+/* ============================================================ */
+/* ===== RENDER: DENDA (ADMIN) =============================== */
+/* ============================================================ */
+function renderDenda() {
+    const DENDA_UC_PER_UNIT = 5000;
+    const DENDA_LATE_PER_KALI = 10000;
+    const TARGET_UC_DEFAULT = 16;
+
+    if (!allPromotor || Object.keys(allPromotor).length === 0) {
+        return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data promotor</div></div>`;
+    }
+
+    let html = `
+        <div class="summary-card">
+            <h2>⚖️ Denda & Keterlambatan Semua Promotor</h2>
+            <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
+                <div style="flex:1; min-width:140px; background:rgba(239,68,68,0.1); padding:10px; border-radius:10px; border:1px solid rgba(239,68,68,0.3);">
+                    <div style="font-size:10px; color:#9ca3af; font-weight:700;">DENDA UC</div>
+                    <div style="font-size:12.5px; color:#f87171; font-weight:700; margin-top:2px;">Rp 5.000 / Unit</div>
+                </div>
+                <div style="flex:1; min-width:140px; background:rgba(250,204,21,0.1); padding:10px; border-radius:10px; border:1px solid rgba(250,204,21,0.3);">
+                    <div style="font-size:10px; color:#9ca3af; font-weight:700;">DENDA LATE</div>
+                    <div style="font-size:12.5px; color:#facc15; font-weight:700; margin-top:2px;">Rp 10.000 / Kali</div>
+                </div>
+            </div>
+        </div>
+        <div class="card-grid">
+    `;
+
+    Object.keys(allPromotor).forEach(key => {
+        const p = allPromotor[key];
+        if (p.aktif === false) return;
+
+        const cleanNama = String(p.namaSales || p.namaAbsen || '').trim().toUpperCase();
+        let totalUC = 0;
+        allPenjualan.forEach(x => {
+            if (!x || !x.namaSales) return;
+            const salesTrans = String(x.namaSales).trim().toUpperCase();
+            const kat = String(x.kategori || '').trim().toUpperCase();
+            const brg = String(x.namaBarang || '').toUpperCase();
+            const isMine = (salesTrans === cleanNama) || salesTrans.includes(cleanNama) || cleanNama.includes(salesTrans);
+            if (isMine && kat === 'GARANSI' && brg.includes('UFO CARE')) {
+                totalUC += Number(x.qty || 1);
+            }
+        });
+
+        const absensiP = allAbsensi[key] || {};
+        let totalTerlambat = 0;
+        Object.values(absensiP).forEach(a => {
+            if (a && String(a.terlambat || '').toUpperCase() === 'YA') totalTerlambat++;
+        });
+
+        const isIkutUC = String(p.ikutUC || 'YA').toUpperCase() !== 'TIDAK';
+        const targetUC = isIkutUC ? Number(p.targetUC || TARGET_UC_DEFAULT) : 0;
+        const kurangUC = (isIkutUC && totalUC < targetUC) ? (targetUC - totalUC) : 0;
+        const dendaUC = kurangUC * DENDA_UC_PER_UNIT;
+        const dendaLate = totalTerlambat * DENDA_LATE_PER_KALI;
+        const totalDenda = dendaUC + dendaLate;
+
+        html += `
+            <div class="card ${totalDenda > 0 ? 'warning' : 'success'}">
+                <div class="tanggal">${p.namaAbsen || '-'}</div>
+                <div class="row"><span>Denda UC</span><span style="color:${dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${dendaUC.toLocaleString('id-ID')}</span></div>
+                <div class="row"><span>Denda Late (${totalTerlambat}x)</span><span style="color:${dendaLate > 0 ? '#facc15' : '#34d399'};">Rp ${dendaLate.toLocaleString('id-ID')}</span></div>
+                <div class="row" style="border-top:1px solid rgba(255,255,255,0.1); margin-top:6px; padding-top:6px; font-weight:700;">
+                    <span>TOTAL DENDA</span>
+                    <span style="color:${totalDenda > 0 ? '#f87171' : '#34d399'};">Rp ${totalDenda.toLocaleString('id-ID')}</span>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div>`;
+    return html;
+}
+
+/* ============================================================ */
+/* ===== LOGOUT =============================================== */
+/* ============================================================ */
 function logoutPromotor() {
   if (!confirm("Yakin ingin keluar?")) return;
   localStorage.removeItem('ufo_promotor_session_v3');
   currentUser = null;
   allPenjualan = [];
   currentMenu = null;
+  loginMode = 'promotor';
+  
   document.getElementById('dashboard').classList.add('hidden');
   document.body.classList.remove('dashboard-active');
   document.body.classList.add('login-active');
   document.getElementById('login-screen').style.display = 'flex';
   document.getElementById('login-pilih-sales').value = '';
   document.getElementById('login-pin-input').value = '';
+  document.getElementById('login-admin-username').value = '';
   document.getElementById('custom-select-label').innerText = '-- Pilih Nama Anda --';
   document.getElementById('custom-select-menu').querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  
+  switchLoginTab('promotor');
+  document.getElementById('topBar').classList.remove('admin-mode');
 }
 window.logoutPromotor = logoutPromotor;
 </script>
