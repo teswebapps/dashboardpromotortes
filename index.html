@@ -163,7 +163,7 @@ body.login-active {
 .login-toast-name { color: var(--cyber-cyan); font-weight: 800; text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
 
 /* ============================================================ */
-/* ===== DASHBOARD (GAYA TAMPILAN ANDA YANG SEBELUMNYA) ======= */
+/* ===== DASHBOARD ============================================ */
 /* ============================================================ */
 body.dashboard-active {
     margin: 0; padding: 16px;
@@ -217,7 +217,7 @@ body.dashboard-active {
 .back-btn:hover { opacity: 0.9; }
 .back-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
-/* Menu grid dengan gaya modern kartu grid lebar */
+/* Menu grid (3 kolom luas) */
 .menu-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -300,7 +300,13 @@ body.dashboard-active {
 .info-block .deskripsi { font-size: 13px; color: #d1d5db; line-height: 1.5; }
 .info-block .meta { font-size: 11px; color: #9ca3af; margin-top: 4px; font-weight: 600; }
 
-.card-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+/* KARTU GRID LEBAR & FLEKSIBEL SEPERTI TAMPILAN LAMA */
+.card-grid { 
+    display: grid; 
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+    gap: 16px; 
+    width: 100%;
+}
 .card {
     background: rgba(17, 24, 39, 0.75);
     backdrop-filter: blur(12px);
@@ -325,10 +331,10 @@ body.dashboard-active {
 .status-warning { color: #ef4444; font-weight: 700; }
 
 @media (max-width: 1024px) { 
-  .menu-grid, .card-grid, .stat-grid { grid-template-columns: repeat(2, 1fr) !important; } 
+  .menu-grid { grid-template-columns: repeat(2, 1fr) !important; } 
 }
 @media (max-width: 768px) {
-  .menu-grid, .card-grid, .stat-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
+  .menu-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
   #login-screen { padding: 10px; align-items: center; }
   .fut-container { grid-template-columns: 1fr; gap: 12px; max-width: 420px; margin: auto; }
   .fut-left { display: none; }
@@ -396,7 +402,7 @@ body.dashboard-active {
   </div>
 </div>
 
-<!-- ========== DASHBOARD (TAMPILAN GRID RAPI ANDA) ========== -->
+<!-- ========== DASHBOARD ========== -->
 <div id="dashboard" class="hidden">
   <div class="dashboard-container">
     <div class="top-bar">
