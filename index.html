@@ -396,7 +396,7 @@ async function muatSemuaDataLatarBelakang(namaTarget) {
         loadEl.innerHTML = `<span class="spinner" style="margin-right:6px;"></span>Menyiapkan data...`;
     }
 
-    const pin = localStorage.getItem("loginPin"] || "";
+    const pin = localStorage.getItem("loginPin") || "";
 
     try {
         const res = await fetch(WEBAPP_URL + "?action=alldata&nama=" + encodeURIComponent(namaTarget) + "&pin=" + encodeURIComponent(pin));
