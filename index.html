@@ -764,12 +764,12 @@ function renderPenjualan() {
 
 // UC
 function renderUC(data) {
-    // Jika data dari parameter kosong, ambil langsung dari cache penjualan atau objek kosong
+    // Ambil detail aman dari data parameter
     let listDetail = [];
-    if (data && data.detail) {
+    if (data && Array.isArray(data.detail)) {
         listDetail = data.detail;
-    } else if (cacheData.penjualan && cacheData.penjualan.detail) {
-        listDetail = cacheData.penjualan.detail;
+    } else if (data && Array.isArray(data)) {
+        listDetail = data;
     }
 
     let totalUC = 0;
@@ -777,20 +777,26 @@ function renderUC(data) {
         totalUC += Number(x.qty || 1);
     });
 
-    const namaPromotor = (data && data.nama) ? data.nama : (currentUser || "Promotor");
+    const namaPromotor = (data && data.nama) ? data.nama : (typeof currentUser !== 'undefined' ? currentUser : "Promotor");
     const tglAwal = (data && data.tanggalPertama) ? data.tanggalPertama : "01/10/2026";
     const tglAkhir = (data && data.tanggalTerakhir) ? data.tanggalTerakhir : "31/10/2026";
 
-    document.getElementById("summary").innerHTML = `
-    <div class="summary-card">
-        <h2>💎 ${namaPromotor}</h2>
-        <p>Periode : <b>${tglAwal} - ${tglAkhir}</b></p>
-        <p>Total UC : <b>${totalUC}</b></p>
-    </div>`;
+    const summaryEl = document.getElementById("summary");
+    if (summaryEl) {
+        summaryEl.innerHTML = `
+        <div class="summary-card">
+            <h2>💎 ${namaPromotor}</h2>
+            <p>Periode : <b>${tglAwal} - ${tglAkhir}</b></p>
+            <p>Total UC : <b>${totalUC}</b></p>
+        </div>`;
+    }
+
+    const hasilEl = document.getElementById("hasil");
+    if (!hasilEl) return;
 
     if (listDetail.length === 0) {
-        document.getElementById("hasil").className = "grid";
-        document.getElementById("hasil").innerHTML = `<div class="card">Data UC belum tersedia</div>`;
+        hasilEl.className = "grid";
+        hasilEl.innerHTML = `<div class="card">Data UC belum tersedia</div>`;
         return;
     }
 
@@ -808,11 +814,13 @@ function renderUC(data) {
         </div>`;
     });
 
-    if(currentRole === "ADMIN") {
-        document.getElementById("exportArea").style.display = "flex";
+    const exportArea = document.getElementById("exportArea");
+    if (exportArea && typeof currentRole !== 'undefined' && currentRole === "ADMIN") {
+        exportArea.style.display = "flex";
     }
-    document.getElementById("hasil").className = "grid";
-    document.getElementById("hasil").innerHTML = html;
+    
+    hasilEl.className = "grid";
+    hasilEl.innerHTML = html;
 }
 function renderBrand() {
   const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS');
