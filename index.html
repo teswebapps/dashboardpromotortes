@@ -339,7 +339,7 @@ body.dashboard-active {
 .back-btn:hover { opacity: 0.9; }
 .back-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
-/* ===== DROPDOWN PILIH PROMOTOR (CUSTOM - BUKAN BROWSER DEFAULT) ===== */
+/* Dropdown Pilih Promotor */
 .promotor-selector { max-width: 1100px; margin: 0 auto 20px; 
     padding: 14px 18px; background: rgba(17, 24, 39, 0.85); 
     backdrop-filter: blur(12px); border: 2px solid rgba(212, 175, 55, 0.5); 
@@ -348,105 +348,47 @@ body.dashboard-active {
 .promotor-selector label { font-size: 12.5px; font-weight: 800; 
     color: #d4af37; white-space: nowrap; text-transform: uppercase; 
     letter-spacing: 0.5px; }
-
-/* Custom Dropdown Trigger */
 .custom-dropdown { position: relative; flex: 1; }
 .custom-dropdown-trigger {
-    width: 100%;
-    padding: 12px 16px;
+    width: 100%; padding: 12px 16px;
     background: rgba(2, 6, 23, 0.7);
     border: 1px solid rgba(212, 175, 55, 0.4);
     border-radius: 10px;
-    color: #ffffff;
-    font-size: 14px;
-    font-weight: 600;
+    color: #ffffff; font-size: 14px; font-weight: 600;
     cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
     transition: all 0.2s ease;
 }
-.custom-dropdown-trigger:hover {
-    border-color: #d4af37;
-    box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
-}
-.custom-dropdown-trigger.open {
-    border-color: #d4af37;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.3);
-}
-.custom-dropdown-trigger .label-text {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    flex: 1;
-}
-.custom-dropdown-trigger svg {
-    width: 16px;
-    height: 16px;
-    color: #d4af37;
-    flex-shrink: 0;
-    transition: transform 0.3s ease;
-}
-.custom-dropdown-trigger.open svg {
-    transform: rotate(180deg);
-}
-
-/* Custom Dropdown Menu */
+.custom-dropdown-trigger:hover { border-color: #d4af37; box-shadow: 0 0 15px rgba(212, 175, 55, 0.2); }
+.custom-dropdown-trigger.open { border-color: #d4af37; box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+.custom-dropdown-trigger .label-text { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; }
+.custom-dropdown-trigger svg { width: 16px; height: 16px; color: #d4af37; flex-shrink: 0; transition: transform 0.3s ease; }
+.custom-dropdown-trigger.open svg { transform: rotate(180deg); }
 .custom-dropdown-menu {
-    position: absolute;
-    top: calc(100% + 6px);
-    left: 0;
-    right: 0;
+    position: absolute; top: calc(100% + 6px); left: 0; right: 0;
     background: rgba(15, 23, 42, 0.98);
     backdrop-filter: blur(20px);
     border: 1px solid rgba(212, 175, 55, 0.4);
     border-radius: 12px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
-    max-height: 280px;
-    overflow-y: auto;
-    z-index: 999;
-    padding: 6px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-8px);
+    max-height: 280px; overflow-y: auto;
+    z-index: 999; padding: 6px;
+    opacity: 0; visibility: hidden; transform: translateY(-8px);
     transition: all 0.2s ease;
 }
-.custom-dropdown-menu.open {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
+.custom-dropdown-menu.open { opacity: 1; visibility: visible; transform: translateY(0); }
 .custom-dropdown-menu .dd-option {
-    padding: 11px 14px;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    color: #e2e8f0;
-    cursor: pointer;
+    padding: 11px 14px; border-radius: 8px;
+    font-size: 14px; font-weight: 600; color: #e2e8f0; cursor: pointer;
     transition: all 0.15s ease;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+    display: flex; align-items: center; gap: 8px;
 }
-.custom-dropdown-menu .dd-option:hover {
-    background: rgba(212, 175, 55, 0.15);
-    color: #d4af37;
-}
-.custom-dropdown-menu .dd-option.selected {
-    background: rgba(212, 175, 55, 0.25);
-    color: #d4af37;
-}
+.custom-dropdown-menu .dd-option:hover { background: rgba(212, 175, 55, 0.15); color: #d4af37; }
+.custom-dropdown-menu .dd-option.selected { background: rgba(212, 175, 55, 0.25); color: #d4af37; }
 .custom-dropdown-menu .dd-option.selected::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #d4af37;
-    box-shadow: 0 0 8px #d4af37;
-    flex-shrink: 0;
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: #d4af37; box-shadow: 0 0 8px #d4af37; flex-shrink: 0;
 }
-
 @media (max-width: 768px) {
     .promotor-selector { flex-direction: column; align-items: stretch; gap: 8px; padding: 12px 14px; }
     .promotor-selector label { text-align: left; font-size: 11.5px; }
@@ -506,7 +448,8 @@ body.dashboard-active {
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3); }
 .card.success { border-left: 4px solid #10b981; }
 .card.warning { border-left: 4px solid #ef4444; }
-  /* ===== KARTU TERLAMBAT — NEON KUNING MENYALA ===== */
+
+/* ===== KARTU TERLAMBAT — NEON KUNING MENYALA ===== */
 .card.late {
   border: 2px solid #facc15 !important;
   background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(45, 35, 10, 0.9)) !important;
@@ -515,18 +458,14 @@ body.dashboard-active {
   animation: pulseLate 2s ease-in-out infinite;
   position: relative;
 }
-
 .card.late::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   height: 3px;
   background: linear-gradient(90deg, transparent, #facc15, transparent);
   animation: scanLate 2s linear infinite;
 }
-
 @keyframes pulseLate {
   0%, 100% { 
     box-shadow: 0 0 25px rgba(250, 204, 21, 0.7), 
@@ -537,17 +476,14 @@ body.dashboard-active {
                 inset 0 0 30px rgba(250, 204, 21, 0.25);
   }
 }
-
 @keyframes scanLate {
   0% { transform: translateX(-100%); }
   100% { transform: translateX(100%); }
 }
-
 .card.late .tanggal {
   color: #facc15 !important;
   text-shadow: 0 0 10px rgba(250, 204, 21, 0.6);
 }
-
 .card.late .row {
   color: #fde68a;
 }
@@ -580,7 +516,7 @@ body.dashboard-active {
 </head>
 <body class="login-active">
 
-<!-- ========== LAYAR LOGIN ========== -->
+<!-- LAYAR LOGIN -->
 <div id="login-screen">
     <div class="fut-grid"></div>
     <div class="fut-orb fut-orb-1"></div>
@@ -666,7 +602,7 @@ body.dashboard-active {
     </div>
 </div>
 
-<!-- ========== DASHBOARD ========== -->
+<!-- DASHBOARD -->
 <div id="dashboard" class="hidden">
   <div class="dashboard-container">
     <div class="top-bar" id="topBar">
@@ -682,7 +618,6 @@ body.dashboard-active {
 
     <div id="menuGrid" class="menu-grid"></div>
 
-    <!-- DROPDOWN PILIH PROMOTOR (Khusus Admin) - CUSTOM THEMED -->
     <div id="promotorSelector" class="promotor-selector hidden">
         <label>PILIH PROMOTOR :</label>
         <div class="custom-dropdown" id="customDropdownWrap">
@@ -713,9 +648,7 @@ body.dashboard-active {
 </div>
 
 <script>
-/* ============================================================ */
-/* ===== GLOBAL VARIABLES ===================================== */
-/* ============================================================ */
+/* ===== GLOBAL VARIABLES ===== */
 let allPenjualan = [];
 let allPromotor = {};
 let allAbsensi = {};
@@ -725,9 +658,7 @@ let currentMenu = null;
 let loginMode = 'promotor';
 let promotorTerpilih = null;
 
-/* ============================================================ */
-/* ===== SVG ICONS ============================================ */
-/* ============================================================ */
+/* ===== SVG ICONS ===== */
 const ICONS = {
   absensi: `<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01"/><path d="M12 14h.01"/><path d="M16 14h.01"/><path d="M8 18h.01"/><path d="M12 18h.01"/></svg>`,
   penjualan: `<svg viewBox="0 0 24 24"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>`,
@@ -751,9 +682,7 @@ const ICONS = {
   diamondSmall: `<svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#d4af37;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;display:inline-block;vertical-align:middle;margin-right:4px;"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`
 };
 
-/* ============================================================ */
-/* ===== FIREBASE READY ======================================= */
-/* ============================================================ */
+/* ===== FIREBASE READY ===== */
 window.addEventListener('firebase-ready', () => {
   initParticles();
   loadPromotorList();
@@ -768,9 +697,7 @@ window.addEventListener('firebase-ready', () => {
   }
 });
 
-/* ============================================================ */
-/* ===== PARTICLES ============================================ */
-/* ============================================================ */
+/* ===== PARTICLES ===== */
 function initParticles() {
     const container = document.getElementById('fut-particles');
     if (!container) return;
@@ -788,9 +715,7 @@ function initParticles() {
     }
 }
 
-/* ============================================================ */
-/* ===== LOGIN TAB SWITCH ===================================== */
-/* ============================================================ */
+/* ===== LOGIN TAB SWITCH ===== */
 function switchLoginTab(mode) {
     loginMode = mode;
     const tabPromotor = document.getElementById('tab-promotor');
@@ -816,29 +741,20 @@ function switchLoginTab(mode) {
 }
 window.switchLoginTab = switchLoginTab;
 
-/* ============================================================ */
-/* ===== SET DEFAULT PROMOTOR UNTUK ADMIN ==================== */
-/* ============================================================ */
+/* ===== SET DEFAULT PROMOTOR UNTUK ADMIN ===== */
 function setDefaultPromotorAdmin() {
   if (!currentUser || currentUser.role !== 'ADMIN') return;
-  
-  if (promotorTerpilih && allPromotor[promotorTerpilih]) {
-    return;
-  }
-  
+  if (promotorTerpilih && allPromotor[promotorTerpilih]) return;
   const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
   if (promotorKeys.length === 0) {
     promotorTerpilih = null;
     return;
   }
-  
-  promotorTerpilih = null; 
+  promotorTerpilih = null;
 }
 window.setDefaultPromotorAdmin = setDefaultPromotorAdmin;
 
-/* ============================================================ */
-/* ===== LOAD PROMOTOR LIST ================================== */
-/* ============================================================ */
+/* ===== LOAD PROMOTOR LIST ===== */
 function loadPromotorList() {
   window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
     const liveEl = document.getElementById('live-status-text');
@@ -853,7 +769,6 @@ function loadPromotorList() {
       .sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
     renderCustomSelectOptions(list);
     if (liveEl) liveEl.innerText = `${list.length} promotor terdaftar`;
-    
     isiDropdownPromotor(list);
     setDefaultPromotorAdmin();
   });
@@ -864,13 +779,11 @@ function isiDropdownPromotor(list) {
   const labelEl = document.getElementById('dropdownLabel');
   const hiddenInput = document.getElementById('selectPromotor');
   if (!menuEl) return;
-  
   if (!list || list.length === 0) {
     menuEl.innerHTML = '<div class="dd-option" style="color:#64748b;font-style:italic;justify-content:center;">Belum ada promotor</div>';
     if (labelEl) labelEl.innerText = '-- Pilih Nama Promotor --';
     return;
   }
-  
   let html = '';
   list.forEach(p => {
     const key = String(p.key).replace(/"/g, '&quot;');
@@ -878,13 +791,11 @@ function isiDropdownPromotor(list) {
     html += `<div class="dd-option" data-value="${key}" onclick="pilihDropdownPromotor('${key}', '${label.replace(/'/g, "\\'")}')">${label}</div>`;
   });
   menuEl.innerHTML = html;
-  
   if (promotorTerpilih && allPromotor[promotorTerpilih]) {
     const activeProm = allPromotor[promotorTerpilih];
     const namaAktif = activeProm.namaAbsen || '-';
     if (labelEl) labelEl.innerText = namaAktif;
     if (hiddenInput) hiddenInput.value = promotorTerpilih;
-    
     const selectedOpt = menuEl.querySelector(`.dd-option[data-value="${promotorTerpilih}"]`);
     if (selectedOpt) {
       menuEl.querySelectorAll('.dd-option').forEach(o => o.classList.remove('selected'));
@@ -917,10 +828,8 @@ function pilihDropdownPromotor(key, label) {
   const trigger = document.getElementById('dropdownTrigger');
   const labelEl = document.getElementById('dropdownLabel');
   const hidden = document.getElementById('selectPromotor');
-  
   if (hidden) hidden.value = key;
   if (labelEl) labelEl.innerText = label;
-  
   if (menu) {
     menu.querySelectorAll('.dd-option').forEach(o => {
       o.classList.toggle('selected', o.dataset.value === key);
@@ -928,7 +837,6 @@ function pilihDropdownPromotor(key, label) {
     menu.classList.remove('open');
   }
   if (trigger) trigger.classList.remove('open');
-  
   gantiPromotorAdmin(key);
 }
 window.pilihDropdownPromotor = pilihDropdownPromotor;
@@ -944,9 +852,7 @@ document.addEventListener('click', (e) => {
   }
 });
 
-/* ============================================================ */
-/* ===== LOAD INFO (Promo/SOP) =============================== */
-/* ============================================================ */
+/* ===== LOAD INFO (Promo/SOP) ===== */
 function loadInfoRealtime() {
   window.dbOnValue(window.dbRef(window.db, 'info'), snap => {
     if (snap.exists()) {
@@ -960,9 +866,7 @@ function loadInfoRealtime() {
   });
 }
 
-/* ============================================================ */
-/* ===== CUSTOM SELECT LOGIN ================================= */
-/* ============================================================ */
+/* ===== CUSTOM SELECT LOGIN ===== */
 function toggleCustomSelect() {
   const menu = document.getElementById('custom-select-menu');
   const trigger = document.getElementById('custom-select-trigger');
@@ -1010,24 +914,19 @@ document.addEventListener('click', (e) => {
   }
 });
 
-/* ============================================================ */
-/* ===== LOGIN HANDLER ======================================== */
-/* ============================================================ */
+/* ===== LOGIN HANDLER ===== */
 async function loginPromotor() {
     const errEl = document.getElementById('login-error');
     const btn = document.getElementById('btn-login-promotor');
     const pin = document.getElementById('login-pin-input').value.trim();
     errEl.innerHTML = '';
-    
     if (!pin) {
         errEl.innerHTML = 'Masukkan PIN!';
         return;
     }
-    
     const asli = btn.innerHTML;
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner"></span> Memeriksa...';
-    
     try {
         if (loginMode === 'promotor') {
             const key = document.getElementById('login-pilih-sales').value;
@@ -1035,13 +934,11 @@ async function loginPromotor() {
                 errEl.innerHTML = 'Pilih nama promotor dulu!';
                 btn.disabled = false; btn.innerHTML = asli; return;
             }
-            
             const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
             if (!snap.exists()) {
                 errEl.innerHTML = 'Promotor tidak ditemukan.';
                 btn.disabled = false; btn.innerHTML = asli; return;
             }
-            
             const data = snap.val();
             if (String(data.pin) !== pin) {
                 errEl.innerHTML = 'PIN salah!';
@@ -1049,28 +946,23 @@ async function loginPromotor() {
                 document.getElementById('login-pin-input').focus();
                 btn.disabled = false; btn.innerHTML = asli; return;
             }
-            
             if (data.aktif === false) {
                 errEl.innerHTML = 'Akun promotor ini tidak aktif.';
                 btn.disabled = false; btn.innerHTML = asli; return;
             }
-            
             currentUser = { key, ...data, role: 'PROMOTOR', loginType: 'promotor' };
             localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
-            
         } else {
             const username = document.getElementById('login-admin-username').value.trim().toUpperCase();
             if (!username) {
                 errEl.innerHTML = 'Masukkan username admin!';
                 btn.disabled = false; btn.innerHTML = asli; return;
             }
-            
             const snap = await window.dbGet(window.dbRef(window.db, 'users/admin'));
             if (!snap.exists()) {
                 errEl.innerHTML = 'Belum ada admin terdaftar.';
                 btn.disabled = false; btn.innerHTML = asli; return;
             }
-            
             const admins = snap.val();
             let foundKey = null, foundData = null;
             Object.keys(admins).forEach(k => {
@@ -1080,24 +972,20 @@ async function loginPromotor() {
                     foundData = a;
                 }
             });
-            
             if (!foundKey) {
                 errEl.innerHTML = 'Username admin tidak ditemukan.';
                 btn.disabled = false; btn.innerHTML = asli; return;
             }
-            
             if (String(foundData.pin) !== pin) {
                 errEl.innerHTML = 'PIN admin salah!';
                 document.getElementById('login-pin-input').value = '';
                 document.getElementById('login-pin-input').focus();
                 btn.disabled = false; btn.innerHTML = asli; return;
             }
-            
             if (foundData.aktif === false) {
                 errEl.innerHTML = 'Akun admin ini tidak aktif.';
                 btn.disabled = false; btn.innerHTML = asli; return;
             }
-            
             currentUser = {
                 key: foundKey,
                 username: foundData.username,
@@ -1109,11 +997,9 @@ async function loginPromotor() {
             };
             localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
         }
-        
         document.getElementById('login-toast-name').innerText = currentUser.namaAbsen;
         const toast = document.getElementById('login-toast');
         toast.classList.add('active');
-        
         setTimeout(() => {
             tampilkanDashboard();
             document.getElementById('login-pin-input').value = '';
@@ -1122,7 +1008,6 @@ async function loginPromotor() {
             btn.disabled = false; btn.innerHTML = asli;
             setTimeout(() => { toast.classList.remove('active'); }, 600);
         }, 1000);
-        
     } catch (err) {
         console.error('Login error:', err);
         errEl.innerHTML = err.message;
@@ -1140,20 +1025,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-/* ============================================================ */
-/* ===== DASHBOARD ============================================ */
-/* ============================================================ */
+/* ===== DASHBOARD ===== */
 function tampilkanDashboard() {
   document.body.classList.remove('login-active');
   document.body.classList.add('dashboard-active');
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard').classList.remove('hidden');
-  
   const isAdmin = currentUser.role === 'ADMIN';
-  
   if (isAdmin) {
     promotorTerpilih = null;
-    
     document.getElementById('promotorSelector').classList.remove('hidden');
     document.getElementById('userNama').innerHTML = 
       `${ICONS.crown} <b>${currentUser.namaAbsen}</b> <span class="admin-badge-inline">ADMIN</span>`;
@@ -1165,7 +1045,6 @@ function tampilkanDashboard() {
       `<span style="color:#34d399;">●</span> <b>${currentUser.namaAbsen}</b>`;
     document.getElementById('topBar').classList.remove('admin-mode');
   }
-  
   window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
     allPenjualan = [];
     if (snap.exists()) {
@@ -1176,7 +1055,6 @@ function tampilkanDashboard() {
     if (!currentMenu) renderMenuGrid();
     else tampilkanDetail(currentMenu);
   });
-  
   window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
     if (snap.exists()) {
       allAbsensiAll = snap.val();
@@ -1192,33 +1070,26 @@ function tampilkanDashboard() {
       tampilkanDetail('absensi');
     }
   });
-  
   renderMenuGrid();
 }
 
-/* ============================================================ */
-/* ===== GANTI PROMOTOR (ADMIN) =============================== */
-/* ============================================================ */
+/* ===== GANTI PROMOTOR (ADMIN) ===== */
 function gantiPromotorAdmin(keyPromotor) {
   if (currentUser.role !== 'ADMIN') {
     alert("Hanya admin yang bisa ganti promotor.");
     return;
   }
   if (!keyPromotor) return;
-  
   promotorTerpilih = keyPromotor;
-  
   const dataPromotor = allPromotor[keyPromotor];
   if (!dataPromotor) {
     alert("Data promotor tidak ditemukan.");
     return;
   }
-  
   window.dbGet(window.dbRef(window.db, 'absensi/' + keyPromotor)).then(snapAbsen => {
     if (typeof allAbsensiAll === 'undefined') window.allAbsensiAll = {};
     window.allAbsensiAll[keyPromotor] = snapAbsen.exists() ? snapAbsen.val() : {};
     allAbsensi = window.allAbsensiAll[keyPromotor];
-    
     if (currentMenu) {
       tampilkanDetail(currentMenu);
     } else {
@@ -1231,9 +1102,7 @@ function gantiPromotorAdmin(keyPromotor) {
 }
 window.gantiPromotorAdmin = gantiPromotorAdmin;
 
-/* ============================================================ */
-/* ===== MENU GRID ============================================ */
-/* ============================================================ */
+/* ===== MENU GRID ===== */
 function renderMenuGrid() {
   currentMenu = null;
   document.getElementById('detailView').classList.add('hidden');
@@ -1241,9 +1110,7 @@ function renderMenuGrid() {
   document.getElementById('promotorSelector').classList.add('hidden');
   const grid = document.getElementById('menuGrid');
   grid.classList.remove('hidden');
-  
   const isAdmin = currentUser.role === 'ADMIN';
-  
   const menusUmum = [
     { key: 'absensi', icon: 'absensi', title: 'Absensi', desc: 'Rekap kehadiran dan status finger harian' },
     { key: 'penjualan', icon: 'penjualan', title: 'Penjualan', desc: 'Omzet produk harian dan perolehan unit' },
@@ -1252,14 +1119,11 @@ function renderMenuGrid() {
     { key: 'promo', icon: 'promo', title: 'Promo Toko', desc: 'Daftar promo produk & program toko aktif' },
     { key: 'sop', icon: 'sop', title: 'SOP Promotor', desc: 'Aturan kerja & standar operasional' }
   ];
-  
   const menusAdmin = [
     { key: 'perolehan', icon: 'perolehan', title: 'Perolehan Semua Promotor', desc: 'Peringkat & akumulasi omzet seluruh promotor' },
     { key: 'denda', icon: 'denda', title: 'Denda & Keterlambatan', desc: 'Rekap denda UC & late semua promotor' }
   ];
-  
   const allMenus = isAdmin ? [...menusUmum, ...menusAdmin] : menusUmum;
-  
   grid.innerHTML = allMenus.map(m => {
     const isAdminMenu = (m.key === 'perolehan' || m.key === 'denda');
     return `
@@ -1281,11 +1145,9 @@ function kembaliKeMenu() {
   document.getElementById('detailView').innerHTML = '';
   document.getElementById('menuGrid').classList.remove('hidden');
   document.getElementById('promotorSelector').classList.add('hidden');
-  
   if (currentUser.role === 'ADMIN') {
     promotorTerpilih = null;
   }
-  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 window.kembaliKeMenu = kembaliKeMenu;
@@ -1295,18 +1157,14 @@ function tampilkanDetail(menuKey) {
   document.getElementById('menuGrid').classList.add('hidden');
   const detailEl = document.getElementById('detailView');
   detailEl.classList.remove('hidden');
-  
   const isAdmin = currentUser.role === 'ADMIN';
-  
   const menuAdaDropdown = ['absensi', 'penjualan', 'uc', 'brand'];
   const showSelector = isAdmin && menuAdaDropdown.includes(menuKey);
-  
   if (showSelector) {
     document.getElementById('promotorSelector').classList.remove('hidden');
     const hidden = document.getElementById('selectPromotor');
     const labelEl = document.getElementById('dropdownLabel');
     const menu = document.getElementById('dropdownMenu');
-    
     if (promotorTerpilih && allPromotor[promotorTerpilih]) {
       if (hidden) hidden.value = promotorTerpilih;
       if (menu && labelEl) {
@@ -1324,7 +1182,6 @@ function tampilkanDetail(menuKey) {
   } else {
     document.getElementById('promotorSelector').classList.add('hidden');
   }
-  
   const titles = {
     absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
     penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
@@ -1335,10 +1192,8 @@ function tampilkanDetail(menuKey) {
     perolehan: { title: 'Perolehan All Promotor', subtitle: 'Peringkat & akumulasi omzet seluruh promotor' },
     denda: { title: 'Denda & Keterlambatan', subtitle: 'Rekap denda UC & late semua promotor' }
   };
-  
   const t = titles[menuKey] || { title: 'Detail', subtitle: '' };
   let content = '';
-  
   if (menuKey === 'absensi') content = renderAbsensi();
   else if (menuKey === 'penjualan') content = renderPenjualan();
   else if (menuKey === 'uc') content = renderUC();
@@ -1347,7 +1202,6 @@ function tampilkanDetail(menuKey) {
   else if (menuKey === 'sop') content = renderInfoList(infoData.rules, 'rules');
   else if (menuKey === 'perolehan') content = renderPerolehan();
   else if (menuKey === 'denda') content = renderDenda();
-  
   detailEl.innerHTML = `
     <div class="back-bar">
       <button class="back-btn" onclick="kembaliKeMenu()">${ICONS.back} Kembali ke Menu</button>
@@ -1360,9 +1214,7 @@ function tampilkanDetail(menuKey) {
 }
 window.tampilkanDetail = tampilkanDetail;
 
-/* ============================================================ */
-/* ===== HELPER =============================================== */
-/* ============================================================ */
+/* ===== HELPER ===== */
 function tanggalKeNama(tglStr) {
   if (!tglStr) return '-';
   const parts = String(tglStr).split('/');
@@ -1386,17 +1238,13 @@ function parseTanggal(str) {
 function getPeriodeRentangDinamis() {
   const semuaPenjualan = typeof allPenjualan !== 'undefined' ? allPenjualan : [];
   if (semuaPenjualan.length === 0) return { pertama: '1 Oktober 2026', terakhir: '31 Oktober 2026' };
-
   const tglValid = semuaPenjualan.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
     const da = parseTanggal(a), db = parseTanggal(b);
     return (da || 0) - (db || 0);
   });
-
   if (tglValid.length === 0) return { pertama: '1 Oktober 2026', terakhir: '31 Oktober 2026' };
-
   const tglPertamaStr = tglValid[0];
   const tglTerakhirStr = tglValid[tglValid.length - 1];
-
   return {
     pertama: tanggalKeNama(tglPertamaStr),
     terakhir: tanggalKeNama(tglTerakhirStr)
@@ -1405,15 +1253,12 @@ function getPeriodeRentangDinamis() {
 
 function getDataSaya() {
     if (!currentUser) return [];
-    
     const targetKey = (currentUser.role === 'ADMIN' && promotorTerpilih) 
         ? promotorTerpilih 
         : currentUser.key;
-    
     const dataP = allPromotor[targetKey] || currentUser;
     const namaAbsenUser = String(dataP.namaAbsen || '').trim().toUpperCase();
     const namaSalesUser = String(dataP.namaSales || '').trim().toUpperCase();
-    
     const semuaPenjualan = typeof allPenjualan !== 'undefined' ? allPenjualan : []; 
     return semuaPenjualan.filter(x => {
         if (!x) return false;
@@ -1431,55 +1276,42 @@ function getPromotorTerpilih() {
     return allPromotor[targetKey] || currentUser;
 }
 
-/* ============================================================ */
-/* ===== RENDER: ABSENSI ===================================== */
-/* ============================================================ */
+/* ===== RENDER: ABSENSI ===== */
 function renderAbsensi() {
   const isAdmin = currentUser.role === 'ADMIN';
-  
   if (isAdmin && !promotorTerpilih) {
     return `<div class="empty-state">${ICONS.empty}<div class="pesan">Silakan pilih promotor terlebih dahulu dari menu di atas</div></div>`;
   }
-
   let entries = [];
   const targetKey = isAdmin ? promotorTerpilih : currentUser.key;
-  
   let dataP = {};
   if (typeof allAbsensiAll !== 'undefined' && allAbsensiAll[targetKey]) {
     dataP = allAbsensiAll[targetKey];
   } else if (allAbsensi) {
     dataP = allAbsensi;
   }
-
   Object.values(dataP).forEach(item => {
     if (item && typeof item === 'object' && (item.hari || item.masuk || item.pulang)) {
       entries.push(item);
     }
   });
-  
   entries.sort((a, b) => (Number(a.hari) || 0) - (Number(b.hari) || 0));
-
   if (entries.length === 0) {
     return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data absensi untuk promotor ini</div></div>`;
   }
-
-    let totalTerlambat = 0, tidakMasuk = 0, tidakPulang = 0;
+  let totalTerlambat = 0, tidakMasuk = 0, tidakPulang = 0;
   entries.forEach(x => {
     const isNoMasuk = !x.masuk || String(x.masuk).trim() === "" || x.masuk === "-";
     const isNoPulang = !x.pulang || String(x.pulang).trim() === "" || x.pulang === "-";
     const adaMasuk = !isNoMasuk;
-    
-    // ✅ FIX: hanya hitung terlambat kalau ada jam masuk
     const terr = String(x.terlambat || '').trim().toUpperCase();
     const isTerlambat = adaMasuk && (terr === 'YA' || terr === 'Y' || terr === 'YES' || terr === 'TRUE');
     if (isTerlambat) totalTerlambat++;
     if (isNoMasuk) tidakMasuk++;
     if (isNoPulang) tidakPulang++;
   });
-
   const dataProm = getPromotorTerpilih();
   const namaTampil = dataProm.namaAbsen || '-';
-
   let html = `
     <div class="summary-card">
       <h2>${ICONS.trophy} ${namaTampil}</h2>
@@ -1490,31 +1322,23 @@ function renderAbsensi() {
     </div>
     <div class="card-grid">
   `;
-
-entries.forEach(x => {
+  entries.forEach(x => {
     const isNoMasuk = !x.masuk || String(x.masuk).trim() === "" || x.masuk === "-";
     const isNoPulang = !x.pulang || String(x.pulang).trim() === "" || x.pulang === "-";
-    
-    // ✅ FIX: TERLAMBAT hanya kalau ADA jam masuk
     const isTerlambat = !isNoMasuk && String(x.terlambat || "").toUpperCase() === "YA";
-
     let statusText = "Lengkap";
     if (isNoMasuk && isNoPulang) statusText = "Tidak Finger";
     else if (isNoMasuk) statusText = "Tidak Finger Masuk";
     else if (isNoPulang) statusText = "Tidak Finger Pulang";
-
     const status = `<span class="${(isNoMasuk || isNoPulang || isTerlambat) ? 'status-warning' : 'status-ok'}">${statusText}</span>`;
-
     let tglAbsenStr = String(x.hari || '').trim();
     if (!tglAbsenStr.includes('/') && !tglAbsenStr.includes('-')) {
         const hariAngka = tglAbsenStr.padStart(2, '0');
         tglAbsenStr = `10/${hariAngka}/2026`;
     }
     const formatTglFinal = tanggalKeNama(tglAbsenStr);
-
     const kelasTambahan = isTerlambat ? 'late' : '';
     const labelTerlambat = isTerlambat ? '<div style="color:#facc15;font-weight:900;margin-top:6px;font-size:11px;letter-spacing:1px;text-shadow:0 0 8px rgba(250,204,21,0.8);">⚠️ TERLAMBAT</div>' : '';
-
     html += `
       <div class="card ${isNoMasuk || isNoPulang ? 'warning' : 'success'} ${kelasTambahan}">
         <div class="tanggal">
@@ -1530,28 +1354,22 @@ entries.forEach(x => {
       </div>
     `;
   });
-
   html += `</div>`;
   return html;
 }
 
-/* ============================================================ */
-/* ===== RENDER: PENJUALAN =================================== */
-/* ============================================================ */
+/* ===== RENDER: PENJUALAN ===== */
 function renderPenjualan() {
   const isAdmin = currentUser.role === 'ADMIN';
   if (isAdmin && !promotorTerpilih) {
     return `<div class="empty-state">${ICONS.empty}<div class="pesan">Silakan pilih promotor terlebih dahulu dari menu di atas</div></div>`;
   }
-
   const list = getDataSaya();
   const totalOmzet = list.reduce((s, x) => s + (Number(x.subtotal || x.omzet) || 0), 0);
   const totalUnit = list.reduce((s, x) => s + (Number(x.qty) || 1), 0);
-
   const periode = getPeriodeRentangDinamis();
   const dataProm = getPromotorTerpilih();
   const namaTampil = dataProm.namaAbsen || '-';
-
   let html = `
     <div class="summary-card">
       <h2>${ICONS.money} ${namaTampil}</h2>
@@ -1560,23 +1378,19 @@ function renderPenjualan() {
       <p>Total Omzet : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzet.toLocaleString('id-ID')}</span></p>
     </div>
   `;
-
   if (list.length === 0) {
     return html + `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada transaksi</div></div>`;
   }
-
   const grupTanggal = {};
   list.forEach(x => {
     const tglKey = x.tanggal || 'Tanpa Tanggal';
     if (!grupTanggal[tglKey]) grupTanggal[tglKey] = [];
     grupTanggal[tglKey].push(x);
   });
-
   const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
     const da = parseTanggal(a), db = parseTanggal(b);
     return (db || 0) - (da || 0);
   });
-
   html += `<div class="card-grid">`;
   keysSorted.forEach(tgl => {
     const items = grupTanggal[tgl];
@@ -1607,15 +1421,12 @@ function renderPenjualan() {
 }
 window.renderPenjualan = renderPenjualan;
 
-/* ============================================================ */
-/* ===== RENDER: UC ========================================== */
-/* ============================================================ */
+/* ===== RENDER: UC ===== */
 function renderUC() {
     const isAdmin = currentUser.role === 'ADMIN';
     if (isAdmin && !promotorTerpilih) {
       return `<div class="empty-state">${ICONS.empty}<div class="pesan">Silakan pilih promotor terlebih dahulu dari menu di atas</div></div>`;
     }
-
     const listAll = getDataSaya();
     const list = listAll.filter(x => {
         if (!x) return false;
@@ -1628,14 +1439,11 @@ function renderUC() {
         const isMurniUC = (kat === 'GARANSI') && namaBrd.includes('UFO CARE');
         return (isOktoberFaktur || isOktoberTgl) && isMurniUC;
     });
-
     let totalUC = 0;
     list.forEach(x => { totalUC += Number(x.qty || 1); });
-
     const periode = getPeriodeRentangDinamis();
     const dataProm = getPromotorTerpilih();
     const namaPromotor = dataProm.namaAbsen || "Promotor";
-
     let html = `
         <div class="summary-card">
             <h2>${ICONS.uc} ${namaPromotor}</h2>
@@ -1643,11 +1451,9 @@ function renderUC() {
             <p>Total UC : <b>${totalUC}</b></p>
         </div>
     `;
-
     if (list.length === 0) {
         return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UC periode ini</div></div>`;
     }
-
     html += `<div class="card-grid">`;
     list.forEach(x => {
         const namaProduk = x.namaBarang || x.produk || "-";
@@ -1663,19 +1469,15 @@ function renderUC() {
     return html;
 }
 
-/* ============================================================ */
-/* ===== RENDER: BRAND ======================================= */
-/* ============================================================ */
+/* ===== RENDER: BRAND ===== */
 function renderBrand() {
     const isAdmin = currentUser.role === 'ADMIN';
     if (isAdmin && !promotorTerpilih) {
       return `<div class="empty-state">${ICONS.empty}<div class="pesan">Silakan pilih promotor terlebih dahulu dari menu di atas</div></div>`;
     }
-
     const listAll = getDataSaya();
     const dataProm = getPromotorTerpilih();
     const brandPromotor = dataProm && dataProm.merk ? String(dataProm.merk).trim().toUpperCase() : "";
-    
     const list = listAll.filter(x => {
         if (!x) return false;
         const tgl = String(x.tanggal || '');
@@ -1688,17 +1490,14 @@ function renderBrand() {
         const isMatchBrand = !brandPromotor || (merkBarang === brandPromotor || merkBarang.includes(brandPromotor));
         return (isOktoberFaktur || isOktoberTgl) && isMatchBrand;
     });
-
     let totalBrandQty = 0, totalOmzetBrand = 0;
     list.forEach(x => {
         totalBrandQty += Number(x.qty || 1);
         totalOmzetBrand += Number(x.subtotal || x.omzet || 0);
     });
-
     const periode = getPeriodeRentangDinamis();
     const namaPromotor = dataProm ? dataProm.namaAbsen : "Promotor";
     const infoMerk = dataProm && dataProm.merk ? dataProm.merk : "Semua Brand";
-
     let html = `
         <div class="summary-card">
             <h2>${ICONS.brand} ${namaPromotor}</h2>
@@ -1708,23 +1507,19 @@ function renderBrand() {
             <p>Total Omzet Brand : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetBrand.toLocaleString("id-ID")}</span></p>
         </div>
     `;
-
     if (list.length === 0) {
         return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data penjualan untuk brand ${infoMerk}</div></div>`;
     }
-
     const grupTanggal = {};
     list.forEach(x => {
         const tglKey = x.tanggal || 'Tanpa Tanggal';
         if (!grupTanggal[tglKey]) grupTanggal[tglKey] = [];
         grupTanggal[tglKey].push(x);
     });
-
     const keysSorted = Object.keys(grupTanggal).sort((a, b) => {
         const da = parseTanggal(a), db = parseTanggal(b);
         return (db || 0) - (da || 0);
     });
-
     html += `<div class="card-grid">`;
     keysSorted.forEach(tgl => {
         const items = grupTanggal[tgl];
@@ -1760,39 +1555,192 @@ function renderBrand() {
 }
 
 /* ============================================================ */
-/* ===== RENDER: INFO LIST (Promo/SOP) ======================= */
+/* ===== RENDER: INFO LIST (PROMO & SOP) — FIXED ============== */
 /* ============================================================ */
 function renderInfoList(arr, jenis) {
-  if (!arr || arr.length === 0) {
+  // Convert object ke array
+  let list = [];
+  if (Array.isArray(arr)) {
+    list = arr;
+  } else if (arr && typeof arr === 'object') {
+    list = Object.values(arr);
+  }
+  
+  // Filter yang valid
+  list = list.filter(x => x && (x.judul || x.poin));
+  
+  if (!list || list.length === 0) {
     return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data</div></div>`;
   }
+  
+  // ===== PROMO (Teks saja) =====
   if (jenis === 'promo') {
-    return arr.map(x => `
-      <div class="info-block" style="background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 18px; margin-bottom: 12px;">
-        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px; display:flex; align-items:center; gap:6px;">${ICONS.promo} ${x.judul || '-'}</div>
-        ${x.periode ? `<div class="meta" style="color:#9ca3af; font-size: 12.5px;"><b>Periode:</b> ${x.periode}</div>` : ''}
-        <div class="deskripsi" style="margin-top:8px; border-top:1px solid rgba(255,255,255,0.05); padding-top:8px; color:#d1d5db; font-size: 13px; line-height: 1.5;">${x.detail || '-'}</div>
-      </div>
-    `).join('');
-  } else if (jenis === 'rules') {
-    return arr.map(x => `
-      <div class="info-block" style="background: rgba(17, 24, 39, 0.75); border: 1px solid rgba(212, 175, 55, 0.25); border-radius: 16px; padding: 18px; margin-bottom: 12px;">
-        <div class="judul" style="color:#d4af37; font-weight: 700; font-size: 15px; margin-bottom: 6px; display:flex; align-items:center; gap:6px;">${ICONS.sop} ${x.poin || '-'}</div>
-        <div class="deskripsi" style="margin-top:6px; color:#d1d5db; font-size: 13px; line-height: 1.5;">${x.deskripsi || '-'}</div>
-      </div>
-    `).join('');
+    return list.map(x => {
+      const judul = (x.judul || '-').trim();
+      const periode = (x.periode || '').trim();
+      const detail = (x.detail || '').trim();
+      
+      return `
+        <div class="info-block" style="
+          background: rgba(17, 24, 39, 0.75); 
+          border: 1px solid rgba(212, 175, 55, 0.25); 
+          border-left: 4px solid #d4af37;
+          border-radius: 16px; 
+          padding: 18px 20px; 
+          margin-bottom: 14px;
+        ">
+          <div style="color:#facc15; font-weight: 800; font-size: 16px; margin-bottom: 8px;">
+            🔥 ${judul}
+          </div>
+          ${periode ? `<div style="color:#9ca3af; font-size: 12px; margin-bottom: 10px; font-weight:600;">📅 ${periode}</div>` : ''}
+          ${detail ? `
+            <div style="border-top:1px solid rgba(255,255,255,0.06); padding-top:10px; color:#e5e7eb; font-size: 13.5px; line-height: 1.6;">
+              ${detail}
+            </div>
+          ` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+  
+  // ===== SOP (1 baris + thumbnail + klik modal) =====
+  if (jenis === 'rules') {
+    return list.map((x, i) => {
+      const judul = (x.poin || x.judul || '-').trim();
+      const gambarUrl = x.gambar || x.url || x.image || '';
+      
+      const thumbnailHtml = gambarUrl ? `
+        <div style="
+          width: 55px; 
+          height: 55px; 
+          flex-shrink: 0; 
+          background: #0a192f; 
+          border-radius: 8px; 
+          overflow: hidden; 
+          border: 1px solid rgba(212, 175, 55, 0.3);
+        ">
+          <img 
+            src="${gambarUrl}" 
+            alt="${judul}" 
+            style="width: 100%; height: 100%; object-fit: cover; display: block;"
+            onerror="this.parentElement.style.display='none'"
+          >
+        </div>
+      ` : '';
+      
+      return `
+        <div style="
+          background: rgba(17, 24, 39, 0.75); 
+          border: 1px solid rgba(212, 175, 55, 0.25);
+          border-left: 4px solid #d4af37;
+          border-radius: 14px; 
+          padding: 16px; 
+          margin-bottom: 12px;
+          display: flex; 
+          flex-direction: row; 
+          align-items: center; 
+          justify-content: space-between; 
+          gap: 12px;
+          cursor: pointer;
+        " onclick="bukaModalSOP('${gambarUrl}', '${judul.replace(/'/g, "\\'")}')">
+          
+          <div style="flex: 1; min-width: 0;">
+            <div style="font-size: 14px; color: #d4af37; font-weight: 700; margin-bottom: 3px;">
+              📌 ${judul}
+            </div>
+            <div style="font-size: 11.5px; color: #9ca3af;">
+              Ketuk untuk memperbesar gambar SOP
+            </div>
+          </div>
+          
+          ${thumbnailHtml}
+        </div>
+      `;
+    }).join('');
   }
   return '';
 }
 
-/* ============================================================ */
-/* ===== RENDER: PEROLEHAN (ADMIN) =========================== */
-/* ============================================================ */
+/* ===== MODAL SOP (Klik untuk memperbesar) ===== */
+function bukaModalSOP(urlGambar, judulSop) {
+  const old = document.getElementById('sopModal');
+  if (old) old.remove();
+  
+  const modalDiv = document.createElement("div");
+  modalDiv.id = "sopModal";
+  modalDiv.style.cssText = `
+    position: fixed; 
+    top: 0; left: 0; 
+    width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.9); 
+    backdrop-filter: blur(8px);
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    z-index: 999999;
+    padding: 16px;
+  `;
+  modalDiv.onclick = function(e) {
+    if (e.target === modalDiv) modalDiv.remove();
+  };
+  
+  modalDiv.innerHTML = `
+    <div style="
+      position: relative; 
+      max-width: 95%; 
+      max-height: 85vh;
+      background: #111827; 
+      padding: 20px 15px 15px; 
+      border-radius: 16px;
+      border: 1px solid rgba(212, 175, 55, 0.4);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.7); 
+      text-align: center;
+    ">
+      <div onclick="document.getElementById('sopModal').remove()" style="
+        position: absolute; 
+        top: -10px; 
+        right: -10px;
+        background: #ef4444; 
+        color: #fff; 
+        width: 32px; 
+        height: 32px;
+        border-radius: 50%; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center;
+        font-size: 16px; 
+        font-weight: 700; 
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        border: 2px solid #fff;
+      ">✕</div>
+      <div style="
+        color: #d4af37; 
+        font-weight: 700; 
+        font-size: 15px; 
+        margin-bottom: 10px;
+      ">📌 ${judulSop}</div>
+      <img 
+        src="${urlGambar}" 
+        alt="${judulSop}" 
+        style="
+          width: 100%; 
+          max-height: 70vh; 
+          object-fit: contain; 
+          border-radius: 10px;
+        "
+      >
+    </div>
+  `;
+  
+  document.body.appendChild(modalDiv);
+}
+
+/* ===== RENDER: PEROLEHAN (ADMIN) ===== */
 function renderPerolehan() {
     if (!allPenjualan || allPenjualan.length === 0) {
         return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data penjualan</div></div>`;
     }
-
     const perPromotor = {};
     Object.keys(allPromotor).forEach(key => {
         const p = allPromotor[key];
@@ -1806,34 +1754,28 @@ function renderPerolehan() {
             uc: 0
         };
     });
-
     allPenjualan.forEach(x => {
         if (!x || !x.namaSales) return;
         const salesName = String(x.namaSales).trim().toUpperCase();
         const kat = String(x.kategori || '').trim().toUpperCase();
         const brg = String(x.namaBarang || '').toUpperCase();
-        
         Object.keys(perPromotor).forEach(k => {
             const p = allPromotor[k];
             const pSales = String(p.namaSales || '').trim().toUpperCase();
             const pAbsen = String(p.namaAbsen || '').trim().toUpperCase();
-            
             if (salesName === pSales || salesName.includes(pAbsen) || pAbsen.includes(salesName)) {
                 perPromotor[k].omzet += Number(x.subtotal || x.omzet || 0);
                 perPromotor[k].unit += Number(x.qty || 1);
                 perPromotor[k].transaksi += 1;
-                
                 if (kat === 'GARANSI' && brg.includes('UFO CARE')) {
                     perPromotor[k].uc += Number(x.qty || 1);
                 }
             }
         });
     });
-
     const arr = Object.values(perPromotor).sort((a, b) => b.omzet - a.omzet);
     const totalOmzetSemua = arr.reduce((s, x) => s + x.omzet, 0);
     const totalUCSemua = arr.reduce((s, x) => s + x.uc, 0);
-
     let html = `
         <div class="summary-card">
             <h2>${ICONS.chart} Perolehan All Promotor</h2>
@@ -1843,18 +1785,14 @@ function renderPerolehan() {
         </div>
         <div class="summary-card">
     `;
-
     arr.forEach((p, i) => {
         const rank = i + 1;
         const omzetVal = Number(p.omzet || 0);
-
         let warnaOmzet = '#ef4444';
         if (omzetVal >= 100000000) warnaOmzet = '#34d399';
         else if (omzetVal >= 80000000) warnaOmzet = '#f59e0b';
-
         const isSelected = (currentUser.role === 'ADMIN' && promotorTerpilih === p.key);
         const bgStyle = isSelected ? 'background:rgba(212,175,55,0.15); border-radius:8px; padding:10px 12px; margin:4px 0;' : '';
-
         html += `
             <div class="row-perolehan" style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px; ${bgStyle}">
                 <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
@@ -1876,23 +1814,18 @@ function renderPerolehan() {
             </div>
         `;
     });
-
     html += `</div>`;
     return html;
 }
 
-/* ============================================================ */
-/* ===== RENDER: DENDA (ADMIN) =============================== */
-/* ============================================================ */
+/* ===== RENDER: DENDA (ADMIN) ===== */
 function renderDenda() {
     const DENDA_UC_PER_UNIT = 5000;
     const DENDA_LATE_PER_KALI = 10000;
     const TARGET_UC_DEFAULT = 16;
-
     if (!allPromotor || Object.keys(allPromotor).length === 0) {
         return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data promotor</div></div>`;
     }
-
     let html = `
         <div class="summary-card">
             <h2>${ICONS.warning} Denda & Keterlambatan Semua Promotor</h2>
@@ -1909,11 +1842,9 @@ function renderDenda() {
         </div>
         <div class="card-grid">
     `;
-
     Object.keys(allPromotor).forEach(key => {
         const p = allPromotor[key];
         if (p.aktif === false) return;
-
         const cleanNama = String(p.namaSales || p.namaAbsen || '').trim().toUpperCase();
         let totalUC = 0;
         allPenjualan.forEach(x => {
@@ -1926,20 +1857,17 @@ function renderDenda() {
                 totalUC += Number(x.qty || 1);
             }
         });
-
         const absensiP = allAbsensi[key] || {};
         let totalTerlambat = 0;
         Object.values(absensiP).forEach(a => {
             if (a && String(a.terlambat || '').toUpperCase() === 'YA') totalTerlambat++;
         });
-
         const isIkutUC = String(p.ikutUC || 'YA').toUpperCase() !== 'TIDAK';
         const targetUC = isIkutUC ? Number(p.targetUC || TARGET_UC_DEFAULT) : 0;
         const kurangUC = (isIkutUC && totalUC < targetUC) ? (targetUC - totalUC) : 0;
         const dendaUC = kurangUC * DENDA_UC_PER_UNIT;
         const dendaLate = totalTerlambat * DENDA_LATE_PER_KALI;
         const totalDenda = dendaUC + dendaLate;
-
         html += `
             <div class="card ${totalDenda > 0 ? 'warning' : 'success'}">
                 <div class="tanggal">${p.namaAbsen || '-'}</div>
@@ -1952,14 +1880,11 @@ function renderDenda() {
             </div>
         `;
     });
-
     html += `</div>`;
     return html;
 }
 
-/* ============================================================ */
-/* ===== LOGOUT =============================================== */
-/* ============================================================ */
+/* ===== LOGOUT ===== */
 function logoutPromotor() {
   if (!confirm("Yakin ingin keluar?")) return;
   localStorage.removeItem('ufo_promotor_session_v3');
@@ -1968,7 +1893,6 @@ function logoutPromotor() {
   currentMenu = null;
   loginMode = 'promotor';
   promotorTerpilih = null;
-  
   document.getElementById('dashboard').classList.add('hidden');
   document.body.classList.remove('dashboard-active');
   document.body.classList.add('login-active');
@@ -1978,7 +1902,6 @@ function logoutPromotor() {
   document.getElementById('login-admin-username').value = '';
   document.getElementById('custom-select-label').innerText = '-- Pilih Nama Anda --';
   document.getElementById('custom-select-menu').querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-  
   switchLoginTab('promotor');
   document.getElementById('topBar').classList.remove('admin-mode');
 }
