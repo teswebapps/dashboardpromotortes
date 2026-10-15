@@ -1683,50 +1683,85 @@ function renderPerolehan() {
             nama: p.namaAbsen || '-',
             omzet: 0,
             unit: 0,
-            transaksi: 0
+            transaksi: 0,
+            uc: 0
         };
     });
 
     allPenjualan.forEach(x => {
         if (!x || !x.namaSales) return;
         const salesName = String(x.namaSales).trim().toUpperCase();
+        const kat = String(x.kategori || '').trim().toUpperCase();
+        const brg = String(x.namaBarang || '').toUpperCase();
+        
         Object.keys(perPromotor).forEach(k => {
             const p = allPromotor[k];
             const pSales = String(p.namaSales || '').trim().toUpperCase();
             const pAbsen = String(p.namaAbsen || '').trim().toUpperCase();
+            
             if (salesName === pSales || salesName.includes(pAbsen) || pAbsen.includes(salesName)) {
                 perPromotor[k].omzet += Number(x.subtotal || x.omzet || 0);
                 perPromotor[k].unit += Number(x.qty || 1);
                 perPromotor[k].transaksi += 1;
+                
+                if (kat === 'GARANSI' && brg.includes('UFO CARE')) {
+                    perPromotor[k].uc += Number(x.qty || 1);
+                }
             }
         });
     });
 
     const arr = Object.values(perPromotor).sort((a, b) => b.omzet - a.omzet);
     const totalOmzetSemua = arr.reduce((s, x) => s + x.omzet, 0);
-    const totalUnitSemua = arr.reduce((s, x) => s + x.unit, 0);
+    const totalUCSemua = arr.reduce((s, x) => s + x.uc, 0);
 
+    // ===== SUMMARY dengan SVG =====
     let html = `
         <div class="summary-card">
-            <h2>📊 Perolehan Semua Promotor</h2>
-            <p>Total Promotor : <b>${arr.length}</b></p>
-            <p>Total Omzet Toko : <b style="color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</b></p>
-            <p>Total Unit Terjual : <b>${totalUnitSemua}</b></p>
+            <h2>${SVG_ICONS.chart} Perolehan All Promotor</h2>
+            <p>${SVG_ICONS.users} Jumlah Promotor : <b>${arr.length}</b></p>
+            <p>${SVG_ICONS.money} Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
+            <p>${SVG_ICONS.diamond} Total UC : <b>${totalUCSemua}</b></p>
         </div>
-        <div class="card-grid">
     `;
+
+    // ===== LIST RINGKAS =====
+    html += `<div class="summary-card">`;
 
     arr.forEach((p, i) => {
         const rank = i + 1;
-        const warna = rank === 1 ? '#d4af37' : rank === 2 ? '#c0c0c0' : rank === 3 ? '#cd7f32' : '#6b7280';
-        const medal = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : `#${rank}`;
+        const omzetVal = Number(p.omzet || 0);
+
+        // Warna otomatis
+        let warnaOmzet = '#ef4444';        // Merah < 80jt
+        if (omzetVal >= 100000000) {
+            warnaOmzet = '#34d399';         // Hijau ≥ 100jt
+        } else if (omzetVal >= 80000000) {
+            warnaOmzet = '#f59e0b';         // Kuning 80jt-99jt
+        }
 
         html += `
-            <div class="card success">
-                <div class="tanggal" style="color:${warna};">${medal} ${p.nama}</div>
-                <div class="row"><span>Omzet</span><span style="color:#34d399; font-weight:700;">Rp ${p.omzet.toLocaleString('id-ID')}</span></div>
-                <div class="row"><span>Unit</span><span>${p.unit}</span></div>
-                <div class="row"><span>Transaksi</span><span>${p.transaksi}</span></div>
+            <div class="row-perolehan" style="display:flex; align-items:center; justify-content:space-between; padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.06); gap:10px;">
+                
+                <!-- KIRI: Rank + Nama -->
+                <div style="display:flex; align-items:center; gap:10px; min-width:0; flex:1;">
+                    <div style="width:26px; height:26px; border-radius:50%; background:#1f2937; border:1px solid rgba(212,175,55,0.3); display:flex; align-items:center; justify-content:center; font-weight:700; font-size:12px; flex-shrink:0; color:#d4af37;">
+                        ${rank}
+                    </div>
+                    <div style="font-weight:600; font-size:13.5px; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        ${p.nama}
+                    </div>
+                </div>
+
+                <!-- KANAN: Omzet + UC -->
+                <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
+                    <div style="font-weight:700; font-size:13.5px; color:${warnaOmzet};">
+                        Rp ${omzetVal.toLocaleString('id-ID')}
+                    </div>
+                    <div style="font-size:11.5px; font-weight:600; color:#d4af37; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
+                        ${SVG_ICONS.star} UC : ${p.uc || 0}
+                    </div>
+                </div>
             </div>
         `;
     });
@@ -1735,9 +1770,6 @@ function renderPerolehan() {
     return html;
 }
 
-/* ============================================================ */
-/* ===== RENDER: DENDA (ADMIN) =============================== */
-/* ============================================================ */
 function renderDenda() {
     const DENDA_UC_PER_UNIT = 5000;
     const DENDA_LATE_PER_KALI = 10000;
@@ -1749,7 +1781,7 @@ function renderDenda() {
 
     let html = `
         <div class="summary-card">
-            <h2>⚖️ Denda & Keterlambatan Semua Promotor</h2>
+            <h2>${SVG_ICONS.warning} Denda & Keterlambatan Semua Promotor</h2>
             <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
                 <div style="flex:1; min-width:140px; background:rgba(239,68,68,0.1); padding:10px; border-radius:10px; border:1px solid rgba(239,68,68,0.3);">
                     <div style="font-size:10px; color:#9ca3af; font-weight:700;">DENDA UC</div>
