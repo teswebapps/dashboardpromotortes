@@ -778,8 +778,7 @@ function renderPenjualan() {
       </div>
     </div>
   `;
-
-  if (list.length === 0) {
+if (list.length === 0) {
     return html + `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada transaksi</div></div>`;
   }
 
@@ -806,25 +805,26 @@ function renderPenjualan() {
     let isiProduk = '';
     items.forEach((it, idx) => {
       isiProduk += `
-        <div style="${idx > 0 ? 'margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.06);' : ''}">
-          <div style="font-size:13px; font-weight:700; line-height:1.4; margin-bottom:8px; color:#f3f4f6; word-break: break-word;">${it.namaBarang || '-'}</div>
-          <div style="display:flex; justify-content:space-between; padding:3px 0; color:#9ca3af; font-size:12px;">
+        <div style="${idx > 0 ? 'margin-top:10px; padding-top:8px; border-top:1px solid rgba(255,255,255,0.06);' : ''}">
+          <div style="font-size:13px; font-weight:700; line-height:1.4; margin-bottom:6px; color:#f3f4f6; word-break: break-word;">${it.namaBarang || '-'}</div>
+          <div style="display:flex; justify-content:space-between; padding:2px 0; color:#9ca3af; font-size:12px;">
             <span>Qty</span><b style="color:#fff;">${it.qty || 0}</b>
           </div>
-          <div style="display:flex; justify-content:space-between; padding:3px 0; color:#9ca3af; font-size:12px;">
+          <div style="display:flex; justify-content:space-between; padding:2px 0; color:#9ca3af; font-size:12px;">
             <span>Omzet</span><b style="color:#34d399;">Rp ${Number(it.subtotal || 0).toLocaleString('id-ID')}</b>
           </div>
         </div>`;
     });
 
+    // Menggunakan struktur kelas 'card success' agar bentuk, border, dan padding-nya konsisten persis seperti file kedua
     html += `
-      <div style="background: rgba(10,25,47,0.75); border: 1px solid var(--border); border-left: 5px solid #10b981; border-radius: 14px; padding: 16px;">
-        <div style="text-align: center; font-weight: 800; color: #ffffff; font-size: 14px; margin-bottom: 14px; padding-bottom: 10px; border-bottom: 1px solid rgba(30,58,95,0.8); display: flex; align-items: center; justify-content: center; gap: 6px;">
-          <svg viewBox="0 0 24 24" style="width:15px;height:15px;stroke:#38bdf8;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+      <div class="card success" style="margin-bottom: 0;">
+        <div class="tanggal" style="display: flex; align-items: center; justify-content: center; gap: 6px;">
+          <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:#38bdf8;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
           ${tanggalKeNama(tgl)}
         </div>
         ${isiProduk}
-        <div style="display: flex; justify-content: space-between; padding-top: 10px; margin-top: 8px; border-top: 1px solid rgba(30,58,95,0.8); font-weight: 800; font-size: 13px; color: #fff;">
+        <div class="row" style="display: flex; justify-content: space-between; padding-top: 8px; margin-top: 8px; border-top: 1px solid rgba(255,255,255,0.08); font-weight: 700; font-size: 12.5px; color: #fff;">
           <span>Total Hari Ini</span>
           <span style="color: #34d399;">Rp ${totalHari.toLocaleString('id-ID')}</span>
         </div>
@@ -834,8 +834,6 @@ function renderPenjualan() {
 
   html += `</div>`;
   return html;
-}
-
 // UC
 function renderUC() {
   const list = getDataSaya().filter(x => isBulanIni(x.tanggal) && x.kategori === 'GARANSI');
