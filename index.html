@@ -146,7 +146,7 @@
         }
         .summary-card h2 svg { width: 20px; height: 20px; stroke: #d4af37; stroke-width: 2; fill: none; flex-shrink: 0; }
         .summary-card p { margin: 4px 0; color: #d1d5db; font-size: 13px; line-height: 1.4; }
-        .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; width: 100%; }
         .card {
             background: rgba(17, 24, 39, 0.75);
             backdrop-filter: blur(12px);
@@ -215,10 +215,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
         @media(max-width: 1024px) { 
-            .grid, #menuGridContainer { grid-template-columns: repeat(2, 1fr) !important; } 
+            #menuGridContainer { grid-template-columns: repeat(2, 1fr) !important; } 
         }
         @media(max-width: 768px) {
-            .grid, #menuGridContainer { grid-template-columns: 1fr !important; gap: 15px !important; }
+            #menuGridContainer { grid-template-columns: 1fr !important; gap: 15px !important; }
         }
     </style>
 </head>
@@ -479,7 +479,6 @@ function renderAbsensi(result) {
     const data = result.data || [];
     const terlambat = result.terlambat || 0;
 
-    // Hitung total tidak finger masuk & pulang
     let totalTidakFingerMasuk = 0;
     let totalTidakFingerPulang = 0;
 
