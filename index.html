@@ -1446,9 +1446,10 @@ function renderMenuGrid() {
   currentMenu = null;
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
-  if (!currentUser || currentUser.role !== 'ADMIN') {
-    document.getElementById('promotorSelector').classList.add('hidden');
-  }
+  
+  // Sembunyikan dropdown promoter SELALU saat kembali ke menu utama
+  document.getElementById('promotorSelector').classList.add('hidden');
+  
   const grid = document.getElementById('menuGrid');
   grid.classList.remove('hidden');
   const isAdmin = currentUser.role === 'ADMIN';
@@ -1479,7 +1480,6 @@ function renderMenuGrid() {
   }).join('');
 }
 window.renderMenuGrid = renderMenuGrid;
-
 function kembaliKeMenu() {
   currentMenu = null;
   document.getElementById('detailView').classList.add('hidden');
