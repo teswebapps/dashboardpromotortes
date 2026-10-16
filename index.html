@@ -1073,6 +1073,55 @@ body.light-mode .login-theme-toggle:hover {
     background: #eff6ff !important;
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
 }
+  /* ============================================================ */
+/* ===== PEROLEHAN — WARNA OMZET & UC ========================= */
+/* ============================================================ */
+
+/* Nominal omzet — pastikan warna terlihat jelas di kedua mode */
+.row-perolehan [style*="color:#10ff8a"] {
+    color: #10ff8a !important;
+    text-shadow: 0 0 8px rgba(16, 255, 138, 0.4) !important;
+    font-weight: 800 !important;
+}
+
+.row-perolehan [style*="color:#fbbf24"] {
+    color: #fbbf24 !important;
+    text-shadow: 0 0 8px rgba(251, 191, 36, 0.4) !important;
+    font-weight: 800 !important;
+}
+
+.row-perolehan [style*="color:#f87171"] {
+    color: #f87171 !important;
+    text-shadow: 0 0 8px rgba(248, 113, 113, 0.4) !important;
+    font-weight: 800 !important;
+}
+
+/* Label UC : XX — warna emas di gelap, hitam di terang */
+.uc-label {
+    color: #d4af37 !important;
+}
+body.light-mode .uc-label {
+    color: #111827 !important;   /* hitam pekat di mode terang */
+    font-weight: 800 !important;
+}
+body.light-mode .uc-label svg {
+    fill: #b8941f !important;    /* ikon bintang jadi emas tua di terang */
+    stroke: #b8941f !important;
+}
+
+/* Nominal omzet di mode terang — pastikan tetap cerah */
+body.light-mode .row-perolehan [style*="color:#10ff8a"] {
+    color: #059669 !important;   /* hijau tua (kontras di putih) */
+    text-shadow: none !important;
+}
+body.light-mode .row-perolehan [style*="color:#fbbf24"] {
+    color: #d97706 !important;   /* kuning tua */
+    text-shadow: none !important;
+}
+body.light-mode .row-perolehan [style*="color:#f87171"] {
+    color: #dc2626 !important;   /* merah tua */
+    text-shadow: none !important;
+}
 </style>
 </head>
 <body class="login-active">
@@ -2375,9 +2424,9 @@ else if (omzetVal >= 80000000) warnaOmzet = '#fbbf24'; // kuning emas cerah
                     <div style="font-weight:700; font-size:13.5px; color:${warnaOmzet};">
                         Rp ${omzetVal.toLocaleString('id-ID')}
                     </div>
-                    <div style="font-size:11.5px; font-weight:600; color:#d4af37; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
-                        ${ICONS.star} UC : ${p.uc || 0}
-                    </div>
+                 <div class="uc-label" style="font-size:11.5px; font-weight:700; color:#d4af37; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
+    ${ICONS.star} UC : ${p.uc || 0}
+</div>
                 </div>
             </div>
         `;
