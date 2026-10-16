@@ -2503,6 +2503,7 @@ function bukaModalSOP(urlGambar, judulSop) {
 }
 
 /* ===== RENDER: PEROLEHAN (ADMIN) ===== */
+/* ===== RENDER: PEROLEHAN (ADMIN) ===== */
 function renderPerolehan() {
     if (!allPenjualan || allPenjualan.length === 0) {
         return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data penjualan</div></div>`;
@@ -2542,9 +2543,14 @@ function renderPerolehan() {
     const arr = Object.values(perPromotor).sort((a, b) => b.omzet - a.omzet);
     const totalOmzetSemua = arr.reduce((s, x) => s + x.omzet, 0);
     const totalUCSemua = arr.reduce((s, x) => s + x.uc, 0);
+    
+    // ===== TAMBAHAN: PERIODE =====
+    const periode = getPeriodeRentangDinamis();
+    
     let html = `
         <div class="summary-card">
             <h2>${ICONS.chart} Perolehan All Promotor</h2>
+            <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
             <p>${ICONS.users} Jumlah Promotor : <b>${arr.length}</b></p>
             <p>${ICONS.moneySmall} Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
             <p>${ICONS.diamondSmall} Total UC : <b>${totalUCSemua}</b></p>
@@ -2554,9 +2560,9 @@ function renderPerolehan() {
     arr.forEach((p, i) => {
         const rank = i + 1;
         const omzetVal = Number(p.omzet || 0);
-       let warnaOmzet = '#ff2d55';
-if (omzetVal >= 100000000) warnaOmzet = '#00ff88';
-else if (omzetVal >= 80000000) warnaOmzet = '#ffdd00';
+        let warnaOmzet = '#ff2d55';
+        if (omzetVal >= 100000000) warnaOmzet = '#00ff88';
+        else if (omzetVal >= 80000000) warnaOmzet = '#ffdd00';
         const isSelected = (currentUser.role === 'ADMIN' && promotorTerpilih === p.key);
         const bgStyle = isSelected ? 'background:rgba(212,175,55,0.15); border-radius:8px; padding:10px 12px; margin:4px 0;' : '';
         html += `
@@ -2573,9 +2579,9 @@ else if (omzetVal >= 80000000) warnaOmzet = '#ffdd00';
                     <div style="font-weight:700; font-size:13.5px; color:${warnaOmzet};">
                         Rp ${omzetVal.toLocaleString('id-ID')}
                     </div>
-              <div class="uc-label" style="font-size:11.5px; font-weight:700; color:#d4af37; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
-    ${ICONS.star} UC : ${p.uc || 0}
-</div>
+                    <div class="uc-label" style="font-size:11.5px; font-weight:700; color:#d4af37; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
+                        ${ICONS.star} UC : ${p.uc || 0}
+                    </div>
                 </div>
             </div>
         `;
