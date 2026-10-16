@@ -110,7 +110,7 @@ body {
 /* TABS */
 .tabs {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(7, 1fr);
   gap: 8px;
   margin-bottom: 24px;
   background: var(--soft);
@@ -361,7 +361,7 @@ button:hover { transform: translateY(-1px); }
   .container { padding: 16px; border-radius: 18px; }
   .header { flex-direction: column; align-items: flex-start; gap: 12px; }
   .header-right { width: 100%; justify-content: space-between; }
-  .tabs { grid-template-columns: repeat(3, 1fr); }
+  .tabs { grid-template-columns: repeat(4, 1fr); }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .list-item { flex-direction: column; align-items: stretch; }
@@ -425,6 +425,10 @@ button:hover { transform: translateY(-1px); }
       <button class="tab-btn" onclick="switchTab('promotor', event)">
         <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         Promotor
+      </button>
+      <button class="tab-btn" onclick="switchTab('whitelist', event)">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Whitelist
       </button>
       <button class="tab-btn" onclick="switchTab('terlambat', event)">
         <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
@@ -542,6 +546,7 @@ let allPenjualan = {};
 let allAbsensi = {};
 let allPromo = [];
 let allRules = [];
+let allWhitelist = {}; // <-- Tambahan untuk whitelist
 let _sopImageData = null;
 
 /* ============================================================ */
@@ -701,6 +706,11 @@ function mulaiAdmin() {
     allRules = snap.exists() ? snap.val() : [];
     if (currentTab === 'promo') renderTab();
   });
+  // Listener untuk Whitelist
+  window.dbOnValue(window.dbRef(window.db, 'users/whitelist'), snap => {
+    allWhitelist = snap.exists() ? snap.val() : {};
+    if (currentTab === 'whitelist') renderTab();
+  });
   renderTab();
 }
 
@@ -716,6 +726,7 @@ function renderTab() {
   if (currentTab === 'dash') el.innerHTML = renderDash();
   else if (currentTab === 'upload') el.innerHTML = renderUpload();
   else if (currentTab === 'promotor') el.innerHTML = renderPromotor();
+  else if (currentTab === 'whitelist') el.innerHTML = renderWhitelist();
   else if (currentTab === 'terlambat') el.innerHTML = renderTerlambat();
   else if (currentTab === 'promo') el.innerHTML = renderPromoSOP();
   else if (currentTab === 'danger') el.innerHTML = renderDanger();
@@ -1285,6 +1296,106 @@ async function hapusPromotor(key, nama) {
     async () => {
       await window.dbRemove(window.dbRef(window.db, 'users/promotor/' + key));
       tampilkanNotif('Berhasil', 'Promotor berhasil dihapus.', 'success');
+    },
+    'danger'
+  );
+}
+
+/* ============================================================ */
+/* ===== WHITELIST ============================================= */
+/* ============================================================ */
+function renderWhitelist() {
+  const list = Object.keys(allWhitelist).map(k => ({ key: k, ...allWhitelist[k] }))
+    .sort((a,b) => (a.nama || a.email || '').localeCompare(b.nama || b.email || ''));
+
+  return `
+    <div class="card">
+      <h3>
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Tambah Akun ke Whitelist
+      </h3>
+      <p>Daftarkan <b>Email Google</b> dan <b>Nama</b> yang akan tampil di dashboard. Hanya email yang terdaftar di sini yang bisa login.</p>
+      <div class="form-grid">
+        <input type="email" id="wl_email" placeholder="Email Google (contoh: budi@gmail.com)">
+        <input type="text" id="wl_nama" placeholder="Nama yang tampil (contoh: Budi Santoso)">
+        <select id="wl_role">
+          <option value="PROMOTOR">PROMOTOR</option>
+          <option value="ADMIN">ADMIN</option>
+        </select>
+      </div>
+      <button class="btn-primary btn-full" onclick="tambahWhitelist()">
+        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Tambah ke Whitelist
+      </button>
+      <div id="whitelistMsg" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+      <h3>Daftar Whitelist (${list.length})</h3>
+      ${list.length === 0 ? '<div class="alert warn">Belum ada akun di whitelist.</div>' : ''}
+      ${list.map(w => `
+        <div class="list-item">
+          <div class="kiri">
+            <div class="nama">${w.nama || '<span style="color:#ef4444; font-style:italic;">(Belum ada nama)</span>'}</div>
+            <div class="detail">
+              ${w.email || '-'} 
+              <span style="color:${w.role === 'ADMIN' ? '#d4af37' : '#2563eb'}; font-weight:700;"> • ${w.role || 'PROMOTOR'}</span>
+            </div>
+          </div>
+          <div class="kanan">
+            <button class="btn-danger btn-sm" onclick="hapusWhitelist('${w.key}', '${w.email}')">Hapus</button>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+async function tambahWhitelist() {
+  const email = document.getElementById('wl_email').value.trim().toLowerCase();
+  const nama = document.getElementById('wl_nama').value.trim();
+  const role = document.getElementById('wl_role').value;
+  const msg = document.getElementById('whitelistMsg');
+  
+  if (!email || !nama) {
+    msg.innerHTML = '<div class="alert err">Email dan Nama harus diisi!</div>';
+    return;
+  }
+  
+  if (!email.includes('@')) {
+    msg.innerHTML = '<div class="alert err">Format email tidak valid!</div>';
+    return;
+  }
+
+  // Firebase tidak boleh ada titik (.) di key, ganti dengan koma (,)
+  const emailKey = email.replace(/\./g, ',');
+  
+  try {
+    await window.dbSet(window.dbRef(window.db, 'users/whitelist/' + emailKey), {
+      email: email,
+      nama: nama,
+      role: role
+    });
+    msg.innerHTML = '<div class="alert ok">✅ Berhasil ditambahkan ke whitelist!</div>';
+    document.getElementById('wl_email').value = '';
+    document.getElementById('wl_nama').value = '';
+    setTimeout(() => msg.innerHTML = '', 3000);
+  } catch (err) {
+    msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
+  }
+}
+
+async function hapusWhitelist(key, email) {
+  tampilkanKonfirmasi(
+    'Hapus dari Whitelist?',
+    `Yakin ingin hapus "${email}"?\n\nAkun ini tidak akan bisa login lagi.`,
+    async () => {
+      try {
+        await window.dbRemove(window.dbRef(window.db, 'users/whitelist/' + key));
+        tampilkanNotif('Berhasil', 'Akun dihapus dari whitelist.', 'success');
+      } catch (err) {
+        tampilkanNotif('Gagal', err.message, 'danger');
+      }
     },
     'danger'
   );
