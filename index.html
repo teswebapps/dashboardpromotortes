@@ -32,7 +32,6 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
-// Ekspos hanya fungsi yang dibutuhkan kode non-module
 window.db = db;
 window.dbGet = get;
 window.dbRef = ref;
@@ -42,11 +41,15 @@ window.firebaseSignOut = signOut;
 window.firebaseGoogleAuthProvider = GoogleAuthProvider;
 window.firebaseSignInWithPopup = signInWithPopup;
 
-// Deteksi perubahan status login
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.firebaseUser = null;
     window.dispatchEvent(new Event('firebase-ready'));
+    return;
+  }
+  if (!user.email) {
+    alert('Akun Google Anda tidak mengirimkan email. Coba login dengan akun Google lain, atau hubungi admin.');
+    await signOut(auth);
     return;
   }
   try {
@@ -177,35 +180,11 @@ body.login-active {
 .fut-pulse-dot { width: 8px; height: 8px; background: #22d3ee; 
     border-radius: 50%; animation: futDotPulse 1.5s infinite; }
 .fut-right { display: flex; justify-content: center; }
-.fut-card { width: 100%; max-width: 400px; background: rgba(15, 23, 42, 0.7); 
-    backdrop-filter: blur(24px); border: 1px solid rgba(34,211,238,0.2); 
-    border-radius: 24px; padding: 40px 32px; 
-    box-shadow: 0 0 60px rgba(14,165,233,0.15); 
-    position: relative; overflow: hidden; }
-.fut-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; 
-    height: 1px; background: linear-gradient(90deg, transparent, #22d3ee, transparent); }
 .fut-logo { width: 110px; height: 110px; margin: 0 auto 20px; 
     background: rgba(14,165,233,0.15); border: 1px solid rgba(34,211,238,0.3); 
     border-radius: 22px; display: flex; align-items: center; justify-content: center; 
     padding: 14px; box-shadow: 0 0 40px rgba(34,211,238,0.4); }
 .fut-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
-
-.fut-btn { width: 100%; padding: 16px; 
-    background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%); 
-    color: #ffffff; border: none; border-radius: 12px; font-size: 14px; 
-    font-weight: 800; text-transform: uppercase; letter-spacing: 2px; 
-    cursor: pointer; display: flex; align-items: center; justify-content: center; 
-    gap: 10px; box-shadow: 0 0 30px rgba(34,211,238,0.4); transition: all 0.25s ease; }
-.fut-btn:active { transform: scale(0.98); }
-.fut-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-
-.fut-footer { text-align: center; font-size: 12px; color: #64748b; 
-    margin: 20px 0 0 0; font-weight: 500; line-height: 1.5; }
-
-.spinner { display: inline-block; width: 14px; height: 14px; 
-    border: 2px solid rgba(255,255,255,0.3); border-top-color: white; 
-    border-radius: 50%; animation: spin 0.8s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
 
 /* Responsive Login */
 @media (max-width: 900px) {
@@ -217,10 +196,7 @@ body.login-active {
     .fut-tagline { font-size: 10px; padding: 5px 12px; margin-bottom: 12px; }
     .fut-characters .team-3d-img { max-height: 180px; }
     .fut-live-status { font-size: 11px; padding: 7px 14px; }
-    .fut-card { padding: 24px 20px; border-radius: 20px; }
     .fut-logo { width: 90px; height: 90px; margin-bottom: 14px; padding: 10px; }
-    .fut-btn { padding: 14px; font-size: 13px; letter-spacing: 1.5px; }
-    .fut-footer { font-size: 11px; margin-top: 14px; }
     .fut-orb-1 { width: 250px; height: 250px; }
     .fut-orb-2 { width: 200px; height: 200px; }
     .fut-orb-3 { width: 220px; height: 220px; }
@@ -231,9 +207,7 @@ body.login-active {
     .fut-headline { font-size: 22px; }
     .fut-subheadline { font-size: 11px; margin-bottom: 10px; }
     .fut-characters .team-3d-img { max-height: 140px; }
-    .fut-card { padding: 20px 16px; border-radius: 16px; }
     .fut-logo { width: 80px; height: 80px; margin-bottom: 10px; padding: 8px; }
-    .fut-btn { padding: 13px; font-size: 12px; }
 }
 
 /* ===== DASHBOARD ===== */
@@ -452,24 +426,6 @@ body.dashboard-active {
   .menu-grid, .card-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
 }
 
-/* ===== THEME TOGGLE ===== */
-.theme-toggle-btn {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  border: 1px solid rgba(212, 175, 55, 0.4);
-  background: rgba(212, 175, 55, 0.1);
-  color: #d4af37;
-  display: inline-flex; align-items: center; justify-content: center;
-  cursor: pointer; transition: all 0.25s ease;
-  flex-shrink: 0;
-}
-.theme-toggle-btn:hover {
-  background: rgba(212, 175, 55, 0.25);
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
-  transform: rotate(20deg);
-}
-.theme-toggle-btn:active { transform: scale(0.92) rotate(20deg); }
-
 /* ===== LIGHT MODE ===== */
 body.light-mode {
   background: #f1f5f9 !important;
@@ -599,24 +555,10 @@ body.light-mode .fut-headline {
   text-shadow: 0 0 30px rgba(34,211,238,0.3) !important;
 }
 body.light-mode .fut-subheadline { color: #475569 !important; }
-body.light-mode .fut-card {
-  background: rgba(255, 255, 255, 0.95) !important;
-  border-color: rgba(34, 211, 238, 0.3) !important;
-}
-body.light-mode .fut-footer { color: #64748b !important; }
 body.light-mode .fut-live-status {
   background: rgba(255, 255, 255, 0.8) !important;
   border-color: rgba(34, 211, 238, 0.4) !important;
   color: #334155 !important;
-}
-body.light-mode .theme-toggle-btn {
-  background: #fff7e0;
-  border-color: rgba(212, 175, 55, 0.5);
-  color: #b8941f;
-}
-body.light-mode .theme-toggle-btn:hover {
-  background: #fde68a;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
 }
 
 /* Light mode fixes */
@@ -699,11 +641,6 @@ body.light-mode .card span[style*="color:#f87171"] { color: #dc2626 !important; 
 body.light-mode .card span[style*="color:#facc15"] { color: #b45309 !important; }
 body.light-mode .card span[style*="color:#34d399"] { color: #059669 !important; }
 
-body.light-mode .fut-field label { color: #0284c7 !important; font-weight: 800 !important; }
-body.light-mode .fut-select span { color: #334155 !important; font-weight: 600 !important; }
-body.light-mode .fut-input::placeholder { color: rgba(100, 116, 139, 0.55) !important; }
-body.light-mode .fut-footer { color: #475569 !important; font-weight: 600 !important; }
-body.light-mode .fut-footer span { color: #0284c7 !important; font-weight: 800 !important; }
 body.light-mode .fut-subheadline { color: #334155 !important; font-weight: 600 !important; }
 body.light-mode .fut-tagline {
   background: rgba(14, 165, 233, 0.12) !important;
@@ -728,22 +665,6 @@ body.light-mode .fut-live-status .fut-pulse-dot {
   box-shadow: 0 0 10px #0284c7 !important;
 }
 body.light-mode .fut-orb { opacity: 0.25 !important; filter: blur(100px) !important; }
-
-/* Tombol login Google di light mode */
-body.light-mode .fut-btn[style*="background:#ffffff"],
-body.light-mode .fut-btn[style*="background: #ffffff"] {
-  background: #ffffff !important;
-  color: #111827 !important;
-  border: 2px solid #e2e8f0 !important;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
-}
-body.light-mode #btn-login-google + div + p,
-body.light-mode .fut-card > div[style*="text-align:center"] div[style*="color:#94a3b8"] {
-  color: #64748b !important;
-}
-body.light-mode .fut-card > div[style*="text-align:center"] div[style*="color:#ffffff"] {
-  color: #111827 !important;
-}
 
 .login-theme-toggle {
     position: absolute !important;
@@ -830,20 +751,26 @@ body.light-mode .row-perolehan .uc-label svg polygon {
     fill: #111827 !important;
     stroke: #111827 !important;
 }
-  /* ============================================================ */
+
+/* ============================================================ */
 /* ===== LOGIN CARD — MODERN REDESIGN ========================= */
 /* ============================================================ */
 
 .fut-card {
-  background: linear-gradient(160deg, rgba(15, 23, 42, 0.85) 0%, rgba(2, 6, 23, 0.9) 100%) !important;
-  border: 1px solid rgba(56, 189, 248, 0.18) !important;
+  width: 100%;
+  max-width: 400px;
+  border-radius: 24px;
+  padding: 40px 32px;
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.85) 0%, rgba(2, 6, 23, 0.9) 100%);
+  border: 1px solid rgba(56, 189, 248, 0.18);
   box-shadow: 
     0 0 0 1px rgba(56, 189, 248, 0.08),
     0 20px 60px -20px rgba(56, 189, 248, 0.3),
-    0 30px 80px -30px rgba(168, 85, 247, 0.25) !important;
+    0 30px 80px -30px rgba(168, 85, 247, 0.25);
   position: relative;
   overflow: hidden;
   animation: cardEnter 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+  backdrop-filter: blur(24px);
 }
 
 .fut-card::before {
@@ -881,7 +808,6 @@ body.light-mode .row-perolehan .uc-label svg polygon {
   to { transform: rotate(360deg); }
 }
 
-/* ===== LOGO ===== */
 .fut-logo {
   background: radial-gradient(circle at 30% 20%, rgba(56, 189, 248, 0.3), rgba(14, 165, 233, 0.08)) !important;
   border: 1.5px solid rgba(56, 189, 248, 0.35) !important;
@@ -901,36 +827,10 @@ body.light-mode .row-perolehan .uc-label svg polygon {
   }
 }
 
-/* ===== HERO SECTION ===== */
 .login-hero {
   text-align: center;
-  margin-bottom: 26px;
+  margin-bottom: 22px;
   animation: fadeUp 0.6s ease-out 0.15s backwards;
-}
-
-.login-hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  background: rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.3);
-  border-radius: 100px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1.5px;
-  color: #34d399;
-  margin-bottom: 14px;
-  text-transform: uppercase;
-}
-
-.login-hero-dot {
-  width: 5px;
-  height: 5px;
-  background: #34d399;
-  border-radius: 50%;
-  box-shadow: 0 0 8px #34d399;
-  animation: futDotPulse 1.5s infinite;
 }
 
 .login-hero-title {
@@ -953,7 +853,6 @@ body.light-mode .row-perolehan .uc-label svg polygon {
   line-height: 1.5;
 }
 
-/* ===== GOOGLE BUTTON ===== */
 .btn-google {
   width: 100%;
   padding: 14px 16px;
@@ -975,6 +874,7 @@ body.light-mode .row-perolehan .uc-label svg polygon {
     0 4px 14px rgba(0, 0, 0, 0.15),
     0 0 0 1px rgba(255, 255, 255, 0.5) inset;
   animation: fadeUp 0.6s ease-out 0.25s backwards;
+  margin-top: 6px;
 }
 
 .btn-google::before {
@@ -1046,59 +946,11 @@ body.light-mode .row-perolehan .uc-label svg polygon {
   transform: translateX(4px);
 }
 
-/* ===== DIVIDER ===== */
-.login-divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin: 22px 0 18px;
-  animation: fadeUp 0.6s ease-out 0.35s backwards;
-}
-
-.login-divider span {
-  flex: 1;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.3), transparent);
-}
-
-.login-divider em {
-  font-size: 11px;
-  color: #64748b;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  font-style: normal;
-}
-
-/* ===== TRUST BADGE ===== */
-.login-trust {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  padding: 10px 14px;
-  background: rgba(56, 189, 248, 0.06);
-  border: 1px solid rgba(56, 189, 248, 0.15);
-  border-radius: 10px;
-  color: #94a3b8;
-  font-size: 11.5px;
-  font-weight: 600;
-  line-height: 1.4;
-  text-align: center;
-  animation: fadeUp 0.6s ease-out 0.45s backwards;
-}
-
-.login-trust svg {
-  color: #38bdf8;
-  flex-shrink: 0;
-}
-
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(12px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ===== LIGHT MODE ===== */
 body.light-mode .fut-card {
   background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%) !important;
   border-color: rgba(56, 189, 248, 0.3) !important;
@@ -1139,18 +991,11 @@ body.light-mode .btn-google:hover {
     0 0 0 1px rgba(56, 189, 248, 0.3) inset;
 }
 
-body.light-mode .login-divider span {
-  background: linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.25), transparent);
+@media (max-width: 900px) {
+  .fut-card { padding: 28px 22px; border-radius: 20px; }
 }
-
-body.light-mode .login-trust {
-  background: rgba(56, 189, 248, 0.08);
-  border-color: rgba(56, 189, 248, 0.25);
-  color: #475569;
-}
-
-/* ===== RESPONSIVE ===== */
 @media (max-width: 400px) {
+  .fut-card { padding: 22px 18px; border-radius: 18px; }
   .login-hero-title { font-size: 21px; }
   .login-hero-sub { font-size: 12px; }
   .btn-google { padding: 12px 14px; font-size: 13.5px; }
@@ -1161,7 +1006,7 @@ body.light-mode .login-trust {
 </head>
 <body class="login-active">
 
-<!-- LAYAR LOGIN -->
+<!-- ===== LAYAR LOGIN ===== -->
 <div id="login-screen">
     <div class="fut-grid"></div>
     <div class="fut-orb fut-orb-1"></div>
@@ -1186,79 +1031,84 @@ body.light-mode .login-trust {
 
             <div class="fut-live-status">
                 <span class="fut-pulse-dot"></span>
-               <span id="live-status-text">Sistem Siap</span>
+                <span id="live-status-text">Sistem Siap</span>
             </div>
         </div>
 
         <div class="fut-right">
             <div class="fut-card">
-    <button type="button" class="login-theme-toggle" onclick="toggleTheme()" title="Ganti tema">
-        <svg viewBox="0 0 24 24">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-        </svg>
-    </button>
+                <button type="button" class="login-theme-toggle" onclick="toggleTheme()" title="Ganti tema">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
 
-    <div class="fut-logo">
-        <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>UFO</span>';">
-    </div>
+                <div class="fut-logo">
+                    <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>UFO</span>';">
+                </div>
 
-    <div class="login-hero">
-        <h1 class="login-hero-title">Selamat Datang</h1>
-        <p class="login-hero-sub">Masuk untuk melanjutkan ke dashboard promotor</p>
-    </div>
+                <div class="login-hero">
+                    <h1 class="login-hero-title">Selamat Datang</h1>
+                    <p class="login-hero-sub">Masuk untuk melanjutkan ke dashboard promotor</p>
+                </div>
 
-    <button type="button" id="btn-login-google" class="btn-google" onclick="loginDenganGoogle()">
-        <span class="btn-google-icon">
-            <svg viewBox="0 0 48 48" width="22" height="22">
-                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-            </svg>
-        </span>
-        <span id="btn-login-text" class="btn-google-text">Lanjutkan dengan Google</span>
-        <span class="btn-google-arrow">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="5" y1="12" x2="19" y2="12"/>
-                <polyline points="12 5 19 12 12 19"/>
-            </svg>
-        </span>
-    </button>
-</div>
-<!-- DASHBOARD -->
-<div id="dashboard" class="hidden">
-  <div class="dashboard-container">
-   <div class="top-bar" id="topBar">
-  <div class="user-info">
-    <span class="user-dot"></span>
-    <span id="userNama">-</span>
-  </div>
-    <button class="logout-btn" onclick="logoutPromotor()">
-      <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-      Keluar
-    </button>
-  </div>
-</div>
-
-    <div id="menuGrid" class="menu-grid"></div>
-
-    <div id="promotorSelector" class="promotor-selector hidden">
-        <label>PILIH PROMOTOR :</label>
-        <div class="custom-dropdown" id="customDropdownWrap">
-            <div class="custom-dropdown-trigger" id="dropdownTrigger" onclick="toggleDropdownPromotor()">
-                <span class="label-text" id="dropdownLabel">-- Pilih Nama Promotor --</span>
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <polyline points="6 9 12 15 18 9"></polyline>
-                </svg>
+                <button type="button" id="btn-login-google" class="btn-google" onclick="loginDenganGoogle()">
+                    <span class="btn-google-icon">
+                        <svg viewBox="0 0 48 48" width="22" height="22">
+                            <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                            <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                            <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                            <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                        </svg>
+                    </span>
+                    <span id="btn-login-text" class="btn-google-text">Lanjutkan dengan Google</span>
+                    <span class="btn-google-arrow">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"/>
+                            <polyline points="12 5 19 12 12 19"/>
+                        </svg>
+                    </span>
+                </button>
             </div>
-            <div class="custom-dropdown-menu" id="dropdownMenu"></div>
         </div>
-        <input type="hidden" id="selectPromotor" value="">
     </div>
-
-    <div id="detailView" class="detail-view hidden"></div>
-  </div>
 </div>
+<!-- ===== END LAYAR LOGIN ===== -->
+
+<!-- ===== DASHBOARD ===== -->
+<div id="dashboard" class="hidden">
+    <div class="dashboard-container">
+        <div class="top-bar" id="topBar">
+            <div class="user-info">
+                <span class="user-dot"></span>
+                <span id="userNama">-</span>
+            </div>
+            <button class="logout-btn" onclick="logoutPromotor()">
+                <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                Keluar
+            </button>
+        </div>
+
+        <div id="menuGrid" class="menu-grid"></div>
+
+        <div id="promotorSelector" class="promotor-selector hidden">
+            <label>PILIH PROMOTOR :</label>
+            <div class="custom-dropdown" id="customDropdownWrap">
+                <div class="custom-dropdown-trigger" id="dropdownTrigger" onclick="toggleDropdownPromotor()">
+                    <span class="label-text" id="dropdownLabel">-- Pilih Nama Promotor --</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </div>
+                <div class="custom-dropdown-menu" id="dropdownMenu"></div>
+            </div>
+            <input type="hidden" id="selectPromotor" value="">
+        </div>
+
+        <div id="detailView" class="detail-view hidden"></div>
+    </div>
+</div>
+<!-- ===== END DASHBOARD ===== -->
 
 <script>
 /* ===== GLOBAL VARIABLES ===== */
@@ -1371,7 +1221,6 @@ window.loginDenganGoogle = loginDenganGoogle;
 function loadPromotorList() {
   const liveEl = document.getElementById('live-status-text');
   
-  // Kalau belum login, jangan query — Rules akan tolak
   if (!window.firebaseAuth || !window.firebaseAuth.currentUser) {
     if (liveEl) liveEl.innerText = 'Sistem Siap';
     return;
@@ -1391,6 +1240,9 @@ function loadPromotorList() {
     if (currentUser && currentUser.role === 'ADMIN') {
       isiDropdownPromotor(list);
     }
+  }, (error) => {
+    console.error('Gagal load promotor:', error);
+    if (liveEl) liveEl.innerText = 'Akses ditolak';
   });
 }
 
@@ -1474,6 +1326,7 @@ document.addEventListener('click', (e) => {
 
 /* ===== LOAD INFO (Promo/SOP) ===== */
 function loadInfoRealtime() {
+  if (!window.firebaseAuth || !window.firebaseAuth.currentUser) return;
   window.dbOnValue(window.dbRef(window.db, 'info'), snap => {
     if (snap.exists()) {
       const data = snap.val();
@@ -1492,7 +1345,7 @@ function tampilkanDashboard() {
     console.warn('Belum login Google');
     return;
   }
-   loadPromotorList();
+  
   currentUser = {
     key: window.firebaseUser.promotorKey || window.firebaseUser.uid,
     email: window.firebaseUser.email,
@@ -1513,6 +1366,8 @@ function tampilkanDashboard() {
   document.body.classList.add('dashboard-active');
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard').classList.remove('hidden');
+
+  loadPromotorList();
 
   const isAdmin = currentUser.role === 'ADMIN';
   if (isAdmin) {
@@ -1630,11 +1485,7 @@ function kembaliKeMenu() {
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
   document.getElementById('menuGrid').classList.remove('hidden');
-  if (currentUser && currentUser.role !== 'ADMIN') {
-    document.getElementById('promotorSelector').classList.add('hidden');
-  } else {
-    document.getElementById('promotorSelector').classList.add('hidden');
-  }
+  document.getElementById('promotorSelector').classList.add('hidden');
   if (currentUser && currentUser.role === 'ADMIN') {
     promotorTerpilih = null;
   }
