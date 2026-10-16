@@ -1073,54 +1073,66 @@ body.light-mode .login-theme-toggle:hover {
     background: #eff6ff !important;
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
 }
-  /* ============================================================ */
-/* ===== PEROLEHAN — WARNA OMZET & UC ========================= */
+/* ============================================================ */
+/* ===== PEROLEHAN — WARNA SOLID CERAH ======================== */
 /* ============================================================ */
 
-/* Nominal omzet — pastikan warna terlihat jelas di kedua mode */
-.row-perolehan [style*="color:#10ff8a"] {
-    color: #10ff8a !important;
-    text-shadow: 0 0 8px rgba(16, 255, 138, 0.4) !important;
-    font-weight: 800 !important;
-}
-
-.row-perolehan [style*="color:#fbbf24"] {
-    color: #fbbf24 !important;
-    text-shadow: 0 0 8px rgba(251, 191, 36, 0.4) !important;
-    font-weight: 800 !important;
-}
-
-.row-perolehan [style*="color:#f87171"] {
-    color: #f87171 !important;
-    text-shadow: 0 0 8px rgba(248, 113, 113, 0.4) !important;
-    font-weight: 800 !important;
-}
-
-/* Label UC : XX — warna emas di gelap, hitam di terang */
-.uc-label {
-    color: #d4af37 !important;
-}
-body.light-mode .uc-label {
-    color: #111827 !important;   /* hitam pekat di mode terang */
-    font-weight: 800 !important;
-}
-body.light-mode .uc-label svg {
-    fill: #b8941f !important;    /* ikon bintang jadi emas tua di terang */
-    stroke: #b8941f !important;
-}
-
-/* Nominal omzet di mode terang — pastikan tetap cerah */
-body.light-mode .row-perolehan [style*="color:#10ff8a"] {
-    color: #059669 !important;   /* hijau tua (kontras di putih) */
+/* ---- DARK MODE ---- */
+body:not(.light-mode) .row-perolehan [style*="color:#00ff88"] {
+    color: #00ff88 !important;
+    font-weight: 900 !important;
     text-shadow: none !important;
 }
-body.light-mode .row-perolehan [style*="color:#fbbf24"] {
-    color: #d97706 !important;   /* kuning tua */
+body:not(.light-mode) .row-perolehan [style*="color:#ffdd00"] {
+    color: #ffdd00 !important;
+    font-weight: 900 !important;
     text-shadow: none !important;
 }
-body.light-mode .row-perolehan [style*="color:#f87171"] {
-    color: #dc2626 !important;   /* merah tua */
+body:not(.light-mode) .row-perolehan [style*="color:#ff2d55"] {
+    color: #ff2d55 !important;
+    font-weight: 900 !important;
     text-shadow: none !important;
+}
+
+/* UC label — putih solid */
+body:not(.light-mode) .row-perolehan .uc-label {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+}
+body:not(.light-mode) .row-perolehan .uc-label svg,
+body:not(.light-mode) .row-perolehan .uc-label svg polygon {
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+/* ---- LIGHT MODE ---- */
+body.light-mode .row-perolehan [style*="color:#00ff88"] {
+    color: #059669 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+}
+body.light-mode .row-perolehan [style*="color:#ffdd00"] {
+    color: #d97706 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+}
+body.light-mode .row-perolehan [style*="color:#ff2d55"] {
+    color: #dc2626 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+}
+
+/* UC label — hitam solid */
+body.light-mode .row-perolehan .uc-label {
+    color: #111827 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+}
+body.light-mode .row-perolehan .uc-label svg,
+body.light-mode .row-perolehan .uc-label svg polygon {
+    fill: #111827 !important;
+    stroke: #111827 !important;
 }
   /* ============================================================ */
 /* ===== UC LABEL — PAKSA HITAM DI MODE TERANG =============== */
