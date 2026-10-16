@@ -2356,9 +2356,9 @@ function renderPerolehan() {
     arr.forEach((p, i) => {
         const rank = i + 1;
         const omzetVal = Number(p.omzet || 0);
-        let warnaOmzet = '#ef4444';
-        if (omzetVal >= 100000000) warnaOmzet = '#34d399';
-        else if (omzetVal >= 80000000) warnaOmzet = '#f59e0b';
+        let warnaOmzet = '#f87171';  // merah cerah (di bawah 80jt)
+if (omzetVal >= 100000000) warnaOmzet = '#10ff8a';   // hijau neon terang
+else if (omzetVal >= 80000000) warnaOmzet = '#fbbf24'; // kuning emas cerah
         const isSelected = (currentUser.role === 'ADMIN' && promotorTerpilih === p.key);
         const bgStyle = isSelected ? 'background:rgba(212,175,55,0.15); border-radius:8px; padding:10px 12px; margin:4px 0;' : '';
         html += `
