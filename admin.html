@@ -12,7 +12,6 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebas
 import { getDatabase, ref, set, get, update, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
-// ==== KONFIGURASI SUDAH DIPERBAIKI SESUAI FILE ASLI ANDA ====
 const firebaseConfig = {
   apiKey: "AIzaSyCNj8nRMP0ijH1GUXKeJlsE-EG5AYCkHBU",
   authDomain: "dashboardpromotor.firebaseapp.com",
@@ -41,207 +40,75 @@ onAuthStateChanged(auth, user => {
 
 <style>
 :root {
-  --bg: #f1f5f9;
-  --card: #ffffff;
-  --soft: #f8fafc;
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: #e2e8f0;
-  --primary: #2563eb;
-  --primary-dark: #1d4ed8;
-  --success: #10b981;
-  --danger: #ef4444;
-  --warning: #f59e0b;
+  --bg: #f1f5f9; --card: #ffffff; --soft: #f8fafc;
+  --text: #0f172a; --muted: #64748b; --border: #e2e8f0;
+  --primary: #2563eb; --primary-dark: #1d4ed8;
+  --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
   --gold: #d4af37;
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
 }
 * { box-sizing: border-box; font-family: 'Inter', sans-serif !important; }
-body {
-  margin: 0; padding: 20px;
-  background: var(--bg);
-  color: var(--text); min-height: 100vh;
-  display: flex; justify-content: center;
-  align-items: flex-start;
-}
-.container { 
-  width: 100%; 
-  max-width: 900px; 
-  background: var(--card); 
-  border-radius: 24px; 
-  padding: 24px; 
-  box-shadow: var(--shadow-lg);
-  min-height: 90vh;
-}
-
-/* HEADER */
-.header { 
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between;
-  gap: 16px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid var(--border);
-  margin-bottom: 24px;
-}
+body { margin: 0; padding: 20px; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
+.container { width: 100%; max-width: 900px; background: var(--card); border-radius: 24px; padding: 24px; box-shadow: var(--shadow-lg); min-height: 90vh; }
+.header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
 .header-left { display: flex; align-items: center; gap: 14px; }
-.header-logo {
-  width: 48px; height: 48px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  display: flex; align-items: center; justify-content: center;
-  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
-}
+.header-logo { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #3b82f6, #2563eb); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
 .header-logo svg { width: 24px; height: 24px; stroke: white; stroke-width: 2.2; fill: none; }
 .header-title h1 { margin: 0; font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
 .header-title p { margin: 2px 0 0; font-size: 12px; color: var(--muted); font-weight: 500; }
 .header-right { display: flex; gap: 8px; align-items: center; }
-.header-user {
-  padding: 8px 14px;
-  background: #ecfdf5; color: #065f46;
-  border-radius: 99px;
-  font-size: 12px; font-weight: 700;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.header-user::before {
-  content: ''; width: 8px; height: 8px; border-radius: 50%;
-  background: #10b981; box-shadow: 0 0 8px #10b981;
-}
+.header-user { padding: 8px 14px; background: #ecfdf5; color: #065f46; border-radius: 99px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+.header-user::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; }
+.badge-bulan { padding: 8px 14px; background: #eff6ff; color: #1e40af; border-radius: 99px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #93c5fd; }
 
-/* TABS */
-.tabs {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 8px;
-  margin-bottom: 24px;
-  background: var(--soft);
-  padding: 6px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-}
-.tab-btn {
-  padding: 12px 8px;
-  border-radius: 10px;
-  background: transparent; border: none;
-  color: var(--muted);
-  font-size: 11.5px; font-weight: 700;
-  cursor: pointer; text-transform: uppercase; letter-spacing: 0.3px;
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  transition: all 0.2s ease;
-}
+.tabs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 24px; background: var(--soft); padding: 6px; border-radius: 14px; border: 1px solid var(--border); }
+.tab-btn { padding: 12px 8px; border-radius: 10px; background: transparent; border: none; color: var(--muted); font-size: 11.5px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.3px; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s ease; }
 .tab-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.2; fill: none; }
 .tab-btn:hover { background: white; color: var(--primary); }
 .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
 .tab-btn.active svg { stroke: white; }
 
-/* CARD */
-.card { 
-  background: var(--soft); 
-  border: 1px solid var(--border); 
-  border-radius: 16px; 
-  padding: 20px; 
-  margin-bottom: 16px; 
-}
-.card h3 { 
-  margin: 0 0 14px; 
-  font-size: 14px; font-weight: 800; color: var(--text); 
-  display: flex; align-items: center; gap: 8px; 
-}
+.card { background: var(--soft); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+.card h3 { margin: 0 0 14px; font-size: 14px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px; }
 .card h3 svg { width: 18px; height: 18px; stroke: var(--primary); stroke-width: 2.2; fill: none; }
 .card p { margin: 0 0 12px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
 
-/* FORM */
-label { 
-  display: block; font-size: 11px; font-weight: 700; 
-  color: var(--muted); text-transform: uppercase; 
-  margin-bottom: 6px; letter-spacing: 0.3px; 
-}
-input, select, textarea { 
-  width: 100%; padding: 12px 14px; 
-  border-radius: 12px; 
-  border: 1px solid var(--border); 
-  background: white; 
-  font-size: 14px; font-weight: 600; color: var(--text); 
-  outline: none; transition: all 0.2s;
-}
-textarea {
-  resize: vertical;
-  font-family: 'Inter', sans-serif !important;
-}
-input:focus, select:focus, textarea:focus { 
-  border-color: var(--primary); 
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
+label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.3px; }
+input, select, textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: white; font-size: 14px; font-weight: 600; color: var(--text); outline: none; transition: all 0.2s; }
+textarea { resize: vertical; font-family: 'Inter', sans-serif !important; }
+input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
 
-/* BUTTONS */
-button { 
-  padding: 12px 16px; 
-  border-radius: 12px; 
-  font-size: 12px; font-weight: 700; 
-  cursor: pointer; border: none; 
-  text-transform: uppercase; letter-spacing: 0.5px; 
-  transition: all 0.2s; 
-  display: inline-flex; justify-content: center; align-items: center; gap: 8px; 
-}
+button { padding: 12px 16px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
 button svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 button:hover { transform: translateY(-1px); }
 .btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
 .btn-primary:hover { background: var(--primary-dark); }
 .btn-success { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
 .btn-danger { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
+.btn-warning { background: var(--warning); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
 .btn-soft { background: white; color: var(--text); border: 1px solid var(--border); }
 .btn-soft:hover { background: var(--soft); }
 .btn-sm { padding: 8px 12px; font-size: 11px; width: auto; }
 .btn-full { width: 100%; }
 
-/* FILE UPLOAD */
-.file-wrap { 
-  border: 2px dashed var(--primary); 
-  border-radius: 14px; 
-  padding: 28px 20px; 
-  text-align: center; 
-  cursor: pointer; 
-  background: rgba(37, 99, 235, 0.04);
-  transition: all 0.2s;
-}
+.file-wrap { border: 2px dashed var(--primary); border-radius: 14px; padding: 28px 20px; text-align: center; cursor: pointer; background: rgba(37, 99, 235, 0.04); transition: all 0.2s; }
 .file-wrap:hover { background: rgba(37, 99, 235, 0.08); border-color: var(--primary-dark); }
 .file-wrap svg { width: 44px; height: 44px; stroke: var(--primary); stroke-width: 1.8; fill: none; margin-bottom: 10px; }
 .file-wrap p { margin: 0; font-size: 13px; color: var(--muted); font-weight: 600; }
 .file-wrap strong { color: var(--primary); }
 .file-wrap input { display: none; }
 
-/* ALERT */
-.alert { 
-  padding: 12px 14px; 
-  border-radius: 12px; 
-  font-size: 12.5px; font-weight: 600; 
-  margin-bottom: 12px; 
-  display: flex; align-items: center; gap: 10px; 
-  line-height: 1.5;
-}
+.alert { padding: 12px 14px; border-radius: 12px; font-size: 12.5px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; line-height: 1.5; }
 .alert.ok { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
 .alert.err { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
 .alert.warn { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
 
-/* SPINNER */
-.spinner { 
-  display: inline-block; width: 14px; height: 14px; 
-  border: 2px solid rgba(255,255,255,0.3); border-top-color: white; 
-  border-radius: 50%; animation: spin 0.8s linear infinite; 
-}
+.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
 .spinner-dark { border: 2px solid rgba(0,0,0,0.1); border-top-color: var(--primary); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* LIST ITEM */
-.list-item { 
-  background: white; 
-  border: 1px solid var(--border); 
-  border-radius: 12px; 
-  padding: 14px; 
-  margin-bottom: 8px; 
-  display: flex; justify-content: space-between; align-items: center; gap: 12px;
-  transition: all 0.15s;
-}
+.list-item { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 12px; transition: all 0.15s; }
 .list-item:hover { box-shadow: var(--shadow); }
 .list-item .kiri { flex: 1; min-width: 0; }
 .list-item .nama { font-size: 13.5px; font-weight: 700; color: var(--text); }
@@ -249,81 +116,32 @@ button:hover { transform: translateY(-1px); }
 .list-item .kanan { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
 .list-item.late-item { border-left: 4px solid var(--warning) !important; background: #fffbeb !important; }
 
-/* STATS */
 .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.stat-card { 
-  background: white; border: 1px solid var(--border); 
-  border-radius: 14px; padding: 16px 12px; 
-  text-align: center; transition: all 0.2s;
-}
+.stat-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 16px 12px; text-align: center; transition: all 0.2s; }
 .stat-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
-.stat-card .label { 
-  font-size: 10px; font-weight: 800; color: var(--muted); 
-  text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; 
-}
+.stat-card .label { font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
 .stat-card .value { font-size: 20px; font-weight: 900; color: var(--primary); }
 .stat-card.full { grid-column: 1 / -1; }
 .stat-card.success .value { color: var(--success); }
 
-/* BADGE */
-.late-marker {
-  background: linear-gradient(135deg, #fef3c7, #fde68a);
-  border: 1.5px solid var(--warning);
-  border-radius: 8px; padding: 4px 10px;
-  font-size: 10px; font-weight: 800;
-  color: #92400e; text-transform: uppercase; letter-spacing: 0.5px;
-}
+.late-marker { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1.5px solid var(--warning); border-radius: 8px; padding: 4px 10px; font-size: 10px; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px; }
 
-/* FORM GRID */
 .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 
-/* WELCOME CARD */
-.welcome-card {
-  background: linear-gradient(135deg, #1e40af, #3b82f6);
-  color: white; border-radius: 16px;
-  padding: 24px; margin-bottom: 20px;
-  position: relative; overflow: hidden;
-}
-.welcome-card::before {
-  content: ''; position: absolute; top: -50px; right: -50px;
-  width: 200px; height: 200px;
-  background: rgba(255,255,255,0.1); border-radius: 50%;
-}
+.welcome-card { background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
+.welcome-card::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; }
 .welcome-card h2 { margin: 0 0 6px; font-size: 22px; font-weight: 800; position: relative; }
 .welcome-card p { margin: 0; font-size: 13px; opacity: 0.9; position: relative; color: white; }
 
-/* LOGIN */
 #loginBox { max-width: 400px; margin: 40px auto; }
 #loginBox .card { background: white; padding: 28px; border-radius: 20px; box-shadow: var(--shadow-lg); }
 #loginBox h3 { font-size: 18px; text-align: center; margin-bottom: 20px; }
 
-/* MODAL POPUP CUSTOM */
-.modal-overlay {
-  position: fixed; top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(15, 23, 42, 0.5);
-  backdrop-filter: blur(6px);
-  display: flex; justify-content: center; align-items: center;
-  z-index: 99999;
-  opacity: 0; visibility: hidden;
-  transition: all 0.25s ease;
-  padding: 16px;
-}
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; visibility: hidden; transition: all 0.25s ease; padding: 16px; }
 .modal-overlay.active { opacity: 1; visibility: visible; }
-.modal-box {
-  background: white; border-radius: 20px;
-  padding: 28px 24px; max-width: 380px; width: 100%;
-  text-align: center;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
-  transform: scale(0.9);
-  transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
+.modal-box { background: white; border-radius: 20px; padding: 28px 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); transform: scale(0.9); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
 .modal-overlay.active .modal-box { transform: scale(1); }
-.modal-icon {
-  width: 64px; height: 64px; border-radius: 50%;
-  display: inline-flex; align-items: center; justify-content: center;
-  margin-bottom: 16px;
-}
+.modal-icon { width: 64px; height: 64px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; }
 .modal-icon.warning { background: #fef3c7; color: #d97706; }
 .modal-icon.success { background: #ecfdf5; color: #10b981; }
 .modal-icon.danger { background: #fef2f2; color: #ef4444; }
@@ -333,48 +151,35 @@ button:hover { transform: translateY(-1px); }
 .modal-desc { font-size: 13.5px; color: var(--muted); line-height: 1.5; margin-bottom: 22px; white-space: pre-line; }
 .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .modal-actions.single { grid-template-columns: 1fr; }
-.modal-btn {
-  padding: 12px 16px; border-radius: 12px;
-  font-size: 12px; font-weight: 700; cursor: pointer; border: none;
-  text-transform: uppercase; letter-spacing: 0.5px;
-  transition: all 0.2s;
-  display: inline-flex; justify-content: center; align-items: center; gap: 6px;
-}
+.modal-actions.three { grid-template-columns: 1fr 1fr 1fr; }
+.modal-btn { padding: 12px 16px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 6px; font-family: inherit; }
 .modal-btn-cancel { background: var(--soft); color: var(--text); border: 1px solid var(--border); }
 .modal-btn-cancel:hover { background: var(--border); }
 .modal-btn-ok-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
 .modal-btn-ok-danger { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
 .modal-btn-ok-success { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+.modal-btn-ok-warning { background: var(--warning); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
 
-/* HIDDEN */
 .hidden { display: none !important; }
+.sop-preview { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
 
-/* SOP PREVIEW IMAGE */
-.sop-preview {
-  width: 60px; height: 60px;
-  object-fit: cover; border-radius: 8px;
-  border: 1px solid var(--border);
-}
-
-/* RESPONSIVE */
 @media (max-width: 640px) {
   body { padding: 12px; }
   .container { padding: 16px; border-radius: 18px; }
   .header { flex-direction: column; align-items: flex-start; gap: 12px; }
-  .header-right { width: 100%; justify-content: space-between; }
+  .header-right { width: 100%; justify-content: space-between; flex-wrap: wrap; }
   .tabs { grid-template-columns: repeat(4, 1fr); }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .form-grid { grid-template-columns: 1fr; }
   .list-item { flex-direction: column; align-items: stretch; }
   .list-item .kanan { justify-content: flex-end; }
+  .modal-actions.three { grid-template-columns: 1fr; }
 }
 </style>
 </head>
 <body>
 
 <div class="container">
-
-  <!-- HEADER -->
   <div class="header">
     <div class="header-left">
       <div class="header-logo">
@@ -386,6 +191,7 @@ button:hover { transform: translateY(-1px); }
       </div>
     </div>
     <div class="header-right">
+      <div id="badgeBulan" class="badge-bulan hidden">📅 -</div>
       <div id="headerUser" class="header-user hidden">Admin</div>
       <button id="btnLogoutHeader" class="btn-soft btn-sm hidden" onclick="logoutAdmin()">
         <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -394,15 +200,11 @@ button:hover { transform: translateY(-1px); }
     </div>
   </div>
 
-  <!-- LOGIN -->
   <div id="loginBox">
     <div class="card">
       <h3>🔒 Login Admin</h3>
       <label>PIN Admin</label>
-      <input type="password" id="pinAdmin" placeholder="••••" maxlength="6" inputmode="numeric" 
-             style="text-align:center; font-size:20px; letter-spacing:8px; font-weight:800;" 
-             oninput="this.value = this.value.replace(/\D/g,'')" 
-             onkeypress="if(event.key === 'Enter') loginAdmin()">
+      <input type="password" id="pinAdmin" placeholder="••••" maxlength="6" inputmode="numeric" style="text-align:center; font-size:20px; letter-spacing:8px; font-weight:800;" oninput="this.value = this.value.replace(/\D/g,'')" onkeypress="if(event.key === 'Enter') loginAdmin()">
       <div style="height:14px;"></div>
       <button class="btn-primary btn-full" onclick="loginAdmin()">
         <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
@@ -412,7 +214,6 @@ button:hover { transform: translateY(-1px); }
     </div>
   </div>
 
-  <!-- PANEL ADMIN -->
   <div id="panelAdmin" class="hidden">
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('dash', event)">
@@ -448,15 +249,10 @@ button:hover { transform: translateY(-1px); }
   </div>
 </div>
 
-<!-- ===== MODAL POPUP CUSTOM ===== -->
 <div id="modalPopup" class="modal-overlay">
   <div class="modal-box">
     <div class="modal-icon warning" id="modalIcon">
-      <svg viewBox="0 0 24 24">
-        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
-        <line x1="12" y1="9" x2="12" y2="13"/>
-        <line x1="12" y1="17" x2="12.01" y2="17"/>
-      </svg>
+      <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
     </div>
     <div class="modal-title" id="modalTitle">Konfirmasi</div>
     <div class="modal-desc" id="modalDesc">Yakin ingin melanjutkan?</div>
@@ -468,16 +264,23 @@ button:hover { transform: translateY(-1px); }
 </div>
 
 <script>
-/* ============================================================ */
-/* ===== MODAL POPUP CUSTOM ==================================== */
-/* ============================================================ */
+/* ===== BULAN HELPER ===== */
+function getBulanIni() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+function getNamaBulanIndo(bulanStr) {
+  const nama = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const [thn, bln] = bulanStr.split('-');
+  return `${nama[parseInt(bln)]} ${thn}`;
+}
+
+/* ===== MODAL ===== */
 let _modalCallback = null;
 
 function tampilkanModal(title, desc, opts, onOk) {
   opts = opts || {};
   const type = opts.type || 'warning';
-  const okText = opts.okText || 'OK';
-  const cancelText = opts.cancelText || 'Batal';
   const showCancel = opts.showCancel !== false;
   
   document.getElementById('modalTitle').innerText = title;
@@ -487,31 +290,29 @@ function tampilkanModal(title, desc, opts, onOk) {
   iconEl.className = 'modal-icon ' + type;
   
   let iconSvg = '';
-  if (type === 'warning') {
-    iconSvg = '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>';
-  } else if (type === 'success') {
-    iconSvg = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>';
-  } else if (type === 'danger') {
-    iconSvg = '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
-  } else {
-    iconSvg = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>';
-  }
+  if (type === 'warning') iconSvg = '<path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>';
+  else if (type === 'success') iconSvg = '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/>';
+  else if (type === 'danger') iconSvg = '<circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/>';
+  else iconSvg = '<circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/>';
   iconEl.innerHTML = '<svg viewBox="0 0 24 24">' + iconSvg + '</svg>';
   
   const actionsEl = document.getElementById('modalActions');
-  const btnClass = type === 'danger' ? 'modal-btn-ok-danger' : type === 'success' ? 'modal-btn-ok-success' : 'modal-btn-ok-primary';
+  const btnClass = type === 'danger' ? 'modal-btn-ok-danger' : type === 'success' ? 'modal-btn-ok-success' : type === 'warning' ? 'modal-btn-ok-warning' : 'modal-btn-ok-primary';
   
-  if (showCancel) {
+  if (opts.customActions) {
+    actionsEl.className = 'modal-actions ' + (opts.customActions.length === 3 ? 'three' : '');
+    actionsEl.innerHTML = opts.customActions.map(a => 
+      `<button class="modal-btn ${a.class}" onclick="${a.onclick}">${a.text}</button>`
+    ).join('');
+  } else if (showCancel) {
     actionsEl.className = 'modal-actions';
     actionsEl.innerHTML = `
-      <button class="modal-btn modal-btn-cancel" onclick="tutupModal()">${cancelText}</button>
-      <button class="modal-btn ${btnClass}" id="modalBtnOk" onclick="konfirmasiModal()">${okText}</button>
+      <button class="modal-btn modal-btn-cancel" onclick="tutupModal()">${opts.cancelText || 'Batal'}</button>
+      <button class="modal-btn ${btnClass}" onclick="konfirmasiModal()">${opts.okText || 'OK'}</button>
     `;
   } else {
     actionsEl.className = 'modal-actions single';
-    actionsEl.innerHTML = `
-      <button class="modal-btn ${btnClass}" id="modalBtnOk" onclick="konfirmasiModal()">${okText}</button>
-    `;
+    actionsEl.innerHTML = `<button class="modal-btn ${btnClass}" onclick="tutupModal()">${opts.okText || 'OK'}</button>`;
   }
   
   _modalCallback = onOk || null;
@@ -537,9 +338,7 @@ function tampilkanKonfirmasi(title, desc, onOk, type) {
   tampilkanModal(title, desc, { type: type || 'warning', showCancel: true }, onOk);
 }
 
-/* ============================================================ */
-/* ===== STATE ================================================= */
-/* ============================================================ */
+/* ===== STATE ===== */
 let savedPin = localStorage.getItem('ufo_admin_pin3') || '';
 let currentTab = 'dash';
 let allPromotor = {};
@@ -547,98 +346,27 @@ let allPenjualan = {};
 let allAbsensi = {};
 let allPromo = [];
 let allRules = [];
-let allWhitelist = {}; // <-- Tambahan untuk whitelist
+let allWhitelist = {};
 let _sopImageData = null;
+const BULAN_INI = getBulanIni();
 
-/* ============================================================ */
-/* ===== HELPER ================================================ */
-/* ============================================================ */
-function convertTanggalExcel(val) {
-  if (val === undefined || val === null || val === '') return '';
-  if (typeof val === 'number' && val > 1 && val < 100000) {
-    const epochMs = Date.UTC(1899, 11, 30);
-    const ms = epochMs + val * 24 * 60 * 60 * 1000;
-    const d = new Date(ms);
-    return String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0') + '/' + d.getUTCFullYear();
-  }
-  const str = String(val).trim();
-  if (!str) return '';
-  if (/^\d{5}$/.test(str)) {
-    const num = parseInt(str);
-    const epochMs = Date.UTC(1899, 11, 30);
-    const ms = epochMs + num * 24 * 60 * 60 * 1000;
-    const d = new Date(ms);
-    return String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0') + '/' + d.getUTCFullYear();
-  }
-  if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
-    const p = str.split(' ')[0].split('-');
-    return `${p[2]}/${p[1]}/${p[0]}`;
-  }
-  if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
-    const parts = str.split(' ')[0].split('/');
-    const mm = String(parts[0]).padStart(2, '0');
-    const dd = String(parts[1]).padStart(2, '0');
-    const yyyy = parts[2];
-    return `${dd}/${mm}/${yyyy}`;
-  }
-  return str;
-}
-
-function convertJam(val) {
-  if (val === undefined || val === null || val === '') return '';
-  if (typeof val === 'number') {
-    if (val === 0 || isNaN(val)) return '';
-    const totalMenit = Math.round(val * 24 * 60);
-    const jam = Math.floor(totalMenit / 60) % 24;
-    const menit = totalMenit % 60;
-    return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
-  }
-  const str = String(val).trim();
-  if (!str) return '';
-  if (/^\d*\.?\d+$/.test(str)) {
-    const num = parseFloat(str);
-    if (isNaN(num) || num === 0) return '';
-    if (num < 1) {
-      const totalMenit = Math.round(num * 24 * 60);
-      const jam = Math.floor(totalMenit / 60) % 24;
-      const menit = totalMenit % 60;
-      return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
-    } else {
-      const jam = Math.floor(num);
-      const menit = Math.round((num - jam) * 60);
-      return String(jam).padStart(2, '0') + ':' + String(menit).padStart(2, '0');
-    }
-  }
-  if (str.includes(':')) return str;
-  return str;
-}
-
-function sanitizeKey(nama) {
-  return String(nama || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_');
-}
-
-function getNamaBulan(bulan) {
-  const nama = ['', 'Januari','Februari','Maret','April','Mei','Juni',
-                'Juli','Agustus','September','Oktober','November','Desember'];
-  return nama[bulan] || '?';
-}
-
-/* ============================================================ */
-/* ===== FIREBASE READY ======================================== */
-/* ============================================================ */
-window.addEventListener('firebase-ready', () => {
+/* ===== FIREBASE READY ===== */
+window.addEventListener('firebase-ready', async () => {
+  document.getElementById('badgeBulan').classList.remove('hidden');
+  document.getElementById('badgeBulan').innerText = '📅 ' + getNamaBulanIndo(BULAN_INI);
+  
   if (savedPin) {
     document.getElementById('loginBox').classList.add('hidden');
     document.getElementById('panelAdmin').classList.remove('hidden');
     document.getElementById('headerUser').classList.remove('hidden');
     document.getElementById('btnLogoutHeader').classList.remove('hidden');
     mulaiAdmin();
+    // Cek bulan baru setelah login
+    setTimeout(cekDanTawarkanResetBulan, 1500);
   }
 });
 
-/* ============================================================ */
-/* ===== LOGIN / LOGOUT ======================================== */
-/* ============================================================ */
+/* ===== LOGIN ===== */
 async function loginAdmin() {
   const pin = document.getElementById('pinAdmin').value.trim();
   const errEl = document.getElementById('loginError');
@@ -657,6 +385,7 @@ async function loginAdmin() {
       document.getElementById('headerUser').classList.remove('hidden');
       document.getElementById('btnLogoutHeader').classList.remove('hidden');
       mulaiAdmin();
+      setTimeout(cekDanTawarkanResetBulan, 1500);
     } else {
       errEl.innerHTML = '❌ PIN salah!';
       errEl.classList.remove('hidden');
@@ -668,34 +397,24 @@ async function loginAdmin() {
 }
 
 function logoutAdmin() {
-  tampilkanKonfirmasi(
-    'Keluar dari Akun?',
-    'Yakin ingin keluar dari dashboard admin?',
-    () => {
-      localStorage.removeItem('ufo_admin_pin3');
-      savedPin = '';
-      document.getElementById('panelAdmin').classList.add('hidden');
-      document.getElementById('loginBox').classList.remove('hidden');
-      document.getElementById('headerUser').classList.add('hidden');
-      document.getElementById('btnLogoutHeader').classList.add('hidden');
-    },
-    'warning'
-  );
+  tampilkanKonfirmasi('Keluar?', 'Yakin ingin keluar?', () => {
+    localStorage.removeItem('ufo_admin_pin3');
+    savedPin = '';
+    location.reload();
+  }, 'warning');
 }
 
-/* ============================================================ */
-/* ===== LOAD DATA REALTIME ==================================== */
-/* ============================================================ */
+/* ===== LOAD DATA ===== */
 function mulaiAdmin() {
   window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
     allPromotor = snap.exists() ? snap.val() : {};
     if (currentTab !== 'upload') renderTab();
   });
-  window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
+  window.dbOnValue(window.dbRef(window.db, 'penjualan/' + BULAN_INI), snap => {
     allPenjualan = snap.exists() ? snap.val() : {};
     if (currentTab === 'dash') renderTab();
   });
-  window.dbOnValue(window.dbRef(window.db, 'absensi'), snap => {
+  window.dbOnValue(window.dbRef(window.db, 'absensi/' + BULAN_INI), snap => {
     allAbsensi = snap.exists() ? snap.val() : {};
     if (currentTab === 'terlambat') renderTab();
   });
@@ -707,7 +426,6 @@ function mulaiAdmin() {
     allRules = snap.exists() ? snap.val() : [];
     if (currentTab === 'promo') renderTab();
   });
-  // Listener untuk Whitelist
   window.dbOnValue(window.dbRef(window.db, 'users/whitelist'), snap => {
     allWhitelist = snap.exists() ? snap.val() : {};
     if (currentTab === 'whitelist') renderTab();
@@ -733,75 +451,101 @@ function renderTab() {
   else if (currentTab === 'danger') el.innerHTML = renderDanger();
 }
 
-/* ============================================================ */
-/* ===== DASHBOARD ============================================= */
-/* ============================================================ */
+/* ===== HELPER ===== */
+function convertTanggalExcel(val) {
+  if (val === undefined || val === null || val === '') return '';
+  if (typeof val === 'number' && val > 1 && val < 100000) {
+    const epochMs = Date.UTC(1899, 11, 30);
+    const ms = epochMs + val * 24 * 60 * 60 * 1000;
+    const d = new Date(ms);
+    return String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0') + '/' + d.getUTCFullYear();
+  }
+  const str = String(val).trim();
+  if (!str) return '';
+  if (/^\d{5}$/.test(str)) {
+    const num = parseInt(str);
+    const epochMs = Date.UTC(1899, 11, 30);
+    const ms = epochMs + num * 24 * 60 * 60 * 1000;
+    const d = new Date(ms);
+    return String(d.getUTCDate()).padStart(2, '0') + '/' + String(d.getUTCMonth() + 1).padStart(2, '0') + '/' + d.getUTCFullYear();
+  }
+  if (/^\d{4}-\d{2}-\d{2}/.test(str)) {
+    const p = str.split(' ')[0].split('-');
+    return `${p[2]}/${p[1]}/${p[0]}`;
+  }
+  if (/^\d{1,2}\/\d{1,2}\/\d{4}/.test(str)) {
+    const parts = str.split(' ')[0].split('/');
+    return `${String(parts[1]).padStart(2, '0')}/${String(parts[0]).padStart(2, '0')}/${parts[2]}`;
+  }
+  return str;
+}
+
+function convertJam(val) {
+  if (val === undefined || val === null || val === '') return '';
+  if (typeof val === 'number') {
+    if (val === 0 || isNaN(val)) return '';
+    const totalMenit = Math.round(val * 24 * 60);
+    return String(Math.floor(totalMenit / 60) % 24).padStart(2, '0') + ':' + String(totalMenit % 60).padStart(2, '0');
+  }
+  const str = String(val).trim();
+  if (!str) return '';
+  if (/^\d*\.?\d+$/.test(str)) {
+    const num = parseFloat(str);
+    if (isNaN(num) || num === 0) return '';
+    if (num < 1) {
+      const totalMenit = Math.round(num * 24 * 60);
+      return String(Math.floor(totalMenit / 60) % 24).padStart(2, '0') + ':' + String(totalMenit % 60).padStart(2, '0');
+    }
+    const jam = Math.floor(num);
+    return String(jam).padStart(2, '0') + ':' + String(Math.round((num - jam) * 60)).padStart(2, '0');
+  }
+  return str;
+}
+
+function sanitizeKey(nama) {
+  return String(nama || '').trim().toLowerCase().replace(/[^a-z0-9]/g, '_').replace(/_+/g, '_');
+}
+
+/* ===== DASHBOARD ===== */
 function renderDash() {
   const jmlPromotor = Object.keys(allPromotor).length;
   const trans = Object.values(allPenjualan);
-  const jmlTrans = trans.length;
-  const jmlAbsensi = Object.keys(allAbsensi).length;
   const totalOmzet = trans.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS').reduce((s, x) => s + (Number(x.subtotal) || 0), 0);
   
   return `
     <div class="welcome-card">
       <h2>👋 Selamat Datang, Admin</h2>
-      <p>Kelola data promotor, absensi finger, penjualan, promo, dan SOP dari sini.</p>
+      <p>Data ditampilkan: <b>${getNamaBulanIndo(BULAN_INI)}</b></p>
     </div>
-
     <div class="card">
-      <h3>
-        <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg>
-        Statistik Sistem
-      </h3>
+      <h3><svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M18 17V9"/><path d="M13 17V5"/><path d="M8 17v-3"/></svg> Statistik Bulan Ini</h3>
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="label">Promotor</div>
-          <div class="value">${jmlPromotor}</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Transaksi</div>
-          <div class="value">${jmlTrans}</div>
-        </div>
-        <div class="stat-card">
-          <div class="label">Absensi</div>
-          <div class="value">${jmlAbsensi}</div>
-        </div>
-        <div class="stat-card full success">
-          <div class="label">Total Omzet</div>
-          <div class="value" style="font-size:24px;">Rp ${totalOmzet.toLocaleString('id-ID')}</div>
-        </div>
+        <div class="stat-card"><div class="label">Promotor</div><div class="value">${jmlPromotor}</div></div>
+        <div class="stat-card"><div class="label">Transaksi</div><div class="value">${trans.length}</div></div>
+        <div class="stat-card"><div class="label">Absensi</div><div class="value">${Object.keys(allAbsensi).length}</div></div>
+        <div class="stat-card full success"><div class="label">Total Omzet</div><div class="value" style="font-size:24px;">Rp ${totalOmzet.toLocaleString('id-ID')}</div></div>
       </div>
     </div>
   `;
 }
 
-/* ============================================================ */
-/* ===== UPLOAD ================================================ */
-/* ============================================================ */
+/* ===== UPLOAD ===== */
 function renderUpload() {
   return `
+    <div class="alert warn">📅 Semua upload akan masuk ke folder bulan: <b>${BULAN_INI}</b> (${getNamaBulanIndo(BULAN_INI)})</div>
     <div class="card">
-      <h3>
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        1. Upload File Finger (Auto-Proses)
-      </h3>
-      <p>Upload file <b>absen XX-XX.xlsx</b> dari mesin finger. Sistem otomatis baca sheet <b>Punch</b> dan proses ke Firebase.</p>
+      <h3><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> 1. Upload File Finger</h3>
+      <p>Upload file absen dari mesin finger (sheet <b>Punch</b>).</p>
       <div class="file-wrap" onclick="document.getElementById('fileFinger').click()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <p><strong>Klik pilih file Finger</strong></p>
-        <p style="margin-top:4px; font-size:11px;">Format: .xlsx</p>
         <input type="file" id="fileFinger" accept=".xlsx,.xls" onchange="handleFileFinger(event); this.value='';">
       </div>
       <div id="fingerInfo" style="margin-top:14px;"></div>
     </div>
-
     <div class="card">
-      <h3>
-        <svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg>
-        2. Upload Data Master
-      </h3>
-      <p>Upload file <b>ABSEN FINGER.xlsx</b> lengkap (promotor, finger, penjualan).</p>
+      <h3><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg> 2. Upload Data Master</h3>
+      <p>Upload file <b>ABSEN FINGER.xlsx</b> lengkap.</p>
       <div class="file-wrap" onclick="document.getElementById('fileMaster').click()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
         <p><strong>Klik pilih file Master</strong></p>
@@ -809,12 +553,8 @@ function renderUpload() {
       </div>
       <div id="masterInfo" style="margin-top:14px;"></div>
     </div>
-
     <div class="card">
-      <h3>
-        <svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-        3. Upload Penjualan Harian
-      </h3>
+      <h3><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> 3. Upload Penjualan Harian</h3>
       <p>Upload file <b>Penjualan Detail.xlsx</b> dari kasir.</p>
       <div class="file-wrap" onclick="document.getElementById('filePenjualan').click()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
@@ -826,135 +566,79 @@ function renderUpload() {
   `;
 }
 
-/* ===== HANDLE FILE FINGER ===== */
 function handleFileFinger(e) {
   const file = e.target.files[0];
   if (!file) return;
   const el = document.getElementById('fingerInfo');
-  el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Membaca file finger...</div>';
-  
+  el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Membaca...</div>';
   const reader = new FileReader();
   reader.onload = async (evt) => {
     try {
       const data = new Uint8Array(evt.target.result);
       const wb = XLSX.read(data, { type: 'array' });
-      
-      const sheetName = wb.SheetNames.find(n => 
-        n.toLowerCase().includes('punch') || n.toLowerCase().includes('raw')
-      ) || wb.SheetNames[0];
-      
+      const sheetName = wb.SheetNames.find(n => n.toLowerCase().includes('punch') || n.toLowerCase().includes('raw')) || wb.SheetNames[0];
       const sheet = wb.Sheets[sheetName];
-      if (!sheet) {
-        el.innerHTML = '<div class="alert err">❌ Sheet tidak ditemukan!</div>';
-        return;
-      }
-      
+      if (!sheet) { el.innerHTML = '<div class="alert err">❌ Sheet tidak ditemukan!</div>'; return; }
       const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
       const absensiData = {};
-      let promotorCount = 0;
-      let hariCount = 0;
-      let skipList = [];
+      let promotorCount = 0, hariCount = 0, skipList = [];
+      const bulanIni = getNamaBulanIndo(BULAN_INI);
       
       for (let i = 0; i < rows.length; i++) {
         const row = rows[i];
         if (!row || !row[0]) continue;
-        const rowText = String(row[0]);
-        if (!rowText.includes('Nama:')) continue;
-        const m = rowText.match(/Nama:(\S+)/);
+        const m = String(row[0]).match(/Nama:(\S+)/);
         if (!m) continue;
         let namaFinger = m[1].trim();
-        if (!namaFinger) continue;
-        
         const cleanKey = sanitizeKey(namaFinger);
-        let foundKey = null;
-        let foundPromotor = null;
-        
-        if (allPromotor[cleanKey]) {
-          foundKey = cleanKey;
-          foundPromotor = allPromotor[cleanKey];
-        } else {
-          const upperNamaFinger = namaFinger.toUpperCase();
+        let foundKey = null, foundPromotor = null;
+        if (allPromotor[cleanKey]) { foundKey = cleanKey; foundPromotor = allPromotor[cleanKey]; }
+        else {
           for (const k of Object.keys(allPromotor)) {
             const p = allPromotor[k];
-            if (p.namaAbsen && String(p.namaAbsen).toUpperCase().includes(upperNamaFinger)) {
-              foundKey = k;
-              foundPromotor = p;
-              break;
+            if (p.namaAbsen && String(p.namaAbsen).toUpperCase().includes(namaFinger.toUpperCase())) {
+              foundKey = k; foundPromotor = p; break;
             }
           }
         }
-        
-        if (!foundKey) {
-          if (skipList.indexOf(namaFinger) === -1) skipList.push(namaFinger);
-          continue;
-        }
-        
-        const dateRow = rows[i + 1];
-        const jamRow = rows[i + 2];
+        if (!foundKey) { if (skipList.indexOf(namaFinger) === -1) skipList.push(namaFinger); continue; }
+        const dateRow = rows[i + 1], jamRow = rows[i + 2];
         if (!dateRow || !jamRow) continue;
-        
         if (!absensiData[foundKey]) absensiData[foundKey] = {};
         promotorCount++;
-        
-        const bulanIni = getNamaBulan(new Date().getMonth() + 1);
-        
         for (let col = 1; col < Math.max(dateRow.length, jamRow.length); col++) {
           const hariNum = parseInt(dateRow[col]) || 0;
           const jamStr = String(jamRow[col] || '').trim();
-          if (hariNum < 1 || hariNum > 31) continue;
-          if (!jamStr) continue;
-          
+          if (hariNum < 1 || hariNum > 31 || !jamStr) continue;
           const jamParts = jamStr.split(/\s+/).filter(j => j.includes(':'));
-          let masuk = '', ist1 = '', kem1 = '', ist2 = '', kem2 = '', pulang = '';
-          
-          switch (jamParts.length) {
-            case 1: masuk = jamParts[0]; break;
-            case 2: masuk = jamParts[0]; pulang = jamParts[1]; break;
-            case 3: masuk = jamParts[0]; ist1 = jamParts[1]; pulang = jamParts[2]; break;
-            case 4: masuk = jamParts[0]; ist1 = jamParts[1]; kem1 = jamParts[2]; pulang = jamParts[3]; break;
-            case 5: masuk = jamParts[0]; ist1 = jamParts[1]; kem1 = jamParts[2]; ist2 = jamParts[3]; pulang = jamParts[4]; break;
-            default:
-              masuk = jamParts[0] || ''; ist1 = jamParts[1] || ''; kem1 = jamParts[2] || ''; 
-              ist2 = jamParts[3] || ''; kem2 = jamParts[4] || ''; pulang = jamParts[5] || '';
+          let masuk='', ist1='', kem1='', ist2='', kem2='', pulang='';
+          switch(jamParts.length) {
+            case 1: masuk=jamParts[0]; break;
+            case 2: masuk=jamParts[0]; pulang=jamParts[1]; break;
+            case 3: masuk=jamParts[0]; ist1=jamParts[1]; pulang=jamParts[2]; break;
+            case 4: masuk=jamParts[0]; ist1=jamParts[1]; kem1=jamParts[2]; pulang=jamParts[3]; break;
+            case 5: masuk=jamParts[0]; ist1=jamParts[1]; kem1=jamParts[2]; ist2=jamParts[3]; pulang=jamParts[4]; break;
+            default: masuk=jamParts[0]||''; ist1=jamParts[1]||''; kem1=jamParts[2]||''; ist2=jamParts[3]||''; kem2=jamParts[4]||''; pulang=jamParts[5]||'';
           }
-          
           absensiData[foundKey]['hari_' + hariNum] = {
             nama: foundPromotor.namaAbsen, hari: hariNum,
-            masuk: masuk, istirahat1: ist1, kembali1: kem1,
-            istirahat2: ist2, kembali2: kem2, pulang: pulang,
+            masuk, istirahat1: ist1, kembali1: kem1, istirahat2: ist2, kembali2: kem2, pulang,
             terlambat: '', bulan: bulanIni
           };
           hariCount++;
         }
       }
-      
       if (promotorCount === 0) {
-        el.innerHTML = `
-          <div class="alert err">
-            ❌ Tidak ada promotor yang cocok!<br><br>
-            <b>Nama di file finger:</b> ${skipList.slice(0, 5).join(', ')}${skipList.length > 5 ? `, +${skipList.length - 5} lagi` : ''}<br><br>
-            Pastikan nama di file finger sama dengan <b>Nama Absen</b> di MASTER_SALES.
-          </div>
-        `;
+        el.innerHTML = `<div class="alert err">❌ Tidak ada promotor cocok!<br>Nama di file: ${skipList.slice(0,5).join(', ')}</div>`;
         return;
       }
-      
       el.innerHTML = `
-        <div class="alert ok">
-          ✅ <b>${promotorCount} promotor</b> cocok • <b>${hariCount} hari absensi</b>
-          ${skipList.length > 0 ? `<br><small style="color:#92400e;">⚠️ ${skipList.length} promotor tidak cocok: ${skipList.slice(0, 3).join(', ')}${skipList.length > 3 ? ', ...' : ''}</small>` : ''}
-        </div>
-        <button class="btn-success btn-full" onclick="konfirmasiUploadFinger()">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          Konfirmasi Upload ke Firebase
-        </button>
+        <div class="alert ok">✅ ${promotorCount} promotor • ${hariCount} hari
+        ${skipList.length > 0 ? `<br><small>⚠️ ${skipList.length} tidak cocok</small>` : ''}</div>
+        <button class="btn-success btn-full" onclick="konfirmasiUploadFinger()">Konfirmasi Upload</button>
       `;
-      
       window._fingerData = absensiData;
-    } catch (err) {
-      console.error(err);
-      el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
-    }
+    } catch (err) { el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
   };
   reader.readAsArrayBuffer(file);
 }
@@ -963,68 +647,49 @@ async function konfirmasiUploadFinger() {
   const data = window._fingerData;
   if (!data) return;
   const el = document.getElementById('fingerInfo');
-  el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Uploading ke Firebase...</div>';
-  
+  el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Uploading...</div>';
   try {
-    const snap = await window.dbGet(window.dbRef(window.db, 'absensi'));
+    const snap = await window.dbGet(window.dbRef(window.db, 'absensi/' + BULAN_INI));
     const existing = snap.exists() ? snap.val() : {};
     const updates = {};
-    let totalHari = 0;
-    let totalUpdate = 0;
-    
-    Object.keys(data).forEach(keyPromotor => {
-      Object.keys(data[keyPromotor]).forEach(hariKey => {
-        const newData = data[keyPromotor][hariKey];
-        const oldData = existing[keyPromotor]?.[hariKey];
-        if (oldData && String(oldData.terlambat || '').toUpperCase() === 'YA') {
-          newData.terlambat = 'YA';
-          totalUpdate++;
-        }
-        updates[`absensi/${keyPromotor}/${hariKey}`] = newData;
+    let totalHari = 0, totalUpdate = 0;
+    Object.keys(data).forEach(kp => {
+      Object.keys(data[kp]).forEach(hk => {
+        const nd = data[kp][hk];
+        const od = existing[kp]?.[hk];
+        if (od && String(od.terlambat || '').toUpperCase() === 'YA') { nd.terlambat = 'YA'; totalUpdate++; }
+        updates[`absensi/${BULAN_INI}/${kp}/${hk}`] = nd;
         totalHari++;
       });
     });
-    
     await window.dbUpdate(window.dbRef(window.db), updates);
-    
-    el.innerHTML = `
-      <div class="alert ok">
-        ✅ Berhasil upload!<br>
-        <b>${Object.keys(data).length} promotor</b> • <b>${totalHari} hari absensi</b>
-        ${totalUpdate > 0 ? `<br><small>🔒 ${totalUpdate} flag "terlambat" lama dipertahankan</small>` : ''}
-      </div>
-      <button class="btn-soft btn-full" onclick="location.reload()">Refresh Halaman</button>
-    `;
+    el.innerHTML = `<div class="alert ok">✅ Berhasil! ${totalHari} hari
+      ${totalUpdate > 0 ? `<br><small>🔒 ${totalUpdate} flag terlambat dipertahankan</small>` : ''}</div>
+      <button class="btn-soft btn-full" onclick="location.reload()">Refresh</button>`;
     window._fingerData = null;
-  } catch (err) {
-    console.error(err);
-    el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
-  }
+  } catch (err) { el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
 }
 
-/* ===== HANDLE FILE MASTER ===== */
 function handleFileMaster(e) {
   const file = e.target.files[0];
   if (!file) return;
   const el = document.getElementById('masterInfo');
-  el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Membaca file master...</div>';
+  el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Membaca...</div>';
   const reader = new FileReader();
   reader.onload = async (evt) => {
     try {
       const data = new Uint8Array(evt.target.result);
       const wb = XLSX.read(data, { type: 'array' });
       const result = { promotor: [], penjualan: [], absensi: {}, info: {} };
-
       const ms = wb.Sheets['MASTER_SALES'];
       if (ms) {
         const rows = XLSX.utils.sheet_to_json(ms, { header: 1, defval: '' });
         for (let i = 1; i < rows.length; i++) {
           const r = rows[i];
           if (!r[0]) continue;
-          const aktif = String(r[2]).trim().toUpperCase();
-          const tampil = String(r[5] || '').trim().toUpperCase();
-          const role = String(r[4] || 'USER').trim().toUpperCase();
-          if (aktif !== 'YA' || tampil !== 'YA' || role !== 'USER') continue;
+          if (String(r[2]).trim().toUpperCase() !== 'YA') continue;
+          if (String(r[5] || '').trim().toUpperCase() !== 'YA') continue;
+          if (String(r[4] || 'USER').trim().toUpperCase() !== 'USER') continue;
           result.promotor.push({
             namaAbsen: String(r[0]).trim(), namaSales: String(r[1]).trim(),
             pin: String(r[3]).trim().replace(/\.0$/, ''),
@@ -1033,7 +698,6 @@ function handleFileMaster(e) {
           });
         }
       }
-
       const pj = wb.Sheets['PENJUALAN'];
       if (pj) {
         const rows = XLSX.utils.sheet_to_json(pj, { header: 1, defval: '' });
@@ -1051,7 +715,6 @@ function handleFileMaster(e) {
           });
         }
       }
-
       const ab = wb.Sheets['ABSENFINGER'];
       if (ab) {
         const rows = XLSX.utils.sheet_to_json(ab, { header: 1, defval: '' });
@@ -1062,8 +725,7 @@ function handleFileMaster(e) {
           let hariNum = 0;
           const tglRaw = r[1];
           if (tglRaw !== undefined && tglRaw !== null && tglRaw !== '') {
-            if (typeof tglRaw === 'number') hariNum = Math.floor(tglRaw);
-            else hariNum = parseInt(String(tglRaw).trim(), 10) || 0;
+            hariNum = typeof tglRaw === 'number' ? Math.floor(tglRaw) : parseInt(String(tglRaw).trim(), 10) || 0;
           }
           if (hariNum < 1 || hariNum > 31) continue;
           const cleanKey = sanitizeKey(namaAbsen);
@@ -1079,7 +741,6 @@ function handleFileMaster(e) {
           };
         }
       }
-
       const parseSheet = (sheet, cols) => {
         if (!sheet) return [];
         const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: '' });
@@ -1095,26 +756,13 @@ function handleFileMaster(e) {
       };
       result.info.promo = parseSheet(wb.Sheets['PROMO'], ['judul', 'periode', 'detail']);
       result.info.rules = parseSheet(wb.Sheets['RULES'], ['poin', 'deskripsi']);
-
       const totalAbsensi = Object.values(result.absensi).reduce((s, o) => s + Object.keys(o).length, 0);
-
       el.innerHTML = `
-        <div class="alert ok">
-          ✅ Siap upload:<br>
-          • ${result.promotor.length} promotor<br>
-          • ${result.penjualan.length} transaksi<br>
-          • ${Object.keys(result.absensi).length} orang absensi (${totalAbsensi} hari)
-        </div>
-        <button class="btn-success btn-full" onclick="konfirmasiUploadMaster()">
-          <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-          Konfirmasi Upload
-        </button>
+        <div class="alert ok">✅ Siap upload:<br>• ${result.promotor.length} promotor<br>• ${result.penjualan.length} transaksi<br>• ${Object.keys(result.absensi).length} promotor absensi (${totalAbsensi} hari)</div>
+        <button class="btn-success btn-full" onclick="konfirmasiUploadMaster()">Konfirmasi Upload</button>
       `;
       window._masterData = result;
-    } catch (err) {
-      console.error(err);
-      el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
-    }
+    } catch (err) { el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
   };
   reader.readAsArrayBuffer(file);
 }
@@ -1127,50 +775,32 @@ async function konfirmasiUploadMaster() {
   try {
     const updates = {};
     data.promotor.forEach(p => { updates['users/promotor/' + sanitizeKey(p.namaAbsen)] = p; });
-
-    const snap = await window.dbGet(window.dbRef(window.db, 'penjualan'));
+    const snap = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI));
     const setExist = new Set();
-    if (snap.exists()) {
-      Object.values(snap.val()).forEach(x => {
-        if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode);
-      });
-    }
+    if (snap.exists()) Object.values(snap.val()).forEach(x => { if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode); });
     let cBaru = 0, cSkip = 0;
     data.penjualan.forEach((item, idx) => {
       const k = item.noFaktur + '|' + item.barcode;
       if (setExist.has(k)) { cSkip++; return; }
-      updates['penjualan/t_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).substr(2, 6)] = item;
+      updates[`penjualan/${BULAN_INI}/t_${Date.now()}_${idx}_${Math.random().toString(36).substr(2,6)}`] = item;
       cBaru++;
     });
-
-    Object.keys(data.absensi).forEach(k => { updates['absensi/' + k] = data.absensi[k]; });
+    Object.keys(data.absensi).forEach(k => { updates[`absensi/${BULAN_INI}/${k}`] = data.absensi[k]; });
     if (data.info.promo.length) updates['info/promo'] = data.info.promo;
     if (data.info.rules.length) updates['info/rules'] = data.info.rules;
-
     await window.dbUpdate(window.dbRef(window.db), updates);
     const totalAbsensi = Object.values(data.absensi).reduce((s, o) => s + Object.keys(o).length, 0);
-    el.innerHTML = `
-      <div class="alert ok">
-        ✅ Berhasil!<br>
-        • ${data.promotor.length} promotor<br>
-        • ${cBaru} transaksi baru (${cSkip} duplikat)<br>
-        • ${Object.keys(data.absensi).length} orang absensi (${totalAbsensi} hari)
-      </div>
-      <button class="btn-soft btn-full" onclick="location.reload()">Refresh Halaman</button>
-    `;
+    el.innerHTML = `<div class="alert ok">✅ Berhasil!<br>• ${data.promotor.length} promotor<br>• ${cBaru} transaksi baru (${cSkip} duplikat)<br>• ${totalAbsensi} hari absensi</div>
+      <button class="btn-soft btn-full" onclick="location.reload()">Refresh</button>`;
     window._masterData = null;
-  } catch (err) {
-    console.error(err);
-    el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
-  }
+  } catch (err) { el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
 }
 
-/* ===== HANDLE FILE PENJUALAN ===== */
 function handleFilePenjualan(e) {
   const file = e.target.files[0];
   if (!file) return;
   const el = document.getElementById('penjualanInfo');
-  el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Membaca file penjualan...</div>';
+  el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Membaca...</div>';
   const reader = new FileReader();
   reader.onload = async (evt) => {
     try {
@@ -1198,10 +828,8 @@ function handleFilePenjualan(e) {
         });
       }
       const omzet = parsed.filter(x => x.kategori !== 'GARANSI' && x.kategori !== 'ONGKOS').reduce((s, x) => s + x.subtotal, 0);
-      el.innerHTML = `
-        <div class="alert ok">✅ ${parsed.length} baris — Omzet: Rp ${omzet.toLocaleString('id-ID')}</div>
-        <button class="btn-success btn-full" onclick="konfirmasiUploadPenjualan()">Konfirmasi Upload</button>
-      `;
+      el.innerHTML = `<div class="alert ok">✅ ${parsed.length} baris — Omzet: Rp ${omzet.toLocaleString('id-ID')}</div>
+        <button class="btn-success btn-full" onclick="konfirmasiUploadPenjualan()">Konfirmasi Upload</button>`;
       window._jualData = parsed;
     } catch (err) { el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
   };
@@ -1214,17 +842,15 @@ async function konfirmasiUploadPenjualan() {
   const el = document.getElementById('penjualanInfo');
   el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Uploading...</div>';
   try {
-    const snap = await window.dbGet(window.dbRef(window.db, 'penjualan'));
+    const snap = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI));
     const setExist = new Set();
-    if (snap.exists()) Object.values(snap.val()).forEach(x => {
-      if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode);
-    });
+    if (snap.exists()) Object.values(snap.val()).forEach(x => { if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode); });
     const updates = {};
     let cBaru = 0, cSkip = 0;
     data.forEach((item, idx) => {
       const k = item.noFaktur + '|' + item.barcode;
       if (setExist.has(k)) { cSkip++; return; }
-      updates['penjualan/t_' + Date.now() + '_' + idx + '_' + Math.random().toString(36).substr(2, 6)] = item;
+      updates[`penjualan/${BULAN_INI}/t_${Date.now()}_${idx}_${Math.random().toString(36).substr(2,6)}`] = item;
       cBaru++;
     });
     await window.dbUpdate(window.dbRef(window.db), updates);
@@ -1233,21 +859,16 @@ async function konfirmasiUploadPenjualan() {
   } catch (err) { el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
 }
 
-/* ============================================================ */
-/* ===== PROMOTOR ============================================== */
-/* ============================================================ */
+/* ===== PROMOTOR ===== */
 function renderPromotor() {
   const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] })).sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
   return `
     <div class="card">
-      <h3>
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Tambah Promotor
-      </h3>
+      <h3><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Tambah Promotor</h3>
       <div class="form-grid">
         <input type="text" id="p_namaAbsen" placeholder="Nama Absen">
         <input type="text" id="p_namaSales" placeholder="Nama Sales">
-        <input type="text" id="p_pin" placeholder="PIN 4 digit" maxlength="6">
+        <input type="text" id="p_pin" placeholder="PIN" maxlength="6">
         <input type="text" id="p_merk" placeholder="Merk">
         <input type="number" id="p_targetUC" placeholder="Target UC" value="16">
         <select id="p_ikutUC"><option value="YA">Ikut UC</option><option value="TIDAK">Tidak Ikut UC</option></select>
@@ -1264,13 +885,9 @@ function renderPromotor() {
             <div class="nama">${p.namaAbsen}</div>
             <div class="detail">PIN: <b>${p.pin}</b> • ${p.namaSales} • ${p.merk || '-'} • Target UC: ${p.targetUC}</div>
           </div>
-          <div class="kanan">
-            <button class="btn-danger btn-sm" onclick="hapusPromotor('${p.key}', '${p.namaAbsen}')">Hapus</button>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `;
+          <div class="kanan"><button class="btn-danger btn-sm" onclick="hapusPromotor('${p.key}', '${p.namaAbsen}')">Hapus</button></div>
+        </div>`).join('')}
+    </div>`;
 }
 
 async function tambahPromotor() {
@@ -1291,65 +908,39 @@ async function tambahPromotor() {
 }
 
 async function hapusPromotor(key, nama) {
-  tampilkanKonfirmasi(
-    'Hapus Promotor?',
-    `Yakin ingin hapus "${nama}"?\nData tidak bisa dikembalikan!`,
-    async () => {
-      await window.dbRemove(window.dbRef(window.db, 'users/promotor/' + key));
-      tampilkanNotif('Berhasil', 'Promotor berhasil dihapus.', 'success');
-    },
-    'danger'
-  );
+  tampilkanKonfirmasi('Hapus Promotor?', `Yakin hapus "${nama}"?`, async () => {
+    await window.dbRemove(window.dbRef(window.db, 'users/promotor/' + key));
+    tampilkanNotif('Berhasil', 'Promotor dihapus.', 'success');
+  }, 'danger');
 }
 
-/* ============================================================ */
-/* ===== WHITELIST ============================================= */
-/* ============================================================ */
+/* ===== WHITELIST ===== */
 function renderWhitelist() {
-  const list = Object.keys(allWhitelist).map(k => ({ key: k, ...allWhitelist[k] }))
-    .sort((a,b) => (a.nama || a.email || '').localeCompare(b.nama || b.email || ''));
-
+  const list = Object.keys(allWhitelist).map(k => ({ key: k, ...allWhitelist[k] })).sort((a,b) => (a.nama || a.email || '').localeCompare(b.nama || b.email || ''));
   return `
     <div class="card">
-      <h3>
-        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Tambah Akun ke Whitelist
-      </h3>
-      <p>Daftarkan <b>Email Google</b> dan <b>Nama</b> yang akan tampil di dashboard. Hanya email yang terdaftar di sini yang bisa login.</p>
+      <h3><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Tambah ke Whitelist</h3>
+      <p>Daftarkan email & nama yang bisa login.</p>
       <div class="form-grid">
-        <input type="email" id="wl_email" placeholder="Email Google (contoh: budi@gmail.com)">
-        <input type="text" id="wl_nama" placeholder="Nama yang tampil (contoh: Budi Santoso)">
-        <select id="wl_role">
-          <option value="PROMOTOR">PROMOTOR</option>
-          <option value="ADMIN">ADMIN</option>
-        </select>
+        <input type="email" id="wl_email" placeholder="Email Google">
+        <input type="text" id="wl_nama" placeholder="Nama yang tampil">
+        <select id="wl_role"><option value="PROMOTOR">PROMOTOR</option><option value="ADMIN">ADMIN</option></select>
       </div>
-      <button class="btn-primary btn-full" onclick="tambahWhitelist()">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Tambah ke Whitelist
-      </button>
+      <button class="btn-primary btn-full" onclick="tambahWhitelist()">Tambah</button>
       <div id="whitelistMsg" style="margin-top:10px;"></div>
     </div>
-
     <div class="card">
       <h3>Daftar Whitelist (${list.length})</h3>
-      ${list.length === 0 ? '<div class="alert warn">Belum ada akun di whitelist.</div>' : ''}
+      ${list.length === 0 ? '<div class="alert warn">Belum ada.</div>' : ''}
       ${list.map(w => `
         <div class="list-item">
           <div class="kiri">
-            <div class="nama">${w.nama || '<span style="color:#ef4444; font-style:italic;">(Belum ada nama)</span>'}</div>
-            <div class="detail">
-              ${w.email || '-'} 
-              <span style="color:${w.role === 'ADMIN' ? '#d4af37' : '#2563eb'}; font-weight:700;"> • ${w.role || 'PROMOTOR'}</span>
-            </div>
+            <div class="nama">${w.nama || '<span style="color:#ef4444;">(Tanpa nama)</span>'}</div>
+            <div class="detail">${w.email || '-'} <span style="color:${w.role === 'ADMIN' ? '#d4af37' : '#2563eb'}; font-weight:700;">• ${w.role || 'PROMOTOR'}</span></div>
           </div>
-          <div class="kanan">
-            <button class="btn-danger btn-sm" onclick="hapusWhitelist('${w.key}', '${w.email}')">Hapus</button>
-          </div>
-        </div>
-      `).join('')}
-    </div>
-  `;
+          <div class="kanan"><button class="btn-danger btn-sm" onclick="hapusWhitelist('${w.key}', '${w.email}')">Hapus</button></div>
+        </div>`).join('')}
+    </div>`;
 }
 
 async function tambahWhitelist() {
@@ -1357,241 +948,138 @@ async function tambahWhitelist() {
   const nama = document.getElementById('wl_nama').value.trim();
   const role = document.getElementById('wl_role').value;
   const msg = document.getElementById('whitelistMsg');
-  
-  if (!email || !nama) {
-    msg.innerHTML = '<div class="alert err">Email dan Nama harus diisi!</div>';
-    return;
-  }
-  
-  if (!email.includes('@')) {
-    msg.innerHTML = '<div class="alert err">Format email tidak valid!</div>';
-    return;
-  }
-
-  // Firebase tidak boleh ada titik (.) di key, ganti dengan koma (,)
+  if (!email || !nama) { msg.innerHTML = '<div class="alert err">Email & Nama wajib!</div>'; return; }
+  if (!email.includes('@')) { msg.innerHTML = '<div class="alert err">Email tidak valid!</div>'; return; }
   const emailKey = email.replace(/\./g, ',');
-  
   try {
-    await window.dbSet(window.dbRef(window.db, 'users/whitelist/' + emailKey), {
-      email: email,
-      nama: nama,
-      role: role
-    });
-    msg.innerHTML = '<div class="alert ok">✅ Berhasil ditambahkan ke whitelist!</div>';
+    await window.dbSet(window.dbRef(window.db, 'users/whitelist/' + emailKey), { email, nama, role });
+    msg.innerHTML = '<div class="alert ok">✅ Ditambahkan!</div>';
     document.getElementById('wl_email').value = '';
     document.getElementById('wl_nama').value = '';
     setTimeout(() => msg.innerHTML = '', 3000);
-  } catch (err) {
-    msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
-  }
+  } catch (err) { msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
 }
 
 async function hapusWhitelist(key, email) {
-  tampilkanKonfirmasi(
-    'Hapus dari Whitelist?',
-    `Yakin ingin hapus "${email}"?\n\nAkun ini tidak akan bisa login lagi.`,
-    async () => {
-      try {
-        await window.dbRemove(window.dbRef(window.db, 'users/whitelist/' + key));
-        tampilkanNotif('Berhasil', 'Akun dihapus dari whitelist.', 'success');
-      } catch (err) {
-        tampilkanNotif('Gagal', err.message, 'danger');
-      }
-    },
-    'danger'
-  );
+  tampilkanKonfirmasi('Hapus?', `Yakin hapus "${email}"?`, async () => {
+    await window.dbRemove(window.dbRef(window.db, 'users/whitelist/' + key));
+    tampilkanNotif('Berhasil', 'Dihapus.', 'success');
+  }, 'danger');
 }
 
-/* ============================================================ */
-/* ===== TERLAMBAT ============================================= */
-/* ============================================================ */
+/* ===== TERLAMBAT ===== */
 function renderTerlambat() {
-  const listPromotor = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
-    .sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
-  
+  const listPromotor = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] })).sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
   const today = new Date();
-  const bulanIni = today.getMonth() + 1;
-  const tahunIni = today.getFullYear();
   const hariIni = today.getDate();
+  const hariTerpilih = window._hariTerlambat || hariIni;
   
   let html = `
     <div class="card">
-      <h3>
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        Kelola Terlambat — ${getNamaBulan(bulanIni)} ${tahunIni}
-      </h3>
-      <p>Pilih tanggal, lalu klik <b>Tandai</b> pada promotor yang telat hari itu.</p>
+      <h3>Kelola Terlambat — ${getNamaBulanIndo(BULAN_INI)}</h3>
+      <p>Pilih tanggal, lalu klik Tandai.</p>
       <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:14px;">
-        <label>Tanggal (hari ke-)</label>
-        <input type="number" id="tglTerlambat" min="1" max="31" value="${hariIni}" 
+        <label>Tanggal</label>
+        <input type="number" id="tglTerlambat" min="1" max="31" value="${hariTerpilih}" 
                style="width:120px; font-size:16px; text-align:center; font-weight:800;"
-               onchange="renderTab()">
+               onchange="window._hariTerlambat = this.value; renderTab()">
       </div>
     </div>
-  `;
-  
-  const tglDipilih = Number(document.getElementById('tglTerlambat')?.value) || hariIni;
-  
-  html += `<div class="card">
-    <h3>Daftar Promotor — Tandai Terlambat</h3>
-    ${listPromotor.length === 0 ? '<div class="alert warn">Belum ada promotor.</div>' : ''}
-  `;
+    <div class="card"><h3>Daftar Promotor</h3>`;
   
   listPromotor.forEach(p => {
     const absensiP = allAbsensi[p.key] || {};
-    const hariKeyToday = 'hari_' + tglDipilih;
-    const h = absensiP[hariKeyToday];
+    const h = absensiP['hari_' + hariTerpilih];
     const adaFinger = h && h.masuk && String(h.masuk).trim() !== '' && h.masuk !== '-';
     const sudahTerlambat = adaFinger && String(h.terlambat || '').toUpperCase() === 'YA';
-    
     let totalBulanIni = 0;
     Object.values(absensiP).forEach(a => {
       const adaMasuk = a && a.masuk && String(a.masuk).trim() !== '' && a.masuk !== '-';
       if (adaMasuk && String(a.terlambat || '').toUpperCase() === 'YA') totalBulanIni++;
     });
-    
     html += `
       <div class="list-item ${sudahTerlambat ? 'late-item' : ''}">
         <div class="kiri">
           <div class="nama">${p.namaAbsen}</div>
-          <div class="detail">
-            ${p.namaSales || '-'} • ${p.merk || '-'}
-            ${!adaFinger ? '<span style="color:#94a3b8; font-style:italic;"> • Finger belum diupload</span>' : ''}
-            ${totalBulanIni > 0 ? `<span style="color:#d97706; font-weight:700;"> • ${totalBulanIni}x terlambat bulan ini</span>` : ''}
+          <div class="detail">${p.namaSales || '-'} • ${p.merk || '-'}
+            ${!adaFinger ? '<span style="color:#94a3b8;"> • Belum ada finger</span>' : ''}
+            ${totalBulanIni > 0 ? `<span style="color:#d97706; font-weight:700;"> • ${totalBulanIni}x terlambat</span>` : ''}
           </div>
         </div>
         <div class="kanan">
           ${sudahTerlambat ? '<span class="late-marker">TERLAMBAT</span>' : ''}
-          ${adaFinger ? `
-            <button class="${sudahTerlambat ? 'btn-danger' : 'btn-primary'} btn-sm" 
-                    onclick="toggleTerlambat('${p.key}', ${tglDipilih}, ${sudahTerlambat})">
-              ${sudahTerlambat ? 'Batal' : 'Tandai'}
-            </button>
-          ` : `
-            <button class="btn-soft btn-sm" disabled style="opacity:0.4; cursor:not-allowed;">-</button>
-          `}
+          ${adaFinger ? `<button class="${sudahTerlambat ? 'btn-danger' : 'btn-primary'} btn-sm" onclick="toggleTerlambat('${p.key}', ${hariTerpilih}, ${sudahTerlambat})">${sudahTerlambat ? 'Batal' : 'Tandai'}</button>`
+          : `<button class="btn-soft btn-sm" disabled style="opacity:0.4;">-</button>`}
         </div>
-      </div>
-    `;
+      </div>`;
   });
-  
   html += `</div>`;
   return html;
 }
 
 async function toggleTerlambat(promotorKey, hari, sudahTerlambat) {
   try {
-    const path = `absensi/${promotorKey}/hari_${hari}`;
+    const path = `absensi/${BULAN_INI}/${promotorKey}/hari_${hari}`;
     const snap = await window.dbGet(window.dbRef(window.db, path));
     if (snap.exists()) {
-      await window.dbUpdate(window.dbRef(window.db, path), {
-        terlambat: sudahTerlambat ? '' : 'YA'
-      });
+      await window.dbUpdate(window.dbRef(window.db, path), { terlambat: sudahTerlambat ? '' : 'YA' });
     }
     renderTab();
-  } catch (err) {
-    tampilkanNotif('Gagal', err.message, 'danger');
-  }
+  } catch (err) { tampilkanNotif('Gagal', err.message, 'danger'); }
 }
 
-/* ============================================================ */
-/* ===== PROMO & SOP =========================================== */
-/* ============================================================ */
+/* ===== PROMO & SOP ===== */
 function renderPromoSOP() {
   const promoList = Array.isArray(allPromo) ? allPromo : Object.values(allPromo || {});
   const rulesList = Array.isArray(allRules) ? allRules : Object.values(allRules || {});
-  
   return `
-    <!-- ===== PROMO ===== -->
     <div class="card">
-      <h3>
-        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-        Tambah Promo Toko
-      </h3>
-      <p>Isi form di bawah, klik <b>Tambah Promo</b>. Promo langsung muncul di halaman promotor.</p>
-      <div style="margin-bottom:10px;">
-        <label>Judul Promo</label>
-        <input type="text" id="promo_judul" placeholder="Contoh: PROMO BULAN INI">
-      </div>
-      <div style="margin-bottom:10px;">
-        <label>Periode</label>
-        <input type="text" id="promo_periode" placeholder="Contoh: Oktober 2026">
-      </div>
-      <div style="margin-bottom:12px;">
-        <label>Detail Promo</label>
-        <textarea id="promo_detail" rows="3" placeholder="Contoh: FREE BRACKET untuk pembelian LED TV" style="width:100%; padding:12px 14px; border-radius:12px; border:1px solid var(--border); font-size:14px; font-weight:600; resize:vertical; font-family:'Inter',sans-serif;"></textarea>
-      </div>
-      <button class="btn-primary btn-full" onclick="tambahPromo()">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Tambah Promo
-      </button>
+      <h3>Tambah Promo</h3>
+      <div style="margin-bottom:10px;"><label>Judul</label><input type="text" id="promo_judul" placeholder="PROMO BULAN INI"></div>
+      <div style="margin-bottom:10px;"><label>Periode</label><input type="text" id="promo_periode" placeholder="Oktober 2026"></div>
+      <div style="margin-bottom:12px;"><label>Detail</label><textarea id="promo_detail" rows="3" placeholder="Detail promo..."></textarea></div>
+      <button class="btn-primary btn-full" onclick="tambahPromo()">Tambah Promo</button>
       <div id="promoMsg" style="margin-top:10px;"></div>
     </div>
-
     <div class="card">
       <h3>Daftar Promo (${promoList.length})</h3>
-      ${promoList.length === 0 ? '<div class="alert warn">Belum ada promo.</div>' : ''}
+      ${promoList.length === 0 ? '<div class="alert warn">Belum ada.</div>' : ''}
       ${promoList.map((p, i) => `
         <div class="list-item">
-          <div class="kiri">
-            <div class="nama">🔥 ${p.judul || '-'}</div>
-            <div class="detail">
-              ${p.periode ? `📅 ${p.periode} • ` : ''}
-              ${p.detail || '-'}
-            </div>
+          <div class="kiri"><div class="nama">🔥 ${p.judul || '-'}</div>
+            <div class="detail">${p.periode ? `📅 ${p.periode} • ` : ''}${p.detail || '-'}</div>
           </div>
-          <div class="kanan">
-            <button class="btn-danger btn-sm" onclick="hapusPromo(${i})">Hapus</button>
-          </div>
-        </div>
-      `).join('')}
+          <div class="kanan"><button class="btn-danger btn-sm" onclick="hapusPromo(${i})">Hapus</button></div>
+        </div>`).join('')}
     </div>
-
-    <!-- ===== SOP ===== -->
     <div class="card">
-      <h3>
-        <svg viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-        Tambah SOP Promotor
-      </h3>
-      <p>Upload gambar SOP (maks 500KB). Gambar akan muncul di halaman promotor (menu SOP Promotor).</p>
-      <div style="margin-bottom:10px;">
-        <label>Judul SOP</label>
-        <input type="text" id="sop_judul" placeholder="Contoh: SOP UFO Malang Kebonsari">
-      </div>
+      <h3>Tambah SOP</h3>
+      <div style="margin-bottom:10px;"><label>Judul SOP</label><input type="text" id="sop_judul"></div>
       <div style="margin-bottom:12px;">
-        <label>Upload Gambar SOP</label>
+        <label>Gambar SOP (maks 500KB)</label>
         <div class="file-wrap" onclick="document.getElementById('sop_file').click()" style="padding:20px;">
           <svg viewBox="0 0 24 24" style="width:32px;height:32px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           <p id="sop_file_label"><strong>Klik pilih gambar</strong></p>
           <input type="file" id="sop_file" accept="image/*" onchange="pilihFileSOP(event);">
         </div>
       </div>
-      <button class="btn-primary btn-full" onclick="tambahSOP()">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Tambah SOP
-      </button>
+      <button class="btn-primary btn-full" onclick="tambahSOP()">Tambah SOP</button>
       <div id="sopMsg" style="margin-top:10px;"></div>
     </div>
-
     <div class="card">
       <h3>Daftar SOP (${rulesList.length})</h3>
-      ${rulesList.length === 0 ? '<div class="alert warn">Belum ada SOP.</div>' : ''}
+      ${rulesList.length === 0 ? '<div class="alert warn">Belum ada.</div>' : ''}
       ${rulesList.map((r, i) => `
         <div class="list-item">
-          <div class="kiri">
-            <div class="nama">📌 ${r.poin || r.judul || '-'}</div>
-            <div class="detail">
-              ${r.gambar ? '🖼️ Ada gambar SOP' : 'Tanpa gambar'}
-            </div>
+          <div class="kiri"><div class="nama">📌 ${r.poin || r.judul || '-'}</div>
+            <div class="detail">${r.gambar ? '🖼️ Ada gambar' : 'Tanpa gambar'}</div>
           </div>
           <div class="kanan">
             ${r.gambar ? `<img src="${r.gambar}" class="sop-preview">` : ''}
             <button class="btn-danger btn-sm" onclick="hapusSOP(${i})">Hapus</button>
           </div>
-        </div>
-      `).join('')}
-    </div>
-  `;
+        </div>`).join('')}
+    </div>`;
 }
 
 async function tambahPromo() {
@@ -1599,55 +1087,39 @@ async function tambahPromo() {
   const periode = document.getElementById('promo_periode').value.trim();
   const detail = document.getElementById('promo_detail').value.trim();
   const msg = document.getElementById('promoMsg');
-  
-  if (!judul) { msg.innerHTML = '<div class="alert err">Isi judul promo!</div>'; return; }
-  
+  if (!judul) { msg.innerHTML = '<div class="alert err">Judul wajib!</div>'; return; }
   try {
     const snap = await window.dbGet(window.dbRef(window.db, 'info/promo'));
     let arr = snap.exists() ? snap.val() : [];
     if (!Array.isArray(arr)) arr = Object.values(arr);
     arr.push({ judul, periode, detail });
     await window.dbSet(window.dbRef(window.db, 'info/promo'), arr);
-    msg.innerHTML = '<div class="alert ok">✅ Promo ditambahkan! Cek di halaman promotor.</div>';
+    msg.innerHTML = '<div class="alert ok">✅ Ditambahkan!</div>';
     document.getElementById('promo_judul').value = '';
     document.getElementById('promo_periode').value = '';
     document.getElementById('promo_detail').value = '';
     setTimeout(() => msg.innerHTML = '', 3000);
-  } catch (err) {
-    msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
-  }
+  } catch (err) { msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
 }
 
 async function hapusPromo(index) {
-  tampilkanKonfirmasi(
-    'Hapus Promo?',
-    'Yakin ingin hapus promo ini?',
-    async () => {
-      try {
-        const snap = await window.dbGet(window.dbRef(window.db, 'info/promo'));
-        let arr = snap.exists() ? snap.val() : [];
-        if (!Array.isArray(arr)) arr = Object.values(arr);
-        arr.splice(index, 1);
-        await window.dbSet(window.dbRef(window.db, 'info/promo'), arr);
-        tampilkanNotif('Berhasil', 'Promo dihapus.', 'success');
-        renderTab();
-      } catch (err) {
-        tampilkanNotif('Gagal', err.message, 'danger');
-      }
-    },
-    'danger'
-  );
+  tampilkanKonfirmasi('Hapus Promo?', 'Yakin hapus?', async () => {
+    try {
+      const snap = await window.dbGet(window.dbRef(window.db, 'info/promo'));
+      let arr = snap.exists() ? snap.val() : [];
+      if (!Array.isArray(arr)) arr = Object.values(arr);
+      arr.splice(index, 1);
+      await window.dbSet(window.dbRef(window.db, 'info/promo'), arr);
+      tampilkanNotif('Berhasil', 'Promo dihapus.', 'success');
+      renderTab();
+    } catch (err) { tampilkanNotif('Gagal', err.message, 'danger'); }
+  }, 'danger');
 }
 
 function pilihFileSOP(e) {
   const file = e.target.files[0];
   if (!file) return;
-  
-  if (file.size > 500 * 1024) {
-    tampilkanNotif('File Terlalu Besar', 'Maksimal 500KB. Kompres gambar dulu di tinypng.com', 'danger');
-    return;
-  }
-  
+  if (file.size > 500 * 1024) { tampilkanNotif('File Besar', 'Maks 500KB.', 'danger'); return; }
   const reader = new FileReader();
   reader.onload = (evt) => {
     _sopImageData = evt.target.result;
@@ -1659,38 +1131,151 @@ function pilihFileSOP(e) {
 async function tambahSOP() {
   const judul = document.getElementById('sop_judul').value.trim();
   const msg = document.getElementById('sopMsg');
-  
-  if (!judul) { msg.innerHTML = '<div class="alert err">Isi judul SOP!</div>'; return; }
-  if (!_sopImageData) { msg.innerHTML = '<div class="alert err">Pilih gambar SOP!</div>'; return; }
-  
+  if (!judul) { msg.innerHTML = '<div class="alert err">Judul wajib!</div>'; return; }
+  if (!_sopImageData) { msg.innerHTML = '<div class="alert err">Pilih gambar!</div>'; return; }
   try {
     const snap = await window.dbGet(window.dbRef(window.db, 'info/rules'));
     let arr = snap.exists() ? snap.val() : [];
     if (!Array.isArray(arr)) arr = Object.values(arr);
     arr.push({ poin: judul, deskripsi: '', gambar: _sopImageData });
     await window.dbSet(window.dbRef(window.db, 'info/rules'), arr);
-    msg.innerHTML = '<div class="alert ok">✅ SOP ditambahkan! Cek di halaman promotor.</div>';
+    msg.innerHTML = '<div class="alert ok">✅ Ditambahkan!</div>';
     document.getElementById('sop_judul').value = '';
     document.getElementById('sop_file_label').innerHTML = '<strong>Klik pilih gambar</strong>';
     _sopImageData = null;
     setTimeout(() => msg.innerHTML = '', 3000);
-  } catch (err) {
-    msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`;
-  }
+  } catch (err) { msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
 }
 
 async function hapusSOP(index) {
+  tampilkanKonfirmasi('Hapus SOP?', 'Yakin hapus?', async () => {
+    try {
+      const snap = await window.dbGet(window.dbRef(window.db, 'info/rules'));
+      let arr = snap.exists() ? snap.val() : [];
+      if (!Array.isArray(arr)) arr = Object.values(arr);
+      arr.splice(index, 1);
+      await window.dbSet(window.dbRef(window.db, 'info/rules'), arr);
+      tampilkanNotif('Berhasil', 'SOP dihapus.', 'success');
+      renderTab();
+    } catch (err) { tampilkanNotif('Gagal', err.message, 'danger'); }
+  }, 'danger');
+}
+
+/* ===== DANGER ZONE ===== */
+function renderDanger() {
+  return `
+    <div class="card">
+      <h3 style="color:var(--danger);">⚠️ Danger Zone</h3>
+      <p>Hati-hati! Data yang dihapus tidak bisa dikembalikan.</p>
+      <button class="btn-warning btn-full" style="margin-bottom:8px;" onclick="downloadExcelBulanIni()">
+        <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download Data Bulan Ini (Excel)
+      </button>
+      <button class="btn-danger btn-full" style="margin-bottom:8px;" onclick="hapusPenjualanBulanIni()">Hapus Penjualan Bulan Ini</button>
+      <button class="btn-danger btn-full" style="margin-bottom:8px;" onclick="hapusAbsensiBulanIni()">Hapus Absensi Bulan Ini</button>
+      <button class="btn-danger btn-full" style="margin-bottom:8px;" onclick="hapusPromotorAll()">Hapus Semua Promotor</button>
+      <button class="btn-danger btn-full" onclick="hapusSemua()">Hapus SEMUA Data</button>
+    </div>
+  `;
+}
+
+/* ===== CEK BULAN BARU & TAWARKAN RESET ===== */
+async function cekDanTawarkanResetBulan() {
+  try {
+    const snapLastReset = await window.dbGet(window.dbRef(window.db, 'config/lastResetBulan'));
+    const lastReset = snapLastReset.exists() ? snapLastReset.val() : '';
+    
+    if (lastReset && lastReset !== BULAN_INI) {
+      // Ada bulan lama yang belum direset
+      const bulanLama = lastReset;
+      tampilkanModal(
+        '🎉 Bulan Baru Terdeteksi!',
+        `Bulan berganti dari ${getNamaBulanIndo(bulanLama)} ke ${getNamaBulanIndo(BULAN_INI)}.\n\nDownload dulu data ${getNamaBulanIndo(bulanLama)} sebagai Excel SEBELUM dihapus!`,
+        {
+          type: 'info',
+          customActions: [
+            { text: '📥 Download Excel', class: 'modal-btn-ok-warning', onclick: "downloadBulanLama('" + bulanLama + "')" },
+            { text: '🗑️ Reset Sekarang', class: 'modal-btn-ok-danger', onclick: "resetBulanLama('" + bulanLama + "')" },
+            { text: '⏰ Nanti Saja', class: 'modal-btn-cancel', onclick: "tutupModal()" }
+          ]
+        }
+      );
+    } else if (!lastReset) {
+      // Pertama kali, set ke bulan ini
+      await window.dbSet(window.dbRef(window.db, 'config/lastResetBulan'), BULAN_INI);
+    }
+  } catch (err) {
+    console.error('Cek bulan gagal:', err);
+  }
+}
+
+async function downloadBulanLama(bulanLama) {
+  try {
+    // Ambil semua data penjualan dan absensi bulan lalu
+    const [snapJual, snapAbsen] = await Promise.all([
+      window.dbGet(window.dbRef(window.db, 'penjualan/' + bulanLama)),
+      window.dbGet(window.dbRef(window.db, 'absensi/' + bulanLama))
+    ]);
+    
+    const dataJual = snapJual.exists() ? Object.values(snapJual.val()) : [];
+    const dataAbsen = snapAbsen.exists() ? snapAbsen.val() : {};
+    
+    // Buat workbook
+    const wb = XLSX.utils.book_new();
+    
+    // Sheet Penjualan
+    if (dataJual.length > 0) {
+      const wsJual = XLSX.utils.json_to_sheet(dataJual.map(x => ({
+        'No Faktur': x.noFaktur || '', 'Tanggal': x.tanggal || '',
+        'Barcode': x.barcode || '', 'Nama Barang': x.namaBarang || '',
+        'Qty': x.qty || 0, 'Subtotal': x.subtotal || 0,
+        'Nama Sales': x.namaSales || '', 'Kategori': x.kategori || '',
+        'Merk': x.merk || ''
+      })));
+      XLSX.utils.book_append_sheet(wb, wsJual, 'Penjualan');
+    }
+    
+    // Sheet Absensi
+    const absenRows = [];
+    Object.keys(dataAbsen).forEach(kp => {
+      const p = allPromotor[kp] || {};
+      const absensiP = dataAbsen[kp];
+      Object.keys(absensiP).forEach(hk => {
+        const a = absensiP[hk];
+        if (a && typeof a === 'object') {
+          absenRows.push({
+            'Promotor': p.namaAbsen || a.nama || '-',
+            'Hari': a.hari || '',
+            'Masuk': a.masuk || '', 'Istirahat 1': a.istirahat1 || '',
+            'Kembali 1': a.kembali1 || '', 'Istirahat 2': a.istirahat2 || '',
+            'Kembali 2': a.kembali2 || '', 'Pulang': a.pulang || '',
+            'Terlambat': a.terlambat || ''
+          });
+        }
+      });
+    });
+    if (absenRows.length > 0) {
+      const wsAbsen = XLSX.utils.json_to_sheet(absenRows);
+      XLSX.utils.book_append_sheet(wb, wsAbsen, 'Absensi');
+    }
+    
+    XLSX.writeFile(wb, `Backup_UFO_${bulanLama}.xlsx`);
+    tampilkanNotif('Berhasil', 'File Excel berhasil diunduh!\n\nSetelah download selesai, klik "Reset Sekarang" untuk hapus data bulan lalu.', 'success');
+  } catch (err) {
+    tampilkanNotif('Gagal', 'Error: ' + err.message, 'danger');
+  }
+}
+
+async function resetBulanLama(bulanLama) {
   tampilkanKonfirmasi(
-    'Hapus SOP?',
-    'Yakin ingin hapus SOP ini?',
+    '⚠️ Reset Bulan ' + getNamaBulanIndo(bulanLama) + '?',
+    'Semua data penjualan & absensi bulan ' + getNamaBulanIndo(bulanLama) + ' akan DIHAPUS PERMANEN.\n\nPastikan sudah download Excel dulu!\n\nLanjutkan?',
     async () => {
       try {
-        const snap = await window.dbGet(window.dbRef(window.db, 'info/rules'));
-        let arr = snap.exists() ? snap.val() : [];
-        if (!Array.isArray(arr)) arr = Object.values(arr);
-        arr.splice(index, 1);
-        await window.dbSet(window.dbRef(window.db, 'info/rules'), arr);
-        tampilkanNotif('Berhasil', 'SOP dihapus.', 'success');
+        await window.dbRemove(window.dbRef(window.db, 'penjualan/' + bulanLama));
+        await window.dbRemove(window.dbRef(window.db, 'absensi/' + bulanLama));
+        await window.dbSet(window.dbRef(window.db, 'config/lastResetBulan'), BULAN_INI);
+        tampilkanNotif('Berhasil', 'Bulan lama berhasil direset. Sekarang pakai bulan ' + getNamaBulanIndo(BULAN_INI), 'success');
         renderTab();
       } catch (err) {
         tampilkanNotif('Gagal', err.message, 'danger');
@@ -1700,75 +1285,73 @@ async function hapusSOP(index) {
   );
 }
 
-/* ============================================================ */
-/* ===== DANGER ZONE =========================================== */
-/* ============================================================ */
-function renderDanger() {
-  return `
-    <div class="card">
-      <h3 style="color:var(--danger);">
-        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        Danger Zone
-      </h3>
-      <p>Hati-hati! Data yang dihapus tidak bisa dikembalikan.</p>
-      <button class="btn-danger btn-full" style="margin-bottom:8px;" onclick="hapusPenjualan()">Hapus Semua Penjualan</button>
-      <button class="btn-danger btn-full" style="margin-bottom:8px;" onclick="hapusAbsensi()">Hapus Semua Absensi</button>
-      <button class="btn-danger btn-full" style="margin-bottom:8px;" onclick="hapusPromotorAll()">Hapus Semua Promotor</button>
-      <button class="btn-danger btn-full" onclick="hapusSemua()">Hapus SEMUA Data</button>
-    </div>
-  `;
+function downloadExcelBulanIni() {
+  const dataJual = Object.values(allPenjualan);
+  const absenRows = [];
+  Object.keys(allAbsensi).forEach(kp => {
+    const p = allPromotor[kp] || {};
+    const absensiP = allAbsensi[kp];
+    Object.keys(absensiP).forEach(hk => {
+      const a = absensiP[hk];
+      if (a && typeof a === 'object') {
+        absenRows.push({
+          'Promotor': p.namaAbsen || a.nama || '-',
+          'Hari': a.hari || '',
+          'Masuk': a.masuk || '', 'Istirahat 1': a.istirahat1 || '',
+          'Kembali 1': a.kembali1 || '', 'Istirahat 2': a.istirahat2 || '',
+          'Kembali 2': a.kembali2 || '', 'Pulang': a.pulang || '',
+          'Terlambat': a.terlambat || ''
+        });
+      }
+    });
+  });
+  
+  if (dataJual.length === 0 && absenRows.length === 0) {
+    tampilkanNotif('Kosong', 'Belum ada data bulan ini.', 'warning');
+    return;
+  }
+  
+  const wb = XLSX.utils.book_new();
+  if (dataJual.length > 0) {
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(dataJual), 'Penjualan');
+  }
+  if (absenRows.length > 0) {
+    XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(absenRows), 'Absensi');
+  }
+  XLSX.writeFile(wb, `Data_UFO_${BULAN_INI}.xlsx`);
+  tampilkanNotif('Berhasil', 'File Excel diunduh.', 'success');
 }
 
-async function hapusPenjualan() {
-  tampilkanKonfirmasi(
-    'Hapus Semua Penjualan?',
-    'Semua data penjualan akan dihapus permanen.\n\nData tidak bisa dikembalikan!',
-    async () => {
-      await window.dbRemove(window.dbRef(window.db, 'penjualan'));
-      tampilkanNotif('Berhasil', 'Semua penjualan berhasil dihapus.', 'success');
-    },
-    'danger'
-  );
+async function hapusPenjualanBulanIni() {
+  tampilkanKonfirmasi('Hapus Penjualan?', 'Semua penjualan ' + getNamaBulanIndo(BULAN_INI) + ' akan dihapus!', async () => {
+    await window.dbRemove(window.dbRef(window.db, 'penjualan/' + BULAN_INI));
+    tampilkanNotif('Berhasil', 'Penjualan dihapus.', 'success');
+  }, 'danger');
 }
 
-async function hapusAbsensi() {
-  tampilkanKonfirmasi(
-    'Hapus Semua Absensi?',
-    'Semua data absensi akan dihapus permanen.\n\nData tidak bisa dikembalikan!',
-    async () => {
-      await window.dbRemove(window.dbRef(window.db, 'absensi'));
-      tampilkanNotif('Berhasil', 'Semua absensi berhasil dihapus.', 'success');
-    },
-    'danger'
-  );
+async function hapusAbsensiBulanIni() {
+  tampilkanKonfirmasi('Hapus Absensi?', 'Semua absensi ' + getNamaBulanIndo(BULAN_INI) + ' akan dihapus!', async () => {
+    await window.dbRemove(window.dbRef(window.db, 'absensi/' + BULAN_INI));
+    tampilkanNotif('Berhasil', 'Absensi dihapus.', 'success');
+  }, 'danger');
 }
 
 async function hapusPromotorAll() {
-  tampilkanKonfirmasi(
-    'Hapus Semua Promotor?',
-    'Semua data promotor akan dihapus permanen.\n\nData tidak bisa dikembalikan!',
-    async () => {
-      await window.dbRemove(window.dbRef(window.db, 'users/promotor'));
-      tampilkanNotif('Berhasil', 'Semua promotor berhasil dihapus.', 'success');
-    },
-    'danger'
-  );
+  tampilkanKonfirmasi('Hapus Semua Promotor?', 'Data promotor akan dihapus permanen!', async () => {
+    await window.dbRemove(window.dbRef(window.db, 'users/promotor'));
+    tampilkanNotif('Berhasil', 'Promotor dihapus.', 'success');
+  }, 'danger');
 }
 
 async function hapusSemua() {
-  tampilkanKonfirmasi(
-    '⚠️ HAPUS SEMUA DATA?',
-    'Semua data (promotor, penjualan, absensi, promo, SOP) akan dihapus permanen.\n\nData tidak bisa dikembalikan!\n\nYakin ingin lanjut?',
-    async () => {
-      await window.dbRemove(window.dbRef(window.db, 'penjualan'));
-      await window.dbRemove(window.dbRef(window.db, 'users'));
-      await window.dbRemove(window.dbRef(window.db, 'info'));
-      await window.dbRemove(window.dbRef(window.db, 'absensi'));
-      await window.dbRemove(window.dbRef(window.db, 'config/lastUpload'));
-      tampilkanNotif('Berhasil', 'Semua data berhasil dihapus.', 'success');
-    },
-    'danger'
-  );
+  tampilkanKonfirmasi('⚠️ HAPUS SEMUA?', 'Semua data akan dihapus permanen!', async () => {
+    await window.dbRemove(window.dbRef(window.db, 'penjualan'));
+    await window.dbRemove(window.dbRef(window.db, 'users'));
+    await window.dbRemove(window.dbRef(window.db, 'info'));
+    await window.dbRemove(window.dbRef(window.db, 'absensi'));
+    await window.dbRemove(window.dbRef(window.db, 'config'));
+    tampilkanNotif('Berhasil', 'Semua dihapus.', 'success');
+  }, 'danger');
 }
 </script>
 
