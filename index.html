@@ -1446,10 +1446,9 @@ function renderMenuGrid() {
   currentMenu = null;
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
-  
-  // Sembunyikan dropdown promoter SELALU saat kembali ke menu utama
-  document.getElementById('promotorSelector').classList.add('hidden');
-  
+  if (!currentUser || currentUser.role !== 'ADMIN') {
+    document.getElementById('promotorSelector').classList.add('hidden');
+  }
   const grid = document.getElementById('menuGrid');
   grid.classList.remove('hidden');
   const isAdmin = currentUser.role === 'ADMIN';
@@ -1480,6 +1479,7 @@ function renderMenuGrid() {
   }).join('');
 }
 window.renderMenuGrid = renderMenuGrid;
+
 function kembaliKeMenu() {
   currentMenu = null;
   document.getElementById('detailView').classList.add('hidden');
@@ -2118,7 +2118,7 @@ function renderPerolehan() {
     const arr = Object.values(perPromotor).sort((a, b) => b.omzet - a.omzet);
     const totalOmzetSemua = arr.reduce((s, x) => s + x.omzet, 0);
     const totalUCSemua = arr.reduce((s, x) => s + x.uc, 0);
-   
+    const totalBrandSemua = arr.reduce((s, x) => s + x.brand, 0);
     const periode = getPeriodeRentangDinamis();
     let html = `
         <div class="summary-card">
@@ -2126,7 +2126,7 @@ function renderPerolehan() {
             <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
             <p>${ICONS.users} Jumlah Promotor : <b>${arr.length}</b></p>
             <p>${ICONS.moneySmall} Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
-          
+            <p>${ICONS.moneySmall} Total Omzet Brand : <span style="font-weight:bold; color:#60a5fa;">Rp ${totalBrandSemua.toLocaleString('id-ID')}</span></p>
             <p>${ICONS.diamondSmall} Total UFO CARE : <b>${totalUCSemua}</b></p>
             <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
                 <button onclick="unduhExcelPerolehan()" style="
