@@ -285,6 +285,273 @@ body.light-mode .login-hero-title { background: linear-gradient(135deg, #0c4a6e 
 
 @media (max-width: 900px) { .fut-card { padding: 28px 22px; border-radius: 20px; } }
 @media (max-width: 400px) { .fut-card { padding: 22px 18px; border-radius: 18px; } }
+  /* ===== FIX LIGHT MODE MENYELURUH ===== */
+
+/* 1. Teks nama produk & item di card (dari inline style color:#e5e7eb) */
+body.light-mode .card [style*="color:#e5e7eb"],
+body.light-mode .card [style*="color: #e5e7eb"] {
+  color: #1e293b !important;
+  font-weight: 700 !important;
+}
+
+/* 2. Teks kategori (color:#38bdf8) */
+body.light-mode .card [style*="color:#38bdf8"],
+body.light-mode .card [style*="color: #38bdf8"] {
+  color: #0284c7 !important;
+  font-weight: 700 !important;
+}
+
+/* 3. Teks brand (color:#d4af37) */
+body.light-mode .card [style*="color:#d4af37"],
+body.light-mode .card [style*="color: #d4af37"] {
+  color: #b8941f !important;
+  font-weight: 800 !important;
+}
+
+/* 4. Teks muted (color:#9ca3af) */
+body.light-mode .card [style*="color:#9ca3af"],
+body.light-mode .card [style*="color: #9ca3af"] {
+  color: #64748b !important;
+}
+
+/* 5. Teks omzet hijau (color:#34d399) */
+body.light-mode .card [style*="color:#34d399"],
+body.light-mode .card [style*="color: #34d399"] {
+  color: #059669 !important;
+  font-weight: 800 !important;
+}
+
+/* 6. Teks total denda merah (color:#f87171) */
+body.light-mode .card [style*="color:#f87171"],
+body.light-mode .card [style*="color: #f87171"] {
+  color: #dc2626 !important;
+  font-weight: 800 !important;
+}
+
+/* 7. Teks total denda kuning (color:#facc15) */
+body.light-mode .card [style*="color:#facc15"],
+body.light-mode .card [style*="color: #facc15"] {
+  color: #b45309 !important;
+  font-weight: 800 !important;
+}
+
+/* 8. Teks perolehan omzet merah (color:#ff2d55) */
+body.light-mode .row-perolehan [style*="color:#ff2d55"],
+body.light-mode .row-perolehan [style*="color: #ff2d55"] {
+  color: #dc2626 !important;
+  font-weight: 900 !important;
+}
+
+/* 9. Teks perolehan omzet hijau (color:#00ff88) */
+body.light-mode .row-perolehan [style*="color:#00ff88"],
+body.light-mode .row-perolehan [style*="color: #00ff88"] {
+  color: #059669 !important;
+  font-weight: 900 !important;
+}
+
+/* 10. Teks perolehan omzet kuning (color:#ffdd00) */
+body.light-mode .row-perolehan [style*="color:#ffdd00"],
+body.light-mode .row-perolehan [style*="color: #ffdd00"] {
+  color: #d97706 !important;
+  font-weight: 900 !important;
+}
+
+/* 11. Nama promotor di perolehan (color:#ffffff) */
+body.light-mode .row-perolehan [style*="color:#ffffff"],
+body.light-mode .row-perolehan [style*="color: #ffffff"] {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+
+/* 12. Tombol unduh excel teks putih */
+body.light-mode .summary-card button[style*="color:#fff"],
+body.light-mode .summary-card button[style*="color: #fff"] {
+  color: #ffffff !important; /* Tetap putih karena background tombol hijau */
+}
+
+/* 13. Info block promo di light mode */
+body.light-mode .info-block {
+  background: #ffffff !important;
+  border-color: rgba(212, 175, 55, 0.35) !important;
+}
+body.light-mode .info-block div[style*="color:#e5e7eb"] {
+  color: #1e293b !important;
+  font-weight: 600 !important;
+}
+body.light-mode .info-block div[style*="color:#9ca3af"] {
+  color: #64748b !important;
+}
+body.light-mode .info-block div[style*="color:#facc15"] {
+  color: #b45309 !important;
+  font-weight: 800 !important;
+}
+
+/* 14. SOP list item di light mode */
+body.light-mode .detail-view > div[style*="background:rgba(17,24,39,0.75)"] {
+  background: #ffffff !important;
+  border-color: rgba(212, 175, 55, 0.3) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06) !important;
+}
+
+/* 15. Empty state color */
+body.light-mode .empty-state {
+  color: #6b7280 !important;
+}
+body.light-mode .empty-state svg {
+  stroke: #cbd5e1 !important;
+}
+
+/* 16. Badge bulan promotor */
+body.light-mode .badge-bulan-promotor {
+  background: #eff6ff !important;
+  color: #1e40af !important;
+  border-color: #93c5fd !important;
+}
+
+/* 17. Summary card label (Periode, Total Unit, dll) */
+body.light-mode .summary-card p {
+  color: #334155 !important;
+}
+body.light-mode .summary-card b {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+body.light-mode .summary-card h2 {
+  color: #b8941f !important;
+}
+body.light-mode .summary-card span[style*="color:#34d399"] {
+  color: #059669 !important;
+  font-weight: 800 !important;
+}
+body.light-mode .summary-card span[style*="color:#f87171"] {
+  color: #dc2626 !important;
+  font-weight: 800 !important;
+}
+
+/* 18. Tanggal di card (light mode) */
+body.light-mode .card .tanggal {
+  color: #0f172a !important;
+  font-weight: 800 !important;
+}
+body.light-mode .card .tanggal svg {
+  stroke: #0284c7 !important;
+}
+body.light-mode .card.late .tanggal {
+  color: #92400e !important;
+  text-shadow: none !important;
+}
+body.light-mode .card.late .row {
+  color: #78350f !important;
+  font-weight: 700 !important;
+}
+body.light-mode .card.late .row span:last-child {
+  color: #78350f !important;
+}
+
+/* 19. Row di card (light mode) */
+body.light-mode .card .row {
+  color: #475569 !important;
+  font-weight: 600 !important;
+  border-bottom-color: rgba(0, 0, 0, 0.06) !important;
+}
+body.light-mode .card .row span:last-child {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.light-mode .card .row span.ok {
+  color: #0f172a !important;
+  font-weight: 700 !important;
+}
+body.light-mode .card .row span.kosong {
+  color: #dc2626 !important;
+  font-weight: 800 !important;
+}
+
+/* 20. Status lengkap/tidak finger */
+body.light-mode .status-ok {
+  color: #059669 !important;
+  font-weight: 800 !important;
+}
+body.light-mode .status-warning {
+  color: #dc2626 !important;
+  font-weight: 800 !important;
+}
+
+/* 21. Dropdown promotor */
+body.light-mode .promotor-selector {
+  background: #ffffff !important;
+  border-color: rgba(212, 175, 55, 0.6) !important;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+}
+body.light-mode .promotor-selector label {
+  color: #b8941f !important;
+}
+body.light-mode .custom-dropdown-trigger {
+  background: #f8fafc !important;
+  border-color: rgba(212, 175, 55, 0.4) !important;
+  color: #111827 !important;
+}
+body.light-mode .custom-dropdown-menu {
+  background: #ffffff !important;
+  border-color: rgba(212, 175, 55, 0.4) !important;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15) !important;
+}
+body.light-mode .custom-dropdown-menu .dd-option {
+  color: #374151 !important;
+}
+body.light-mode .custom-dropdown-menu .dd-option:hover {
+  background: rgba(212, 175, 55, 0.15) !important;
+  color: #b8941f !important;
+}
+body.light-mode .custom-dropdown-menu .dd-option.selected {
+  background: rgba(212, 175, 55, 0.25) !important;
+  color: #b8941f !important;
+}
+
+/* 22. Back button */
+body.light-mode .back-btn {
+  background: #d4af37 !important;
+  color: #111827 !important;
+}
+
+/* 23. Top bar user info */
+body.light-mode .user-info {
+  color: #111827 !important;
+}
+body.light-mode .top-bar {
+  background: rgba(255, 255, 255, 0.9) !important;
+  border-color: rgba(212, 175, 55, 0.4) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08) !important;
+}
+body.light-mode .top-bar.admin-mode {
+  background: linear-gradient(135deg, #ffffff, #fef9ec) !important;
+}
+body.light-mode .logout-btn {
+  background: rgba(239, 68, 68, 0.08) !important;
+  border-color: rgba(239, 68, 68, 0.35) !important;
+  color: #dc2626 !important;
+}
+
+/* 24. Menu card */
+body.light-mode .menu-card {
+  background: #ffffff !important;
+  border-color: rgba(212, 175, 55, 0.3) !important;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08) !important;
+}
+body.light-mode .menu-title {
+  color: #111827 !important;
+}
+body.light-mode .menu-desc {
+  color: #6b7280 !important;
+}
+
+/* 25. Detail title & subtitle */
+body.light-mode .detail-title {
+  color: #111827 !important;
+}
+body.light-mode .detail-subtitle {
+  color: #6b7280 !important;
+}
 </style>
 </head>
 <body class="login-active">
