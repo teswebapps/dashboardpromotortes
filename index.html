@@ -830,6 +830,333 @@ body.light-mode .row-perolehan .uc-label svg polygon {
     fill: #111827 !important;
     stroke: #111827 !important;
 }
+  /* ============================================================ */
+/* ===== LOGIN CARD — MODERN REDESIGN ========================= */
+/* ============================================================ */
+
+.fut-card {
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.85) 0%, rgba(2, 6, 23, 0.9) 100%) !important;
+  border: 1px solid rgba(56, 189, 248, 0.18) !important;
+  box-shadow: 
+    0 0 0 1px rgba(56, 189, 248, 0.08),
+    0 20px 60px -20px rgba(56, 189, 248, 0.3),
+    0 30px 80px -30px rgba(168, 85, 247, 0.25) !important;
+  position: relative;
+  overflow: hidden;
+  animation: cardEnter 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.fut-card::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: conic-gradient(from 0deg, transparent, rgba(56, 189, 248, 0.15), transparent 30%);
+  animation: cardRotate 8s linear infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.fut-card::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 23px;
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.95) 0%, rgba(2, 6, 23, 0.98) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+
+.fut-card > * {
+  position: relative;
+  z-index: 2;
+}
+
+@keyframes cardEnter {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes cardRotate {
+  to { transform: rotate(360deg); }
+}
+
+/* ===== LOGO ===== */
+.fut-logo {
+  background: radial-gradient(circle at 30% 20%, rgba(56, 189, 248, 0.3), rgba(14, 165, 233, 0.08)) !important;
+  border: 1.5px solid rgba(56, 189, 248, 0.35) !important;
+  box-shadow: 
+    0 0 30px rgba(56, 189, 248, 0.35),
+    inset 0 0 20px rgba(56, 189, 248, 0.15) !important;
+  animation: logoPulse 3s ease-in-out infinite;
+  position: relative;
+}
+
+@keyframes logoPulse {
+  0%, 100% { 
+    box-shadow: 0 0 30px rgba(56, 189, 248, 0.35), inset 0 0 20px rgba(56, 189, 248, 0.15);
+  }
+  50% { 
+    box-shadow: 0 0 45px rgba(56, 189, 248, 0.55), inset 0 0 25px rgba(56, 189, 248, 0.25);
+  }
+}
+
+/* ===== HERO SECTION ===== */
+.login-hero {
+  text-align: center;
+  margin-bottom: 26px;
+  animation: fadeUp 0.6s ease-out 0.15s backwards;
+}
+
+.login-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 1.5px;
+  color: #34d399;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+
+.login-hero-dot {
+  width: 5px;
+  height: 5px;
+  background: #34d399;
+  border-radius: 50%;
+  box-shadow: 0 0 8px #34d399;
+  animation: futDotPulse 1.5s infinite;
+}
+
+.login-hero-title {
+  font-size: 24px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 6px 0;
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, #ffffff 0%, #94a3b8 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.login-hero-sub {
+  font-size: 13px;
+  color: #94a3b8;
+  margin: 0;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+/* ===== GOOGLE BUTTON ===== */
+.btn-google {
+  width: 100%;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  color: #111827;
+  border: none;
+  border-radius: 14px;
+  font-size: 14.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 4px 14px rgba(0, 0, 0, 0.15),
+    0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  animation: fadeUp 0.6s ease-out 0.25s backwards;
+}
+
+.btn-google::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(56, 189, 248, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn-google:hover::before {
+  left: 100%;
+}
+
+.btn-google:hover {
+  transform: translateY(-2px);
+  box-shadow: 
+    0 12px 30px rgba(56, 189, 248, 0.35),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+}
+
+.btn-google:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.btn-google:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-google-icon {
+  width: 34px;
+  height: 34px;
+  background: #ffffff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease;
+}
+
+.btn-google:hover .btn-google-icon {
+  transform: scale(1.08) rotate(-3deg);
+}
+
+.btn-google-text {
+  flex: 1;
+  text-align: left;
+  font-size: 14.5px;
+  letter-spacing: 0.2px;
+}
+
+.btn-google-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #64748b;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.btn-google:hover .btn-google-arrow {
+  color: #0284c7;
+  transform: translateX(4px);
+}
+
+/* ===== DIVIDER ===== */
+.login-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0 18px;
+  animation: fadeUp 0.6s ease-out 0.35s backwards;
+}
+
+.login-divider span {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(148, 163, 184, 0.3), transparent);
+}
+
+.login-divider em {
+  font-size: 11px;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  font-style: normal;
+}
+
+/* ===== TRUST BADGE ===== */
+.login-trust {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 14px;
+  background: rgba(56, 189, 248, 0.06);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  border-radius: 10px;
+  color: #94a3b8;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-align: center;
+  animation: fadeUp 0.6s ease-out 0.45s backwards;
+}
+
+.login-trust svg {
+  color: #38bdf8;
+  flex-shrink: 0;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== LIGHT MODE ===== */
+body.light-mode .fut-card {
+  background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+  box-shadow: 
+    0 0 0 1px rgba(56, 189, 248, 0.08),
+    0 20px 60px -20px rgba(56, 189, 248, 0.25),
+    0 30px 80px -30px rgba(168, 85, 247, 0.15) !important;
+}
+
+body.light-mode .fut-card::after {
+  background: linear-gradient(160deg, #ffffff 0%, #f8fafc 100%) !important;
+}
+
+body.light-mode .fut-logo {
+  background: radial-gradient(circle at 30% 20%, rgba(56, 189, 248, 0.2), rgba(14, 165, 233, 0.05)) !important;
+}
+
+body.light-mode .login-hero-title {
+  background: linear-gradient(135deg, #0c4a6e 0%, #0f172a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+body.light-mode .login-hero-sub { color: #475569 !important; }
+
+body.light-mode .btn-google {
+  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+  box-shadow: 
+    0 4px 14px rgba(0, 0, 0, 0.08),
+    0 0 0 1px rgba(203, 213, 225, 0.6) inset;
+}
+
+body.light-mode .btn-google:hover {
+  background: linear-gradient(135deg, #ffffff 0%, #eff6ff 100%);
+  box-shadow: 
+    0 12px 30px rgba(56, 189, 248, 0.25),
+    0 0 0 1px rgba(56, 189, 248, 0.3) inset;
+}
+
+body.light-mode .login-divider span {
+  background: linear-gradient(90deg, transparent, rgba(100, 116, 139, 0.25), transparent);
+}
+
+body.light-mode .login-trust {
+  background: rgba(56, 189, 248, 0.08);
+  border-color: rgba(56, 189, 248, 0.25);
+  color: #475569;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 400px) {
+  .login-hero-title { font-size: 21px; }
+  .login-hero-sub { font-size: 12px; }
+  .btn-google { padding: 12px 14px; font-size: 13.5px; }
+  .btn-google-icon { width: 30px; height: 30px; }
+  .btn-google-text { font-size: 13.5px; }
+}
 </style>
 </head>
 <body class="login-active">
@@ -865,37 +1192,56 @@ body.light-mode .row-perolehan .uc-label svg polygon {
 
         <div class="fut-right">
             <div class="fut-card">
-                <button type="button" class="login-theme-toggle" onclick="toggleTheme()" title="Ganti tema">
-                    <svg viewBox="0 0 24 24">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                    </svg>
-                </button>
+    <button type="button" class="login-theme-toggle" onclick="toggleTheme()" title="Ganti tema">
+        <svg viewBox="0 0 24 24">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+    </button>
 
-                <div class="fut-logo">
-                    <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>UFO</span>';">
-                </div>
+    <div class="fut-logo">
+        <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>UFO</span>';">
+    </div>
 
-                <div style="text-align:center; margin-bottom: 24px;">
-                    <div style="font-size:13px; color:#94a3b8; font-weight:600; margin-bottom:6px; letter-spacing:1px;">SELAMAT DATANG</div>
-                    <div style="font-size:16px; color:#ffffff; font-weight:700;">Silakan masuk dengan akun Google Anda</div>
-                </div>
-
-                <button type="button" id="btn-login-google" class="fut-btn" onclick="loginDenganGoogle()" style="background:#ffffff; color:#111827; box-shadow: 0 0 20px rgba(255,255,255,0.2);">
-                    <svg viewBox="0 0 48 48" style="width:20px; height:20px; margin-right:8px;">
-                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
-                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-                    </svg>
-                    <span id="btn-login-text">MASUK DENGAN GOOGLE</span>
-                </button>
-
-                <p class="fut-footer">Hanya akun yang terdaftar<br>yang dapat mengakses dashboard ini</p>
-            </div>
+    <div class="login-hero">
+        <div class="login-hero-badge">
+            <span class="login-hero-dot"></span>
+            <span>AREA TERPROTEKSI</span>
         </div>
+        <h1 class="login-hero-title">Selamat Datang</h1>
+        <p class="login-hero-sub">Masuk untuk melanjutkan ke dashboard promotor</p>
+    </div>
+
+    <button type="button" id="btn-login-google" class="btn-google" onclick="loginDenganGoogle()">
+        <span class="btn-google-icon">
+            <svg viewBox="0 0 48 48" width="22" height="22">
+                <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+            </svg>
+        </span>
+        <span id="btn-login-text" class="btn-google-text">Lanjutkan dengan Google</span>
+        <span class="btn-google-arrow">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"/>
+                <polyline points="12 5 19 12 12 19"/>
+            </svg>
+        </span>
+    </button>
+
+    <div class="login-divider">
+        <span></span>
+        <em>atau</em>
+        <span></span>
+    </div>
+
+    <div class="login-trust">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+        </svg>
+        <span>Hanya akun terdaftar yang dapat mengakses</span>
     </div>
 </div>
-
 <!-- DASHBOARD -->
 <div id="dashboard" class="hidden">
   <div class="dashboard-container">
