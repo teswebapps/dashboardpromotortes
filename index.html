@@ -1154,6 +1154,67 @@ body.light-mode .row-perolehan .uc-label svg polygon {
     fill: #111827 !important;
     stroke: #111827 !important;
 }
+  /* ============================================================ */
+/* ===== PEROLEHAN — BEDA WARNA DARK & LIGHT ================== */
+/* ============================================================ */
+
+/* ---- DARK MODE (warna neon terang + glow) ---- */
+body:not(.light-mode) .row-perolehan [style*="color:#00ff88"] {
+    color: #00ff88 !important;
+    font-weight: 900 !important;
+    text-shadow: 0 0 10px rgba(0, 255, 136, 0.8) !important;
+}
+body:not(.light-mode) .row-perolehan [style*="color:#ffdd00"] {
+    color: #ffdd00 !important;
+    font-weight: 900 !important;
+    text-shadow: 0 0 10px rgba(255, 221, 0, 0.8) !important;
+}
+body:not(.light-mode) .row-perolehan [style*="color:#ff2d55"] {
+    color: #ff2d55 !important;
+    font-weight: 900 !important;
+    text-shadow: 0 0 10px rgba(255, 45, 85, 0.8) !important;
+}
+
+/* UC label — putih di dark mode */
+body:not(.light-mode) .row-perolehan .uc-label {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    text-shadow: 0 0 6px rgba(255, 255, 255, 0.5) !important;
+}
+body:not(.light-mode) .row-perolehan .uc-label svg,
+body:not(.light-mode) .row-perolehan .uc-label svg polygon {
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
+}
+
+/* ---- LIGHT MODE (warna kalem, kontras di putih) ---- */
+body.light-mode .row-perolehan [style*="color:#00ff88"] {
+    color: #059669 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+}
+body.light-mode .row-perolehan [style*="color:#ffdd00"] {
+    color: #d97706 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+}
+body.light-mode .row-perolehan [style*="color:#ff2d55"] {
+    color: #dc2626 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+}
+
+/* UC label — hitam di light mode */
+body.light-mode .row-perolehan .uc-label {
+    color: #111827 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+}
+body.light-mode .row-perolehan .uc-label svg,
+body.light-mode .row-perolehan .uc-label svg polygon {
+    fill: #111827 !important;
+    stroke: #111827 !important;
+}
 </style>
 </head>
 <body class="login-active">
@@ -2437,9 +2498,9 @@ function renderPerolehan() {
     arr.forEach((p, i) => {
         const rank = i + 1;
         const omzetVal = Number(p.omzet || 0);
-        let warnaOmzet = '#f87171';  // merah cerah (di bawah 80jt)
-if (omzetVal >= 100000000) warnaOmzet = '#10ff8a';   // hijau neon terang
-else if (omzetVal >= 80000000) warnaOmzet = '#fbbf24'; // kuning emas cerah
+       let warnaOmzet = '#ff2d55';
+if (omzetVal >= 100000000) warnaOmzet = '#00ff88';
+else if (omzetVal >= 80000000) warnaOmzet = '#ffdd00';
         const isSelected = (currentUser.role === 'ADMIN' && promotorTerpilih === p.key);
         const bgStyle = isSelected ? 'background:rgba(212,175,55,0.15); border-radius:8px; padding:10px 12px; margin:4px 0;' : '';
         html += `
