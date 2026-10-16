@@ -1227,6 +1227,50 @@ body.light-mode .row-perolehan .uc-label svg polygon {
     fill: #111827 !important;
     stroke: #111827 !important;
 }
+  /* ============================================================ */
+/* ===== HAPUS GLOW & PAKSA WARNA CERAH ======================= */
+/* ============================================================ */
+
+/* Matikan semua text-shadow di row-perolehan */
+.row-perolehan,
+.row-perolehan * {
+    text-shadow: none !important;
+    filter: none !important;
+}
+
+/* Pastikan warna dari inline style menang */
+body:not(.light-mode) .row-perolehan div[style*="color:#ff2d55"],
+body:not(.light-mode) .row-perolehan div[style*="color: #ff2d55"] {
+    color: #ff2d55 !important;
+    font-weight: 900 !important;
+    text-shadow: none !important;
+}
+body:not(.light-mode) .row-perolehan div[style*="color:#00ff88"],
+body:not(.light-mode) .row-perolehan div[style*="color: #00ff88"] {
+    color: #00ff88 !important;
+    font-weight: 900 !important;
+    text-shadow: none !important;
+}
+body:not(.light-mode) .row-perolehan div[style*="color:#ffdd00"],
+body:not(.light-mode) .row-perolehan div[style*="color: #ffdd00"] {
+    color: #ffdd00 !important;
+    font-weight: 900 !important;
+    text-shadow: none !important;
+}
+
+/* Light mode */
+body.light-mode .row-perolehan div[style*="color:#ff2d55"] {
+    color: #dc2626 !important;
+    text-shadow: none !important;
+}
+body.light-mode .row-perolehan div[style*="color:#00ff88"] {
+    color: #059669 !important;
+    text-shadow: none !important;
+}
+body.light-mode .row-perolehan div[style*="color:#ffdd00"] {
+    color: #d97706 !important;
+    text-shadow: none !important;
+}
 </style>
 </head>
 <body class="login-active">
