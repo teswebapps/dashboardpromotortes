@@ -1122,6 +1122,38 @@ body.light-mode .row-perolehan [style*="color:#f87171"] {
     color: #dc2626 !important;   /* merah tua */
     text-shadow: none !important;
 }
+  /* ============================================================ */
+/* ===== UC LABEL — PAKSA HITAM DI MODE TERANG =============== */
+/* ============================================================ */
+
+/* Dark mode — emas (biar tetap kelihatan) */
+.uc-label,
+.uc-label span,
+.uc-label svg {
+    color: #d4af37 !important;
+    fill: #d4af37 !important;
+    stroke: #d4af37 !important;
+}
+
+/* Light mode — PAKSA HITAM TOTAL */
+body.light-mode .uc-label,
+body.light-mode .row-perolehan .uc-label,
+body.light-mode .row-perolehan [style*="color:#d4af37"].uc-label,
+body.light-mode .row-perolehan div.uc-label,
+body.light-mode .summary-card .uc-label {
+    color: #111827 !important;
+    font-weight: 800 !important;
+    text-shadow: none !important;
+}
+
+/* Ikon bintang di label UC — hitam juga */
+body.light-mode .uc-label svg,
+body.light-mode .uc-label svg polygon,
+body.light-mode .row-perolehan .uc-label svg,
+body.light-mode .row-perolehan .uc-label svg polygon {
+    fill: #111827 !important;
+    stroke: #111827 !important;
+}
 </style>
 </head>
 <body class="login-active">
