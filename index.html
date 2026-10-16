@@ -33,6 +33,7 @@ const db = getDatabase(app);
 const auth = getAuth(app);
 
 // Ekspos hanya fungsi yang dibutuhkan kode non-module
+window.db = db;
 window.dbGet = get;
 window.dbRef = ref;
 window.dbOnValue = onValue;
