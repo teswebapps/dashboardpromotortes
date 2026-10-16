@@ -859,7 +859,7 @@ body.light-mode .row-perolehan .uc-label svg polygon {
 
             <div class="fut-live-status">
                 <span class="fut-pulse-dot"></span>
-                <span id="live-status-text">Memuat...</span>
+               <span id="live-status-text">Sistem Siap</span>
             </div>
         </div>
 
@@ -1040,8 +1040,15 @@ window.loginDenganGoogle = loginDenganGoogle;
 
 /* ===== LOAD PROMOTOR LIST ===== */
 function loadPromotorList() {
+  const liveEl = document.getElementById('live-status-text');
+  
+  // Kalau belum login, jangan query — Rules akan tolak
+  if (!window.firebaseAuth || !window.firebaseAuth.currentUser) {
+    if (liveEl) liveEl.innerText = 'Sistem Siap';
+    return;
+  }
+  
   window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
-    const liveEl = document.getElementById('live-status-text');
     if (!snap.exists()) {
       allPromotor = {};
       if (liveEl) liveEl.innerText = 'Belum ada promotor';
@@ -1156,6 +1163,7 @@ function tampilkanDashboard() {
     console.warn('Belum login Google');
     return;
   }
+   loadPromotorList();
   currentUser = {
     key: window.firebaseUser.promotorKey || window.firebaseUser.uid,
     email: window.firebaseUser.email,
