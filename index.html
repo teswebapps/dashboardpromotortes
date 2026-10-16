@@ -753,11 +753,11 @@ window.tampilkanDetail = tampilkanDetail;
 /* ===== HELPER ===== */
 function tanggalKeNama(tglStr) {
   if (!tglStr) return '-';
-  // Format data: DD/MM/YYYY
+  // Format data Firebase: MM/DD/YYYY
   const parts = String(tglStr).split('/');
   if (parts.length !== 3) return tglStr;
-  const dd = parseInt(parts[0]);
-  const mm = parseInt(parts[1]);
+  const mm = parseInt(parts[0]);  // bulan di depan
+  const dd = parseInt(parts[1]);  // tanggal di belakang
   const yyyy = parts[2];
   if (isNaN(dd) || isNaN(mm)) return tglStr;
   const namaBulan = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
@@ -765,10 +765,10 @@ function tanggalKeNama(tglStr) {
 }
 function parseTanggal(str) {
   if (!str) return null;
-  // Format data: DD/MM/YYYY
+  // Format data Firebase: MM/DD/YYYY
   const p = String(str).split('/');
   if (p.length !== 3) return null;
-  return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
+  return new Date(Number(p[2]), Number(p[0]) - 1, Number(p[1]));
 }
 
 function getPeriodeRentangDinamis() {
