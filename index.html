@@ -10,12 +10,13 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.14.0/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-import { getDatabase, ref, set, get, update, remove, onValue, push } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getDatabase, ref, get, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCNj8nRMP0ijH1GUXKeJlsE-EG5AYCkHBU",
@@ -31,15 +32,41 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
-signInAnonymously(auth).then(() => {
-  window.db = db; window.dbRef = ref; window.dbSet = set; window.dbGet = get;
-  window.dbUpdate = update; window.dbRemove = remove; window.dbOnValue = onValue;
-  window.dbPush = push;
-  window.dispatchEvent(new Event('firebase-ready'));
-}).catch(err => alert("Gagal koneksi Firebase: " + err.message));
+// Ekspos hanya fungsi yang dibutuhkan kode non-module
+window.dbGet = get;
+window.dbRef = ref;
+window.dbOnValue = onValue;
+window.firebaseAuth = auth;
+window.firebaseSignOut = signOut;
 
-onAuthStateChanged(auth, user => {
-  if (!user) setTimeout(() => location.reload(), 1000);
+// Deteksi perubahan status login
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.firebaseUser = null;
+    window.dispatchEvent(new Event('firebase-ready'));
+    return;
+  }
+  try {
+    const emailKey = user.email.replace(/\./g, ',');
+    const snap = await get(ref(db, 'users/whitelist/' + emailKey));
+    if (!snap.exists()) {
+      alert('Akun Google Anda (' + user.email + ') tidak terdaftar sebagai promotor. Hubungi admin.');
+      await signOut(auth);
+      return;
+    }
+    const wl = snap.val();
+    window.firebaseUser = {
+      email: user.email,
+      uid: user.uid,
+      role: wl.role || 'PROMOTOR',
+      promotorKey: wl.promotorKey || null
+    };
+    window.dispatchEvent(new Event('firebase-ready'));
+  } catch (err) {
+    console.error('Gagal verifikasi whitelist:', err);
+    alert('Gagal verifikasi akun: ' + err.message);
+    await signOut(auth);
+  }
 });
 </script>
 
@@ -140,10 +167,6 @@ body.login-active {
 .fut-characters .team-3d-img { max-width: 100%; max-height: 260px; height: auto; 
     filter: drop-shadow(0 20px 30px rgba(0, 200, 255, 0.35)); 
 }
-@keyframes floatTeam { 
-    0%, 100% { transform: translateY(0) scale(1); } 
-    50% { transform: translateY(-12px) scale(1.02); } 
-}
 .fut-live-status { display: inline-flex; align-items: center; gap: 10px;
     padding: 10px 20px; background: rgba(5,8,20,0.6); 
     border: 1px solid rgba(34,211,238,0.3); border-radius: 100px; 
@@ -164,103 +187,22 @@ body.login-active {
     padding: 14px; box-shadow: 0 0 40px rgba(34,211,238,0.4); }
 .fut-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-/* Login Tabs */
-.login-tabs { display: flex; gap: 8px; margin-bottom: 22px; 
-    background: rgba(2, 6, 23, 0.6); padding: 5px; 
-    border-radius: 12px; border: 1px solid rgba(34, 211, 238, 0.15); }
-.login-tab { flex: 1; padding: 10px 12px; background: transparent; border: none; 
-    border-radius: 8px; color: #94a3b8; font-size: 12px; font-weight: 800; 
-    letter-spacing: 1px; text-transform: uppercase; cursor: pointer; 
-    transition: all 0.25s ease; font-family: inherit; }
-.login-tab:hover { color: #22d3ee; background: rgba(34, 211, 238, 0.08); }
-.login-tab.active { background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%); 
-    color: #ffffff; box-shadow: 0 0 20px rgba(34, 211, 238, 0.4); }
-
-.fut-field { margin-bottom: 18px; position: relative; }
-.fut-field label { display: block; font-size: 11px; font-weight: 700; 
-    color: #22d3ee; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 8px; }
-
-.fut-select { width: 100%; padding: 14px 16px; background: rgba(2,6,23,0.6); 
-    border: 1px solid rgba(34,211,238,0.2); border-radius: 12px; 
-    color: #e2e8f0; font-size: 14px; font-weight: 600; cursor: pointer; 
-    display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.fut-select span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fut-select svg { width: 16px; height: 16px; color: #22d3ee; flex-shrink: 0; 
-    transition: transform 0.3s ease; }
-#custom-select-trigger.open svg { transform: rotate(180deg); }
-.fut-menu { position: absolute; left: 0; right: 0; top: 100%; margin-top: 6px; 
-    background: rgba(15,23,42,0.98); backdrop-filter: blur(20px); 
-    border: 1px solid rgba(34,211,238,0.3); border-radius: 12px; 
-    box-shadow: 0 20px 40px rgba(0,0,0,0.5); max-height: 240px; 
-    overflow-y: auto; z-index: 999; padding: 6px; opacity: 0; 
-    visibility: hidden; transform: translateY(-8px); transition: all 0.2s ease; }
-.fut-menu.open { opacity: 1 !important; visibility: visible !important; 
-    transform: translateY(0) !important; }
-.fut-menu .option { padding: 10px 14px; border-radius: 8px; font-size: 14px; 
-    font-weight: 600; color: #e2e8f0; cursor: pointer; }
-.fut-menu .option:hover { background: rgba(34,211,238,0.15); color: #22d3ee; }
-.fut-menu .option.selected { background: rgba(34,211,238,0.25); color: #22d3ee; }
-.fut-menu .option.empty { color: #64748b; font-style: italic; text-align: center; }
-
-.fut-input { width: 100%; padding: 14px 16px; background: rgba(2,6,23,0.6); 
-    border: 1px solid rgba(34,211,238,0.2); border-radius: 12px; 
-    color: #ffffff; font-size: 22px; font-weight: 800; text-align: center; 
-    letter-spacing: 10px; outline: none; transition: all 0.25s ease; }
-.fut-input::placeholder { color: rgba(148,163,184,0.4); }
-.fut-input:focus { border-color: #22d3ee; box-shadow: 0 0 25px rgba(34,211,238,0.4); }
-
-.fut-input-admin { width: 100%; padding: 14px 16px; background: rgba(2, 6, 23, 0.6); 
-    border: 1px solid rgba(212, 175, 55, 0.3); border-radius: 12px; 
-    color: #ffffff; font-size: 14px; font-weight: 600; outline: none; 
-    transition: all 0.25s ease; letter-spacing: 1px; text-align: left; }
-.fut-input-admin:focus { border-color: #d4af37; box-shadow: 0 0 25px rgba(212, 175, 55, 0.4); }
-.fut-input-admin::placeholder { color: rgba(148, 163, 184, 0.4); font-weight: 500; }
-
-.fut-error { color: #f87171; font-size: 12px; font-weight: 700; text-align: center; 
-    min-height: 18px; margin-bottom: 8px; display: flex; align-items: center; 
-    justify-content: center; gap: 6px; }
-
 .fut-btn { width: 100%; padding: 16px; 
     background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%); 
     color: #ffffff; border: none; border-radius: 12px; font-size: 14px; 
     font-weight: 800; text-transform: uppercase; letter-spacing: 2px; 
     cursor: pointer; display: flex; align-items: center; justify-content: center; 
-    gap: 10px; box-shadow: 0 0 30px rgba(34,211,238,0.4); }
+    gap: 10px; box-shadow: 0 0 30px rgba(34,211,238,0.4); transition: all 0.25s ease; }
 .fut-btn:active { transform: scale(0.98); }
 .fut-btn:disabled { opacity: 0.6; cursor: not-allowed; }
-.fut-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
 .fut-footer { text-align: center; font-size: 12px; color: #64748b; 
-    margin: 20px 0 0 0; font-weight: 500; }
-.fut-footer span { color: #22d3ee; font-weight: 700; }
+    margin: 20px 0 0 0; font-weight: 500; line-height: 1.5; }
 
 .spinner { display: inline-block; width: 14px; height: 14px; 
     border: 2px solid rgba(255,255,255,0.3); border-top-color: white; 
     border-radius: 50%; animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-
-/* Toast */
-.login-toast-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-    background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(4px); 
-    display: flex; justify-content: center; align-items: center; z-index: 999999; 
-    opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 16px; }
-.login-toast-overlay.active { opacity: 1; visibility: visible; }
-.login-toast-card { background: var(--cyber-card); padding: 32px 40px; 
-    border-radius: 24px; text-align: center; border: 2px solid var(--cyber-cyan); 
-    box-shadow: 0 0 40px rgba(56, 189, 248, 0.5), 0 25px 60px rgba(0, 0, 0, 0.6); 
-    transform: scale(0.8); 
-    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); 
-    min-width: 240px; }
-.login-toast-overlay.active .login-toast-card { transform: scale(1); }
-.login-toast-icon { width: 72px; height: 72px; border-radius: 50%; 
-    background: linear-gradient(135deg, #10b981, #059669); 
-    display: inline-flex; align-items: center; justify-content: center; 
-    margin-bottom: 16px; box-shadow: 0 0 20px rgba(16, 185, 129, 0.5); }
-.login-toast-icon svg { width: 40px; height: 40px; stroke: #ffffff; stroke-width: 3; fill: none; }
-.login-toast-title { font-size: 18px; font-weight: 800; color: #ffffff; margin-bottom: 4px; }
-.login-toast-subtitle { font-size: 13px; font-weight: 600; color: #94a3b8; }
-.login-toast-name { color: var(--cyber-cyan); font-weight: 800; 
-    text-shadow: 0 0 10px rgba(56, 189, 248, 0.4); }
 
 /* Responsive Login */
 @media (max-width: 900px) {
@@ -274,9 +216,6 @@ body.login-active {
     .fut-live-status { font-size: 11px; padding: 7px 14px; }
     .fut-card { padding: 24px 20px; border-radius: 20px; }
     .fut-logo { width: 90px; height: 90px; margin-bottom: 14px; padding: 10px; }
-    .fut-field { margin-bottom: 14px; }
-    .fut-select { padding: 12px 14px; font-size: 13px; }
-    .fut-input { padding: 12px 14px; font-size: 20px; letter-spacing: 8px; }
     .fut-btn { padding: 14px; font-size: 13px; letter-spacing: 1.5px; }
     .fut-footer { font-size: 11px; margin-top: 14px; }
     .fut-orb-1 { width: 250px; height: 250px; }
@@ -291,11 +230,7 @@ body.login-active {
     .fut-characters .team-3d-img { max-height: 140px; }
     .fut-card { padding: 20px 16px; border-radius: 16px; }
     .fut-logo { width: 80px; height: 80px; margin-bottom: 10px; padding: 8px; }
-    .fut-select { padding: 11px 12px; font-size: 12px; }
-    .fut-input { padding: 11px 12px; font-size: 18px; letter-spacing: 6px; }
     .fut-btn { padding: 13px; font-size: 12px; }
-    .fut-field label { font-size: 10px; }
-    .login-tab { font-size: 11px; padding: 9px 8px; }
 }
 
 /* ===== DASHBOARD ===== */
@@ -321,7 +256,7 @@ body.dashboard-active {
 .logout-btn { padding: 8px 16px; border: none; border-radius: 9px; 
     cursor: pointer; color: #f87171; background: rgba(239, 68, 68, 0.1); 
     border: 1px solid rgba(239, 68, 68, 0.3); font-weight: 600; font-size: 12.5px; 
-    display: inline-flex; align-items: center; gap: 6px; }
+    display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
 .logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
 .logout-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
@@ -335,11 +270,11 @@ body.dashboard-active {
 .back-btn { padding: 9px 16px; border: none; border-radius: 10px; cursor: pointer; 
     font-weight: 700; font-size: 12.5px; color: #111827; background: #d4af37; 
     display: inline-flex; align-items: center; gap: 6px; 
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); }
+    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3); transition: all 0.2s ease; }
 .back-btn:hover { opacity: 0.9; }
 .back-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
-/* Dropdown Pilih Promotor */
+/* Dropdown Pilih Promotor (untuk admin) */
 .promotor-selector { max-width: 1100px; margin: 0 auto 20px; 
     padding: 14px 18px; background: rgba(17, 24, 39, 0.85); 
     backdrop-filter: blur(12px); border: 2px solid rgba(212, 175, 55, 0.5); 
@@ -400,7 +335,8 @@ body.dashboard-active {
     border: 1px solid rgba(212, 175, 55, 0.2); border-radius: 20px; 
     padding: 28px 22px; text-align: center; cursor: pointer; 
     box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5); 
-    display: flex; flex-direction: column; align-items: center; position: relative; }
+    display: flex; flex-direction: column; align-items: center; position: relative;
+    transition: all 0.25s ease; }
 .menu-card:hover { transform: translateY(-5px); 
     border-color: rgba(212, 175, 55, 0.6); 
     box-shadow: 0 20px 40px -10px rgba(212, 175, 55, 0.2); 
@@ -449,7 +385,7 @@ body.dashboard-active {
 .card.success { border-left: 4px solid #10b981; }
 .card.warning { border-left: 4px solid #ef4444; }
 
-/* ===== KARTU TERLAMBAT — NEON KUNING MENYALA ===== */
+/* ===== KARTU TERLAMBAT ===== */
 .card.late {
   border: 2px solid #facc15 !important;
   background: linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(45, 35, 10, 0.9)) !important;
@@ -512,7 +448,8 @@ body.dashboard-active {
 @media (max-width: 768px) {
   .menu-grid, .card-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
 }
-  /* ===== THEME TOGGLE BUTTON ===== */
+
+/* ===== THEME TOGGLE ===== */
 .theme-toggle-btn {
   width: 36px; height: 36px;
   border-radius: 10px;
@@ -530,15 +467,11 @@ body.dashboard-active {
 }
 .theme-toggle-btn:active { transform: scale(0.92) rotate(20deg); }
 
-/* ============================================================ */
-/* ===== LIGHT MODE — KESELURUHAN DASHBOARD ================== */
-/* ============================================================ */
+/* ===== LIGHT MODE ===== */
 body.light-mode {
   background: #f1f5f9 !important;
   color: #1e293b !important;
 }
-
-/* Top bar */
 body.light-mode .top-bar {
   background: rgba(255, 255, 255, 0.9) !important;
   border-color: rgba(212, 175, 55, 0.4) !important;
@@ -555,7 +488,6 @@ body.light-mode .logout-btn {
 }
 body.light-mode .logout-btn:hover { background: rgba(239, 68, 68, 0.18) !important; }
 
-/* Menu cards */
 body.light-mode .menu-card {
   background: #ffffff !important;
   border-color: rgba(212, 175, 55, 0.3) !important;
@@ -572,15 +504,11 @@ body.light-mode .menu-card.admin-only {
 }
 body.light-mode .menu-title { color: #111827 !important; }
 body.light-mode .menu-desc { color: #6b7280 !important; }
-body.light-mode .menu-icon {
-  background: rgba(212, 175, 55, 0.15) !important;
-}
+body.light-mode .menu-icon { background: rgba(212, 175, 55, 0.15) !important; }
 
-/* Detail view */
 body.light-mode .detail-title { color: #111827 !important; }
 body.light-mode .detail-subtitle { color: #6b7280 !important; }
 
-/* Summary cards */
 body.light-mode .summary-card {
   background: #ffffff !important;
   border-color: rgba(212, 175, 55, 0.3) !important;
@@ -591,7 +519,6 @@ body.light-mode .summary-card h2 { color: #b8941f !important; }
 body.light-mode .summary-card p { color: #334155 !important; }
 body.light-mode .summary-card b { color: #111827 !important; }
 
-/* Card grid */
 body.light-mode .card {
   background: #ffffff !important;
   border-color: rgba(0, 0, 0, 0.06) !important;
@@ -613,7 +540,6 @@ body.light-mode .row {
 body.light-mode .ok { color: #111827 !important; }
 body.light-mode .kosong { color: #dc2626 !important; }
 
-/* Promotor selector & dropdown */
 body.light-mode .promotor-selector {
   background: #ffffff !important;
   border-color: rgba(212, 175, 55, 0.6) !important;
@@ -640,30 +566,25 @@ body.light-mode .custom-dropdown-menu .dd-option.selected {
   color: #b8941f !important;
 }
 
-/* Back button */
 body.light-mode .back-btn {
   background: #d4af37 !important;
   color: #111827 !important;
 }
 
-/* Empty state */
 body.light-mode .empty-state { color: #6b7280 !important; }
 body.light-mode .empty-state svg { stroke: #cbd5e1 !important; }
 
-/* Info block (promo) */
 body.light-mode .info-block {
   background: #ffffff !important;
   border-color: rgba(212, 175, 55, 0.35) !important;
 }
 
-/* Perolehan row */
 body.light-mode .row-perolehan { border-bottom-color: rgba(0,0,0,0.06) !important; }
 body.light-mode .row-perolehan > div:first-child > div:last-child { color: #111827 !important; }
 body.light-mode .row-perolehan > div:first-child > div:first-child {
   background: #f3f4f6 !important;
 }
 
-/* Login screen juga ikut light mode */
 body.light-mode.login-active { background: #f1f5f9 !important; }
 body.light-mode #login-screen { background: #f1f5f9 !important; }
 body.light-mode .fut-grid {
@@ -680,37 +601,11 @@ body.light-mode .fut-card {
   border-color: rgba(34, 211, 238, 0.3) !important;
 }
 body.light-mode .fut-footer { color: #64748b !important; }
-body.light-mode .fut-select {
-  background: #f8fafc !important;
-  border-color: rgba(34, 211, 238, 0.35) !important;
-  color: #111827 !important;
-}
-body.light-mode .fut-input {
-  background: #f8fafc !important;
-  border-color: rgba(34, 211, 238, 0.35) !important;
-  color: #111827 !important;
-}
-body.light-mode .fut-input-admin {
-  background: #fef9ec !important;
-  border-color: rgba(212, 175, 55, 0.4) !important;
-  color: #111827 !important;
-}
-body.light-mode .fut-menu {
-  background: #ffffff !important;
-  border-color: rgba(34, 211, 238, 0.35) !important;
-}
-body.light-mode .fut-menu .option { color: #374151 !important; }
-body.light-mode .login-tabs {
-  background: #f1f5f9 !important;
-  border-color: rgba(34, 211, 238, 0.2) !important;
-}
-body.light-mode .login-tab { color: #64748b !important; }
 body.light-mode .fut-live-status {
   background: rgba(255, 255, 255, 0.8) !important;
   border-color: rgba(34, 211, 238, 0.4) !important;
   color: #334155 !important;
 }
-  /* Tombol toggle di light mode */
 body.light-mode .theme-toggle-btn {
   background: #fff7e0;
   border-color: rgba(212, 175, 55, 0.5);
@@ -720,38 +615,27 @@ body.light-mode .theme-toggle-btn:hover {
   background: #fde68a;
   box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
 }
-  /* ============================================================ */
-/* ===== FIX TEKS YANG TIDAK TERBACA DI LIGHT MODE =========== */
-/* ============================================================ */
 
-/* Nama produk dalam kartu penjualan/UC/brand */
+/* Light mode fixes */
 body.light-mode .card [style*="color:#e5e7eb"],
 body.light-mode .card [style*="color: #e5e7eb"] {
   color: #1e293b !important;
   font-weight: 700 !important;
 }
-
-/* Kategori (MESIN CUCI), (GARANSI), dll */
 body.light-mode .card [style*="color:#38bdf8"],
 body.light-mode .card [style*="color: #38bdf8"] {
   color: #0284c7 !important;
   font-weight: 700 !important;
 }
-
-/* Brand di kartu Brand */
 body.light-mode .card [style*="color:#d4af37"],
 body.light-mode .card [style*="color: #d4af37"] {
   color: #b8941f !important;
   font-weight: 700 !important;
 }
-
-/* Kategori abu-abu di kartu Brand */
 body.light-mode .card [style*="color:#9ca3af"],
 body.light-mode .card [style*="color: #9ca3af"] {
   color: #64748b !important;
 }
-
-/* Qty dan Omzet (row) sudah diatur, tapi pastikan teks lebih tebal */
 body.light-mode .card .row {
   color: #475569 !important;
   font-weight: 600 !important;
@@ -760,28 +644,17 @@ body.light-mode .card .row span:last-child {
   color: #0f172a !important;
   font-weight: 700 !important;
 }
-
-/* Total Hari Ini */
 body.light-mode .card .row[style*="font-weight:700"] {
   color: #0f172a !important;
 }
-
-/* Pesan "Belum ada data" */
-body.light-mode .card [style*="color:#9ca3af"],
 body.light-mode .card [style*="text-align:center"] {
   color: #64748b !important;
 }
-
-/* Tanggal di kartu */
 body.light-mode .tanggal {
   color: #0f172a !important;
   font-weight: 800 !important;
 }
-body.light-mode .tanggal svg {
-  stroke: #0284c7 !important;
-}
-
-/* Kartu late mode terang */
+body.light-mode .tanggal svg { stroke: #0284c7 !important; }
 body.light-mode .card.late .tanggal {
   color: #92400e !important;
   text-shadow: none !important;
@@ -794,102 +667,41 @@ body.light-mode .card.late .row span:last-child {
   color: #78350f !important;
 }
 
-/* Row perolehan - nama promotor & angka */
-body.light-mode .row-perolehan div {
-  color: #1e293b !important;
-}
-body.light-mode .row-perolehan [style*="color:#d4af37"] {
-  color: #b8941f !important;
-}
+body.light-mode .row-perolehan div { color: #1e293b !important; }
+body.light-mode .row-perolehan [style*="color:#d4af37"] { color: #b8941f !important; }
 
-/* Info block (promo) - detail teks */
-body.light-mode .info-block div[style*="color:#e5e7eb"] {
-  color: #1e293b !important;
-}
-body.light-mode .info-block div[style*="color:#9ca3af"] {
-  color: #64748b !important;
-}
-body.light-mode .info-block div[style*="color:#facc15"] {
-  color: #b45309 !important;
-}
+body.light-mode .info-block div[style*="color:#e5e7eb"] { color: #1e293b !important; }
+body.light-mode .info-block div[style*="color:#9ca3af"] { color: #64748b !important; }
+body.light-mode .info-block div[style*="color:#facc15"] { color: #b45309 !important; }
 
-/* SOP list - judul & sub */
-body.light-mode [onclick*="bukaModalSOP"] div[style*="color: #d4af37"] {
-  color: #b8941f !important;
-}
-body.light-mode [onclick*="bukaModalSOP"] div[style*="color: #9ca3af"] {
-  color: #64748b !important;
-}
-
-/* Modal SOP - background putih */
 body.light-mode #sopModal > div {
   background: #ffffff !important;
   border-color: rgba(212, 175, 55, 0.6) !important;
 }
-body.light-mode #sopModal > div > div[style*="color: #d4af37"] {
-  color: #b8941f !important;
-}
+body.light-mode #sopModal > div > div[style*="color: #d4af37"] { color: #b8941f !important; }
 
-/* Summary card - pastikan semua teks terbaca */
-body.light-mode .summary-card span {
-  color: inherit !important;
-}
+body.light-mode .summary-card span { color: inherit !important; }
 body.light-mode .summary-card span[style*="color:#34d399"] {
   color: #059669 !important;
   font-weight: 700 !important;
 }
-body.light-mode .summary-card span[style*="color:#f87171"] {
-  color: #dc2626 !important;
-}
+body.light-mode .summary-card span[style*="color:#f87171"] { color: #dc2626 !important; }
 
-/* Kartu absensi - status text */
 body.light-mode .status-ok { color: #059669 !important; font-weight: 800 !important; }
 body.light-mode .status-warning { color: #dc2626 !important; font-weight: 800 !important; }
 body.light-mode .kosong { color: #dc2626 !important; font-weight: 800 !important; }
 body.light-mode .ok { color: #0f172a !important; font-weight: 700 !important; }
 
-/* Denda card - warna nominal */
 body.light-mode .card span[style*="color:#f87171"] { color: #dc2626 !important; }
 body.light-mode .card span[style*="color:#facc15"] { color: #b45309 !important; }
 body.light-mode .card span[style*="color:#34d399"] { color: #059669 !important; }
-  /* ============================================================ */
-/* ===== FIX LIGHT MODE — HALAMAN LOGIN ======================= */
-/* ============================================================ */
 
-/* Judul "PILIH NAMA PROMOTOR" & "MASUKKAN PIN" */
-body.light-mode .fut-field label {
-  color: #0284c7 !important;
-  font-weight: 800 !important;
-}
-
-/* Placeholder dropdown "-- Pilih Nama Anda --" */
-body.light-mode .fut-select span {
-  color: #334155 !important;
-  font-weight: 600 !important;
-}
-
-/* Placeholder input PIN "••••••" */
-body.light-mode .fut-input::placeholder {
-  color: rgba(100, 116, 139, 0.55) !important;
-}
-
-/* Footer "Belum punya PIN? Hubungi admin" */
-body.light-mode .fut-footer {
-  color: #475569 !important;
-  font-weight: 600 !important;
-}
-body.light-mode .fut-footer span {
-  color: #0284c7 !important;
-  font-weight: 800 !important;
-}
-
-/* Subheadline "UFO Malang Kebonsari" */
-body.light-mode .fut-subheadline {
-  color: #334155 !important;
-  font-weight: 600 !important;
-}
-
-/* Tagline "MONITORING KINERJA PROMOTOR" */
+body.light-mode .fut-field label { color: #0284c7 !important; font-weight: 800 !important; }
+body.light-mode .fut-select span { color: #334155 !important; font-weight: 600 !important; }
+body.light-mode .fut-input::placeholder { color: rgba(100, 116, 139, 0.55) !important; }
+body.light-mode .fut-footer { color: #475569 !important; font-weight: 600 !important; }
+body.light-mode .fut-footer span { color: #0284c7 !important; font-weight: 800 !important; }
+body.light-mode .fut-subheadline { color: #334155 !important; font-weight: 600 !important; }
 body.light-mode .fut-tagline {
   background: rgba(14, 165, 233, 0.12) !important;
   border-color: rgba(14, 165, 233, 0.4) !important;
@@ -900,14 +712,7 @@ body.light-mode .fut-tagline .fut-dot {
   background: #0284c7 !important;
   box-shadow: 0 0 10px #0284c7 !important;
 }
-
-/* Headline "DASHBOARD PROMOTOR" */
-body.light-mode .fut-headline {
-  color: #0c4a6e !important;
-  text-shadow: 0 0 30px rgba(14, 165, 233, 0.25) !important;
-}
-
-/* Live status "23 promotor terdaftar" */
+body.light-mode .fut-headline { color: #0c4a6e !important; }
 body.light-mode .fut-live-status {
   background: rgba(255, 255, 255, 0.95) !important;
   border-color: rgba(14, 165, 233, 0.4) !important;
@@ -919,107 +724,22 @@ body.light-mode .fut-live-status .fut-pulse-dot {
   background: #0284c7 !important;
   box-shadow: 0 0 10px #0284c7 !important;
 }
+body.light-mode .fut-orb { opacity: 0.25 !important; filter: blur(100px) !important; }
 
-/* Tab PROMOTOR/ADMIN yang tidak aktif */
-body.light-mode .login-tab {
-  color: #475569 !important;
-  font-weight: 800 !important;
-}
-body.light-mode .login-tab:hover {
-  color: #0284c7 !important;
-  background: rgba(14, 165, 233, 0.1) !important;
-}
-body.light-mode .login-tab.active {
-  color: #ffffff !important;
-}
-
-/* Dropdown menu promotor */
-body.light-mode .fut-menu .option {
-  color: #334155 !important;
-  font-weight: 600 !important;
-}
-body.light-mode .fut-menu .option:hover {
-  background: rgba(14, 165, 233, 0.12) !important;
-  color: #0284c7 !important;
-}
-body.light-mode .fut-menu .option.selected {
-  background: rgba(14, 165, 233, 0.2) !important;
-  color: #0284c7 !important;
-  font-weight: 700 !important;
-}
-body.light-mode .fut-menu .option.empty {
-  color: #94a3b8 !important;
-}
-
-/* Input admin username */
-body.light-mode .fut-input-admin {
-  background: #fef9ec !important;
-  border-color: rgba(212, 175, 55, 0.5) !important;
-  color: #1e293b !important;
-  font-weight: 700 !important;
-}
-body.light-mode .fut-input-admin::placeholder {
-  color: rgba(100, 116, 139, 0.5) !important;
-}
-
-/* Kartu login — shadow lebih lembut di light mode */
-body.light-mode .fut-card {
+/* Tombol login Google di light mode */
+body.light-mode .fut-btn[style*="background:#ffffff"],
+body.light-mode .fut-btn[style*="background: #ffffff"] {
   background: #ffffff !important;
-  border-color: rgba(14, 165, 233, 0.25) !important;
-  box-shadow: 0 20px 50px rgba(14, 165, 233, 0.15),
-              0 8px 20px rgba(0, 0, 0, 0.05) !important;
+  color: #111827 !important;
+  border: 2px solid #e2e8f0 !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08) !important;
 }
-
-/* Orbs di light mode — jangan terlalu terang */
-body.light-mode .fut-orb {
-  opacity: 0.25 !important;
-  filter: blur(100px) !important;
+body.light-mode #btn-login-google + div + p,
+body.light-mode .fut-card > div[style*="text-align:center"] div[style*="color:#94a3b8"] {
+  color: #64748b !important;
 }
-
-/* Error text */
-body.light-mode .fut-error {
-  color: #dc2626 !important;
-  font-weight: 800 !important;
-}
-  /* ============================================================ */
-/* ===== FIX TAB LOGIN — LIGHT MODE ============================ */
-/* ============================================================ */
-
-/* Tab AKTIF = nyala terang */
-body.light-mode .login-tab.active {
-  background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 50%, #a855f7 100%) !important;
-  color: #ffffff !important;
-  font-weight: 800 !important;
-  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.5),
-              0 0 30px rgba(34, 211, 238, 0.4) !important;
-  text-shadow: 0 0 8px rgba(255, 255, 255, 0.4) !important;
-}
-
-/* Tab TIDAK AKTIF = redup */
-body.light-mode .login-tab:not(.active) {
-  background: transparent !important;
-  color: #94a3b8 !important;
-  font-weight: 700 !important;
-  box-shadow: none !important;
-  text-shadow: none !important;
-}
-body.light-mode .login-tab:not(.active):hover {
-  color: #0284c7 !important;
-  background: rgba(14, 165, 233, 0.08) !important;
-}
-
-/* Container tab di light mode */
-body.light-mode .login-tabs {
-  background: #f1f5f9 !important;
-  border-color: rgba(14, 165, 233, 0.2) !important;
-  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.04) !important;
-}
-  /* ============================================================ */
-/* ===== FIX TOMBOL TOGGLE TEMA DI LOGIN ==================== */
-/* ============================================================ */
-
-.fut-card {
-    position: relative !important;
+body.light-mode .fut-card > div[style*="text-align:center"] div[style*="color:#ffffff"] {
+  color: #111827 !important;
 }
 
 .login-theme-toggle {
@@ -1041,7 +761,6 @@ body.light-mode .login-tabs {
     transition: all 0.25s ease !important;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
 }
-
 .login-theme-toggle svg {
     width: 20px !important;
     height: 20px !important;
@@ -1051,225 +770,62 @@ body.light-mode .login-tabs {
     stroke-linecap: round !important;
     stroke-linejoin: round !important;
 }
-
 .login-theme-toggle:hover {
     background: rgba(56, 189, 248, 0.25) !important;
     box-shadow: 0 0 20px rgba(56, 189, 248, 0.7) !important;
     transform: rotate(15deg) !important;
 }
-
-.login-theme-toggle:active {
-    transform: scale(0.92) rotate(15deg) !important;
-}
-
-/* Light mode */
 body.light-mode .login-theme-toggle {
     background: #ffffff !important;
     border-color: rgba(37, 99, 235, 0.35) !important;
     color: #0284c7 !important;
-    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08) !important;
 }
 body.light-mode .login-theme-toggle:hover {
     background: #eff6ff !important;
     box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
 }
-/* ============================================================ */
-/* ===== PEROLEHAN — WARNA SOLID CERAH ======================== */
-/* ============================================================ */
 
-/* ---- DARK MODE ---- */
-body:not(.light-mode) .row-perolehan [style*="color:#00ff88"] {
-    color: #00ff88 !important;
-    font-weight: 900 !important;
-    text-shadow: none !important;
-}
-body:not(.light-mode) .row-perolehan [style*="color:#ffdd00"] {
-    color: #ffdd00 !important;
-    font-weight: 900 !important;
-    text-shadow: none !important;
-}
-body:not(.light-mode) .row-perolehan [style*="color:#ff2d55"] {
-    color: #ff2d55 !important;
-    font-weight: 900 !important;
-    text-shadow: none !important;
-}
-
-/* UC label — putih solid */
-body:not(.light-mode) .row-perolehan .uc-label {
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-}
-body:not(.light-mode) .row-perolehan .uc-label svg,
-body:not(.light-mode) .row-perolehan .uc-label svg polygon {
-    fill: #ffffff !important;
-    stroke: #ffffff !important;
-}
-
-/* ---- LIGHT MODE ---- */
-body.light-mode .row-perolehan [style*="color:#00ff88"] {
-    color: #059669 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-}
-body.light-mode .row-perolehan [style*="color:#ffdd00"] {
-    color: #d97706 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-}
-body.light-mode .row-perolehan [style*="color:#ff2d55"] {
-    color: #dc2626 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-}
-
-/* UC label — hitam solid */
-body.light-mode .row-perolehan .uc-label {
-    color: #111827 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-}
-body.light-mode .row-perolehan .uc-label svg,
-body.light-mode .row-perolehan .uc-label svg polygon {
-    fill: #111827 !important;
-    stroke: #111827 !important;
-}
-  /* ============================================================ */
-/* ===== UC LABEL — PAKSA HITAM DI MODE TERANG =============== */
-/* ============================================================ */
-
-/* Dark mode — emas (biar tetap kelihatan) */
-.uc-label,
-.uc-label span,
-.uc-label svg {
-    color: #d4af37 !important;
-    fill: #d4af37 !important;
-    stroke: #d4af37 !important;
-}
-
-/* Light mode — PAKSA HITAM TOTAL */
-body.light-mode .uc-label,
-body.light-mode .row-perolehan .uc-label,
-body.light-mode .row-perolehan [style*="color:#d4af37"].uc-label,
-body.light-mode .row-perolehan div.uc-label,
-body.light-mode .summary-card .uc-label {
-    color: #111827 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-}
-
-/* Ikon bintang di label UC — hitam juga */
-body.light-mode .uc-label svg,
-body.light-mode .uc-label svg polygon,
-body.light-mode .row-perolehan .uc-label svg,
-body.light-mode .row-perolehan .uc-label svg polygon {
-    fill: #111827 !important;
-    stroke: #111827 !important;
-}
-  /* ============================================================ */
-/* ===== PEROLEHAN — BEDA WARNA DARK & LIGHT ================== */
-/* ============================================================ */
-
-/* ---- DARK MODE (warna neon terang + glow) ---- */
-body:not(.light-mode) .row-perolehan [style*="color:#00ff88"] {
-    color: #00ff88 !important;
-    font-weight: 900 !important;
-    text-shadow: 0 0 10px rgba(0, 255, 136, 0.8) !important;
-}
-body:not(.light-mode) .row-perolehan [style*="color:#ffdd00"] {
-    color: #ffdd00 !important;
-    font-weight: 900 !important;
-    text-shadow: 0 0 10px rgba(255, 221, 0, 0.8) !important;
-}
-body:not(.light-mode) .row-perolehan [style*="color:#ff2d55"] {
-    color: #ff2d55 !important;
-    font-weight: 900 !important;
-    text-shadow: 0 0 10px rgba(255, 45, 85, 0.8) !important;
-}
-
-/* UC label — putih di dark mode */
-body:not(.light-mode) .row-perolehan .uc-label {
-    color: #ffffff !important;
-    font-weight: 800 !important;
-    text-shadow: 0 0 6px rgba(255, 255, 255, 0.5) !important;
-}
-body:not(.light-mode) .row-perolehan .uc-label svg,
-body:not(.light-mode) .row-perolehan .uc-label svg polygon {
-    fill: #ffffff !important;
-    stroke: #ffffff !important;
-}
-
-/* ---- LIGHT MODE (warna kalem, kontras di putih) ---- */
-body.light-mode .row-perolehan [style*="color:#00ff88"] {
-    color: #059669 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-}
-body.light-mode .row-perolehan [style*="color:#ffdd00"] {
-    color: #d97706 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-}
-body.light-mode .row-perolehan [style*="color:#ff2d55"] {
-    color: #dc2626 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-}
-
-/* UC label — hitam di light mode */
-body.light-mode .row-perolehan .uc-label {
-    color: #111827 !important;
-    font-weight: 800 !important;
-    text-shadow: none !important;
-}
-body.light-mode .row-perolehan .uc-label svg,
-body.light-mode .row-perolehan .uc-label svg polygon {
-    fill: #111827 !important;
-    stroke: #111827 !important;
-}
-  /* ============================================================ */
-/* ===== HAPUS GLOW & PAKSA WARNA CERAH ======================= */
-/* ============================================================ */
-
-/* Matikan semua text-shadow di row-perolehan */
-.row-perolehan,
-.row-perolehan * {
+/* ===== PEROLEHAN ===== */
+.row-perolehan, .row-perolehan * {
     text-shadow: none !important;
     filter: none !important;
 }
-
-/* Pastikan warna dari inline style menang */
 body:not(.light-mode) .row-perolehan div[style*="color:#ff2d55"],
 body:not(.light-mode) .row-perolehan div[style*="color: #ff2d55"] {
     color: #ff2d55 !important;
     font-weight: 900 !important;
-    text-shadow: none !important;
 }
 body:not(.light-mode) .row-perolehan div[style*="color:#00ff88"],
 body:not(.light-mode) .row-perolehan div[style*="color: #00ff88"] {
     color: #00ff88 !important;
     font-weight: 900 !important;
-    text-shadow: none !important;
 }
 body:not(.light-mode) .row-perolehan div[style*="color:#ffdd00"],
 body:not(.light-mode) .row-perolehan div[style*="color: #ffdd00"] {
     color: #ffdd00 !important;
     font-weight: 900 !important;
-    text-shadow: none !important;
 }
+body.light-mode .row-perolehan div[style*="color:#ff2d55"] { color: #dc2626 !important; }
+body.light-mode .row-perolehan div[style*="color:#00ff88"] { color: #059669 !important; }
+body.light-mode .row-perolehan div[style*="color:#ffdd00"] { color: #d97706 !important; }
 
-/* Light mode */
-body.light-mode .row-perolehan div[style*="color:#ff2d55"] {
-    color: #dc2626 !important;
-    text-shadow: none !important;
+body:not(.light-mode) .row-perolehan .uc-label {
+    color: #ffffff !important;
+    font-weight: 800 !important;
 }
-body.light-mode .row-perolehan div[style*="color:#00ff88"] {
-    color: #059669 !important;
-    text-shadow: none !important;
+body:not(.light-mode) .row-perolehan .uc-label svg,
+body:not(.light-mode) .row-perolehan .uc-label svg polygon {
+    fill: #ffffff !important;
+    stroke: #ffffff !important;
 }
-body.light-mode .row-perolehan div[style*="color:#ffdd00"] {
-    color: #d97706 !important;
-    text-shadow: none !important;
+body.light-mode .row-perolehan .uc-label {
+    color: #111827 !important;
+    font-weight: 800 !important;
+}
+body.light-mode .row-perolehan .uc-label svg,
+body.light-mode .row-perolehan .uc-label svg polygon {
+    fill: #111827 !important;
+    stroke: #111827 !important;
 }
 </style>
 </head>
@@ -1287,12 +843,12 @@ body.light-mode .row-perolehan div[style*="color:#ffdd00"] {
         <div class="fut-left">
             <div class="fut-tagline">
                 <span class="fut-dot"></span>
-                <span>SISTEM KINERJA PROMOTOR DIGITAL </span>
+                <span>SISTEM KINERJA PROMOTOR DIGITAL</span>
             </div>
-            <h1 class="fut-headline" id="fut-headline" style="opacity: 1;">
-                <span id="fut-headline-text">Dashboard Promotor</span>
+            <h1 class="fut-headline">
+                <span>Dashboard Promotor</span>
             </h1>
-            <p class="fut-subheadline" id="fut-subheadline">UFO Malang Kebonsari</p>
+            <p class="fut-subheadline">UFO Malang Kebonsari</p>
 
             <div class="fut-characters">
                 <img src="team-3d.png" alt="Tim Promotor UFO" class="team-3d-img" />
@@ -1304,63 +860,34 @@ body.light-mode .row-perolehan div[style*="color:#ffdd00"] {
             </div>
         </div>
 
-     <div class="fut-right">
-    <div class="fut-card">
-        <button type="button" class="login-theme-toggle" id="btn-login-theme" onclick="toggleTheme()" title="Ganti tema">
-            <svg id="login-theme-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-            </svg>
-        </button>
-
-        <div class="fut-logo">
-            <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>UFO</span>';">
-        </div>
-                <div class="login-tabs">
-                    <button type="button" class="login-tab active" id="tab-promotor" onclick="switchLoginTab('promotor')">
-                        PROMOTOR
-                    </button>
-                    <button type="button" class="login-tab" id="tab-admin" onclick="switchLoginTab('admin')">
-                        ADMIN
-                    </button>
-                </div>
-
-                <div id="form-promotor">
-                    <div class="fut-field">
-                        <label>Pilih Nama Promotor</label>
-                        <input type="hidden" id="login-pilih-sales" value="">
-                        <div id="custom-select-trigger" onclick="toggleCustomSelect()" class="fut-select">
-                            <span id="custom-select-label">-- Memuat daftar promotor --</span>
-                            <svg id="custom-select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <polyline points="6 9 12 15 18 9"></polyline>
-                            </svg>
-                        </div>
-                        <div id="custom-select-menu" class="fut-menu"></div>
-                    </div>
-                </div>
-
-                <div id="form-admin" style="display:none;">
-                    <div class="fut-field">
-                        <label>Username Admin</label>
-                        <input type="text" id="login-admin-username" class="fut-input-admin" placeholder="Masukkan username admin" autocomplete="off">
-                    </div>
-                </div>
-
-                <div class="fut-field">
-                    <label>Masukkan PIN</label>
-                    <input type="password" id="login-pin-input" maxlength="6" inputmode="numeric" pattern="[0-9]*" placeholder="••••••" autocomplete="off" class="fut-input">
-                </div>
-
-                <div id="login-error" class="fut-error"></div>
-
-                <button type="button" id="btn-login-promotor" class="fut-btn">
-                    <span id="btn-login-text">MASUK</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="width:16px; height:16px;">
-                        <line x1="5" y1="12" x2="19" y2="12"></line>
-                        <polyline points="12 5 19 12 12 19"></polyline>
+        <div class="fut-right">
+            <div class="fut-card">
+                <button type="button" class="login-theme-toggle" onclick="toggleTheme()" title="Ganti tema">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
                     </svg>
                 </button>
 
-                <p class="fut-footer">Belum punya PIN? <span>Hubungi admin</span></p>
+                <div class="fut-logo">
+                    <img id="logo-app" src="logo.png" alt="Logo" onerror="this.style.display='none'; this.parentElement.innerHTML='<span style=\'font-size:36px;\'>UFO</span>';">
+                </div>
+
+                <div style="text-align:center; margin-bottom: 24px;">
+                    <div style="font-size:13px; color:#94a3b8; font-weight:600; margin-bottom:6px; letter-spacing:1px;">SELAMAT DATANG</div>
+                    <div style="font-size:16px; color:#ffffff; font-weight:700;">Silakan masuk dengan akun Google Anda</div>
+                </div>
+
+                <button type="button" id="btn-login-google" class="fut-btn" onclick="loginDenganGoogle()" style="background:#ffffff; color:#111827; box-shadow: 0 0 20px rgba(255,255,255,0.2);">
+                    <svg viewBox="0 0 48 48" style="width:20px; height:20px; margin-right:8px;">
+                        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+                        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
+                        <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
+                        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+                    </svg>
+                    <span id="btn-login-text">MASUK DENGAN GOOGLE</span>
+                </button>
+
+                <p class="fut-footer">Hanya akun yang terdaftar<br>yang dapat mengakses dashboard ini</p>
             </div>
         </div>
     </div>
@@ -1374,7 +901,6 @@ body.light-mode .row-perolehan div[style*="color:#ffdd00"] {
     <span class="user-dot"></span>
     <span id="userNama">-</span>
   </div>
-  
     <button class="logout-btn" onclick="logoutPromotor()">
       <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       Keluar
@@ -1402,27 +928,36 @@ body.light-mode .row-perolehan div[style*="color:#ffdd00"] {
   </div>
 </div>
 
-<!-- Toast -->
-<div class="login-toast-overlay" id="login-toast">
-  <div class="login-toast-card">
-    <div class="login-toast-icon">
-      <svg viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"></path></svg>
-    </div>
-    <div class="login-toast-title">Login Berhasil!</div>
-    <div class="login-toast-subtitle">Selamat datang, <span class="login-toast-name" id="login-toast-name">-</span></div>
-  </div>
-</div>
-
 <script>
 /* ===== GLOBAL VARIABLES ===== */
 let allPenjualan = [];
 let allPromotor = {};
 let allAbsensi = {};
+let allAbsensiAll = {};
 let infoData = { promo: [], rules: [] };
 let currentUser = null;
 let currentMenu = null;
-let loginMode = 'promotor';
 let promotorTerpilih = null;
+
+/* ===== SANITASI XSS ===== */
+function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+}
+window.escapeHtml = escapeHtml;
+
+function safeImageUrl(url) {
+    if (!url) return '';
+    const s = String(url).trim();
+    if (!/^https:\/\//i.test(s)) return '';
+    return escapeHtml(s);
+}
+window.safeImageUrl = safeImageUrl;
 
 /* ===== SVG ICONS ===== */
 const ICONS = {
@@ -1453,13 +988,8 @@ window.addEventListener('firebase-ready', () => {
   initParticles();
   loadPromotorList();
   loadInfoRealtime();
-  const saved = localStorage.getItem('ufo_promotor_session_v3');
-  if (saved) {
-    try {
-      const data = JSON.parse(saved);
-      currentUser = data;
-      tampilkanDashboard();
-    } catch(e) {}
+  if (window.firebaseUser) {
+    setTimeout(() => tampilkanDashboard(), 400);
   }
 });
 
@@ -1467,6 +997,7 @@ window.addEventListener('firebase-ready', () => {
 function initParticles() {
     const container = document.getElementById('fut-particles');
     if (!container) return;
+    container.innerHTML = '';
     for (let i = 0; i < 25; i++) {
         const p = document.createElement('div');
         p.className = 'fut-particle';
@@ -1481,51 +1012,37 @@ function initParticles() {
     }
 }
 
-/* ===== LOGIN TAB SWITCH ===== */
-function switchLoginTab(mode) {
-    loginMode = mode;
-    const tabPromotor = document.getElementById('tab-promotor');
-    const tabAdmin = document.getElementById('tab-admin');
-    const formPromotor = document.getElementById('form-promotor');
-    const formAdmin = document.getElementById('form-admin');
-    const btnText = document.getElementById('btn-login-text');
-    
-    if (mode === 'promotor') {
-        tabPromotor.classList.add('active');
-        tabAdmin.classList.remove('active');
-        formPromotor.style.display = 'block';
-        formAdmin.style.display = 'none';
-        btnText.innerText = 'MASUK';
-    } else {
-        tabAdmin.classList.add('active');
-        tabPromotor.classList.remove('active');
-        formPromotor.style.display = 'none';
-        formAdmin.style.display = 'block';
-        btnText.innerText = 'MASUK ADMIN';
-    }
-    document.getElementById('login-error').innerHTML = '';
-}
-window.switchLoginTab = switchLoginTab;
+/* ===== LOGIN DENGAN GOOGLE ===== */
+async function loginDenganGoogle() {
+    const btn = document.getElementById('btn-login-google');
+    const txt = document.getElementById('btn-login-text');
+    const asli = txt.innerText;
+    btn.disabled = true;
+    txt.innerText = 'MEMBUKA GOOGLE...';
 
-/* ===== SET DEFAULT PROMOTOR UNTUK ADMIN ===== */
-function setDefaultPromotorAdmin() {
-  if (!currentUser || currentUser.role !== 'ADMIN') return;
-  if (promotorTerpilih && allPromotor[promotorTerpilih]) return;
-  const promotorKeys = Object.keys(allPromotor || {}).filter(k => allPromotor[k].aktif !== false);
-  if (promotorKeys.length === 0) {
-    promotorTerpilih = null;
-    return;
-  }
-  promotorTerpilih = null;
+    try {
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+        const { signInWithPopup } = await import("https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js");
+        await signInWithPopup(window.firebaseAuth, provider);
+        // onAuthStateChanged di modul akan menangani sisanya
+    } catch (err) {
+        console.error('Login gagal:', err);
+        if (err.code !== 'auth/popup-closed-by-user') {
+            alert('Login gagal: ' + err.message);
+        }
+        btn.disabled = false;
+        txt.innerText = asli;
+    }
 }
-window.setDefaultPromotorAdmin = setDefaultPromotorAdmin;
+window.loginDenganGoogle = loginDenganGoogle;
 
 /* ===== LOAD PROMOTOR LIST ===== */
 function loadPromotorList() {
   window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
     const liveEl = document.getElementById('live-status-text');
     if (!snap.exists()) {
-      renderCustomSelectOptions([]);
+      allPromotor = {};
       if (liveEl) liveEl.innerText = 'Belum ada promotor';
       return;
     }
@@ -1533,10 +1050,10 @@ function loadPromotorList() {
     const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
       .filter(p => p.aktif !== false)
       .sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
-    renderCustomSelectOptions(list);
     if (liveEl) liveEl.innerText = `${list.length} promotor terdaftar`;
-    isiDropdownPromotor(list);
-    setDefaultPromotorAdmin();
+    if (currentUser && currentUser.role === 'ADMIN') {
+      isiDropdownPromotor(list);
+    }
   });
 }
 
@@ -1552,9 +1069,9 @@ function isiDropdownPromotor(list) {
   }
   let html = '';
   list.forEach(p => {
-    const key = String(p.key).replace(/"/g, '&quot;');
-    const label = String(p.namaAbsen || '-').replace(/</g, '&lt;');
-    html += `<div class="dd-option" data-value="${key}" onclick="pilihDropdownPromotor('${key}', '${label.replace(/'/g, "\\'")}')">${label}</div>`;
+    const key = escapeHtml(p.key);
+    const label = escapeHtml(p.namaAbsen || '-');
+    html += `<div class="dd-option" data-value="${key}" onclick="pilihDropdownPromotor('${key}', '${label}')">${label}</div>`;
   });
   menuEl.innerHTML = html;
   if (promotorTerpilih && allPromotor[promotorTerpilih]) {
@@ -1632,185 +1149,48 @@ function loadInfoRealtime() {
   });
 }
 
-/* ===== CUSTOM SELECT LOGIN ===== */
-function toggleCustomSelect() {
-  const menu = document.getElementById('custom-select-menu');
-  const trigger = document.getElementById('custom-select-trigger');
-  if (!menu || !trigger) return;
-  const isOpen = menu.classList.contains('open');
-  if (isOpen) { menu.classList.remove('open'); trigger.classList.remove('open'); }
-  else { menu.classList.add('open'); trigger.classList.add('open'); }
-}
-window.toggleCustomSelect = toggleCustomSelect;
-
-function pilihOpsiCustom(key, label) {
-  document.getElementById('login-pilih-sales').value = key;
-  document.getElementById('custom-select-label').innerText = label;
-  const menu = document.getElementById('custom-select-menu');
-  menu.querySelectorAll('.option').forEach(opt => opt.classList.toggle('selected', opt.dataset.value === key));
-  menu.classList.remove('open');
-  document.getElementById('custom-select-trigger').classList.remove('open');
-}
-window.pilihOpsiCustom = pilihOpsiCustom;
-
-function renderCustomSelectOptions(list) {
-  const menu = document.getElementById('custom-select-menu');
-  const labelEl = document.getElementById('custom-select-label');
-  if (!menu || !labelEl) return;
-  if (!list || list.length === 0) {
-    menu.innerHTML = '<div class="option empty">-- Belum ada promotor --</div>';
-    labelEl.innerText = '-- Belum ada promotor --';
-    return;
-  }
-  labelEl.innerText = '-- Pilih Nama Anda --';
-  menu.innerHTML = list.map(p => {
-    const safeKey = String(p.key).replace(/"/g, '&quot;');
-    const safeLabel = String(p.namaAbsen).replace(/"/g, '&quot;').replace(/'/g, "&#39;");
-    return `<div class="option" data-value="${safeKey}" onclick="pilihOpsiCustom('${safeKey}', '${safeLabel}')">${p.namaAbsen}</div>`;
-  }).join('');
-}
-
-document.addEventListener('click', (e) => {
-  const wrap = document.getElementById('custom-select-trigger');
-  const menu = document.getElementById('custom-select-menu');
-  if (!wrap || !menu) return;
-  if (!wrap.contains(e.target) && !menu.contains(e.target)) {
-    menu.classList.remove('open');
-    wrap.classList.remove('open');
-  }
-});
-
-/* ===== LOGIN HANDLER ===== */
-async function loginPromotor() {
-    const errEl = document.getElementById('login-error');
-    const btn = document.getElementById('btn-login-promotor');
-    const pin = document.getElementById('login-pin-input').value.trim();
-    errEl.innerHTML = '';
-    if (!pin) {
-        errEl.innerHTML = 'Masukkan PIN!';
-        return;
-    }
-    const asli = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<span class="spinner"></span> Memeriksa...';
-    try {
-        if (loginMode === 'promotor') {
-            const key = document.getElementById('login-pilih-sales').value;
-            if (!key) {
-                errEl.innerHTML = 'Pilih nama promotor dulu!';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor/' + key));
-            if (!snap.exists()) {
-                errEl.innerHTML = 'Promotor tidak ditemukan.';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            const data = snap.val();
-            if (String(data.pin) !== pin) {
-                errEl.innerHTML = 'PIN salah!';
-                document.getElementById('login-pin-input').value = '';
-                document.getElementById('login-pin-input').focus();
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            if (data.aktif === false) {
-                errEl.innerHTML = 'Akun promotor ini tidak aktif.';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            currentUser = { key, ...data, role: 'PROMOTOR', loginType: 'promotor' };
-            localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
-        } else {
-            const username = document.getElementById('login-admin-username').value.trim().toUpperCase();
-            if (!username) {
-                errEl.innerHTML = 'Masukkan username admin!';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            const snap = await window.dbGet(window.dbRef(window.db, 'users/admin'));
-            if (!snap.exists()) {
-                errEl.innerHTML = 'Belum ada admin terdaftar.';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            const admins = snap.val();
-            let foundKey = null, foundData = null;
-            Object.keys(admins).forEach(k => {
-                const a = admins[k];
-                if (a && String(a.username || '').toUpperCase() === username) {
-                    foundKey = k;
-                    foundData = a;
-                }
-            });
-            if (!foundKey) {
-                errEl.innerHTML = 'Username admin tidak ditemukan.';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            if (String(foundData.pin) !== pin) {
-                errEl.innerHTML = 'PIN admin salah!';
-                document.getElementById('login-pin-input').value = '';
-                document.getElementById('login-pin-input').focus();
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            if (foundData.aktif === false) {
-                errEl.innerHTML = 'Akun admin ini tidak aktif.';
-                btn.disabled = false; btn.innerHTML = asli; return;
-            }
-            currentUser = {
-                key: foundKey,
-                username: foundData.username,
-                namaAbsen: foundData.nama || foundData.username,
-                namaSales: '',
-                pin: foundData.pin,
-                role: 'ADMIN',
-                loginType: 'admin'
-            };
-            localStorage.setItem('ufo_promotor_session_v3', JSON.stringify(currentUser));
-        }
-        document.getElementById('login-toast-name').innerText = currentUser.namaAbsen;
-        const toast = document.getElementById('login-toast');
-        toast.classList.add('active');
-        setTimeout(() => {
-            tampilkanDashboard();
-            document.getElementById('login-pin-input').value = '';
-            document.getElementById('login-admin-username').value = '';
-            errEl.innerHTML = '';
-            btn.disabled = false; btn.innerHTML = asli;
-            setTimeout(() => { toast.classList.remove('active'); }, 600);
-        }, 1000);
-    } catch (err) {
-        console.error('Login error:', err);
-        errEl.innerHTML = err.message;
-        btn.disabled = false; btn.innerHTML = asli;
-    }
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('btn-login-promotor');
-  if (btn) btn.onclick = loginPromotor;
-  const pin = document.getElementById('login-pin-input');
-  if (pin) {
-    pin.addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4); });
-    pin.addEventListener('keypress', e => { if (e.key === 'Enter') loginPromotor(); });
-  }
-});
-
 /* ===== DASHBOARD ===== */
 function tampilkanDashboard() {
+  if (!window.firebaseUser) {
+    console.warn('Belum login Google');
+    return;
+  }
+  currentUser = {
+    key: window.firebaseUser.promotorKey || window.firebaseUser.uid,
+    email: window.firebaseUser.email,
+    role: window.firebaseUser.role,
+    loginType: 'google'
+  };
+
+  if (window.firebaseUser.promotorKey && allPromotor[window.firebaseUser.promotorKey]) {
+    const p = allPromotor[window.firebaseUser.promotorKey];
+    currentUser.namaAbsen = p.namaAbsen || window.firebaseUser.email;
+    currentUser.namaSales = p.namaSales || '';
+    currentUser.merk = p.merk || '';
+  } else {
+    currentUser.namaAbsen = window.firebaseUser.email;
+  }
+
   document.body.classList.remove('login-active');
   document.body.classList.add('dashboard-active');
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard').classList.remove('hidden');
+
   const isAdmin = currentUser.role === 'ADMIN';
   if (isAdmin) {
     promotorTerpilih = null;
     document.getElementById('promotorSelector').classList.remove('hidden');
     document.getElementById('userNama').innerHTML = 
-      `${ICONS.crown} <b>${currentUser.namaAbsen}</b> <span class="admin-badge-inline">ADMIN</span>`;
+      `${ICONS.crown} <b>${escapeHtml(currentUser.namaAbsen)}</b> <span class="admin-badge-inline">ADMIN</span>`;
     document.getElementById('topBar').classList.add('admin-mode');
   } else {
     promotorTerpilih = currentUser.key;
     document.getElementById('promotorSelector').classList.add('hidden');
     document.getElementById('userNama').innerHTML = 
-      `<span style="color:#34d399;">●</span> <b>${currentUser.namaAbsen}</b>`;
+      `<span style="color:#34d399;">●</span> <b>${escapeHtml(currentUser.namaAbsen)}</b>`;
     document.getElementById('topBar').classList.remove('admin-mode');
   }
+
   window.dbOnValue(window.dbRef(window.db, 'penjualan'), snap => {
     allPenjualan = [];
     if (snap.exists()) {
@@ -1838,10 +1218,11 @@ function tampilkanDashboard() {
   });
   renderMenuGrid();
 }
+window.tampilkanDashboard = tampilkanDashboard;
 
 /* ===== GANTI PROMOTOR (ADMIN) ===== */
 function gantiPromotorAdmin(keyPromotor) {
-  if (currentUser.role !== 'ADMIN') {
+  if (!currentUser || currentUser.role !== 'ADMIN') {
     alert("Hanya admin yang bisa ganti promotor.");
     return;
   }
@@ -1853,9 +1234,8 @@ function gantiPromotorAdmin(keyPromotor) {
     return;
   }
   window.dbGet(window.dbRef(window.db, 'absensi/' + keyPromotor)).then(snapAbsen => {
-    if (typeof allAbsensiAll === 'undefined') window.allAbsensiAll = {};
-    window.allAbsensiAll[keyPromotor] = snapAbsen.exists() ? snapAbsen.val() : {};
-    allAbsensi = window.allAbsensiAll[keyPromotor];
+    allAbsensiAll[keyPromotor] = snapAbsen.exists() ? snapAbsen.val() : {};
+    allAbsensi = allAbsensiAll[keyPromotor];
     if (currentMenu) {
       tampilkanDetail(currentMenu);
     } else {
@@ -1873,14 +1253,16 @@ function renderMenuGrid() {
   currentMenu = null;
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
-  document.getElementById('promotorSelector').classList.add('hidden');
+  if (!currentUser || currentUser.role !== 'ADMIN') {
+    document.getElementById('promotorSelector').classList.add('hidden');
+  }
   const grid = document.getElementById('menuGrid');
   grid.classList.remove('hidden');
   const isAdmin = currentUser.role === 'ADMIN';
   const menusUmum = [
     { key: 'absensi', icon: 'absensi', title: 'Absensi', desc: 'Rekap kehadiran dan status finger harian' },
     { key: 'penjualan', icon: 'penjualan', title: 'Penjualan', desc: 'Omzet produk harian dan perolehan unit' },
-    { key: 'uc', icon: 'uc', title: 'UFO Care', desc: 'Pencapaian poin UC promotor' },
+    { key: 'uc', icon: 'uc', title: 'UFO CARE', desc: 'Pencapaian poin UFO CARE promotor' },
     { key: 'brand', icon: 'brand', title: 'Perolehan Brand', desc: 'Rekap penjualan khusus brand/ID Anda sendiri' },
     { key: 'promo', icon: 'promo', title: 'Promo Toko', desc: 'Daftar promo produk & program toko aktif' },
     { key: 'sop', icon: 'sop', title: 'SOP Promotor', desc: 'Aturan kerja & standar operasional' }
@@ -1910,8 +1292,12 @@ function kembaliKeMenu() {
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
   document.getElementById('menuGrid').classList.remove('hidden');
-  document.getElementById('promotorSelector').classList.add('hidden');
-  if (currentUser.role === 'ADMIN') {
+  if (currentUser && currentUser.role !== 'ADMIN') {
+    document.getElementById('promotorSelector').classList.add('hidden');
+  } else {
+    document.getElementById('promotorSelector').classList.add('hidden');
+  }
+  if (currentUser && currentUser.role === 'ADMIN') {
     promotorTerpilih = null;
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1951,7 +1337,7 @@ function tampilkanDetail(menuKey) {
   const titles = {
     absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
     penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
-    uc: { title: 'UFO Care', subtitle: 'Pencapaian poin UC promotor' },
+    uc: { title: 'UFO CARE', subtitle: 'Pencapaian poin UFO CARE promotor' },
     brand: { title: 'Perolehan Brand', subtitle: 'Rekap penjualan khusus brand Anda' },
     promo: { title: 'Promo Toko', subtitle: 'Daftar promo produk & program toko aktif' },
     sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' },
@@ -2077,7 +1463,7 @@ function renderAbsensi() {
     if (isNoPulang) tidakPulang++;
   });
   const dataProm = getPromotorTerpilih();
-  const namaTampil = dataProm.namaAbsen || '-';
+  const namaTampil = escapeHtml(dataProm.namaAbsen || '-');
   let html = `
     <div class="summary-card">
       <h2>${ICONS.trophy} ${namaTampil}</h2>
@@ -2111,12 +1497,12 @@ function renderAbsensi() {
           ${ICONS.calendar} ${formatTglFinal}<br>${status}
           ${labelTerlambat}
         </div>
-        <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${x.masuk}</span>`}</div>
-        <div class="row"><span>Istirahat 1</span>${x.istirahat1 ? `<span class="ok">${x.istirahat1}</span>` : '<span class="kosong">-</span>'}</div>
-        <div class="row"><span>Kembali 1</span>${x.kembali1 ? `<span class="ok">${x.kembali1}</span>` : '<span class="kosong">-</span>'}</div>
-        <div class="row"><span>Istirahat 2</span>${x.istirahat2 ? `<span class="ok">${x.istirahat2}</span>` : '<span class="kosong">-</span>'}</div>
-        <div class="row"><span>Kembali 2</span>${x.kembali2 ? `<span class="ok">${x.kembali2}</span>` : '<span class="kosong">-</span>'}</div>
-        <div class="row"><span>Pulang</span>${isNoPulang ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${x.pulang}</span>`}</div>
+        <div class="row"><span>Masuk</span>${isNoMasuk ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${escapeHtml(x.masuk)}</span>`}</div>
+        <div class="row"><span>Istirahat 1</span>${x.istirahat1 ? `<span class="ok">${escapeHtml(x.istirahat1)}</span>` : '<span class="kosong">-</span>'}</div>
+        <div class="row"><span>Kembali 1</span>${x.kembali1 ? `<span class="ok">${escapeHtml(x.kembali1)}</span>` : '<span class="kosong">-</span>'}</div>
+        <div class="row"><span>Istirahat 2</span>${x.istirahat2 ? `<span class="ok">${escapeHtml(x.istirahat2)}</span>` : '<span class="kosong">-</span>'}</div>
+        <div class="row"><span>Kembali 2</span>${x.kembali2 ? `<span class="ok">${escapeHtml(x.kembali2)}</span>` : '<span class="kosong">-</span>'}</div>
+        <div class="row"><span>Pulang</span>${isNoPulang ? '<span class="kosong">TIDAK FINGER</span>' : `<span class="ok">${escapeHtml(x.pulang)}</span>`}</div>
       </div>
     `;
   });
@@ -2135,7 +1521,7 @@ function renderPenjualan() {
   const totalUnit = list.reduce((s, x) => s + (Number(x.qty) || 1), 0);
   const periode = getPeriodeRentangDinamis();
   const dataProm = getPromotorTerpilih();
-  const namaTampil = dataProm.namaAbsen || '-';
+  const namaTampil = escapeHtml(dataProm.namaAbsen || '-');
   let html = `
     <div class="summary-card">
       <h2>${ICONS.money} ${namaTampil}</h2>
@@ -2163,11 +1549,11 @@ function renderPenjualan() {
     const totalHari = items.reduce((s, x) => s + (Number(x.subtotal || x.omzet) || 0), 0);
     let isiProduk = '';
     items.forEach((it, idx) => {
-      const kat = it.kategori ? ` <span style="font-size:11px; color:#38bdf8;">(${it.kategori})</span>` : '';
+      const kat = it.kategori ? ` <span style="font-size:11px; color:#38bdf8;">(${escapeHtml(it.kategori)})</span>` : '';
       isiProduk += `
         <div style="${idx > 0 ? 'margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.05);' : ''}">
-          <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:4px; color:#e5e7eb;">${it.namaBarang || it.produk || '-'}${kat}</div>
-          <div class="row"><span>Qty</span><span>${it.qty || 1}</span></div>
+          <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:4px; color:#e5e7eb;">${escapeHtml(it.namaBarang || it.produk || '-')}${kat}</div>
+          <div class="row"><span>Qty</span><span>${escapeHtml(it.qty || 1)}</span></div>
           <div class="row"><span>Omzet</span><span>Rp ${Number(it.subtotal || it.omzet || 0).toLocaleString('id-ID')}</span></div>
         </div>`;
     });
@@ -2209,24 +1595,24 @@ function renderUC() {
     list.forEach(x => { totalUC += Number(x.qty || 1); });
     const periode = getPeriodeRentangDinamis();
     const dataProm = getPromotorTerpilih();
-    const namaPromotor = dataProm.namaAbsen || "Promotor";
+    const namaPromotor = escapeHtml(dataProm.namaAbsen || "Promotor");
     let html = `
         <div class="summary-card">
             <h2>${ICONS.uc} ${namaPromotor}</h2>
             <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
-            <p>Total UC : <b>${totalUC}</b></p>
+            <p>Total UFO CARE : <b>${totalUC}</b></p>
         </div>
     `;
     if (list.length === 0) {
-        return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UC periode ini</div></div>`;
+        return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UFO CARE periode ini</div></div>`;
     }
     html += `<div class="card-grid">`;
     list.forEach(x => {
-        const namaProduk = x.namaBarang || x.produk || "-";
-        const qtyTrans = x.qty || 1;
+        const namaProduk = escapeHtml(x.namaBarang || x.produk || "-");
+        const qtyTrans = escapeHtml(x.qty || 1);
         html += `
         <div class="card success">
-            <div class="tanggal">${ICONS.calendar} ${x.tanggal || '-'}</div>
+            <div class="tanggal">${ICONS.calendar} ${escapeHtml(x.tanggal || '-')}</div>
             <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin:8px 0; color:#e5e7eb;">${namaProduk}</div>
             <div class="row"><span>Qty</span><span>${qtyTrans}</span></div>
         </div>`;
@@ -2262,8 +1648,8 @@ function renderBrand() {
         totalOmzetBrand += Number(x.subtotal || x.omzet || 0);
     });
     const periode = getPeriodeRentangDinamis();
-    const namaPromotor = dataProm ? dataProm.namaAbsen : "Promotor";
-    const infoMerk = dataProm && dataProm.merk ? dataProm.merk : "Semua Brand";
+    const namaPromotor = escapeHtml(dataProm ? dataProm.namaAbsen : "Promotor");
+    const infoMerk = escapeHtml(dataProm && dataProm.merk ? dataProm.merk : "Semua Brand");
     let html = `
         <div class="summary-card">
             <h2>${ICONS.brand} ${namaPromotor}</h2>
@@ -2298,9 +1684,9 @@ function renderBrand() {
             subOmzet += om;
             isiProduk += `
                 <div style="${idx > 0 ? 'margin-top:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,0.05);' : ''}">
-                    <div style="font-size:11px; color:#d4af37; margin-bottom:2px;">Brand: ${it.merk || infoMerk}</div>
-                    <div style="font-size:11px; color:#9ca3af; margin-bottom:2px;">Kategori: ${it.kategori || '-'}</div>
-                    <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:4px; color:#e5e7eb;">${it.namaBarang || it.produk || '-'}</div>
+                    <div style="font-size:11px; color:#d4af37; margin-bottom:2px;">Brand: ${escapeHtml(it.merk || infoMerk)}</div>
+                    <div style="font-size:11px; color:#9ca3af; margin-bottom:2px;">Kategori: ${escapeHtml(it.kategori || '-')}</div>
+                    <div style="font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:4px; color:#e5e7eb;">${escapeHtml(it.namaBarang || it.produk || '-')}</div>
                     <div class="row"><span>Qty</span><span>${q} Unit</span></div>
                     <div class="row"><span>Omzet</span><span>Rp ${om.toLocaleString("id-ID")}</span></div>
                 </div>
@@ -2320,32 +1706,24 @@ function renderBrand() {
     return html;
 }
 
-/* ============================================================ */
-/* ===== RENDER: INFO LIST (PROMO & SOP) — FIXED ============== */
-/* ============================================================ */
+/* ===== RENDER: INFO LIST (PROMO & SOP) ===== */
 function renderInfoList(arr, jenis) {
-  // Convert object ke array
   let list = [];
   if (Array.isArray(arr)) {
     list = arr;
   } else if (arr && typeof arr === 'object') {
     list = Object.values(arr);
   }
-  
-  // Filter yang valid
   list = list.filter(x => x && (x.judul || x.poin));
-  
   if (!list || list.length === 0) {
     return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data</div></div>`;
   }
   
-  // ===== PROMO (Teks saja) =====
   if (jenis === 'promo') {
     return list.map(x => {
-      const judul = (x.judul || '-').trim();
-      const periode = (x.periode || '').trim();
-      const detail = (x.detail || '').trim();
-      
+      const judul = escapeHtml((x.judul || '-').trim());
+      const periode = escapeHtml((x.periode || '').trim());
+      const detail = escapeHtml((x.detail || '').trim());
       return `
         <div class="info-block" style="
           background: rgba(17, 24, 39, 0.75); 
@@ -2360,7 +1738,7 @@ function renderInfoList(arr, jenis) {
           </div>
           ${periode ? `<div style="color:#9ca3af; font-size: 12px; margin-bottom: 10px; font-weight:600;">📅 ${periode}</div>` : ''}
           ${detail ? `
-            <div style="border-top:1px solid rgba(255,255,255,0.06); padding-top:10px; color:#e5e7eb; font-size: 13.5px; line-height: 1.6;">
+            <div style="border-top:1px solid rgba(255,255,255,0.06); padding-top:10px; color:#e5e7eb; font-size: 13.5px; line-height: 1.6; white-space: pre-wrap;">
               ${detail}
             </div>
           ` : ''}
@@ -2369,12 +1747,10 @@ function renderInfoList(arr, jenis) {
     }).join('');
   }
   
-  // ===== SOP (1 baris + thumbnail + klik modal) =====
   if (jenis === 'rules') {
     return list.map((x, i) => {
-      const judul = (x.poin || x.judul || '-').trim();
-      const gambarUrl = x.gambar || x.url || x.image || '';
-      
+      const judul = escapeHtml((x.poin || x.judul || '-').trim());
+      const gambarUrl = safeImageUrl(x.gambar || x.url || x.image || '');
       const thumbnailHtml = gambarUrl ? `
         <div style="
           width: 55px; 
@@ -2393,7 +1769,6 @@ function renderInfoList(arr, jenis) {
           >
         </div>
       ` : '';
-      
       return `
         <div style="
           background: rgba(17, 24, 39, 0.75); 
@@ -2408,8 +1783,7 @@ function renderInfoList(arr, jenis) {
           justify-content: space-between; 
           gap: 12px;
           cursor: pointer;
-        " onclick="bukaModalSOP('${gambarUrl}', '${judul.replace(/'/g, "\\'")}')">
-          
+        " data-sop-url="${gambarUrl}" data-sop-judul="${judul}" onclick="bukaModalSOP(this.dataset.sopUrl, this.dataset.sopJudul)">
           <div style="flex: 1; min-width: 0;">
             <div style="font-size: 14px; color: #d4af37; font-weight: 700; margin-bottom: 3px;">
               📌 ${judul}
@@ -2418,7 +1792,6 @@ function renderInfoList(arr, jenis) {
               Ketuk untuk memperbesar gambar SOP
             </div>
           </div>
-          
           ${thumbnailHtml}
         </div>
       `;
@@ -2427,10 +1800,11 @@ function renderInfoList(arr, jenis) {
   return '';
 }
 
-/* ===== MODAL SOP (Klik untuk memperbesar) ===== */
+/* ===== MODAL SOP ===== */
 function bukaModalSOP(urlGambar, judulSop) {
   const old = document.getElementById('sopModal');
   if (old) old.remove();
+  if (!urlGambar) return;
   
   const modalDiv = document.createElement("div");
   modalDiv.id = "sopModal";
@@ -2450,6 +1824,7 @@ function bukaModalSOP(urlGambar, judulSop) {
     if (e.target === modalDiv) modalDiv.remove();
   };
   
+  const judulEsc = escapeHtml(judulSop);
   modalDiv.innerHTML = `
     <div style="
       position: relative; 
@@ -2485,10 +1860,10 @@ function bukaModalSOP(urlGambar, judulSop) {
         font-weight: 700; 
         font-size: 15px; 
         margin-bottom: 10px;
-      ">📌 ${judulSop}</div>
+      ">📌 ${judulEsc}</div>
       <img 
         src="${urlGambar}" 
-        alt="${judulSop}" 
+        alt="${judulEsc}" 
         style="
           width: 100%; 
           max-height: 70vh; 
@@ -2498,11 +1873,10 @@ function bukaModalSOP(urlGambar, judulSop) {
       >
     </div>
   `;
-  
   document.body.appendChild(modalDiv);
 }
+window.bukaModalSOP = bukaModalSOP;
 
-/* ===== RENDER: PEROLEHAN (ADMIN) ===== */
 /* ===== RENDER: PEROLEHAN (ADMIN) ===== */
 function renderPerolehan() {
     if (!allPenjualan || allPenjualan.length === 0) {
@@ -2543,17 +1917,14 @@ function renderPerolehan() {
     const arr = Object.values(perPromotor).sort((a, b) => b.omzet - a.omzet);
     const totalOmzetSemua = arr.reduce((s, x) => s + x.omzet, 0);
     const totalUCSemua = arr.reduce((s, x) => s + x.uc, 0);
-    
-    // ===== TAMBAHAN: PERIODE =====
     const periode = getPeriodeRentangDinamis();
-    
     let html = `
         <div class="summary-card">
             <h2>${ICONS.chart} Perolehan All Promotor</h2>
             <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
             <p>${ICONS.users} Jumlah Promotor : <b>${arr.length}</b></p>
             <p>${ICONS.moneySmall} Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
-            <p>${ICONS.diamondSmall} Total UC : <b>${totalUCSemua}</b></p>
+            <p>${ICONS.diamondSmall} Total UFO CARE : <b>${totalUCSemua}</b></p>
         </div>
         <div class="summary-card">
     `;
@@ -2572,7 +1943,7 @@ function renderPerolehan() {
                         ${rank}
                     </div>
                     <div style="font-weight:600; font-size:13.5px; color:#ffffff; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-                        ${p.nama}
+                        ${escapeHtml(p.nama)}
                     </div>
                 </div>
                 <div style="text-align:right; white-space:nowrap; flex-shrink:0;">
@@ -2580,7 +1951,7 @@ function renderPerolehan() {
                         Rp ${omzetVal.toLocaleString('id-ID')}
                     </div>
                     <div class="uc-label" style="font-size:11.5px; font-weight:700; color:#d4af37; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
-                        ${ICONS.star} UC : ${p.uc || 0}
+                        ${ICONS.star} UFO CARE : ${p.uc || 0}
                     </div>
                 </div>
             </div>
@@ -2603,7 +1974,7 @@ function renderDenda() {
             <h2>${ICONS.warning} Denda & Keterlambatan Semua Promotor</h2>
             <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
                 <div style="flex:1; min-width:140px; background:rgba(239,68,68,0.1); padding:10px; border-radius:10px; border:1px solid rgba(239,68,68,0.3);">
-                    <div style="font-size:10px; color:#9ca3af; font-weight:700;">DENDA UC</div>
+                    <div style="font-size:10px; color:#9ca3af; font-weight:700;">DENDA UFO CARE</div>
                     <div style="font-size:12.5px; color:#f87171; font-weight:700; margin-top:2px;">Rp 5.000 / Unit</div>
                 </div>
                 <div style="flex:1; min-width:140px; background:rgba(250,204,21,0.1); padding:10px; border-radius:10px; border:1px solid rgba(250,204,21,0.3);">
@@ -2629,7 +2000,7 @@ function renderDenda() {
                 totalUC += Number(x.qty || 1);
             }
         });
-        const absensiP = allAbsensi[key] || {};
+        const absensiP = allAbsensiAll[key] || {};
         let totalTerlambat = 0;
         Object.values(absensiP).forEach(a => {
             if (a && String(a.terlambat || '').toUpperCase() === 'YA') totalTerlambat++;
@@ -2642,8 +2013,8 @@ function renderDenda() {
         const totalDenda = dendaUC + dendaLate;
         html += `
             <div class="card ${totalDenda > 0 ? 'warning' : 'success'}">
-                <div class="tanggal">${p.namaAbsen || '-'}</div>
-                <div class="row"><span>Denda UC</span><span style="color:${dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${dendaUC.toLocaleString('id-ID')}</span></div>
+                <div class="tanggal">${escapeHtml(p.namaAbsen || '-')}</div>
+                <div class="row"><span>Denda UFO CARE</span><span style="color:${dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${dendaUC.toLocaleString('id-ID')}</span></div>
                 <div class="row"><span>Denda Late (${totalTerlambat}x)</span><span style="color:${dendaLate > 0 ? '#facc15' : '#34d399'};">Rp ${dendaLate.toLocaleString('id-ID')}</span></div>
                 <div class="row" style="border-top:1px solid rgba(255,255,255,0.1); margin-top:6px; padding-top:6px; font-weight:700;">
                     <span>TOTAL DENDA</span>
@@ -2656,215 +2027,90 @@ function renderDenda() {
     return html;
 }
 
-/* ===== THEME TOGGLE (DARK / LIGHT) ===== */
+/* ===== THEME TOGGLE ===== */
 function toggleTheme() {
   const isLight = document.body.classList.toggle('light-mode');
   localStorage.setItem('ufo_theme', isLight ? 'light' : 'dark');
-  updateThemeIcon(isLight);
 }
+window.toggleTheme = toggleTheme;
 
-function updateThemeIcon(isLight) {
-  const icon = document.getElementById('themeIcon');
-  if (!icon) return;
-  if (isLight) {
-    // Ikon matahari untuk light mode
-    icon.innerHTML = `
-      <circle cx="12" cy="12" r="5"/>
-      <line x1="12" y1="1" x2="12" y2="3"/>
-      <line x1="12" y1="21" x2="12" y2="23"/>
-      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
-      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-      <line x1="1" y1="12" x2="3" y2="12"/>
-      <line x1="21" y1="12" x2="23" y2="12"/>
-      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
-      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-    `;
-  } else {
-    // Ikon bulan untuk dark mode
-    icon.innerHTML = `<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>`;
-  }
-}
-
-// Load tema tersimpan saat halaman dibuka
 (function loadSavedTheme() {
   const saved = localStorage.getItem('ufo_theme');
   if (saved === 'light') {
     document.body.classList.add('light-mode');
-    document.addEventListener('DOMContentLoaded', () => updateThemeIcon(true));
   }
 })();
 
-window.toggleTheme = toggleTheme;
-  
-/* ===== LOGOUT (Custom Modal) ===== */
-/* ===== LOGOUT (Custom Modal — Auto Tema) ===== */
+/* ===== LOGOUT ===== */
 function logoutPromotor() {
   const old = document.getElementById('logoutModal');
   if (old) old.remove();
-  
   const isLight = document.body.classList.contains('light-mode');
-  
   const modal = document.createElement('div');
   modal.id = 'logoutModal';
   modal.style.cssText = `
     position: fixed; top: 0; left: 0;
     width: 100%; height: 100%;
-    background: ${isLight ? 'rgba(241, 245, 249, 0.7)' : 'rgba(3, 7, 18, 0.85)'};
+    background: ${isLight ? 'rgba(241,245,249,0.7)' : 'rgba(3,7,18,0.85)'};
     backdrop-filter: blur(10px);
     display: flex; justify-content: center; align-items: center;
     z-index: 999999; padding: 16px;
     opacity: 0; transition: opacity 0.25s ease;
   `;
-  
-  // Warna berdasarkan tema
-  const cardBg = isLight 
-    ? 'linear-gradient(135deg, #ffffff, #fef9ec)' 
-    : 'linear-gradient(135deg, rgba(17, 24, 39, 0.98), rgba(35, 28, 15, 0.95))';
-  const cardBorder = isLight 
-    ? 'rgba(212, 175, 55, 0.6)' 
-    : 'rgba(212, 175, 55, 0.5)';
-  const cardShadow = isLight
-    ? '0 0 40px rgba(212, 175, 55, 0.2), 0 25px 60px rgba(0, 0, 0, 0.15)'
-    : '0 0 40px rgba(212, 175, 55, 0.25), 0 25px 60px rgba(0, 0, 0, 0.6)';
+  const cardBg = isLight ? 'linear-gradient(135deg, #ffffff, #fef9ec)' : 'linear-gradient(135deg, rgba(17,24,39,0.98), rgba(35,28,15,0.95))';
+  const cardBorder = isLight ? 'rgba(212,175,55,0.6)' : 'rgba(212,175,55,0.5)';
   const titleColor = isLight ? '#111827' : '#ffffff';
   const descColor = isLight ? '#64748b' : '#94a3b8';
-  const iconBg = isLight
-    ? 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(239, 68, 68, 0.05))'
-    : 'linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(239, 68, 68, 0.05))';
-  const iconBorder = isLight
-    ? 'rgba(239, 68, 68, 0.4)'
-    : 'rgba(239, 68, 68, 0.4)';
   const iconColor = isLight ? '#dc2626' : '#f87171';
-  
-  const cancelBg = isLight ? '#f1f5f9' : 'rgba(148, 163, 184, 0.1)';
-  const cancelBorder = isLight ? '#cbd5e1' : 'rgba(148, 163, 184, 0.3)';
-  const cancelColor = isLight ? '#475569' : '#cbd5e1';
-  const cancelHoverBg = isLight ? '#e2e8f0' : 'rgba(148, 163, 184, 0.2)';
-  
+
   modal.innerHTML = `
     <div id="logoutModalCard" style="
-      background: ${cardBg};
-      border: 2px solid ${cardBorder};
-      border-radius: 20px;
-      padding: 32px 28px;
-      max-width: 380px; width: 100%;
-      text-align: center;
-      box-shadow: ${cardShadow};
-      transform: scale(0.85);
-      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-      position: relative; overflow: hidden;
+      background: ${cardBg}; border: 2px solid ${cardBorder}; border-radius: 20px;
+      padding: 32px 28px; max-width: 380px; width: 100%; text-align: center;
+      box-shadow: 0 0 40px rgba(212,175,55,0.25), 0 25px 60px rgba(0,0,0,0.6);
+      transform: scale(0.85); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     ">
-      <div style="
-        position: absolute; top: 0; left: 0; right: 0; height: 2px;
-        background: linear-gradient(90deg, transparent, #d4af37, transparent);
-      "></div>
-      
-      <div style="
-        width: 72px; height: 72px; margin: 0 auto 18px;
-        border-radius: 50%;
-        background: ${iconBg};
-        border: 2px solid ${iconBorder};
-        display: flex; align-items: center; justify-content: center;
-        box-shadow: 0 0 25px rgba(239, 68, 68, 0.3);
-      ">
-        <svg viewBox="0 0 24 24" style="width: 36px; height: 36px; stroke: ${iconColor}; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round;">
+      <div style="width:72px; height:72px; margin:0 auto 18px; border-radius:50%;
+        background: rgba(239,68,68,0.15); border: 2px solid rgba(239,68,68,0.4);
+        display:flex; align-items:center; justify-content:center;">
+        <svg viewBox="0 0 24 24" style="width:36px; height:36px; stroke:${iconColor}; stroke-width:2; fill:none; stroke-linecap:round; stroke-linejoin:round;">
           <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
           <polyline points="16 17 21 12 16 7"/>
           <line x1="21" y1="12" x2="9" y2="12"/>
         </svg>
       </div>
-      
-      <div style="
-        font-size: 19px; font-weight: 800; color: ${titleColor};
-        margin-bottom: 8px; letter-spacing: -0.3px;
-      ">Konfirmasi Keluar</div>
-      
-      <div style="
-        font-size: 13.5px; color: ${descColor}; font-weight: 500;
-        margin-bottom: 26px; line-height: 1.5;
-      ">Apakah Anda yakin ingin keluar dari dashboard?</div>
-      
-      <div style="display: flex; gap: 10px;">
-        <button id="logoutCancelBtn" style="
-          flex: 1; padding: 13px 16px;
-          background: ${cancelBg};
-          border: 1px solid ${cancelBorder};
-          border-radius: 11px;
-          color: ${cancelColor}; font-size: 13px; font-weight: 700;
-          letter-spacing: 1px; text-transform: uppercase;
-          cursor: pointer; font-family: inherit;
-          transition: all 0.2s ease;
-        ">Batal</button>
-        
-        <button id="logoutConfirmBtn" style="
-          flex: 1; padding: 13px 16px;
-          background: linear-gradient(135deg, #ef4444, #b91c1c);
-          border: none; border-radius: 11px;
-          color: #ffffff; font-size: 13px; font-weight: 800;
-          letter-spacing: 1px; text-transform: uppercase;
-          cursor: pointer; font-family: inherit;
-          box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);
-          transition: all 0.2s ease;
-        ">Keluar</button>
+      <div style="font-size:19px; font-weight:800; color:${titleColor}; margin-bottom:8px;">Konfirmasi Keluar</div>
+      <div style="font-size:13.5px; color:${descColor}; margin-bottom:26px;">Apakah Anda yakin ingin keluar?</div>
+      <div style="display:flex; gap:10px;">
+        <button id="logoutCancelBtn" style="flex:1; padding:13px; background:${isLight?'#f1f5f9':'rgba(148,163,184,0.1)'};
+          border:1px solid ${isLight?'#cbd5e1':'rgba(148,163,184,0.3)'}; border-radius:11px;
+          color:${isLight?'#475569':'#cbd5e1'}; font-weight:700; cursor:pointer; font-family:inherit;">Batal</button>
+        <button id="logoutConfirmBtn" style="flex:1; padding:13px;
+          background: linear-gradient(135deg, #ef4444, #b91c1c); border:none; border-radius:11px;
+          color:#fff; font-weight:800; cursor:pointer; font-family:inherit;">Keluar</button>
       </div>
     </div>
   `;
-  
   document.body.appendChild(modal);
-  
   requestAnimationFrame(() => {
     modal.style.opacity = '1';
     document.getElementById('logoutModalCard').style.transform = 'scale(1)';
   });
-  
-  // Hover tombol Batal — sesuai tema
-  const cancelBtn = document.getElementById('logoutCancelBtn');
-  cancelBtn.addEventListener('mouseenter', () => {
-    cancelBtn.style.background = cancelHoverBg;
-  });
-  cancelBtn.addEventListener('mouseleave', () => {
-    cancelBtn.style.background = cancelBg;
-  });
-  
   const closeModal = () => {
     modal.style.opacity = '0';
     document.getElementById('logoutModalCard').style.transform = 'scale(0.9)';
     setTimeout(() => modal.remove(), 250);
   };
-  
-  cancelBtn.onclick = closeModal;
-  document.getElementById('logoutConfirmBtn').onclick = () => {
+  document.getElementById('logoutCancelBtn').onclick = closeModal;
+  document.getElementById('logoutConfirmBtn').onclick = async () => {
     closeModal();
-    setTimeout(eksekusiLogout, 200);
+    try {
+      await window.firebaseSignOut(window.firebaseAuth);
+    } catch(e) { console.error(e); }
+    setTimeout(() => location.reload(), 400);
   };
   modal.onclick = (e) => { if (e.target === modal) closeModal(); };
-  
-  const escHandler = (e) => {
-    if (e.key === 'Escape') { closeModal(); document.removeEventListener('keydown', escHandler); }
-  };
-  document.addEventListener('keydown', escHandler);
 }
-
-function eksekusiLogout() {
-  localStorage.removeItem('ufo_promotor_session_v3');
-  currentUser = null;
-  allPenjualan = [];
-  currentMenu = null;
-  loginMode = 'promotor';
-  promotorTerpilih = null;
-  document.getElementById('dashboard').classList.add('hidden');
-  document.body.classList.remove('dashboard-active');
-  document.body.classList.add('login-active');
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('login-pilih-sales').value = '';
-  document.getElementById('login-pin-input').value = '';
-  document.getElementById('login-admin-username').value = '';
-  document.getElementById('custom-select-label').innerText = '-- Pilih Nama Anda --';
-  document.getElementById('custom-select-menu').querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
-  switchLoginTab('promotor');
-  document.getElementById('topBar').classList.remove('admin-mode');
-}
-
 window.logoutPromotor = logoutPromotor;
 </script>
 
