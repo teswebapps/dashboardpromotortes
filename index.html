@@ -2067,6 +2067,7 @@ function bukaModalSOP(urlGambar, judulSop) {
 window.bukaModalSOP = bukaModalSOP;
 
 /* ===== RENDER: PEROLEHAN (ADMIN) ===== */
+/* ===== RENDER: PEROLEHAN (ADMIN) ===== */
 function renderPerolehan() {
     if (!allPenjualan || allPenjualan.length === 0) {
         return `<div class="empty-state">${ICONS.empty}<div class="pesan">Belum ada data penjualan</div></div>`;
@@ -2078,10 +2079,11 @@ function renderPerolehan() {
         perPromotor[key] = {
             key: key,
             nama: p.namaAbsen || '-',
-            omzet: 0,
+            omzet: 0,       // perolehan toko (semua transaksi)
             unit: 0,
             transaksi: 0,
-            uc: 0
+            uc: 0,          // perolehan UFO CARE
+            brand: 0        // perolehan brand promotor sendiri
         };
     });
     allPenjualan.forEach(x => {
@@ -2089,14 +2091,24 @@ function renderPerolehan() {
         const salesName = String(x.namaSales).trim().toUpperCase();
         const kat = String(x.kategori || '').trim().toUpperCase();
         const brg = String(x.namaBarang || '').toUpperCase();
+        const merkBarang = String(x.merk || '').trim().toUpperCase();
         Object.keys(perPromotor).forEach(k => {
             const p = allPromotor[k];
             const pSales = String(p.namaSales || '').trim().toUpperCase();
             const pAbsen = String(p.namaAbsen || '').trim().toUpperCase();
+            const pMerk = String(p.merk || '').trim().toUpperCase();
             if (salesName === pSales || salesName.includes(pAbsen) || pAbsen.includes(salesName)) {
-                perPromotor[k].omzet += Number(x.subtotal || x.omzet || 0);
+                const omzetTrans = Number(x.subtotal || x.omzet || 0);
+                perPromotor[k].omzet += omzetTrans;
                 perPromotor[k].unit += Number(x.qty || 1);
                 perPromotor[k].transaksi += 1;
+                // Perolehan Brand: hanya transaksi dengan merk sesuai brand promotor, bukan GARANSI/ONGKOS
+                if (pMerk && kat !== 'GARANSI' && kat !== 'ONGKOS') {
+                    if (merkBarang === pMerk || merkBarang.includes(pMerk)) {
+                        perPromotor[k].brand += omzetTrans;
+                    }
+                }
+                // Perolehan UC: khusus transaksi GARANSI yang mengandung UFO CARE
                 if (kat === 'GARANSI' && brg.includes('UFO CARE')) {
                     perPromotor[k].uc += Number(x.qty || 1);
                 }
@@ -2106,6 +2118,7 @@ function renderPerolehan() {
     const arr = Object.values(perPromotor).sort((a, b) => b.omzet - a.omzet);
     const totalOmzetSemua = arr.reduce((s, x) => s + x.omzet, 0);
     const totalUCSemua = arr.reduce((s, x) => s + x.uc, 0);
+    const totalBrandSemua = arr.reduce((s, x) => s + x.brand, 0);
     const periode = getPeriodeRentangDinamis();
     let html = `
         <div class="summary-card">
@@ -2113,7 +2126,28 @@ function renderPerolehan() {
             <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
             <p>${ICONS.users} Jumlah Promotor : <b>${arr.length}</b></p>
             <p>${ICONS.moneySmall} Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
+            <p>${ICONS.moneySmall} Total Omzet Brand : <span style="font-weight:bold; color:#60a5fa;">Rp ${totalBrandSemua.toLocaleString('id-ID')}</span></p>
             <p>${ICONS.diamondSmall} Total UFO CARE : <b>${totalUCSemua}</b></p>
+            <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+                <button onclick="unduhExcelPerolehan()" style="
+                    padding: 10px 18px;
+                    background: linear-gradient(135deg, #10b981, #059669);
+                    border: none; border-radius: 10px;
+                    color: #ffffff; font-weight: 700; font-size: 13px;
+                    cursor: pointer; font-family: inherit;
+                    display: inline-flex; align-items: center; gap: 8px;
+                    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+                    letter-spacing: 0.3px;
+                    transition: all 0.2s ease;
+                " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 8px 20px rgba(16,185,129,0.45)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(16,185,129,0.3)'">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Unduh Excel
+                </button>
+            </div>
         </div>
         <div class="summary-card">
     `;
@@ -2149,7 +2183,119 @@ function renderPerolehan() {
     html += `</div>`;
     return html;
 }
-
+/* ===== UNDUH EXCEL: PEROLEHAN ALL PROMOTOR ===== */
+function unduhExcelPerolehan() {
+    if (!allPenjualan || allPenjualan.length === 0) {
+        alert('Belum ada data penjualan untuk diunduh.');
+        return;
+    }
+    
+    // Hitung ulang per promotor (sama seperti renderPerolehan)
+    const perPromotor = {};
+    Object.keys(allPromotor).forEach(key => {
+        const p = allPromotor[key];
+        if (p.aktif === false) return;
+        perPromotor[key] = {
+            key: key,
+            nama: p.namaAbsen || '-',
+            omzet: 0,
+            brand: 0,
+            uc: 0
+        };
+    });
+    
+    allPenjualan.forEach(x => {
+        if (!x || !x.namaSales) return;
+        const salesName = String(x.namaSales).trim().toUpperCase();
+        const kat = String(x.kategori || '').trim().toUpperCase();
+        const brg = String(x.namaBarang || '').toUpperCase();
+        const merkBarang = String(x.merk || '').trim().toUpperCase();
+        Object.keys(perPromotor).forEach(k => {
+            const p = allPromotor[k];
+            const pSales = String(p.namaSales || '').trim().toUpperCase();
+            const pAbsen = String(p.namaAbsen || '').trim().toUpperCase();
+            const pMerk = String(p.merk || '').trim().toUpperCase();
+            if (salesName === pSales || salesName.includes(pAbsen) || pAbsen.includes(salesName)) {
+                const omzetTrans = Number(x.subtotal || x.omzet || 0);
+                perPromotor[k].omzet += omzetTrans;
+                if (pMerk && kat !== 'GARANSI' && kat !== 'ONGKOS') {
+                    if (merkBarang === pMerk || merkBarang.includes(pMerk)) {
+                        perPromotor[k].brand += omzetTrans;
+                    }
+                }
+                if (kat === 'GARANSI' && brg.includes('UFO CARE')) {
+                    perPromotor[k].uc += Number(x.qty || 1);
+                }
+            }
+        });
+    });
+    
+    const arr = Object.values(perPromotor).sort((a, b) => b.omzet - a.omzet);
+    const periode = getPeriodeRentangDinamis();
+    
+    // Bangun array data untuk Excel
+    const dataExcel = arr.map((p, i) => ({
+        'No': i + 1,
+        'Nama Promotor': p.nama,
+        'Perolehan Toko': p.omzet,
+        'Perolehan Brand': p.brand,
+        'Perolehan UC': p.uc
+    }));
+    
+    // Baris total di bawah
+    const totalOmzet = arr.reduce((s, x) => s + x.omzet, 0);
+    const totalBrand = arr.reduce((s, x) => s + x.brand, 0);
+    const totalUC = arr.reduce((s, x) => s + x.uc, 0);
+    dataExcel.push({
+        'No': '',
+        'Nama Promotor': 'TOTAL',
+        'Perolehan Toko': totalOmzet,
+        'Perolehan Brand': totalBrand,
+        'Perolehan UC': totalUC
+    });
+    
+    // Buat worksheet
+    const ws = XLSX.utils.json_to_sheet(dataExcel);
+    
+    // Lebar kolom
+    ws['!cols'] = [
+        { wch: 5 },   // No
+        { wch: 28 },  // Nama Promotor
+        { wch: 18 },  // Perolehan Toko
+        { wch: 18 },  // Perolehan Brand
+        { wch: 14 }   // Perolehan UC
+    ];
+    
+    // Format angka ribuan untuk kolom rupiah
+    const range = XLSX.utils.decode_range(ws['!ref']);
+    for (let R = 1; R <= range.e.r; R++) {
+        for (let C = 2; C <= 3; C++) {
+            const cellAddr = XLSX.utils.encode_cell({ r: R, c: C });
+            if (ws[cellAddr] && typeof ws[cellAddr].v === 'number') {
+                ws[cellAddr].t = 'n';
+                ws[cellAddr].z = '#,##0';
+            }
+        }
+        // Kolom UC (C=4) format angka biasa
+        const ucCell = XLSX.utils.encode_cell({ r: R, c: 4 });
+        if (ws[ucCell] && typeof ws[ucCell].v === 'number') {
+            ws[ucCell].t = 'n';
+            ws[ucCell].z = '#,##0';
+        }
+    }
+    
+    // Buat workbook
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Perolehan Promotor');
+    
+    // Nama file
+    const tglFile = new Date().toISOString().slice(0, 10);
+    const namaFile = `Perolehan_Promotor_UFO_${tglFile}.xlsx`;
+    
+    // Unduh
+    XLSX.writeFile(wb, namaFile);
+}
+window.unduhExcelPerolehan = unduhExcelPerolehan;
 /* ===== RENDER: DENDA (ADMIN) ===== */
 function renderDenda() {
     const DENDA_UC_PER_UNIT = 5000;
