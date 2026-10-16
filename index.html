@@ -765,6 +765,7 @@ function tanggalKeNama(tglStr) {
 }
 function parseTanggal(str) {
   if (!str) return null;
+  // Format data: DD/MM/YYYY
   const p = String(str).split('/');
   if (p.length !== 3) return null;
   return new Date(Number(p[2]), Number(p[1]) - 1, Number(p[0]));
@@ -832,7 +833,9 @@ function renderAbsensi() {
     else if (isNoMasuk) statusText = "Tidak Finger Masuk";
     else if (isNoPulang) statusText = "Tidak Finger Pulang";
     const status = `<span class="${(isNoMasuk || isNoPulang || isTerlambat) ? 'status-warning' : 'status-ok'}">${statusText}</span>`;
-    let tglAbsenStr = `10/${String(x.hari).padStart(2, '0')}/2026`;
+    const bulanIniNum = new Date().getMonth() + 1;
+const tahunIniNum = new Date().getFullYear();
+let tglAbsenStr = `${String(x.hari).padStart(2, '0')}/${String(bulanIniNum).padStart(2, '0')}/${tahunIniNum}`;
     const formatTglFinal = tanggalKeNama(tglAbsenStr);
     const kelasTambahan = isTerlambat ? 'late' : '';
     const labelTerlambat = isTerlambat ? '<div style="color:#facc15;font-weight:900;margin-top:6px;font-size:11px;">⚠️ TERLAMBAT</div>' : '';
