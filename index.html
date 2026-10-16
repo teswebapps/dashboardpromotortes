@@ -60,10 +60,11 @@ onAuthStateChanged(auth, async (user) => {
       await signOut(auth);
       return;
     }
-    const wl = snap.val();
+       const wl = snap.val();
     window.firebaseUser = {
       email: user.email,
       uid: user.uid,
+      namaTampil: wl.nama || user.displayName || user.email, // <-- BARIS BARU
       role: wl.role || 'PROMOTOR',
       promotorKey: wl.promotorKey || null
     };
@@ -1346,20 +1347,22 @@ function tampilkanDashboard() {
     return;
   }
   
-  currentUser = {
+   currentUser = {
     key: window.firebaseUser.promotorKey || window.firebaseUser.uid,
     email: window.firebaseUser.email,
+    namaAbsen: window.firebaseUser.namaTampil, // <-- Pakai nama dari whitelist
     role: window.firebaseUser.role,
     loginType: 'google'
   };
 
   if (window.firebaseUser.promotorKey && allPromotor[window.firebaseUser.promotorKey]) {
     const p = allPromotor[window.firebaseUser.promotorKey];
-    currentUser.namaAbsen = p.namaAbsen || window.firebaseUser.email;
+    // Hanya timpa dengan namaAbsen dari promotor jika field-nya ada
+    if (p.namaAbsen) {
+      currentUser.namaAbsen = p.namaAbsen;
+    }
     currentUser.namaSales = p.namaSales || '';
     currentUser.merk = p.merk || '';
-  } else {
-    currentUser.namaAbsen = window.firebaseUser.email;
   }
 
   document.body.classList.remove('login-active');
