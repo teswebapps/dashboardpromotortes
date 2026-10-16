@@ -722,14 +722,14 @@ function tampilkanDetail(menuKey) {
     document.getElementById('promotorSelector').classList.add('hidden');
   }
   const titles = {
-    absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran bulan ' + getNamaBulanIndo(BULAN_INI) },
-    penjualan: { title: 'Penjualan', subtitle: 'Omzet bulan ' + getNamaBulanIndo(BULAN_INI) },
-    uc: { title: 'UFO CARE', subtitle: 'Pencapaian UFO CARE' },
-    brand: { title: 'Perolehan Brand', subtitle: 'Rekap brand Anda' },
-    promo: { title: 'Promo Toko', subtitle: 'Daftar promo aktif' },
-    sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & SOP' },
-    perolehan: { title: 'Perolehan All Promotor', subtitle: 'Peringkat omzet bulan ' + getNamaBulanIndo(BULAN_INI) },
-    denda: { title: 'Denda & Keterlambatan', subtitle: 'Rekap denda' }
+    absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
+    penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
+    uc: { title: 'UFO CARE', subtitle: 'Pencapaian poin UFO CARE promotor' },
+    brand: { title: 'Perolehan Brand', subtitle: 'Rekap penjualan khusus brand Anda' },
+    promo: { title: 'Promo Toko', subtitle: 'Daftar promo produk & program toko aktif' },
+    sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' },
+    perolehan: { title: 'Perolehan All Promotor', subtitle: 'Peringkat & akumulasi omzet seluruh promotor' },
+    denda: { title: 'Denda & Keterlambatan', subtitle: 'Rekap denda UC & late semua promotor' }
   };
   const t = titles[menuKey] || { title: 'Detail', subtitle: '' };
   let content = '';
