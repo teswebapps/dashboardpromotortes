@@ -826,7 +826,7 @@ function handleFilePenjualan(e) {
           merk: String(r[18]).trim().toUpperCase()
         });
       }
-      coconst omzet = parsed.reduce((s, x) => s + x.subtotal, 0);
+      const omzet = parsed.reduce((s, x) => s + x.subtotal, 0);
       el.innerHTML = `<div class="alert ok">✅ ${parsed.length} baris — Omzet: Rp ${omzet.toLocaleString('id-ID')}</div>
         <button class="btn-success btn-full" onclick="konfirmasiUploadPenjualan()">Konfirmasi Upload</button>`;
       window._jualData = parsed;
