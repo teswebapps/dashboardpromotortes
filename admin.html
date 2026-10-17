@@ -998,16 +998,31 @@ async function hapusPromotor(key, nama) {
 }
 
 /* ===== WHITELIST ===== */
+/* ===== WHITELIST ===== */
 function renderWhitelist() {
   const list = Object.keys(allWhitelist).map(k => ({ key: k, ...allWhitelist[k] })).sort((a,b) => (a.nama || a.email || '').localeCompare(b.nama || b.email || ''));
+  const listProm = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] })).sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
+  
   return `
     <div class="card">
       <h3><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Tambah ke Whitelist</h3>
-      <p>Daftarkan email & nama yang bisa login.</p>
-      <div class="form-grid">
-        <input type="email" id="wl_email" placeholder="Email Google">
-        <input type="text" id="wl_nama" placeholder="Nama yang tampil">
-        <select id="wl_role"><option value="PROMOTOR">PROMOTOR</option><option value="ADMIN">ADMIN</option></select>
+      <p>Daftarkan email & hubungkan ke Promotor yang sesuai.</p>
+      <div style="margin-bottom:10px;"><label>Email Google</label><input type="email" id="wl_email" placeholder="contoh@gmail.com"></div>
+      <div style="margin-bottom:10px;"><label>Nama Tampilan</label><input type="text" id="wl_nama" placeholder="Nama yang muncul di dashboard"></div>
+      <div style="margin-bottom:10px;">
+        <label>Role</label>
+        <select id="wl_role" onchange="document.getElementById('wl_promotor_wrap').style.display = this.value === 'ADMIN' ? 'none' : 'block'">
+          <option value="PROMOTOR">PROMOTOR</option>
+          <option value="ADMIN">ADMIN</option>
+        </select>
+      </div>
+      <div id="wl_promotor_wrap" style="margin-bottom:12px;">
+        <label>Hubungkan ke Data Promotor</label>
+        <select id="wl_promotorKey">
+          <option value="">-- Pilih Promotor --</option>
+          ${listProm.map(p => `<option value="${p.key}">${p.namaAbsen} (${p.namaSales || '-'})</option>`).join('')}
+        </select>
+        <p style="font-size:11px; color:#64748b; margin-top:4px;">Pilih nama promotor agar data penjualan & absensinya muncul di HP-nya.</p>
       </div>
       <button class="btn-primary btn-full" onclick="tambahWhitelist()">Tambah</button>
       <div id="whitelistMsg" style="margin-top:10px;"></div>
@@ -1019,13 +1034,57 @@ function renderWhitelist() {
         <div class="list-item">
           <div class="kiri">
             <div class="nama">${w.nama || '<span style="color:#ef4444;">(Tanpa nama)</span>'}</div>
-            <div class="detail">${w.email || '-'} <span style="color:${w.role === 'ADMIN' ? '#d4af37' : '#2563eb'}; font-weight:700;">• ${w.role || 'PROMOTOR'}</span></div>
+            <div class="detail">${w.email || '-'} <span style="color:${w.role === 'ADMIN' ? '#d4af37' : '#2563eb'}; font-weight:700;">• ${w.role || 'PROMOTOR'}</span>
+            ${w.promotorKey ? `<br><span style="color:#10b981; font-weight:700;">✅ Terhubung ke: ${allPromotor[w.promotorKey]?.namaAbsen || w.promotorKey}</span>` : (w.role === 'PROMOTOR' ? '<br><span style="color:#ef4444;">⚠️ Belum terhubung ke promotor</span>' : '')}
+            </div>
           </div>
           <div class="kanan"><button class="btn-danger btn-sm" onclick="hapusWhitelist('${w.key}', '${w.email}')">Hapus</button></div>
         </div>`).join('')}
     </div>`;
 }
 
+async function tambahWhitelist() {
+  const email = document.getElementById('wl_email').value.trim().toLowerCase();
+  const nama = document.getElementById('wl_nama').value.trim();
+  const role = document.getElementById('wl_role').value;
+  const promotorKey = document.getElementById('wl_promotorKey').value;
+  const msg = document.getElementById('whitelistMsg');
+  
+  if (!email || !nama) { msg.innerHTML = '<div class="alert err">Email & Nama wajib!</div>'; return; }
+  if (!email.includes('@')) { msg.innerHTML = '<div class="alert err">Email tidak valid!</div>'; return; }
+  if (role === 'PROMOTOR' && !promotorKey) { msg.innerHTML = '<div class="alert err">Pilih promotor dulu agar datanya bisa muncul!</div>'; return; }
+  
+  const emailKey = email.replace(/\./g, ',');
+  const dataWl = { email, nama, role };
+  if (role === 'PROMOTOR') {
+    dataWl.promotorKey = promotorKey;
+  }
+  
+  try {
+    await window.dbSet(window.dbRef(window.db, 'users/whitelist/' + emailKey), dataWl);
+    msg.innerHTML = '<div class="alert ok">✅ Whitelist ditambahkan & terhubung!</div>';
+    document.getElementById('wl_email').value = '';
+    document.getElementById('wl_nama').value = '';
+    document.getElementById('wl_promotorKey').value = '';
+    setTimeout(() => msg.innerHTML = '', 3000);
+  } catch (err) { msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
+}
+async function tambahWhitelist() {
+  const email = document.getElementById('wl_email').value.trim().toLowerCase();
+  const nama = document.getElementById('wl_nama').value.trim();
+  const role = document.getElementById('wl_role').value;
+  const msg = document.getElementById('whitelistMsg');
+  if (!email || !nama) { msg.innerHTML = '<div class="alert err">Email & Nama wajib!</div>'; return; }
+  if (!email.includes('@')) { msg.innerHTML = '<div class="alert err">Email tidak valid!</div>'; return; }
+  const emailKey = email.replace(/\./g, ',');
+  try {
+    await window.dbSet(window.dbRef(window.db, 'users/whitelist/' + emailKey), { email, nama, role });
+    msg.innerHTML = '<div class="alert ok">✅ Ditambahkan!</div>';
+    document.getElementById('wl_email').value = '';
+    document.getElementById('wl_nama').value = '';
+    setTimeout(() => msg.innerHTML = '', 3000);
+  } catch (err) { msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
+}
 async function tambahWhitelist() {
   const email = document.getElementById('wl_email').value.trim().toLowerCase();
   const nama = document.getElementById('wl_nama').value.trim();
