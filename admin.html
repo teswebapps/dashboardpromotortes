@@ -350,6 +350,25 @@ let allWhitelist = {};
 let _sopImageData = null;
 const BULAN_INI = getBulanIni();
 
+/* ===== HELPER: Cari promotorKey dari namaSales ===== */
+function cariPromotorKey(namaSales) {
+  const s = String(namaSales || '').trim().toUpperCase();
+  if (!s) return null;
+  for (const k of Object.keys(allPromotor)) {
+    const p = allPromotor[k];
+    const ns = String(p.namaSales || '').trim().toUpperCase();
+    if (ns === s) return k;
+  }
+  for (const k of Object.keys(allPromotor)) {
+    const p = allPromotor[k];
+    const ns = String(p.namaSales || '').trim().toUpperCase();
+    const na = String(p.namaAbsen || '').trim().toUpperCase();
+    if (ns && (s.includes(ns) || ns.includes(s))) return k;
+    if (na && (s.includes(na) || na.includes(s))) return k;
+  }
+  return null;
+}
+
 /* ===== FIREBASE READY ===== */
 window.addEventListener('firebase-ready', async () => {
   document.getElementById('badgeBulan').classList.remove('hidden');
@@ -361,7 +380,6 @@ window.addEventListener('firebase-ready', async () => {
     document.getElementById('headerUser').classList.remove('hidden');
     document.getElementById('btnLogoutHeader').classList.remove('hidden');
     mulaiAdmin();
-    // Cek bulan baru setelah login
     setTimeout(cekDanTawarkanResetBulan, 1500);
   }
 });
@@ -410,9 +428,24 @@ function mulaiAdmin() {
     allPromotor = snap.exists() ? snap.val() : {};
     if (currentTab !== 'upload') renderTab();
   });
-  window.dbOnValue(window.dbRef(window.db, 'penjualan/' + BULAN_INI), snap => {
-    allPenjualan = snap.exists() ? snap.val() : {};
-    if (currentTab === 'dash') renderTab();
+  // Admin baca penjualan dari folder all/ (fallback ke root kalau belum migrasi)
+  window.dbOnValue(window.dbRef(window.db, 'penjualan/' + BULAN_INI + '/all'), snap => {
+    if (snap.exists()) {
+      allPenjualan = snap.val();
+      if (currentTab === 'dash') renderTab();
+    } else {
+      window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI)).then(s => {
+        if (!s.exists()) { allPenjualan = {}; return; }
+        const raw = s.val();
+        const filtered = {};
+        Object.keys(raw).forEach(k => {
+          if (k === 'all' || k === 'per_promotor') return;
+          filtered[k] = raw[k];
+        });
+        allPenjualan = filtered;
+        if (currentTab === 'dash') renderTab();
+      });
+    }
   });
   window.dbOnValue(window.dbRef(window.db, 'absensi/' + BULAN_INI), snap => {
     allAbsensi = snap.exists() ? snap.val() : {};
@@ -774,22 +807,49 @@ async function konfirmasiUploadMaster() {
   try {
     const updates = {};
     data.promotor.forEach(p => { updates['users/promotor/' + sanitizeKey(p.namaAbsen)] = p; });
-    const snap = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI));
+
+    // Ambil existing dari folder all/
+    const snapAll = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI + '/all'));
     const setExist = new Set();
-    if (snap.exists()) Object.values(snap.val()).forEach(x => { if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode); });
-    let cBaru = 0, cSkip = 0;
+    if (snapAll.exists()) {
+      Object.values(snapAll.val()).forEach(x => { if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode); });
+    }
+
+    // Migrasi otomatis dari root lama
+    const snapRoot = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI));
+    if (snapRoot.exists()) {
+      const rootVal = snapRoot.val();
+      Object.keys(rootVal).forEach(k => {
+        if (k === 'all' || k === 'per_promotor') return;
+        const item = rootVal[k];
+        if (item && typeof item === 'object' && item.namaSales) {
+          updates[`penjualan/${BULAN_INI}/all/${k}`] = item;
+          setExist.add((item.noFaktur || '') + '|' + (item.barcode || ''));
+        }
+      });
+    }
+
+    let cBaru = 0, cSkip = 0, cTanpaPromotor = 0;
     data.penjualan.forEach((item, idx) => {
       const k = item.noFaktur + '|' + item.barcode;
       if (setExist.has(k)) { cSkip++; return; }
-      updates[`penjualan/${BULAN_INI}/t_${Date.now()}_${idx}_${Math.random().toString(36).substr(2,6)}`] = item;
+      const txId = `t_${Date.now()}_${idx}_${Math.random().toString(36).substr(2,6)}`;
+      updates[`penjualan/${BULAN_INI}/all/${txId}`] = item;
+      const pk = cariPromotorKey(item.namaSales);
+      if (pk) {
+        updates[`penjualan/${BULAN_INI}/per_promotor/${pk}/${txId}`] = item;
+      } else {
+        cTanpaPromotor++;
+      }
       cBaru++;
     });
+
     Object.keys(data.absensi).forEach(k => { updates[`absensi/${BULAN_INI}/${k}`] = data.absensi[k]; });
     if (data.info.promo.length) updates['info/promo'] = data.info.promo;
     if (data.info.rules.length) updates['info/rules'] = data.info.rules;
     await window.dbUpdate(window.dbRef(window.db), updates);
     const totalAbsensi = Object.values(data.absensi).reduce((s, o) => s + Object.keys(o).length, 0);
-    el.innerHTML = `<div class="alert ok">✅ Berhasil!<br>• ${data.promotor.length} promotor<br>• ${cBaru} transaksi baru (${cSkip} duplikat)<br>• ${totalAbsensi} hari absensi</div>
+    el.innerHTML = `<div class="alert ok">✅ Berhasil!<br>• ${data.promotor.length} promotor<br>• ${cBaru} transaksi baru (${cSkip} duplikat)${cTanpaPromotor > 0 ? `<br><span style="color:#d97706;">⚠️ ${cTanpaPromotor} transaksi tanpa promotor dikenali</span>` : ''}<br>• ${totalAbsensi} hari absensi</div>
       <button class="btn-soft btn-full" onclick="location.reload()">Refresh</button>`;
     window._masterData = null;
   } catch (err) { el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
@@ -841,19 +901,43 @@ async function konfirmasiUploadPenjualan() {
   const el = document.getElementById('penjualanInfo');
   el.innerHTML = '<div class="alert warn"><span class="spinner spinner-dark"></span> Uploading...</div>';
   try {
-    const snap = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI));
+    const snapAll = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI + '/all'));
     const setExist = new Set();
-    if (snap.exists()) Object.values(snap.val()).forEach(x => { if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode); });
+    if (snapAll.exists()) {
+      Object.values(snapAll.val()).forEach(x => { if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode); });
+    }
+
+    // Migrasi otomatis dari root lama
+    const snapRoot = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI));
     const updates = {};
-    let cBaru = 0, cSkip = 0;
+    if (snapRoot.exists()) {
+      const rootVal = snapRoot.val();
+      Object.keys(rootVal).forEach(k => {
+        if (k === 'all' || k === 'per_promotor') return;
+        const item = rootVal[k];
+        if (item && typeof item === 'object' && item.namaSales) {
+          updates[`penjualan/${BULAN_INI}/all/${k}`] = item;
+          setExist.add((item.noFaktur || '') + '|' + (item.barcode || ''));
+        }
+      });
+    }
+
+    let cBaru = 0, cSkip = 0, cTanpaPromotor = 0;
     data.forEach((item, idx) => {
       const k = item.noFaktur + '|' + item.barcode;
       if (setExist.has(k)) { cSkip++; return; }
-      updates[`penjualan/${BULAN_INI}/t_${Date.now()}_${idx}_${Math.random().toString(36).substr(2,6)}`] = item;
+      const txId = `t_${Date.now()}_${idx}_${Math.random().toString(36).substr(2,6)}`;
+      updates[`penjualan/${BULAN_INI}/all/${txId}`] = item;
+      const pk = cariPromotorKey(item.namaSales);
+      if (pk) {
+        updates[`penjualan/${BULAN_INI}/per_promotor/${pk}/${txId}`] = item;
+      } else {
+        cTanpaPromotor++;
+      }
       cBaru++;
     });
     await window.dbUpdate(window.dbRef(window.db), updates);
-    el.innerHTML = `<div class="alert ok">✅ ${cBaru} transaksi baru (${cSkip} duplikat)</div>`;
+    el.innerHTML = `<div class="alert ok">✅ ${cBaru} transaksi baru (${cSkip} duplikat)${cTanpaPromotor > 0 ? `<br><span style="color:#d97706;">⚠️ ${cTanpaPromotor} tanpa promotor</span>` : ''}</div>`;
     window._jualData = null;
   } catch (err) { el.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
 }
@@ -1185,7 +1269,6 @@ async function cekDanTawarkanResetBulan() {
     const lastReset = snapLastReset.exists() ? snapLastReset.val() : '';
     
     if (lastReset && lastReset !== BULAN_INI) {
-      // Ada bulan lama yang belum direset
       const bulanLama = lastReset;
       tampilkanModal(
         '🎉 Bulan Baru Terdeteksi!',
@@ -1200,7 +1283,6 @@ async function cekDanTawarkanResetBulan() {
         }
       );
     } else if (!lastReset) {
-      // Pertama kali, set ke bulan ini
       await window.dbSet(window.dbRef(window.db, 'config/lastResetBulan'), BULAN_INI);
     }
   } catch (err) {
@@ -1210,19 +1292,25 @@ async function cekDanTawarkanResetBulan() {
 
 async function downloadBulanLama(bulanLama) {
   try {
-    // Ambil semua data penjualan dan absensi bulan lalu
-    const [snapJual, snapAbsen] = await Promise.all([
+    const [snapJualAll, snapJualRoot, snapAbsen] = await Promise.all([
+      window.dbGet(window.dbRef(window.db, 'penjualan/' + bulanLama + '/all')),
       window.dbGet(window.dbRef(window.db, 'penjualan/' + bulanLama)),
       window.dbGet(window.dbRef(window.db, 'absensi/' + bulanLama))
     ]);
     
-    const dataJual = snapJual.exists() ? Object.values(snapJual.val()) : [];
+    let dataJual = snapJualAll.exists() ? Object.values(snapJualAll.val()) : [];
+    if (dataJual.length === 0 && snapJualRoot.exists()) {
+      const raw = snapJualRoot.val();
+      dataJual = [];
+      Object.keys(raw).forEach(k => {
+        if (k === 'all' || k === 'per_promotor') return;
+        dataJual.push(raw[k]);
+      });
+    }
     const dataAbsen = snapAbsen.exists() ? snapAbsen.val() : {};
     
-    // Buat workbook
     const wb = XLSX.utils.book_new();
     
-    // Sheet Penjualan
     if (dataJual.length > 0) {
       const wsJual = XLSX.utils.json_to_sheet(dataJual.map(x => ({
         'No Faktur': x.noFaktur || '', 'Tanggal': x.tanggal || '',
@@ -1234,7 +1322,6 @@ async function downloadBulanLama(bulanLama) {
       XLSX.utils.book_append_sheet(wb, wsJual, 'Penjualan');
     }
     
-    // Sheet Absensi
     const absenRows = [];
     Object.keys(dataAbsen).forEach(kp => {
       const p = allPromotor[kp] || {};
@@ -1284,8 +1371,14 @@ async function resetBulanLama(bulanLama) {
   );
 }
 
-function downloadExcelBulanIni() {
-  const dataJual = Object.values(allPenjualan);
+async function downloadExcelBulanIni() {
+  let dataJual = [];
+  const snapAll = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI + '/all'));
+  if (snapAll.exists()) {
+    dataJual = Object.values(snapAll.val());
+  } else {
+    dataJual = Object.values(allPenjualan);
+  }
   const absenRows = [];
   Object.keys(allAbsensi).forEach(kp => {
     const p = allPromotor[kp] || {};
