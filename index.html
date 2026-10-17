@@ -1434,8 +1434,19 @@ async function tampilkanDashboard() {
     document.getElementById('topBar').classList.remove('admin-mode');
   }
 
-  await muatDataBulanIni();
+   await muatDataBulanIni();
   renderMenuGrid();
+  
+  // --- TAMBAHKAN INI ---
+  const today = new Date().toDateString();
+  const lastRefresh = localStorage.getItem('ufo_last_refresh_' + currentUser.key);
+  const btnRefresh = document.querySelector('.refresh-btn');
+  if (btnRefresh && lastRefresh === today) {
+    btnRefresh.disabled = true;
+    btnRefresh.style.opacity = '0.5';
+    btnRefresh.title = 'Sudah refresh hari ini';
+  }
+  // ---------------------
 }
 window.tampilkanDashboard = tampilkanDashboard;
 
@@ -1552,10 +1563,20 @@ window.gantiPromotorAdmin = gantiPromotorAdmin;
 
 /* ===== REFRESH MANUAL ===== */
 async function refreshSemuaData(btn) {
+  const today = new Date().toDateString(); // Ambil tanggal hari ini (contoh: "Mon Oct 17 2026")
+  const lastRefresh = localStorage.getItem('ufo_last_refresh_' + currentUser.key);
+
+  // Cek apakah hari ini sudah pernah refresh
+  if (lastRefresh === today) {
+    alert('Anda sudah melakukan refresh hari ini. Silakan refresh lagi besok ya! 😊');
+    return;
+  }
+
   const orig = btn.innerHTML;
   btn.innerHTML = 'Memuat...';
   btn.disabled = true;
   try {
+    // Hapus cache agar data ditarik ulang
     sessionStorage.removeItem('ufo_penjualan_2026-10_all');
     sessionStorage.removeItem('ufo_absensi_2026-10');
     if (currentUser.key) {
@@ -1563,15 +1584,32 @@ async function refreshSemuaData(btn) {
       sessionStorage.removeItem('ufo_absensi_2026-10_' + currentUser.key);
     }
     sessionStorage.removeItem('ufo_promotor_list');
+    
+    // Tarik data baru
     await muatDataBulanIni(true);
     await loadPromotorList(true);
+    
+    // Simpan tanggal refresh ke memori HP
+    localStorage.setItem('ufo_last_refresh_' + currentUser.key, today);
+    
     if (currentMenu) tampilkanDetail(currentMenu);
     else renderMenuGrid();
+    
+    alert('Data berhasil diperbarui! Tombol refresh akan aktif lagi besok.');
   } catch (e) {
     alert('Gagal refresh: ' + e.message);
   } finally {
+    // Kembalikan tampilan tombol
     btn.innerHTML = orig;
-    btn.disabled = false;
+    // Cek lagi, kalau hari ini sudah refresh, biarkan tombol mati (disabled)
+    if (localStorage.getItem('ufo_last_refresh_' + currentUser.key) === today) {
+      btn.disabled = true;
+      btn.style.opacity = '0.5';
+      btn.title = 'Sudah refresh hari ini';
+    } else {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+    }
   }
 }
 window.refreshSemuaData = refreshSemuaData;
