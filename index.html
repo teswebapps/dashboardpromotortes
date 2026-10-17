@@ -238,6 +238,14 @@ body.dashboard-active {
 .logout-btn:hover { background: rgba(239, 68, 68, 0.2); }
 .logout-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
+.refresh-btn { padding: 8px 16px; border: none; border-radius: 9px; 
+    cursor: pointer; color: #38bdf8; background: rgba(56, 189, 248, 0.1); 
+    border: 1px solid rgba(56, 189, 248, 0.3); font-weight: 600; font-size: 12.5px; 
+    display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
+.refresh-btn:hover { background: rgba(56, 189, 248, 0.2); }
+.refresh-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.4; fill: none; }
+.refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
 .admin-badge-inline { display: inline-block; font-size: 9px; font-weight: 800; 
     background: linear-gradient(135deg, #d4af37, #b8941f); color: #111827; 
     padding: 3px 8px; border-radius: 5px; margin-left: 8px; 
@@ -447,6 +455,12 @@ body.light-mode .logout-btn {
   color: #dc2626 !important;
 }
 body.light-mode .logout-btn:hover { background: rgba(239, 68, 68, 0.18) !important; }
+body.light-mode .refresh-btn {
+  background: rgba(56, 189, 248, 0.08) !important;
+  border-color: rgba(56, 189, 248, 0.35) !important;
+  color: #0284c7 !important;
+}
+body.light-mode .refresh-btn:hover { background: rgba(56, 189, 248, 0.18) !important; }
 
 body.light-mode .menu-card {
   background: #ffffff !important;
@@ -1084,10 +1098,16 @@ body.light-mode .btn-google:hover {
                 <span class="user-dot"></span>
                 <span id="userNama">-</span>
             </div>
-            <button class="logout-btn" onclick="logoutPromotor()">
-                <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                Keluar
-            </button>
+            <div style="display:flex; gap:8px;">
+                <button class="refresh-btn" onclick="refreshSemuaData(this)">
+                    <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                    Refresh
+                </button>
+                <button class="logout-btn" onclick="logoutPromotor()">
+                    <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    Keluar
+                </button>
+            </div>
         </div>
 
         <div id="menuGrid" class="menu-grid"></div>
@@ -1121,6 +1141,28 @@ let infoData = { promo: [], rules: [] };
 let currentUser = null;
 let currentMenu = null;
 let promotorTerpilih = null;
+
+/* ===== CACHE HELPER ===== */
+const CACHE_TTL = 5 * 60 * 1000;
+function cacheGet(key) {
+  try {
+    const raw = sessionStorage.getItem('ufo_' + key);
+    if (!raw) return null;
+    const obj = JSON.parse(raw);
+    if (Date.now() - obj.ts > CACHE_TTL) {
+      sessionStorage.removeItem('ufo_' + key);
+      return null;
+    }
+    return obj.data;
+  } catch (e) { return null; }
+}
+function cacheSet(key, data) {
+  try {
+    sessionStorage.setItem('ufo_' + key, JSON.stringify({ ts: Date.now(), data }));
+  } catch (e) {}
+}
+window.cacheGet = cacheGet;
+window.cacheSet = cacheSet;
 
 /* ===== SANITASI XSS ===== */
 function escapeHtml(str) {
@@ -1218,34 +1260,37 @@ async function loginDenganGoogle() {
 }
 window.loginDenganGoogle = loginDenganGoogle;
 
-/* ===== LOAD PROMOTOR LIST ===== */
-function loadPromotorList() {
+/* ===== LOAD PROMOTOR LIST (pakai cache + get) ===== */
+async function loadPromotorList(forceRefresh = false) {
   const liveEl = document.getElementById('live-status-text');
-  
   if (!window.firebaseAuth || !window.firebaseAuth.currentUser) {
     if (liveEl) liveEl.innerText = 'Sistem Siap';
     return;
   }
-  
-  window.dbOnValue(window.dbRef(window.db, 'users/promotor'), snap => {
-    if (!snap.exists()) {
+
+  let data = forceRefresh ? null : cacheGet('promotor_list');
+  if (!data) {
+    try {
+      const snap = await window.dbGet(window.dbRef(window.db, 'users/promotor'));
+      allPromotor = snap.exists() ? snap.val() : {};
+      cacheSet('promotor_list', allPromotor);
+    } catch (err) {
+      console.error('Gagal load promotor:', err);
       allPromotor = {};
-      if (liveEl) liveEl.innerText = 'Belum ada promotor';
-      return;
     }
-    allPromotor = snap.val();
-    const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
-      .filter(p => p.aktif !== false)
-      .sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
-    if (liveEl) liveEl.innerText = `${list.length} promotor terdaftar`;
-    if (currentUser && currentUser.role === 'ADMIN') {
-      isiDropdownPromotor(list);
-    }
-  }, (error) => {
-    console.error('Gagal load promotor:', error);
-    if (liveEl) liveEl.innerText = 'Akses ditolak';
-  });
+  } else {
+    allPromotor = data;
+  }
+
+  const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] }))
+    .filter(p => p.aktif !== false)
+    .sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
+  if (liveEl) liveEl.innerText = `${list.length} promotor terdaftar`;
+  if (currentUser && currentUser.role === 'ADMIN') {
+    isiDropdownPromotor(list);
+  }
 }
+window.loadPromotorList = loadPromotorList;
 
 function isiDropdownPromotor(list) {
   const menuEl = document.getElementById('dropdownMenu');
@@ -1325,8 +1370,11 @@ document.addEventListener('click', (e) => {
   }
 });
 
-/* ===== LOAD INFO (Promo/SOP) ===== */
+/* ===== LOAD INFO (Promo/SOP) — tetap realtime, kecil ===== */
+let infoListenerAttached = false;
 function loadInfoRealtime() {
+  if (infoListenerAttached) return;
+  infoListenerAttached = true;
   if (!window.firebaseAuth || !window.firebaseAuth.currentUser) return;
   window.dbOnValue(window.dbRef(window.db, 'info'), snap => {
     if (snap.exists()) {
@@ -1341,7 +1389,7 @@ function loadInfoRealtime() {
 }
 
 /* ===== DASHBOARD ===== */
-function tampilkanDashboard() {
+async function tampilkanDashboard() {
   if (!window.firebaseUser) {
     console.warn('Belum login Google');
     return;
@@ -1369,7 +1417,7 @@ function tampilkanDashboard() {
   document.getElementById('login-screen').style.display = 'none';
   document.getElementById('dashboard').classList.remove('hidden');
 
-  loadPromotorList();
+  await loadPromotorList();
 
   const isAdmin = currentUser.role === 'ADMIN';
   if (isAdmin) {
@@ -1386,37 +1434,100 @@ function tampilkanDashboard() {
     document.getElementById('topBar').classList.remove('admin-mode');
   }
 
-  // BACA DATA DARI FOLDER BULAN 2026-10
-  window.dbOnValue(window.dbRef(window.db, 'penjualan/2026-10'), snap => {
-    allPenjualan = [];
-    if (snap.exists()) {
-      Object.values(snap.val()).forEach(item => {
-        if (item && item.namaSales) allPenjualan.push(item);
-      });
-    }
-    if (!currentMenu) renderMenuGrid();
-    else tampilkanDetail(currentMenu);
-  });
-  window.dbOnValue(window.dbRef(window.db, 'absensi/2026-10'), snap => {
-    if (snap.exists()) {
-      allAbsensiAll = snap.val();
-      if (currentUser.role === 'ADMIN' && promotorTerpilih) {
-        allAbsensi = allAbsensiAll[promotorTerpilih] || {};
-      } else if (currentUser.role !== 'ADMIN') {
-        allAbsensi = allAbsensiAll[currentUser.key] || {};
-      }
-    } else {
-      allAbsensi = {};
-    }
-    if (currentMenu === 'absensi') {
-      tampilkanDetail('absensi');
-    }
-  });
+  await muatDataBulanIni();
   renderMenuGrid();
 }
 window.tampilkanDashboard = tampilkanDashboard;
 
-/* ===== GANTI PROMOTOR (ADMIN) ===== */
+/* ===== LOADER DATA (pakai cache + get) ===== */
+async function muatDataBulanIni(forceRefresh = false) {
+  const isAdminRole = currentUser.role === 'ADMIN';
+
+  // --- Penjualan ---
+  const pathProm = isAdminRole
+    ? 'penjualan/2026-10/all'
+    : 'penjualan/2026-10/per_promotor/' + currentUser.key;
+  const cacheKeyProm = isAdminRole ? 'penjualan_2026-10_all' : 'penjualan_2026-10_' + currentUser.key;
+
+  let dataPenjualan = forceRefresh ? null : cacheGet(cacheKeyProm);
+  if (!dataPenjualan) {
+    try {
+      const snap = await window.dbGet(window.dbRef(window.db, pathProm));
+      allPenjualan = [];
+      if (snap.exists()) {
+        Object.values(snap.val()).forEach(item => {
+          if (item && item.namaSales) allPenjualan.push(item);
+        });
+      }
+      // Fallback ke root (kalau data belum dimigrasi)
+      if (allPenjualan.length === 0) {
+        const snapRoot = await window.dbGet(window.dbRef(window.db, 'penjualan/2026-10'));
+        if (snapRoot.exists()) {
+          const raw = snapRoot.val();
+          const arr = [];
+          Object.keys(raw).forEach(k => {
+            if (k === 'all' || k === 'per_promotor') return;
+            const item = raw[k];
+            if (item && item.namaSales) arr.push(item);
+          });
+          if (!isAdminRole) {
+            const dataP = allPromotor[currentUser.key] || {};
+            const ns = String(dataP.namaSales || '').trim().toUpperCase();
+            const na = String(dataP.namaAbsen || '').trim().toUpperCase();
+            allPenjualan = arr.filter(x => {
+              const xs = String(x.namaSales || '').trim().toUpperCase();
+              return (ns && xs === ns) || (na && (xs.includes(na) || na.includes(xs)));
+            });
+          } else {
+            allPenjualan = arr;
+          }
+        }
+      }
+      cacheSet(cacheKeyProm, allPenjualan);
+    } catch (err) {
+      console.error('Gagal load penjualan:', err);
+      allPenjualan = [];
+    }
+  } else {
+    allPenjualan = dataPenjualan;
+  }
+
+  // --- Absensi ---
+  const keyUser = isAdminRole ? null : currentUser.key;
+  const cacheKey = keyUser ? 'absensi_2026-10_' + keyUser : 'absensi_2026-10';
+
+  let dataAbsensi = forceRefresh ? null : cacheGet(cacheKey);
+  if (!dataAbsensi) {
+    try {
+      if (isAdminRole) {
+        const snap = await window.dbGet(window.dbRef(window.db, 'absensi/2026-10'));
+        allAbsensiAll = snap.exists() ? snap.val() : {};
+      } else {
+        const snap = await window.dbGet(window.dbRef(window.db, 'absensi/2026-10/' + keyUser));
+        allAbsensiAll = {};
+        allAbsensiAll[keyUser] = snap.exists() ? snap.val() : {};
+      }
+      cacheSet(cacheKey, allAbsensiAll);
+    } catch (err) {
+      console.error('Gagal load absensi:', err);
+      allAbsensiAll = {};
+    }
+  } else {
+    allAbsensiAll = dataAbsensi;
+  }
+
+  // --- Set allAbsensi sesuai user/admin ---
+  if (isAdminRole && promotorTerpilih) {
+    allAbsensi = allAbsensiAll[promotorTerpilih] || {};
+  } else if (!isAdminRole) {
+    allAbsensi = allAbsensiAll[currentUser.key] || {};
+  } else {
+    allAbsensi = {};
+  }
+}
+window.muatDataBulanIni = muatDataBulanIni;
+
+/* ===== GANTI PROMOTOR (ADMIN) — pakai cache, tidak fetch ulang ===== */
 function gantiPromotorAdmin(keyPromotor) {
   if (!currentUser || currentUser.role !== 'ADMIN') {
     alert("Hanya admin yang bisa ganti promotor.");
@@ -1429,20 +1540,41 @@ function gantiPromotorAdmin(keyPromotor) {
     alert("Data promotor tidak ditemukan.");
     return;
   }
-  window.dbGet(window.dbRef(window.db, 'absensi/2026-10/' + keyPromotor)).then(snapAbsen => {
-    allAbsensiAll[keyPromotor] = snapAbsen.exists() ? snapAbsen.val() : {};
-    allAbsensi = allAbsensiAll[keyPromotor];
-    if (currentMenu) {
-      tampilkanDetail(currentMenu);
-    } else {
-      tampilkanDetail('absensi');
-    }
-  }).catch(err => {
-    console.error("Gagal ambil absensi:", err);
-    if (currentMenu) tampilkanDetail(currentMenu);
-  });
+  // Pakai data dari cache (allAbsensiAll sudah lengkap), tidak fetch ulang
+  allAbsensi = (allAbsensiAll && allAbsensiAll[keyPromotor]) ? allAbsensiAll[keyPromotor] : {};
+  if (currentMenu) {
+    tampilkanDetail(currentMenu);
+  } else {
+    tampilkanDetail('absensi');
+  }
 }
 window.gantiPromotorAdmin = gantiPromotorAdmin;
+
+/* ===== REFRESH MANUAL ===== */
+async function refreshSemuaData(btn) {
+  const orig = btn.innerHTML;
+  btn.innerHTML = 'Memuat...';
+  btn.disabled = true;
+  try {
+    sessionStorage.removeItem('ufo_penjualan_2026-10_all');
+    sessionStorage.removeItem('ufo_absensi_2026-10');
+    if (currentUser.key) {
+      sessionStorage.removeItem('ufo_penjualan_2026-10_' + currentUser.key);
+      sessionStorage.removeItem('ufo_absensi_2026-10_' + currentUser.key);
+    }
+    sessionStorage.removeItem('ufo_promotor_list');
+    await muatDataBulanIni(true);
+    await loadPromotorList(true);
+    if (currentMenu) tampilkanDetail(currentMenu);
+    else renderMenuGrid();
+  } catch (e) {
+    alert('Gagal refresh: ' + e.message);
+  } finally {
+    btn.innerHTML = orig;
+    btn.disabled = false;
+  }
+}
+window.refreshSemuaData = refreshSemuaData;
 
 /* ===== MENU GRID ===== */
 function renderMenuGrid() {
@@ -1450,7 +1582,11 @@ function renderMenuGrid() {
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
   
-  document.getElementById('promotorSelector').classList.add('hidden');
+  if (currentUser.role === 'ADMIN') {
+    document.getElementById('promotorSelector').classList.remove('hidden');
+  } else {
+    document.getElementById('promotorSelector').classList.add('hidden');
+  }
   
   const grid = document.getElementById('menuGrid');
   grid.classList.remove('hidden');
@@ -1487,9 +1623,10 @@ function kembaliKeMenu() {
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
   document.getElementById('menuGrid').classList.remove('hidden');
-  document.getElementById('promotorSelector').classList.add('hidden');
   if (currentUser && currentUser.role === 'ADMIN') {
-    promotorTerpilih = null;
+    document.getElementById('promotorSelector').classList.remove('hidden');
+  } else {
+    document.getElementById('promotorSelector').classList.add('hidden');
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
@@ -2398,6 +2535,8 @@ function logoutPromotor() {
   document.getElementById('logoutCancelBtn').onclick = closeModal;
   document.getElementById('logoutConfirmBtn').onclick = async () => {
     closeModal();
+    // Bersihkan cache agar user lain di device sama tidak lihat data lama
+    try { sessionStorage.clear(); } catch(e) {}
     try {
       await window.firebaseSignOut(window.firebaseAuth);
     } catch(e) { console.error(e); }
