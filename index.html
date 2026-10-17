@@ -1706,11 +1706,10 @@ function kembaliKeMenu() {
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
   document.getElementById('menuGrid').classList.remove('hidden');
-  if (currentUser && currentUser.role === 'ADMIN') {
-    document.getElementById('promotorSelector').classList.remove('hidden');
-  } else {
-    document.getElementById('promotorSelector').classList.add('hidden');
-  }
+  
+  // PASTIKAN DROPDOWN SELALU SEMBUNYI SAAT KEMBALI KE MENU
+  document.getElementById('promotorSelector').classList.add('hidden');
+  
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 window.kembaliKeMenu = kembaliKeMenu;
