@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UFO Kebonsari - Dashboard Promotor</title>
 
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -15,9 +14,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.0.6/purify.min.js"></script>
 
 <script type="module">
+// ===== IMPORT FIREBASE LENGKAP =====
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, get, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { 
+  getAuth, 
+  onAuthStateChanged, 
+  signInWithPopup, 
+  signInWithRedirect, 
+  getRedirectResult, 
+  GoogleAuthProvider, 
+  signOut 
+} from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCNj8nRMP0ijH1GUXKeJlsE-EG5AYCkHBU",
@@ -33,6 +41,7 @@ const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 const auth = getAuth(app);
 
+// Expose ke window untuk fungsi global
 window.db = db;
 window.dbGet = get;
 window.dbRef = ref;
@@ -42,7 +51,7 @@ window.firebaseSignOut = signOut;
 window.firebaseGoogleAuthProvider = GoogleAuthProvider;
 window.firebaseSignInWithPopup = signInWithPopup;
 
-// Fungsi untuk memproses user setelah login berhasil (baik dari Popup maupun Redirect)
+// ===== FUNGSI PROSES LOGIN =====
 async function prosesLoginBerhasil(user) {
   if (!user) return;
   if (!user.email) {
@@ -74,7 +83,7 @@ async function prosesLoginBerhasil(user) {
   }
 }
 
-// Cek status login saat halaman dimuat
+// ===== CEK STATUS LOGIN =====
 onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.firebaseUser = null;
@@ -84,21 +93,21 @@ onAuthStateChanged(auth, async (user) => {
   await prosesLoginBerhasil(user);
 });
 
-// Cek hasil Redirect (Khusus HP setelah kembali dari halaman Google)
+// ===== CEK HASIL REDIRECT (UNTUK HP) =====
 getRedirectResult(auth).then(async (result) => {
   if (result && result.user) {
     await prosesLoginBerhasil(result.user);
   }
 }).catch((error) => {
   console.error('Redirect error:', error);
-  if (error.code !== 'auth/popup-closed-by-user') {
-    // Tampilkan error hanya jika bukan karena user menutup popup
+  if (error.code !== 'auth/popup-closed-by-user' && error.code !== 'auth/cancelled-popup-request') {
     if (window.showToast) showToast('Login gagal: ' + error.message, 'error');
   }
 });
 </script>
 
 <style>
+/* ===== SEMUA CSS TETAP SAMA SEPERTI ASLINYA ===== */
 :root {
   --cyber-bg: #030712;
   --cyber-card: #0a192f;
@@ -208,7 +217,6 @@ body.login-active {
     padding: 14px; box-shadow: 0 0 40px rgba(34,211,238,0.4); }
 .fut-logo img { width: 100%; height: 100%; object-fit: contain; display: block; }
 
-/* Responsive Login */
 @media (max-width: 900px) {
     #login-screen { padding: 12px; align-items: flex-start; padding-top: 20px; overflow-y: auto; }
     .fut-container { grid-template-columns: 1fr; gap: 16px; max-width: 480px; margin: 0 auto; }
@@ -1076,10 +1084,10 @@ body.light-mode .custom-toast {
   /* ===== IZINKAN PULL-TO-REFRESH DI HP ===== */
 @media (max-width: 900px) {
   body, html {
-    overscroll-behavior-y: auto !important; /* Izinkan tarik ke bawah */
+    overscroll-behavior-y: auto !important;
   }
   body.login-active, #login-screen {
-    overflow-y: auto !important; /* Izinkan scroll di layar login */
+    overflow-y: auto !important;
     overscroll-behavior-y: auto !important;
   }
   .dashboard-container, .detail-view, .menu-grid, .card-grid {
@@ -1339,19 +1347,19 @@ async function loginDenganGoogle() {
     txt.innerText = 'MEMPROSES...';
 
     try {
-        const provider = new window.firebaseGoogleAuthProvider();
+        const provider = new GoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
         
         if (isMobile) {
-            // Di HP pakai Redirect agar tidak kena blokir popup
-            await signInWithRedirect(window.firebaseAuth, provider);
+            // Di HP pakai Redirect
+            await signInWithRedirect(auth, provider);
         } else {
             // Di PC pakai Popup
-            await window.firebaseSignInWithPopup(window.firebaseAuth, provider);
+            await signInWithPopup(auth, provider);
         }
     } catch (err) {
         console.error('Login gagal:', err);
-        if (err.code !== 'auth/popup-closed-by-user') {
+        if (err.code !== 'auth/popup-closed-by-user' && err.code !== 'auth/cancelled-popup-request') {
             showToast('Login gagal: ' + err.message, 'error');
         }
         btn.disabled = false;
