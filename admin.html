@@ -1003,18 +1003,39 @@ function renderPromotor() {
   const list = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] })).sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
   return `
     <div class="card">
-      <h3><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Tambah Promotor</h3>
+      <h3><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Tambah Promotor Baru</h3>
+      <p>Daftarkan promotor baru secara manual. (Pastikan nama sesuai dengan Excel & Finger).</p>
+      
       <div class="form-grid">
-        <input type="text" id="p_namaAbsen" placeholder="Nama Absen">
-        <input type="text" id="p_namaSales" placeholder="Nama Sales">
-        <input type="text" id="p_pin" placeholder="PIN" maxlength="6">
-        <input type="text" id="p_merk" placeholder="Merk">
-        <input type="number" id="p_targetUC" placeholder="Target UC" value="16">
-        <select id="p_ikutUC"><option value="YA">Ikut UC</option><option value="TIDAK">Tidak Ikut UC</option></select>
+        <div>
+          <label>Nama Absen (Finger)</label>
+          <input type="text" id="p_namaAbsen" placeholder="Contoh: JESICA">
+        </div>
+        <div>
+          <label>Nama Sales (Kasir)</label>
+          <input type="text" id="p_namaSales" placeholder="Contoh: JESICA SANKEN">
+        </div>
+        <div>
+          <label>Merk / Brand</label>
+          <input type="text" id="p_merk" placeholder="Contoh: COMFORTA">
+        </div>
+        <div>
+          <label>Target UC</label>
+          <input type="number" id="p_targetUC" placeholder="16" value="16">
+        </div>
+        <div style="grid-column: 1 / -1;">
+          <label>Ikut Target UC?</label>
+          <select id="p_ikutUC">
+            <option value="YA">YA (Akan kena denda jika tidak tercapai)</option>
+            <option value="TIDAK">TIDAK (Kebal denda UC)</option>
+          </select>
+        </div>
       </div>
-      <button class="btn-primary btn-full" onclick="tambahPromotor()">Tambah Promotor</button>
+      
+      <button class="btn-primary btn-full" onclick="tambahPromotor()">Simpan Promotor Baru</button>
       <div id="promotorMsg" style="margin-top:12px;"></div>
     </div>
+    
     <div class="card">
       <h3>Daftar Promotor (${list.length})</h3>
       ${list.length === 0 ? '<div class="alert warn">Belum ada promotor.</div>' : ''}
@@ -1022,9 +1043,16 @@ function renderPromotor() {
         <div class="list-item">
           <div class="kiri">
             <div class="nama">${p.namaAbsen}</div>
-            <div class="detail">PIN: <b>${p.pin}</b> • ${p.namaSales} • ${p.merk || '-'} • Target UC: ${p.targetUC}</div>
+            <div class="detail">
+              <b>${p.namaSales}</b> • ${p.merk || '-'} • Target UC: ${p.targetUC} 
+              <span style="color:${p.ikutUC === 'YA' ? '#10b981' : '#ef4444'}; font-weight:700;">
+                (${p.ikutUC === 'YA' ? 'Ikut UC' : 'Bebas Denda UC'})
+              </span>
+            </div>
           </div>
-          <div class="kanan"><button class="btn-danger btn-sm" onclick="hapusPromotor('${p.key}', '${p.namaAbsen}')">Hapus</button></div>
+          <div class="kanan">
+            <button class="btn-danger btn-sm" onclick="hapusPromotor('${p.key}', '${p.namaAbsen}')">Hapus</button>
+          </div>
         </div>`).join('')}
     </div>`;
 }
@@ -1032,14 +1060,14 @@ function renderPromotor() {
 async function tambahPromotor() {
   const namaAbsen = document.getElementById('p_namaAbsen').value.trim();
   const namaSales = document.getElementById('p_namaSales').value.trim();
-  const pin = document.getElementById('p_pin').value.trim();
+ 
   const merk = document.getElementById('p_merk').value.trim();
   const targetUC = Number(document.getElementById('p_targetUC').value) || 16;
   const ikutUC = document.getElementById('p_ikutUC').value;
   const msg = document.getElementById('promotorMsg');
-  if (!namaAbsen || !namaSales || !pin) { msg.innerHTML = '<div class="alert err">Isi semua field!</div>'; return; }
+    if (!namaAbsen || !namaSales) { msg.innerHTML = '<div class="alert err">Nama Absen & Nama Sales wajib diisi!</div>'; return; }
   try {
-    await window.dbSet(window.dbRef(window.db, 'users/promotor/' + sanitizeKey(namaAbsen)), { namaAbsen, namaSales, pin, merk, targetUC, ikutUC, aktif: true });
+    await window.dbSet(window.dbRef(window.db, 'users/promotor/' + sanitizeKey(namaAbsen)), { namaAbsen, namaSales, merk, targetUC, ikutUC, aktif: true });
     msg.innerHTML = '<div class="alert ok">✅ Promotor ditambahkan</div>';
     ['p_namaAbsen','p_namaSales','p_pin','p_merk'].forEach(id => document.getElementById(id).value = '');
     setTimeout(() => msg.innerHTML = '', 3000);
