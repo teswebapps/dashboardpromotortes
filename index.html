@@ -1430,7 +1430,7 @@ async function tampilkanDashboard() {
     promotorTerpilih = currentUser.key;
     document.getElementById('promotorSelector').classList.add('hidden');
     document.getElementById('userNama').innerHTML = 
-      `<span style="color:#34d399;">●</span> <b>${escapeHtml(currentUser.namaAbsen)}</b>`;
+      <b>${escapeHtml(currentUser.namaAbsen)}</b>`;
     document.getElementById('topBar').classList.remove('admin-mode');
   }
 
