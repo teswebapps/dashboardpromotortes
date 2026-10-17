@@ -1669,11 +1669,7 @@ function renderMenuGrid() {
   document.getElementById('detailView').classList.add('hidden');
   document.getElementById('detailView').innerHTML = '';
   
-  if (currentUser.role === 'ADMIN') {
-    document.getElementById('promotorSelector').classList.remove('hidden');
-  } else {
-    document.getElementById('promotorSelector').classList.add('hidden');
-  }
+  document.getElementById('promotorSelector').classList.add('hidden');
   
   const grid = document.getElementById('menuGrid');
   grid.classList.remove('hidden');
