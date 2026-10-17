@@ -28,7 +28,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
 import { getDatabase, ref, get, onValue } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
-import { getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged, signInWithPopup, signInWithRedirect, getRedirectResult, GoogleAuthProvider, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCNj8nRMP0ijH1GUXKeJlsE-EG5AYCkHBU",
@@ -53,12 +53,9 @@ window.firebaseSignOut = signOut;
 window.firebaseGoogleAuthProvider = GoogleAuthProvider;
 window.firebaseSignInWithPopup = signInWithPopup;
 
-onAuthStateChanged(auth, async (user) => {
-  if (!user) {
-    window.firebaseUser = null;
-    window.dispatchEvent(new Event('firebase-ready'));
-    return;
-  }
+// Fungsi untuk memproses user setelah login berhasil (baik dari Popup maupun Redirect)
+async function prosesLoginBerhasil(user) {
+  if (!user) return;
   if (!user.email) {
     showToast('Akun Google Anda tidak mengirimkan email. Coba login dengan akun Google lain.', 'error');
     await signOut(auth);
@@ -85,6 +82,29 @@ onAuthStateChanged(auth, async (user) => {
     console.error('Gagal verifikasi whitelist:', err);
     showToast('Gagal verifikasi akun: ' + err.message, 'error');
     await signOut(auth);
+  }
+}
+
+// Cek status login saat halaman dimuat
+onAuthStateChanged(auth, async (user) => {
+  if (!user) {
+    window.firebaseUser = null;
+    window.dispatchEvent(new Event('firebase-ready'));
+    return;
+  }
+  await prosesLoginBerhasil(user);
+});
+
+// Cek hasil Redirect (Khusus HP setelah kembali dari halaman Google)
+getRedirectResult(auth).then(async (result) => {
+  if (result && result.user) {
+    await prosesLoginBerhasil(result.user);
+  }
+}).catch((error) => {
+  console.error('Redirect error:', error);
+  if (error.code !== 'auth/popup-closed-by-user') {
+    // Tampilkan error hanya jika bukan karena user menutup popup
+    if (window.showToast) showToast('Login gagal: ' + error.message, 'error');
   }
 });
 </script>
@@ -1311,13 +1331,22 @@ async function loginDenganGoogle() {
     const btn = document.getElementById('btn-login-google');
     const txt = document.getElementById('btn-login-text');
     const asli = txt.innerText;
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+
     btn.disabled = true;
-    txt.innerText = 'MEMBUKA GOOGLE...';
+    txt.innerText = 'MEMPROSES...';
 
     try {
         const provider = new window.firebaseGoogleAuthProvider();
         provider.setCustomParameters({ prompt: 'select_account' });
-        await window.firebaseSignInWithPopup(window.firebaseAuth, provider);
+        
+        if (isMobile) {
+            // Di HP pakai Redirect agar tidak kena blokir popup
+            await signInWithRedirect(window.firebaseAuth, provider);
+        } else {
+            // Di PC pakai Popup
+            await window.firebaseSignInWithPopup(window.firebaseAuth, provider);
+        }
     } catch (err) {
         console.error('Login gagal:', err);
         if (err.code !== 'auth/popup-closed-by-user') {
