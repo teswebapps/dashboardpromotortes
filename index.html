@@ -48,7 +48,7 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
   if (!user.email) {
-    alert('Akun Google Anda tidak mengirimkan email. Coba login dengan akun Google lain, atau hubungi admin.');
+    showToast('Akun Google Anda tidak mengirimkan email. Coba login dengan akun Google lain.', 'error');
     await signOut(auth);
     return;
   }
@@ -56,11 +56,11 @@ onAuthStateChanged(auth, async (user) => {
     const emailKey = user.email.replace(/\./g, ',');
     const snap = await get(ref(db, 'users/whitelist/' + emailKey));
     if (!snap.exists()) {
-      alert('Akun Google Anda (' + user.email + ') tidak terdaftar sebagai promotor. Hubungi admin.');
+      showToast('Akun Google Anda (' + user.email + ') tidak terdaftar. Hubungi admin.', 'error');
       await signOut(auth);
       return;
     }
-      const wl = snap.val();
+    const wl = snap.val();
     window.firebaseUser = {
       email: user.email,
       uid: user.uid,
@@ -71,7 +71,7 @@ onAuthStateChanged(auth, async (user) => {
     window.dispatchEvent(new Event('firebase-ready'));
   } catch (err) {
     console.error('Gagal verifikasi whitelist:', err);
-    alert('Gagal verifikasi akun: ' + err.message);
+    showToast('Gagal verifikasi akun: ' + err.message, 'error');
     await signOut(auth);
   }
 });
@@ -243,7 +243,6 @@ body.dashboard-active {
     border: 1px solid rgba(56, 189, 248, 0.3); font-weight: 600; font-size: 12.5px; 
     display: inline-flex; align-items: center; gap: 6px; transition: all 0.2s ease; }
 .refresh-btn:hover { background: rgba(56, 189, 248, 0.2); }
-.refresh-btn svg { width: 15px; height: 15px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 .refresh-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
 .admin-badge-inline { display: inline-block; font-size: 9px; font-weight: 800; 
@@ -260,7 +259,6 @@ body.dashboard-active {
 .back-btn:hover { opacity: 0.9; }
 .back-btn svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.4; fill: none; }
 
-/* Dropdown Pilih Promotor (untuk admin) */
 .promotor-selector { max-width: 1100px; margin: 0 auto 20px; 
     padding: 14px 18px; background: rgba(17, 24, 39, 0.85); 
     backdrop-filter: blur(12px); border: 2px solid rgba(212, 175, 55, 0.5); 
@@ -1017,6 +1015,43 @@ body.light-mode .btn-google:hover {
   .btn-google-icon { width: 30px; height: 30px; }
   .btn-google-text { font-size: 13.5px; }
 }
+
+/* ===== CUSTOM TOAST (NOTIFIKASI MENGAMBANG) ===== */
+.custom-toast {
+  position: fixed;
+  top: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20px);
+  background: rgba(17, 24, 39, 0.95);
+  color: #ffffff;
+  padding: 14px 24px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  z-index: 999999;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  max-width: 90%;
+}
+.custom-toast.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+body.light-mode .custom-toast {
+  background: rgba(255, 255, 255, 0.98);
+  color: #111827;
+  border-color: rgba(212, 175, 55, 0.6);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+}
 </style>
 </head>
 <body class="login-active">
@@ -1100,7 +1135,6 @@ body.light-mode .btn-google:hover {
             </div>
             <div style="display:flex; gap:8px;">
                 <button class="refresh-btn" onclick="refreshSemuaData(this)">
-                    <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
                     Refresh
                 </button>
                 <button class="logout-btn" onclick="logoutPromotor()">
@@ -1141,6 +1175,29 @@ let infoData = { promo: [], rules: [] };
 let currentUser = null;
 let currentMenu = null;
 let promotorTerpilih = null;
+
+/* ===== FUNGSI TOAST KUSTOM ===== */
+function showToast(pesan, tipe = 'info') {
+  const oldToast = document.querySelector('.custom-toast');
+  if (oldToast) oldToast.remove();
+
+  const toast = document.createElement('div');
+  toast.className = 'custom-toast';
+  
+  let icon = '🔔';
+  if (tipe === 'sukses') icon = '✅';
+  else if (tipe === 'error') icon = '⚠️';
+
+  toast.innerHTML = `<span style="font-size:18px;">${icon}</span> <span>${pesan}</span>`;
+  document.body.appendChild(toast);
+
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
+window.showToast = showToast;
 
 /* ===== CACHE HELPER ===== */
 const CACHE_TTL = 5 * 60 * 1000;
@@ -1252,7 +1309,7 @@ async function loginDenganGoogle() {
     } catch (err) {
         console.error('Login gagal:', err);
         if (err.code !== 'auth/popup-closed-by-user') {
-            alert('Login gagal: ' + err.message);
+            showToast('Login gagal: ' + err.message, 'error');
         }
         btn.disabled = false;
         txt.innerText = asli;
@@ -1429,15 +1486,15 @@ async function tampilkanDashboard() {
   } else {
     promotorTerpilih = currentUser.key;
     document.getElementById('promotorSelector').classList.add('hidden');
-        document.getElementById('userNama').innerHTML = 
+    document.getElementById('userNama').innerHTML = 
       `<b>${escapeHtml(currentUser.namaAbsen)}</b>`;
     document.getElementById('topBar').classList.remove('admin-mode');
   }
 
-   await muatDataBulanIni();
+  await muatDataBulanIni();
   renderMenuGrid();
   
-  // --- TAMBAHKAN INI ---
+  // Cek status tombol refresh
   const today = new Date().toDateString();
   const lastRefresh = localStorage.getItem('ufo_last_refresh_' + currentUser.key);
   const btnRefresh = document.querySelector('.refresh-btn');
@@ -1446,7 +1503,6 @@ async function tampilkanDashboard() {
     btnRefresh.style.opacity = '0.5';
     btnRefresh.title = 'Sudah refresh hari ini';
   }
-  // ---------------------
 }
 window.tampilkanDashboard = tampilkanDashboard;
 
@@ -1541,17 +1597,16 @@ window.muatDataBulanIni = muatDataBulanIni;
 /* ===== GANTI PROMOTOR (ADMIN) — pakai cache, tidak fetch ulang ===== */
 function gantiPromotorAdmin(keyPromotor) {
   if (!currentUser || currentUser.role !== 'ADMIN') {
-    alert("Hanya admin yang bisa ganti promotor.");
+    showToast("Hanya admin yang bisa ganti promotor.", "error");
     return;
   }
   if (!keyPromotor) return;
   promotorTerpilih = keyPromotor;
   const dataPromotor = allPromotor[keyPromotor];
   if (!dataPromotor) {
-    alert("Data promotor tidak ditemukan.");
+    showToast("Data promotor tidak ditemukan.", "error");
     return;
   }
-  // Pakai data dari cache (allAbsensiAll sudah lengkap), tidak fetch ulang
   allAbsensi = (allAbsensiAll && allAbsensiAll[keyPromotor]) ? allAbsensiAll[keyPromotor] : {};
   if (currentMenu) {
     tampilkanDetail(currentMenu);
@@ -1563,12 +1618,11 @@ window.gantiPromotorAdmin = gantiPromotorAdmin;
 
 /* ===== REFRESH MANUAL ===== */
 async function refreshSemuaData(btn) {
-  const today = new Date().toDateString(); // Ambil tanggal hari ini (contoh: "Mon Oct 17 2026")
+  const today = new Date().toDateString();
   const lastRefresh = localStorage.getItem('ufo_last_refresh_' + currentUser.key);
 
-  // Cek apakah hari ini sudah pernah refresh
   if (lastRefresh === today) {
-    alert('Anda sudah melakukan refresh hari ini. Silakan refresh lagi besok ya! 😊');
+    showToast('Anda sudah melakukan refresh hari ini. Silakan refresh lagi besok ya!', 'error');
     return;
   }
 
@@ -1576,7 +1630,6 @@ async function refreshSemuaData(btn) {
   btn.innerHTML = 'Memuat...';
   btn.disabled = true;
   try {
-    // Hapus cache agar data ditarik ulang
     sessionStorage.removeItem('ufo_penjualan_2026-10_all');
     sessionStorage.removeItem('ufo_absensi_2026-10');
     if (currentUser.key) {
@@ -1585,23 +1638,19 @@ async function refreshSemuaData(btn) {
     }
     sessionStorage.removeItem('ufo_promotor_list');
     
-    // Tarik data baru
     await muatDataBulanIni(true);
     await loadPromotorList(true);
     
-    // Simpan tanggal refresh ke memori HP
     localStorage.setItem('ufo_last_refresh_' + currentUser.key, today);
     
     if (currentMenu) tampilkanDetail(currentMenu);
     else renderMenuGrid();
     
-    alert('Data berhasil diperbarui! Tombol refresh akan aktif lagi besok.');
+    showToast('Data berhasil diperbarui! Tombol refresh akan aktif lagi besok.', 'sukses');
   } catch (e) {
-    alert('Gagal refresh: ' + e.message);
+    showToast('Gagal refresh: ' + e.message, 'error');
   } finally {
-    // Kembalikan tampilan tombol
     btn.innerHTML = orig;
-    // Cek lagi, kalau hari ini sudah refresh, biarkan tombol mati (disabled)
     if (localStorage.getItem('ufo_last_refresh_' + currentUser.key) === today) {
       btn.disabled = true;
       btn.style.opacity = '0.5';
@@ -1632,7 +1681,7 @@ function renderMenuGrid() {
   const menusUmum = [
     { key: 'absensi', icon: 'absensi', title: 'Absensi', desc: 'Rekap kehadiran dan status finger harian' },
     { key: 'penjualan', icon: 'penjualan', title: 'Penjualan', desc: 'Omzet produk harian dan perolehan unit' },
-    { key: 'uc', icon: 'uc', title: 'UFO CARE', desc: 'Pencapaian poin UFO CARE promotor' },
+    { key: 'uc', icon: 'uc', title: 'UFO Care', desc: 'Pencapaian poin UFO Care promotor' },
     { key: 'brand', icon: 'brand', title: 'Perolehan Brand', desc: 'Rekap penjualan khusus brand/ID Anda sendiri' },
     { key: 'promo', icon: 'promo', title: 'Promo Toko', desc: 'Daftar promo produk & program toko aktif' },
     { key: 'sop', icon: 'sop', title: 'SOP Promotor', desc: 'Aturan kerja & standar operasional' }
@@ -1703,7 +1752,7 @@ function tampilkanDetail(menuKey) {
   const titles = {
     absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
     penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
-    uc: { title: 'UFO CARE', subtitle: 'Pencapaian poin UFO CARE promotor' },
+    uc: { title: 'UFO Care', subtitle: 'Pencapaian poin UFO Care promotor' },
     brand: { title: 'Perolehan Brand', subtitle: 'Rekap penjualan khusus brand Anda' },
     promo: { title: 'Promo Toko', subtitle: 'Daftar promo produk & program toko aktif' },
     sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' },
@@ -1967,7 +2016,7 @@ function renderUC() {
         const namaBrd = String(x.namaBarang || '').trim().toUpperCase();
         const isOktoberFaktur = noFaktur.includes('2610');
         const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10');
-        const isMurniUC = (kat === 'GARANSI') && namaBrd.includes('UFO CARE');
+        const isMurniUC = (kat === 'GARANSI') && namaBrd.includes('UFO Care');
         return (isOktoberFaktur || isOktoberTgl) && isMurniUC;
     });
     let totalUC = 0;
@@ -1979,11 +2028,11 @@ function renderUC() {
         <div class="summary-card">
             <h2>${ICONS.uc} ${namaPromotor}</h2>
             <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
-            <p>Total UFO CARE : <b>${totalUC}</b></p>
+            <p>Total UFO Care : <b>${totalUC}</b></p>
         </div>
     `;
     if (list.length === 0) {
-        return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UFO CARE periode ini</div></div>`;
+        return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UFO Care periode ini</div></div>`;
     }
     html += `<div class="card-grid">`;
     list.forEach(x => {
@@ -2292,7 +2341,7 @@ function renderPerolehan() {
                         perPromotor[k].brand += omzetTrans;
                     }
                 }
-                if (kat === 'GARANSI' && brg.includes('UFO CARE')) {
+                if (kat === 'GARANSI' && brg.includes('UFO Care')) {
                     perPromotor[k].uc += Number(x.qty || 1);
                 }
             }
@@ -2308,7 +2357,7 @@ function renderPerolehan() {
             <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
             <p>${ICONS.users} Jumlah Promotor : <b>${arr.length}</b></p>
             <p>${ICONS.moneySmall} Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
-            <p>${ICONS.diamondSmall} Total UFO CARE : <b>${totalUCSemua}</b></p>
+            <p>${ICONS.diamondSmall} Total UFO Care : <b>${totalUCSemua}</b></p>
             <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
                 <button onclick="unduhExcelPerolehan()" style="
                     padding: 10px 18px;
@@ -2355,7 +2404,7 @@ function renderPerolehan() {
                         Rp ${omzetVal.toLocaleString('id-ID')}
                     </div>
                     <div class="uc-label" style="font-size:11.5px; font-weight:700; color:#d4af37; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
-                        ${ICONS.star} UFO CARE : ${p.uc || 0}
+                        ${ICONS.star} UFO Care : ${p.uc || 0}
                     </div>
                 </div>
             </div>
@@ -2368,7 +2417,7 @@ function renderPerolehan() {
 /* ===== UNDUH EXCEL: PEROLEHAN ===== */
 function unduhExcelPerolehan() {
     if (!allPenjualan || allPenjualan.length === 0) {
-        alert('Belum ada data penjualan untuk diunduh.');
+        showToast('Belum ada data penjualan untuk diunduh.', 'info');
         return;
     }
     const perPromotor = {};
@@ -2396,7 +2445,7 @@ function unduhExcelPerolehan() {
                         perPromotor[k].brand += omzetTrans;
                     }
                 }
-                if (kat === 'GARANSI' && brg.includes('UFO CARE')) {
+                if (kat === 'GARANSI' && brg.includes('UFO Care')) {
                     perPromotor[k].uc += Number(x.qty || 1);
                 }
             }
@@ -2457,7 +2506,7 @@ function renderDenda() {
             <h2>${ICONS.warning} Denda & Keterlambatan Semua Promotor</h2>
             <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
                 <div style="flex:1; min-width:140px; background:rgba(239,68,68,0.1); padding:10px; border-radius:10px; border:1px solid rgba(239,68,68,0.3);">
-                    <div style="font-size:10px; color:#9ca3af; font-weight:700;">DENDA UFO CARE</div>
+                    <div style="font-size:10px; color:#9ca3af; font-weight:700;">DENDA UFO Care</div>
                     <div style="font-size:12.5px; color:#f87171; font-weight:700; margin-top:2px;">Rp 5.000 / Unit</div>
                 </div>
                 <div style="flex:1; min-width:140px; background:rgba(250,204,21,0.1); padding:10px; border-radius:10px; border:1px solid rgba(250,204,21,0.3);">
@@ -2479,7 +2528,7 @@ function renderDenda() {
             const kat = String(x.kategori || '').trim().toUpperCase();
             const brg = String(x.namaBarang || '').toUpperCase();
             const isMine = (salesTrans === cleanNama) || salesTrans.includes(cleanNama) || cleanNama.includes(salesTrans);
-            if (isMine && kat === 'GARANSI' && brg.includes('UFO CARE')) {
+            if (isMine && kat === 'GARANSI' && brg.includes('UFO Care')) {
                 totalUC += Number(x.qty || 1);
             }
         });
@@ -2497,7 +2546,7 @@ function renderDenda() {
         html += `
             <div class="card ${totalDenda > 0 ? 'warning' : 'success'}">
                 <div class="tanggal">${escapeHtml(p.namaAbsen || '-')}</div>
-                <div class="row"><span>Denda UFO CARE</span><span style="color:${dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${dendaUC.toLocaleString('id-ID')}</span></div>
+                <div class="row"><span>Denda UFO Care</span><span style="color:${dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${dendaUC.toLocaleString('id-ID')}</span></div>
                 <div class="row"><span>Denda Late (${totalTerlambat}x)</span><span style="color:${dendaLate > 0 ? '#facc15' : '#34d399'};">Rp ${dendaLate.toLocaleString('id-ID')}</span></div>
                 <div class="row" style="border-top:1px solid rgba(255,255,255,0.1); margin-top:6px; padding-top:6px; font-weight:700;">
                     <span>TOTAL DENDA</span>
