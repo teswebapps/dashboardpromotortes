@@ -1681,7 +1681,7 @@ function renderMenuGrid() {
   const menusUmum = [
     { key: 'absensi', icon: 'absensi', title: 'Absensi', desc: 'Rekap kehadiran dan status finger harian' },
     { key: 'penjualan', icon: 'penjualan', title: 'Penjualan', desc: 'Omzet produk harian dan perolehan unit' },
-    { key: 'uc', icon: 'uc', title: 'UFO Care', desc: 'Pencapaian poin UFO Care promotor' },
+    { key: 'uc', icon: 'uc', title: 'UFO CARE', desc: 'Pencapaian poin UFO CARE promotor' },
     { key: 'brand', icon: 'brand', title: 'Perolehan Brand', desc: 'Rekap penjualan khusus brand/ID Anda sendiri' },
     { key: 'promo', icon: 'promo', title: 'Promo Toko', desc: 'Daftar promo produk & program toko aktif' },
     { key: 'sop', icon: 'sop', title: 'SOP Promotor', desc: 'Aturan kerja & standar operasional' }
@@ -1752,7 +1752,7 @@ function tampilkanDetail(menuKey) {
   const titles = {
     absensi: { title: 'Absensi', subtitle: 'Rekap kehadiran dan status finger harian' },
     penjualan: { title: 'Penjualan', subtitle: 'Omzet produk harian dan perolehan unit' },
-    uc: { title: 'UFO Care', subtitle: 'Pencapaian poin UFO Care promotor' },
+    uc: { title: 'UFO CARE', subtitle: 'Pencapaian poin UFO CARE promotor' },
     brand: { title: 'Perolehan Brand', subtitle: 'Rekap penjualan khusus brand Anda' },
     promo: { title: 'Promo Toko', subtitle: 'Daftar promo produk & program toko aktif' },
     sop: { title: 'SOP Promotor', subtitle: 'Aturan kerja & standar operasional' },
@@ -2016,7 +2016,7 @@ function renderUC() {
         const namaBrd = String(x.namaBarang || '').trim().toUpperCase();
         const isOktoberFaktur = noFaktur.includes('2610');
         const isOktoberTgl = tgl.includes('/10/2026') || tgl.includes('2026-10');
-        const isMurniUC = (kat === 'GARANSI') && namaBrd.includes('UFO Care');
+        const isMurniUC = (kat === 'GARANSI') && namaBrd.includes('UFO CARE');
         return (isOktoberFaktur || isOktoberTgl) && isMurniUC;
     });
     let totalUC = 0;
@@ -2028,11 +2028,11 @@ function renderUC() {
         <div class="summary-card">
             <h2>${ICONS.uc} ${namaPromotor}</h2>
             <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
-            <p>Total UFO Care : <b>${totalUC}</b></p>
+            <p>Total UFO CARE : <b>${totalUC}</b></p>
         </div>
     `;
     if (list.length === 0) {
-        return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UFO Care periode ini</div></div>`;
+        return html + `<div class="card"><div style="text-align:center; padding:20px; color:#9ca3af;">Belum ada data UFO CARE periode ini</div></div>`;
     }
     html += `<div class="card-grid">`;
     list.forEach(x => {
@@ -2341,7 +2341,7 @@ function renderPerolehan() {
                         perPromotor[k].brand += omzetTrans;
                     }
                 }
-                if (kat === 'GARANSI' && brg.includes('UFO Care')) {
+                if (kat === 'GARANSI' && brg.includes('UFO CARE')) {
                     perPromotor[k].uc += Number(x.qty || 1);
                 }
             }
@@ -2357,7 +2357,7 @@ function renderPerolehan() {
             <p>Periode : <b>${periode.pertama} - ${periode.terakhir}</b></p>
             <p>${ICONS.users} Jumlah Promotor : <b>${arr.length}</b></p>
             <p>${ICONS.moneySmall} Total Omzet Toko : <span style="font-weight:bold; color:#34d399;">Rp ${totalOmzetSemua.toLocaleString('id-ID')}</span></p>
-            <p>${ICONS.diamondSmall} Total UFO Care : <b>${totalUCSemua}</b></p>
+            <p>${ICONS.diamondSmall} Total UFO CARE : <b>${totalUCSemua}</b></p>
             <div style="margin-top:14px; display:flex; gap:8px; flex-wrap:wrap;">
                 <button onclick="unduhExcelPerolehan()" style="
                     padding: 10px 18px;
@@ -2404,7 +2404,7 @@ function renderPerolehan() {
                         Rp ${omzetVal.toLocaleString('id-ID')}
                     </div>
                     <div class="uc-label" style="font-size:11.5px; font-weight:700; color:#d4af37; margin-top:2px; display:flex; align-items:center; justify-content:flex-end; gap:3px;">
-                        ${ICONS.star} UFO Care : ${p.uc || 0}
+                        ${ICONS.star} UFO CARE : ${p.uc || 0}
                     </div>
                 </div>
             </div>
@@ -2445,7 +2445,7 @@ function unduhExcelPerolehan() {
                         perPromotor[k].brand += omzetTrans;
                     }
                 }
-                if (kat === 'GARANSI' && brg.includes('UFO Care')) {
+                if (kat === 'GARANSI' && brg.includes('UFO CARE')) {
                     perPromotor[k].uc += Number(x.qty || 1);
                 }
             }
@@ -2506,7 +2506,7 @@ function renderDenda() {
             <h2>${ICONS.warning} Denda & Keterlambatan Semua Promotor</h2>
             <div style="display:flex; flex-wrap:wrap; gap:10px; margin-top:8px;">
                 <div style="flex:1; min-width:140px; background:rgba(239,68,68,0.1); padding:10px; border-radius:10px; border:1px solid rgba(239,68,68,0.3);">
-                    <div style="font-size:10px; color:#9ca3af; font-weight:700;">DENDA UFO Care</div>
+                    <div style="font-size:10px; color:#9ca3af; font-weight:700;">DENDA UFO CARE</div>
                     <div style="font-size:12.5px; color:#f87171; font-weight:700; margin-top:2px;">Rp 5.000 / Unit</div>
                 </div>
                 <div style="flex:1; min-width:140px; background:rgba(250,204,21,0.1); padding:10px; border-radius:10px; border:1px solid rgba(250,204,21,0.3);">
@@ -2528,7 +2528,7 @@ function renderDenda() {
             const kat = String(x.kategori || '').trim().toUpperCase();
             const brg = String(x.namaBarang || '').toUpperCase();
             const isMine = (salesTrans === cleanNama) || salesTrans.includes(cleanNama) || cleanNama.includes(salesTrans);
-            if (isMine && kat === 'GARANSI' && brg.includes('UFO Care')) {
+            if (isMine && kat === 'GARANSI' && brg.includes('UFO CARE')) {
                 totalUC += Number(x.qty || 1);
             }
         });
@@ -2546,7 +2546,7 @@ function renderDenda() {
         html += `
             <div class="card ${totalDenda > 0 ? 'warning' : 'success'}">
                 <div class="tanggal">${escapeHtml(p.namaAbsen || '-')}</div>
-                <div class="row"><span>Denda UFO Care</span><span style="color:${dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${dendaUC.toLocaleString('id-ID')}</span></div>
+                <div class="row"><span>Denda UFO CARE</span><span style="color:${dendaUC > 0 ? '#f87171' : '#34d399'};">Rp ${dendaUC.toLocaleString('id-ID')}</span></div>
                 <div class="row"><span>Denda Late (${totalTerlambat}x)</span><span style="color:${dendaLate > 0 ? '#facc15' : '#34d399'};">Rp ${dendaLate.toLocaleString('id-ID')}</span></div>
                 <div class="row" style="border-top:1px solid rgba(255,255,255,0.1); margin-top:6px; padding-top:6px; font-weight:700;">
                     <span>TOTAL DENDA</span>
