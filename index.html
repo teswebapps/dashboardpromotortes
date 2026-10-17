@@ -1073,6 +1073,19 @@ body.light-mode .custom-toast {
   border-color: rgba(212, 175, 55, 0.6);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
+  /* ===== IZINKAN PULL-TO-REFRESH DI HP ===== */
+@media (max-width: 900px) {
+  body, html {
+    overscroll-behavior-y: auto !important; /* Izinkan tarik ke bawah */
+  }
+  body.login-active, #login-screen {
+    overflow-y: auto !important; /* Izinkan scroll di layar login */
+    overscroll-behavior-y: auto !important;
+  }
+  .dashboard-container, .detail-view, .menu-grid, .card-grid {
+    overscroll-behavior-y: auto !important;
+  }
+}
 </style>
 </head>
 <body class="login-active">
