@@ -31,7 +31,7 @@ signInAnonymously(auth).then(() => {
   window.dbUpdate = update; window.dbRemove = remove; window.dbOnValue = onValue;
   window.dbPush = push;
   window.dispatchEvent(new Event('firebase-ready'));
-}).catch(err => alert("Gagal koneksi Firebase: " + err.message));
+}).catch(err => showToast("Gagal koneksi Firebase: " + err.message, "error"));
 
 onAuthStateChanged(auth, user => {
   if (!user) setTimeout(() => location.reload(), 1000);
@@ -40,138 +40,176 @@ onAuthStateChanged(auth, user => {
 
 <style>
 :root {
-  --bg: #f1f5f9; --card: #ffffff; --soft: #f8fafc;
-  --text: #0f172a; --muted: #64748b; --border: #e2e8f0;
-  --primary: #2563eb; --primary-dark: #1d4ed8;
-  --success: #10b981; --danger: #ef4444; --warning: #f59e0b;
+  --bg: #f4f7f6; 
+  --card: #ffffff; 
+  --soft: #f8fafc;
+  --text: #0f172a; 
+  --muted: #64748b; 
+  --border: #e2e8f0;
+  --primary: #4f46e5; 
+  --primary-dark: #4338ca;
+  --success: #10b981; 
+  --danger: #ef4444; 
+  --warning: #f59e0b;
   --gold: #d4af37;
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
   --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -4px rgba(0, 0, 0, 0.05);
+  --radius: 16px;
 }
-* { box-sizing: border-box; font-family: 'Inter', sans-serif !important; }
-body { margin: 0; padding: 20px; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; }
-.container { width: 100%; max-width: 900px; background: var(--card); border-radius: 24px; padding: 24px; box-shadow: var(--shadow-lg); min-height: 90vh; }
-.header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 20px; border-bottom: 2px solid var(--border); margin-bottom: 24px; }
-.header-left { display: flex; align-items: center; gap: 14px; }
-.header-logo { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, #3b82f6, #2563eb); display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-.header-logo svg { width: 24px; height: 24px; stroke: white; stroke-width: 2.2; fill: none; }
-.header-title h1 { margin: 0; font-size: 18px; font-weight: 800; color: var(--text); letter-spacing: -0.3px; }
-.header-title p { margin: 2px 0 0; font-size: 12px; color: var(--muted); font-weight: 500; }
-.header-right { display: flex; gap: 8px; align-items: center; }
-.header-user { padding: 8px 14px; background: #ecfdf5; color: #065f46; border-radius: 99px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+* { box-sizing: border-box; font-family: 'Inter', sans-serif !important; -webkit-font-smoothing: antialiased; }
+body { margin: 0; padding: 24px; background: var(--bg); color: var(--text); min-height: 100vh; display: flex; justify-content: center; align-items: flex-start; background-image: radial-gradient(at 0% 0%, hsla(253,16%,7%,0.03) 0, transparent 50%), radial-gradient(at 50% 0%, hsla(225,39%,30%,0.03) 0, transparent 50%); }
+.container { width: 100%; max-width: 960px; background: var(--card); border-radius: 24px; padding: 32px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.08); min-height: 90vh; border: 1px solid rgba(255,255,255,0.5); backdrop-filter: blur(20px); }
+
+/* ===== HEADER ===== */
+.header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 28px; }
+.header-left { display: flex; align-items: center; gap: 16px; }
+.header-logo { width: 48px; height: 48px; border-radius: 14px; background: linear-gradient(135deg, var(--primary), #818cf8); display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 16px -4px rgba(79, 70, 229, 0.4); }
+.header-logo svg { width: 24px; height: 24px; stroke: white; stroke-width: 2.5; fill: none; }
+.header-title h1 { margin: 0; font-size: 20px; font-weight: 800; color: var(--text); letter-spacing: -0.5px; }
+.header-title p { margin: 4px 0 0; font-size: 13px; color: var(--muted); font-weight: 500; }
+.header-right { display: flex; gap: 10px; align-items: center; }
+.header-user { padding: 8px 16px; background: #ecfdf5; color: #065f46; border-radius: 99px; font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; border: 1px solid #a7f3d0; }
 .header-user::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: #10b981; box-shadow: 0 0 8px #10b981; }
-.badge-bulan { padding: 8px 14px; background: #eff6ff; color: #1e40af; border-radius: 99px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #93c5fd; }
+.badge-bulan { padding: 8px 16px; background: #eff6ff; color: #1e40af; border-radius: 99px; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px; border: 1px solid #bfdbfe; }
 
-.tabs { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; margin-bottom: 24px; background: var(--soft); padding: 6px; border-radius: 14px; border: 1px solid var(--border); }
-.tab-btn { padding: 12px 8px; border-radius: 10px; background: transparent; border: none; color: var(--muted); font-size: 11.5px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.3px; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s ease; }
-.tab-btn svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2.2; fill: none; }
-.tab-btn:hover { background: white; color: var(--primary); }
-.tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
-.tab-btn.active svg { stroke: white; }
+/* ===== TABS ===== */
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; background: var(--soft); padding: 8px; border-radius: 16px; border: 1px solid var(--border); }
+.tab-btn { flex: 1; min-width: 100px; padding: 12px 10px; border-radius: 12px; background: transparent; border: none; color: var(--muted); font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; letter-spacing: 0.5px; display: flex; flex-direction: column; align-items: center; gap: 6px; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+.tab-btn svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.2; fill: none; transition: all 0.25s; }
+.tab-btn:hover { background: white; color: var(--primary); box-shadow: var(--shadow-sm); }
+.tab-btn.active { background: white; color: var(--primary); box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15); border: 1px solid rgba(79, 70, 229, 0.1); }
+.tab-btn.active svg { stroke: var(--primary); transform: scale(1.1); }
 
-.card { background: var(--soft); border: 1px solid var(--border); border-radius: 16px; padding: 20px; margin-bottom: 16px; }
-.card h3 { margin: 0 0 14px; font-size: 14px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px; }
-.card h3 svg { width: 18px; height: 18px; stroke: var(--primary); stroke-width: 2.2; fill: none; }
-.card p { margin: 0 0 12px; font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+/* ===== CARDS & FORMS ===== */
+.card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 20px; box-shadow: var(--shadow-sm); transition: all 0.3s ease; }
+.card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.card h3 { margin: 0 0 16px; font-size: 15px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 10px; }
+.card h3 svg { width: 20px; height: 20px; stroke: var(--primary); stroke-width: 2.5; fill: none; }
+.card p { margin: 0 0 16px; font-size: 13px; color: var(--muted); line-height: 1.6; }
 
-label { display: block; font-size: 11px; font-weight: 700; color: var(--muted); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.3px; }
-input, select, textarea { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: white; font-size: 14px; font-weight: 600; color: var(--text); outline: none; transition: all 0.2s; }
+label { display: block; font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; letter-spacing: 0.5px; }
+input, select, textarea { width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--soft); font-size: 14px; font-weight: 600; color: var(--text); outline: none; transition: all 0.2s; }
 textarea { resize: vertical; font-family: 'Inter', sans-serif !important; }
-input:focus, select:focus, textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1); }
+input:focus, select:focus, textarea:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
 
-button { padding: 12px 16px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
-button svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 2.4; fill: none; }
-button:hover { transform: translateY(-1px); }
-.btn-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
-.btn-primary:hover { background: var(--primary-dark); }
-.btn-success { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
-.btn-danger { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
-.btn-warning { background: var(--warning); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
+/* ===== BUTTONS ===== */
+button { padding: 12px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); display: inline-flex; justify-content: center; align-items: center; gap: 8px; }
+button svg { width: 16px; height: 16px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+button:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+button:active { transform: translateY(0); }
+.btn-primary { background: linear-gradient(135deg, var(--primary), #6366f1); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); }
+.btn-primary:hover { background: linear-gradient(135deg, var(--primary-dark), var(--primary)); box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35); }
+.btn-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+.btn-success:hover { box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35); }
+.btn-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25); }
+.btn-danger:hover { box-shadow: 0 8px 20px rgba(239, 68, 68, 0.35); }
+.btn-warning { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); }
 .btn-soft { background: white; color: var(--text); border: 1px solid var(--border); }
-.btn-soft:hover { background: var(--soft); }
-.btn-sm { padding: 8px 12px; font-size: 11px; width: auto; }
+.btn-soft:hover { background: var(--soft); border-color: #cbd5e1; }
+.btn-sm { padding: 8px 14px; font-size: 11px; width: auto; border-radius: 8px; }
 .btn-full { width: 100%; }
 
-.file-wrap { border: 2px dashed var(--primary); border-radius: 14px; padding: 28px 20px; text-align: center; cursor: pointer; background: rgba(37, 99, 235, 0.04); transition: all 0.2s; }
-.file-wrap:hover { background: rgba(37, 99, 235, 0.08); border-color: var(--primary-dark); }
-.file-wrap svg { width: 44px; height: 44px; stroke: var(--primary); stroke-width: 1.8; fill: none; margin-bottom: 10px; }
-.file-wrap p { margin: 0; font-size: 13px; color: var(--muted); font-weight: 600; }
+/* ===== UPLOAD AREA ===== */
+.file-wrap { border: 2px dashed #cbd5e1; border-radius: var(--radius); padding: 32px 20px; text-align: center; cursor: pointer; background: var(--soft); transition: all 0.25s; position: relative; overflow: hidden; }
+.file-wrap:hover { background: #eff6ff; border-color: var(--primary); }
+.file-wrap svg { width: 48px; height: 48px; stroke: var(--primary); stroke-width: 1.5; fill: none; margin-bottom: 12px; }
+.file-wrap p { margin: 0; font-size: 14px; color: var(--muted); font-weight: 600; }
 .file-wrap strong { color: var(--primary); }
 .file-wrap input { display: none; }
 
-.alert { padding: 12px 14px; border-radius: 12px; font-size: 12.5px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; line-height: 1.5; }
-.alert.ok { background: #ecfdf5; color: #065f46; border: 1px solid #6ee7b7; }
-.alert.err { background: #fef2f2; color: #991b1b; border: 1px solid #fca5a5; }
+/* ===== ALERTS ===== */
+.alert { padding: 14px 16px; border-radius: 12px; font-size: 13px; font-weight: 600; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 10px; line-height: 1.5; }
+.alert.ok { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; }
+.alert.err { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
 .alert.warn { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
 
-.spinner { display: inline-block; width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+.spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
 .spinner-dark { border: 2px solid rgba(0,0,0,0.1); border-top-color: var(--primary); }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.list-item { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 14px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; gap: 12px; transition: all 0.15s; }
-.list-item:hover { box-shadow: var(--shadow); }
+/* ===== LIST ITEMS ===== */
+.list-item { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 16px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; gap: 16px; transition: all 0.2s; }
+.list-item:hover { box-shadow: var(--shadow); border-color: #cbd5e1; transform: translateX(4px); }
 .list-item .kiri { flex: 1; min-width: 0; }
-.list-item .nama { font-size: 13.5px; font-weight: 700; color: var(--text); }
-.list-item .detail { font-size: 11.5px; color: var(--muted); margin-top: 3px; font-weight: 500; }
+.list-item .nama { font-size: 14px; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+.list-item .detail { font-size: 12px; color: var(--muted); margin-top: 4px; font-weight: 500; line-height: 1.5; }
 .list-item .kanan { display: flex; gap: 8px; flex-shrink: 0; align-items: center; }
-.list-item.late-item { border-left: 4px solid var(--warning) !important; background: #fffbeb !important; }
+.list-item.late-item { border-left: 4px solid var(--warning); background: #fffbeb; }
 
-.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.stat-card { background: white; border: 1px solid var(--border); border-radius: 14px; padding: 16px 12px; text-align: center; transition: all 0.2s; }
-.stat-card:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
-.stat-card .label { font-size: 10px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-.stat-card .value { font-size: 20px; font-weight: 900; color: var(--primary); }
-.stat-card.full { grid-column: 1 / -1; }
-.stat-card.success .value { color: var(--success); }
+/* ===== STATS ===== */
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.stat-card { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 20px 16px; text-align: center; transition: all 0.3s; }
+.stat-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); border-color: #cbd5e1; }
+.stat-card .label { font-size: 11px; font-weight: 800; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.stat-card .value { font-size: 24px; font-weight: 900; color: var(--text); }
+.stat-card.full { grid-column: 1 / -1; background: linear-gradient(135deg, #f0fdf4, #dcfce7); border-color: #bbf7d0; }
+.stat-card.success .value { color: #059669; }
 
-.late-marker { background: linear-gradient(135deg, #fef3c7, #fde68a); border: 1.5px solid var(--warning); border-radius: 8px; padding: 4px 10px; font-size: 10px; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px; }
+.late-marker { background: #fef3c7; border: 1px solid #fcd34d; border-radius: 8px; padding: 4px 10px; font-size: 10px; font-weight: 800; color: #92400e; text-transform: uppercase; letter-spacing: 0.5px; }
 
-.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; }
 
-.welcome-card { background: linear-gradient(135deg, #1e40af, #3b82f6); color: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; position: relative; overflow: hidden; }
-.welcome-card::before { content: ''; position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; }
-.welcome-card h2 { margin: 0 0 6px; font-size: 22px; font-weight: 800; position: relative; }
-.welcome-card p { margin: 0; font-size: 13px; opacity: 0.9; position: relative; color: white; }
+.welcome-card { background: linear-gradient(135deg, #1e293b, #0f172a); color: white; border-radius: var(--radius); padding: 28px; margin-bottom: 24px; position: relative; overflow: hidden; box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.5); }
+.welcome-card::before { content: ''; position: absolute; top: -50px; right: -50px; width: 250px; height: 250px; background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%); border-radius: 50%; }
+.welcome-card h2 { margin: 0 0 8px; font-size: 24px; font-weight: 800; position: relative; letter-spacing: -0.5px; }
+.welcome-card p { margin: 0; font-size: 14px; opacity: 0.8; position: relative; color: #cbd5e1; }
 
-#loginBox { max-width: 400px; margin: 40px auto; }
-#loginBox .card { background: white; padding: 28px; border-radius: 20px; box-shadow: var(--shadow-lg); }
-#loginBox h3 { font-size: 18px; text-align: center; margin-bottom: 20px; }
+#loginBox { max-width: 400px; margin: 40px auto; animation: fadeIn 0.5s ease-out; }
+#loginBox .card { background: white; padding: 32px; border-radius: 24px; box-shadow: 0 20px 40px -10px rgba(0,0,0,0.1); }
+#loginBox h3 { font-size: 20px; text-align: center; margin-bottom: 24px; justify-content: center; }
 
-.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.5); backdrop-filter: blur(6px); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; visibility: hidden; transition: all 0.25s ease; padding: 16px; }
+/* ===== CUSTOM MODAL ===== */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 99999; opacity: 0; visibility: hidden; transition: all 0.3s ease; padding: 16px; }
 .modal-overlay.active { opacity: 1; visibility: visible; }
-.modal-box { background: white; border-radius: 20px; padding: 28px 24px; max-width: 420px; width: 100%; text-align: center; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2); transform: scale(0.9); transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1); }
-.modal-overlay.active .modal-box { transform: scale(1); }
-.modal-icon { width: 64px; height: 64px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+.modal-box { background: white; border-radius: 24px; padding: 32px; max-width: 400px; width: 100%; text-align: center; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); transform: scale(0.9) translateY(20px); transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); border: 1px solid rgba(255,255,255,0.2); }
+.modal-overlay.active .modal-box { transform: scale(1) translateY(0); }
+.modal-icon { width: 72px; height: 72px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 20px; }
 .modal-icon.warning { background: #fef3c7; color: #d97706; }
 .modal-icon.success { background: #ecfdf5; color: #10b981; }
 .modal-icon.danger { background: #fef2f2; color: #ef4444; }
-.modal-icon.info { background: #eff6ff; color: #2563eb; }
-.modal-icon svg { width: 32px; height: 32px; stroke: currentColor; stroke-width: 2.5; fill: none; }
-.modal-title { font-size: 17px; font-weight: 800; color: var(--text); margin-bottom: 8px; }
-.modal-desc { font-size: 13.5px; color: var(--muted); line-height: 1.5; margin-bottom: 22px; white-space: pre-line; }
-.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.modal-icon.info { background: #eff6ff; color: #3b82f6; }
+.modal-icon svg { width: 36px; height: 36px; stroke: currentColor; stroke-width: 2.5; fill: none; }
+.modal-title { font-size: 20px; font-weight: 800; color: var(--text); margin-bottom: 12px; letter-spacing: -0.5px; }
+.modal-desc { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; white-space: pre-line; }
+.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .modal-actions.single { grid-template-columns: 1fr; }
-.modal-actions.three { grid-template-columns: 1fr 1fr 1fr; }
-.modal-btn { padding: 12px 16px; border-radius: 12px; font-size: 12px; font-weight: 700; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 6px; font-family: inherit; }
+.modal-actions.three { grid-template-columns: 1fr; gap: 8px; }
+.modal-btn { padding: 14px 20px; border-radius: 12px; font-size: 13px; font-weight: 700; cursor: pointer; border: none; text-transform: uppercase; letter-spacing: 0.5px; transition: all 0.2s; display: inline-flex; justify-content: center; align-items: center; gap: 8px; font-family: inherit; }
 .modal-btn-cancel { background: var(--soft); color: var(--text); border: 1px solid var(--border); }
 .modal-btn-cancel:hover { background: var(--border); }
-.modal-btn-ok-primary { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2); }
-.modal-btn-ok-danger { background: var(--danger); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
-.modal-btn-ok-success { background: var(--success); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
-.modal-btn-ok-warning { background: var(--warning); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
+.modal-btn-ok-primary { background: linear-gradient(135deg, var(--primary), #6366f1); color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25); }
+.modal-btn-ok-danger { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25); }
+.modal-btn-ok-success { background: linear-gradient(135deg, #10b981, #059669); color: white; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25); }
+.modal-btn-ok-warning { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25); }
+
+/* ===== CUSTOM TOAST ===== */
+.custom-toast {
+  position: fixed; top: 24px; left: 50%; transform: translateX(-50%) translateY(-20px);
+  background: rgba(15, 23, 42, 0.95); color: #ffffff; padding: 16px 24px; border-radius: 14px;
+  font-size: 14px; font-weight: 600; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1); z-index: 999999; opacity: 0; visibility: hidden;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; align-items: center; gap: 12px;
+  backdrop-filter: blur(10px); max-width: 90%;
+}
+.custom-toast.show { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+.custom-toast svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2.5; fill: none; }
 
 .hidden { display: none !important; }
-.sop-preview { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
+.sop-preview { width: 64px; height: 64px; object-fit: cover; border-radius: 10px; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
 
-@media (max-width: 640px) {
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+@media (max-width: 768px) {
   body { padding: 12px; }
-  .container { padding: 16px; border-radius: 18px; }
-  .header { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .container { padding: 20px; border-radius: 20px; }
+  .header { flex-direction: column; align-items: flex-start; gap: 16px; }
   .header-right { width: 100%; justify-content: space-between; flex-wrap: wrap; }
-  .tabs { grid-template-columns: repeat(4, 1fr); }
+  .tabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .tab-btn { padding: 12px 8px; font-size: 11px; }
   .stats-grid { grid-template-columns: 1fr 1fr; }
   .form-grid { grid-template-columns: 1fr; }
-  .list-item { flex-direction: column; align-items: stretch; }
+  .list-item { flex-direction: column; align-items: stretch; gap: 12px; }
   .list-item .kanan { justify-content: flex-end; }
   .modal-actions.three { grid-template-columns: 1fr; }
 }
@@ -202,22 +240,22 @@ button:hover { transform: translateY(-1px); }
 
   <div id="loginBox">
     <div class="card">
-      <h3>🔒 Login Admin</h3>
+      <h3><svg viewBox="0 0 24 24"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg> Login Admin</h3>
       <label>PIN Admin</label>
-      <input type="password" id="pinAdmin" placeholder="••••" maxlength="6" inputmode="numeric" style="text-align:center; font-size:20px; letter-spacing:8px; font-weight:800;" oninput="this.value = this.value.replace(/\D/g,'')" onkeypress="if(event.key === 'Enter') loginAdmin()">
-      <div style="height:14px;"></div>
+      <input type="password" id="pinAdmin" placeholder="••••" maxlength="6" inputmode="numeric" style="text-align:center; font-size:24px; letter-spacing:12px; font-weight:800; padding:16px;" oninput="this.value = this.value.replace(/\D/g,'')" onkeypress="if(event.key === 'Enter') loginAdmin()">
+      <div style="height:20px;"></div>
       <button class="btn-primary btn-full" onclick="loginAdmin()">
         <svg viewBox="0 0 24 24"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
         Masuk
       </button>
-      <div id="loginError" class="alert err hidden" style="margin-top:12px;"></div>
+      <div id="loginError" class="alert err hidden" style="margin-top:16px;"></div>
     </div>
   </div>
 
   <div id="panelAdmin" class="hidden">
     <div class="tabs">
       <button class="tab-btn active" onclick="switchTab('dash', event)">
-        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
         Dashboard
       </button>
       <button class="tab-btn" onclick="switchTab('upload', event)">
@@ -229,7 +267,7 @@ button:hover { transform: translateY(-1px); }
         Promotor
       </button>
       <button class="tab-btn" onclick="switchTab('whitelist', event)">
-        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
         Whitelist
       </button>
       <button class="tab-btn" onclick="switchTab('terlambat', event)">
@@ -237,7 +275,7 @@ button:hover { transform: translateY(-1px); }
         Terlambat
       </button>
       <button class="tab-btn" onclick="switchTab('promo', event)">
-        <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
         Promo & SOP
       </button>
       <button class="tab-btn" onclick="switchTab('danger', event)">
@@ -264,18 +302,29 @@ button:hover { transform: translateY(-1px); }
 </div>
 
 <script>
-/* ===== BULAN HELPER ===== */
-function getBulanIni() {
-  const d = new Date();
-  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
-}
-function getNamaBulanIndo(bulanStr) {
-  const nama = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-  const [thn, bln] = bulanStr.split('-');
-  return `${nama[parseInt(bln)]} ${thn}`;
-}
+/* ===== CUSTOM TOAST & MODAL ===== */
+function showToast(pesan, tipe = 'info') {
+  const oldToast = document.querySelector('.custom-toast');
+  if (oldToast) oldToast.remove();
 
-/* ===== MODAL ===== */
+  const toast = document.createElement('div');
+  toast.className = 'custom-toast';
+  
+  let icon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>';
+  if (tipe === 'sukses') icon = '<svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>';
+  else if (tipe === 'error') icon = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>';
+
+  toast.innerHTML = `${icon} <span>${pesan}</span>`;
+  document.body.appendChild(toast);
+
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3500);
+}
+window.showToast = showToast;
+
 let _modalCallback = null;
 
 function tampilkanModal(title, desc, opts, onOk) {
@@ -338,6 +387,17 @@ function tampilkanKonfirmasi(title, desc, onOk, type) {
   tampilkanModal(title, desc, { type: type || 'warning', showCancel: true }, onOk);
 }
 
+/* ===== BULAN HELPER ===== */
+function getBulanIni() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+}
+function getNamaBulanIndo(bulanStr) {
+  const nama = ['','Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+  const [thn, bln] = bulanStr.split('-');
+  return `${nama[parseInt(bln)]} ${thn}`;
+}
+
 /* ===== STATE ===== */
 let savedPin = localStorage.getItem('ufo_admin_pin3') || '';
 let currentTab = 'dash';
@@ -372,7 +432,7 @@ function cariPromotorKey(namaSales) {
 /* ===== FIREBASE READY ===== */
 window.addEventListener('firebase-ready', async () => {
   document.getElementById('badgeBulan').classList.remove('hidden');
-  document.getElementById('badgeBulan').innerText = '📅 ' + getNamaBulanIndo(BULAN_INI);
+  document.getElementById('badgeBulan').innerHTML = '<svg viewBox="0 0 24 24" style="width:16px;height:16px;stroke:currentColor;stroke-width:2.5;fill:none;display:inline-block;vertical-align:middle;margin-right:6px;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ' + getNamaBulanIndo(BULAN_INI);
   
   if (savedPin) {
     document.getElementById('loginBox').classList.add('hidden');
@@ -415,7 +475,7 @@ async function loginAdmin() {
 }
 
 function logoutAdmin() {
-  tampilkanKonfirmasi('Keluar?', 'Yakin ingin keluar?', () => {
+  tampilkanKonfirmasi('Keluar?', 'Yakin ingin keluar dari panel admin?', () => {
     localStorage.removeItem('ufo_admin_pin3');
     savedPin = '';
     location.reload();
@@ -428,7 +488,6 @@ function mulaiAdmin() {
     allPromotor = snap.exists() ? snap.val() : {};
     if (currentTab !== 'upload') renderTab();
   });
-  // Admin baca penjualan dari folder all/ (fallback ke root kalau belum migrasi)
   window.dbOnValue(window.dbRef(window.db, 'penjualan/' + BULAN_INI + '/all'), snap => {
     if (snap.exists()) {
       allPenjualan = snap.val();
@@ -555,7 +614,7 @@ function renderDash() {
         <div class="stat-card"><div class="label">Promotor</div><div class="value">${jmlPromotor}</div></div>
         <div class="stat-card"><div class="label">Transaksi</div><div class="value">${trans.length}</div></div>
         <div class="stat-card"><div class="label">Absensi</div><div class="value">${Object.keys(allAbsensi).length}</div></div>
-        <div class="stat-card full success"><div class="label">Total Omzet</div><div class="value" style="font-size:24px;">Rp ${totalOmzet.toLocaleString('id-ID')}</div></div>
+        <div class="stat-card full success"><div class="label">Total Omzet</div><div class="value" style="font-size:28px;">Rp ${totalOmzet.toLocaleString('id-ID')}</div></div>
       </div>
     </div>
   `;
@@ -573,7 +632,7 @@ function renderUpload() {
         <p><strong>Klik pilih file Finger</strong></p>
         <input type="file" id="fileFinger" accept=".xlsx,.xls" onchange="handleFileFinger(event); this.value='';">
       </div>
-      <div id="fingerInfo" style="margin-top:14px;"></div>
+      <div id="fingerInfo" style="margin-top:16px;"></div>
     </div>
     <div class="card">
       <h3><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/></svg> 2. Upload Data Master</h3>
@@ -583,7 +642,7 @@ function renderUpload() {
         <p><strong>Klik pilih file Master</strong></p>
         <input type="file" id="fileMaster" accept=".xlsx,.xls" onchange="handleFileMaster(event); this.value='';">
       </div>
-      <div id="masterInfo" style="margin-top:14px;"></div>
+      <div id="masterInfo" style="margin-top:16px;"></div>
     </div>
     <div class="card">
       <h3><svg viewBox="0 0 24 24"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg> 3. Upload Penjualan Harian</h3>
@@ -593,7 +652,7 @@ function renderUpload() {
         <p><strong>Klik pilih file Penjualan</strong></p>
         <input type="file" id="filePenjualan" accept=".xlsx,.xls" onchange="handleFilePenjualan(event); this.value='';">
       </div>
-      <div id="penjualanInfo" style="margin-top:14px;"></div>
+      <div id="penjualanInfo" style="margin-top:16px;"></div>
     </div>
   `;
 }
@@ -808,14 +867,12 @@ async function konfirmasiUploadMaster() {
     const updates = {};
     data.promotor.forEach(p => { updates['users/promotor/' + sanitizeKey(p.namaAbsen)] = p; });
 
-    // Ambil existing dari folder all/
     const snapAll = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI + '/all'));
     const setExist = new Set();
     if (snapAll.exists()) {
       Object.values(snapAll.val()).forEach(x => { if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode); });
     }
 
-    // Migrasi otomatis dari root lama
     const snapRoot = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI));
     if (snapRoot.exists()) {
       const rootVal = snapRoot.val();
@@ -907,7 +964,6 @@ async function konfirmasiUploadPenjualan() {
       Object.values(snapAll.val()).forEach(x => { if (x && x.noFaktur && x.barcode) setExist.add(x.noFaktur + '|' + x.barcode); });
     }
 
-    // Migrasi otomatis dari root lama
     const snapRoot = await window.dbGet(window.dbRef(window.db, 'penjualan/' + BULAN_INI));
     const updates = {};
     if (snapRoot.exists()) {
@@ -957,7 +1013,7 @@ function renderPromotor() {
         <select id="p_ikutUC"><option value="YA">Ikut UC</option><option value="TIDAK">Tidak Ikut UC</option></select>
       </div>
       <button class="btn-primary btn-full" onclick="tambahPromotor()">Tambah Promotor</button>
-      <div id="promotorMsg" style="margin-top:10px;"></div>
+      <div id="promotorMsg" style="margin-top:12px;"></div>
     </div>
     <div class="card">
       <h3>Daftar Promotor (${list.length})</h3>
@@ -998,34 +1054,33 @@ async function hapusPromotor(key, nama) {
 }
 
 /* ===== WHITELIST ===== */
-/* ===== WHITELIST ===== */
 function renderWhitelist() {
   const list = Object.keys(allWhitelist).map(k => ({ key: k, ...allWhitelist[k] })).sort((a,b) => (a.nama || a.email || '').localeCompare(b.nama || b.email || ''));
   const listProm = Object.keys(allPromotor).map(k => ({ key: k, ...allPromotor[k] })).sort((a,b) => (a.namaAbsen || '').localeCompare(b.namaAbsen || ''));
   
   return `
     <div class="card">
-      <h3><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg> Tambah ke Whitelist</h3>
+      <h3><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg> Tambah ke Whitelist</h3>
       <p>Daftarkan email & hubungkan ke Promotor yang sesuai.</p>
-      <div style="margin-bottom:10px;"><label>Email Google</label><input type="email" id="wl_email" placeholder="contoh@gmail.com"></div>
-      <div style="margin-bottom:10px;"><label>Nama Tampilan</label><input type="text" id="wl_nama" placeholder="Nama yang muncul di dashboard"></div>
-      <div style="margin-bottom:10px;">
+      <div style="margin-bottom:12px;"><label>Email Google</label><input type="email" id="wl_email" placeholder="contoh@gmail.com"></div>
+      <div style="margin-bottom:12px;"><label>Nama Tampilan</label><input type="text" id="wl_nama" placeholder="Nama yang muncul di dashboard"></div>
+      <div style="margin-bottom:12px;">
         <label>Role</label>
         <select id="wl_role" onchange="document.getElementById('wl_promotor_wrap').style.display = this.value === 'ADMIN' ? 'none' : 'block'">
           <option value="PROMOTOR">PROMOTOR</option>
           <option value="ADMIN">ADMIN</option>
         </select>
       </div>
-      <div id="wl_promotor_wrap" style="margin-bottom:12px;">
+      <div id="wl_promotor_wrap" style="margin-bottom:16px;">
         <label>Hubungkan ke Data Promotor</label>
         <select id="wl_promotorKey">
           <option value="">-- Pilih Promotor --</option>
           ${listProm.map(p => `<option value="${p.key}">${p.namaAbsen} (${p.namaSales || '-'})</option>`).join('')}
         </select>
-        <p style="font-size:11px; color:#64748b; margin-top:4px;">Pilih nama promotor agar data penjualan & absensinya muncul di HP-nya.</p>
+        <p style="font-size:11px; color:#64748b; margin-top:6px;">Pilih nama promotor agar data penjualan & absensinya muncul di HP-nya.</p>
       </div>
-      <button class="btn-primary btn-full" onclick="tambahWhitelist()">Tambah</button>
-      <div id="whitelistMsg" style="margin-top:10px;"></div>
+      <button class="btn-primary btn-full" onclick="tambahWhitelist()">Tambah ke Whitelist</button>
+      <div id="whitelistMsg" style="margin-top:12px;"></div>
     </div>
     <div class="card">
       <h3>Daftar Whitelist (${list.length})</h3>
@@ -1034,7 +1089,7 @@ function renderWhitelist() {
         <div class="list-item">
           <div class="kiri">
             <div class="nama">${w.nama || '<span style="color:#ef4444;">(Tanpa nama)</span>'}</div>
-            <div class="detail">${w.email || '-'} <span style="color:${w.role === 'ADMIN' ? '#d4af37' : '#2563eb'}; font-weight:700;">• ${w.role || 'PROMOTOR'}</span>
+            <div class="detail">${w.email || '-'} <span style="color:${w.role === 'ADMIN' ? '#d4af37' : '#3b82f6'}; font-weight:700;">• ${w.role || 'PROMOTOR'}</span>
             ${w.promotorKey ? `<br><span style="color:#10b981; font-weight:700;">✅ Terhubung ke: ${allPromotor[w.promotorKey]?.namaAbsen || w.promotorKey}</span>` : (w.role === 'PROMOTOR' ? '<br><span style="color:#ef4444;">⚠️ Belum terhubung ke promotor</span>' : '')}
             </div>
           </div>
@@ -1069,6 +1124,7 @@ async function tambahWhitelist() {
     setTimeout(() => msg.innerHTML = '', 3000);
   } catch (err) { msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
 }
+
 async function hapusWhitelist(key, email) {
   tampilkanKonfirmasi('Hapus?', `Yakin hapus "${email}"?`, async () => {
     await window.dbRemove(window.dbRef(window.db, 'users/whitelist/' + key));
@@ -1087,10 +1143,10 @@ function renderTerlambat() {
     <div class="card">
       <h3>Kelola Terlambat — ${getNamaBulanIndo(BULAN_INI)}</h3>
       <p>Pilih tanggal, lalu klik Tandai.</p>
-      <div style="background:white; border:1px solid var(--border); border-radius:12px; padding:14px;">
+      <div style="background:var(--soft); border:1px solid var(--border); border-radius:12px; padding:16px;">
         <label>Tanggal</label>
         <input type="number" id="tglTerlambat" min="1" max="31" value="${hariTerpilih}" 
-               style="width:120px; font-size:16px; text-align:center; font-weight:800;"
+               style="width:120px; font-size:18px; text-align:center; font-weight:800; padding:12px;"
                onchange="window._hariTerlambat = this.value; renderTab()">
       </div>
     </div>
@@ -1144,11 +1200,11 @@ function renderPromoSOP() {
   return `
     <div class="card">
       <h3>Tambah Promo</h3>
-      <div style="margin-bottom:10px;"><label>Judul</label><input type="text" id="promo_judul" placeholder="PROMO BULAN INI"></div>
-      <div style="margin-bottom:10px;"><label>Periode</label><input type="text" id="promo_periode" placeholder="Oktober 2026"></div>
-      <div style="margin-bottom:12px;"><label>Detail</label><textarea id="promo_detail" rows="3" placeholder="Detail promo..."></textarea></div>
+      <div style="margin-bottom:12px;"><label>Judul</label><input type="text" id="promo_judul" placeholder="PROMO BULAN INI"></div>
+      <div style="margin-bottom:12px;"><label>Periode</label><input type="text" id="promo_periode" placeholder="Oktober 2026"></div>
+      <div style="margin-bottom:16px;"><label>Detail</label><textarea id="promo_detail" rows="3" placeholder="Detail promo..."></textarea></div>
       <button class="btn-primary btn-full" onclick="tambahPromo()">Tambah Promo</button>
-      <div id="promoMsg" style="margin-top:10px;"></div>
+      <div id="promoMsg" style="margin-top:12px;"></div>
     </div>
     <div class="card">
       <h3>Daftar Promo (${promoList.length})</h3>
@@ -1163,17 +1219,17 @@ function renderPromoSOP() {
     </div>
     <div class="card">
       <h3>Tambah SOP</h3>
-      <div style="margin-bottom:10px;"><label>Judul SOP</label><input type="text" id="sop_judul"></div>
-      <div style="margin-bottom:12px;">
+      <div style="margin-bottom:12px;"><label>Judul SOP</label><input type="text" id="sop_judul"></div>
+      <div style="margin-bottom:16px;">
         <label>Gambar SOP (maks 500KB)</label>
-        <div class="file-wrap" onclick="document.getElementById('sop_file').click()" style="padding:20px;">
-          <svg viewBox="0 0 24 24" style="width:32px;height:32px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+        <div class="file-wrap" onclick="document.getElementById('sop_file').click()" style="padding:24px;">
+          <svg viewBox="0 0 24 24" style="width:36px;height:36px;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
           <p id="sop_file_label"><strong>Klik pilih gambar</strong></p>
           <input type="file" id="sop_file" accept="image/*" onchange="pilihFileSOP(event);">
         </div>
       </div>
       <button class="btn-primary btn-full" onclick="tambahSOP()">Tambah SOP</button>
-      <div id="sopMsg" style="margin-top:10px;"></div>
+      <div id="sopMsg" style="margin-top:12px;"></div>
     </div>
     <div class="card">
       <h3>Daftar SOP (${rulesList.length})</h3>
@@ -1276,13 +1332,13 @@ function renderDanger() {
     <div class="card">
       <h3 style="color:var(--danger);">⚠️ Danger Zone</h3>
       <p>Hati-hati! Data yang dihapus tidak bisa dikembalikan.</p>
-      <button class="btn-warning btn-full" style="margin-bottom:8px;" onclick="downloadExcelBulanIni()">
+      <button class="btn-warning btn-full" style="margin-bottom:12px;" onclick="downloadExcelBulanIni()">
         <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
         Download Data Bulan Ini (Excel)
       </button>
-      <button class="btn-danger btn-full" style="margin-bottom:8px;" onclick="hapusPenjualanBulanIni()">Hapus Penjualan Bulan Ini</button>
-      <button class="btn-danger btn-full" style="margin-bottom:8px;" onclick="hapusAbsensiBulanIni()">Hapus Absensi Bulan Ini</button>
-      <button class="btn-danger btn-full" style="margin-bottom:8px;" onclick="hapusPromotorAll()">Hapus Semua Promotor</button>
+      <button class="btn-danger btn-full" style="margin-bottom:12px;" onclick="hapusPenjualanBulanIni()">Hapus Penjualan Bulan Ini</button>
+      <button class="btn-danger btn-full" style="margin-bottom:12px;" onclick="hapusAbsensiBulanIni()">Hapus Absensi Bulan Ini</button>
+      <button class="btn-danger btn-full" style="margin-bottom:12px;" onclick="hapusPromotorAll()">Hapus Semua Promotor</button>
       <button class="btn-danger btn-full" onclick="hapusSemua()">Hapus SEMUA Data</button>
     </div>
   `;
