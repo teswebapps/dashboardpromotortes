@@ -1717,16 +1717,29 @@ function parseTanggal(str) {
 
 function getPeriodeRentangDinamis() {
   const semuaPenjualan = typeof allPenjualan !== 'undefined' ? allPenjualan : [];
-  if (semuaPenjualan.length === 0) return { pertama: '1 Oktober 2026', terakhir: '31 Oktober 2026' };
+  const today = new Date();
+  
+  // Tanggal 1 di bulan berjalan
+  const tglAwal = `1 ${['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][today.getMonth()]} ${today.getFullYear()}`;
+  
+  // Jika belum ada data penjualan sama sekali
+  if (semuaPenjualan.length === 0) {
+    return { pertama: tglAwal, terakhir: '-' };
+  }
+  
+  // Cari tanggal paling akhir dari data yang di-upload admin
   const tglValid = semuaPenjualan.map(x => x.tanggal).filter(Boolean).sort((a, b) => {
     const da = parseTanggal(a), db = parseTanggal(b);
     return (da || 0) - (db || 0);
   });
-  if (tglValid.length === 0) return { pertama: '1 Oktober 2026', terakhir: '31 Oktober 2026' };
-  const tglPertamaStr = tglValid[0];
+  
+  if (tglValid.length === 0) {
+    return { pertama: tglAwal, terakhir: '-' };
+  }
+  
   const tglTerakhirStr = tglValid[tglValid.length - 1];
   return {
-    pertama: tanggalKeNama(tglPertamaStr),
+    pertama: tglAwal,
     terakhir: tanggalKeNama(tglTerakhirStr)
   };
 }
