@@ -1046,7 +1046,7 @@ body.light-mode .btn-google:hover {
 
             <div class="fut-live-status">
                 <span class="fut-pulse-dot"></span>
-                <span id="live-status-text">Sistem Siap</span>
+                <span id="live-status-text">System Ready</span>
             </div>
         </div>
 
@@ -1429,8 +1429,8 @@ async function tampilkanDashboard() {
   } else {
     promotorTerpilih = currentUser.key;
     document.getElementById('promotorSelector').classList.add('hidden');
-    document.getElementById('userNama').innerHTML = 
-      <b>${escapeHtml(currentUser.namaAbsen)}</b>`;
+        document.getElementById('userNama').innerHTML = 
+      `<b>${escapeHtml(currentUser.namaAbsen)}</b>`;
     document.getElementById('topBar').classList.remove('admin-mode');
   }
 
