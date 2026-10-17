@@ -1069,39 +1069,6 @@ async function tambahWhitelist() {
     setTimeout(() => msg.innerHTML = '', 3000);
   } catch (err) { msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
 }
-async function tambahWhitelist() {
-  const email = document.getElementById('wl_email').value.trim().toLowerCase();
-  const nama = document.getElementById('wl_nama').value.trim();
-  const role = document.getElementById('wl_role').value;
-  const msg = document.getElementById('whitelistMsg');
-  if (!email || !nama) { msg.innerHTML = '<div class="alert err">Email & Nama wajib!</div>'; return; }
-  if (!email.includes('@')) { msg.innerHTML = '<div class="alert err">Email tidak valid!</div>'; return; }
-  const emailKey = email.replace(/\./g, ',');
-  try {
-    await window.dbSet(window.dbRef(window.db, 'users/whitelist/' + emailKey), { email, nama, role });
-    msg.innerHTML = '<div class="alert ok">✅ Ditambahkan!</div>';
-    document.getElementById('wl_email').value = '';
-    document.getElementById('wl_nama').value = '';
-    setTimeout(() => msg.innerHTML = '', 3000);
-  } catch (err) { msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
-}
-async function tambahWhitelist() {
-  const email = document.getElementById('wl_email').value.trim().toLowerCase();
-  const nama = document.getElementById('wl_nama').value.trim();
-  const role = document.getElementById('wl_role').value;
-  const msg = document.getElementById('whitelistMsg');
-  if (!email || !nama) { msg.innerHTML = '<div class="alert err">Email & Nama wajib!</div>'; return; }
-  if (!email.includes('@')) { msg.innerHTML = '<div class="alert err">Email tidak valid!</div>'; return; }
-  const emailKey = email.replace(/\./g, ',');
-  try {
-    await window.dbSet(window.dbRef(window.db, 'users/whitelist/' + emailKey), { email, nama, role });
-    msg.innerHTML = '<div class="alert ok">✅ Ditambahkan!</div>';
-    document.getElementById('wl_email').value = '';
-    document.getElementById('wl_nama').value = '';
-    setTimeout(() => msg.innerHTML = '', 3000);
-  } catch (err) { msg.innerHTML = `<div class="alert err">❌ ${err.message}</div>`; }
-}
-
 async function hapusWhitelist(key, email) {
   tampilkanKonfirmasi('Hapus?', `Yakin hapus "${email}"?`, async () => {
     await window.dbRemove(window.dbRef(window.db, 'users/whitelist/' + key));
